@@ -1,0 +1,13 @@
+"DepotBuild"
+{
+	// Linux 64-bit (also Steam Deck): the "Linux" preset (build/linux).
+	"DepotID" "DEPOT_LINUX"
+	"ContentRoot" "linux/"
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+	"FileExclusion" "steam_appid.txt"
+}

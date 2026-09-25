@@ -1,0 +1,15 @@
+"AppBuild"
+{
+	// Upload with steamcmd: steamcmd +login <builder account> +run_app_build <this file> +quit
+	// Replace APPID and the DEPOT ids with the ones Steamworks created for the game.
+	"AppID" "APPID"
+	"Desc" "Frontier Tank 0.13"
+	"BuildOutput" "../../../build/steam_output/"
+	"ContentRoot" "../../../build/"
+	// "SetLive" "beta"   // put a build live on a branch (never "default" from a script)
+	"Depots"
+	{
+		"DEPOT_WINDOWS" "depot_windows.vdf"
+		"DEPOT_LINUX" "depot_linux.vdf"
+	}
+}

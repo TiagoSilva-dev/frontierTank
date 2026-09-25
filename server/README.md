@@ -1,4 +1,4 @@
-# Frontier Tank online (0.11, Leilão na 0.12)
+# Frontier Tank online (0.11, Leilão na 0.12, lançamento na 0.13)
 
 Três peças: **PostgreSQL**, a **API** em Go (`server/api/`) e o **servidor de jogo**, que é este mesmo projeto Godot rodando sem tela (`server/game/`). A arquitetura está em `ARCHITECTURE.md`, seções Online e Leilão e Correio. O Leilão (0.12) não pede configuração nova: a migração `002_auction.sql` roda sozinha quando a API sobe.
 
@@ -30,6 +30,7 @@ Variáveis do `.env`:
 | `BOT_FILL_SECONDS` | Quanto tempo uma sala procura outra sala antes de completar com rivais de IA. |
 | `ALLOW_ORIGIN` | Origem liberada no CORS para a versão web. |
 | `LEGAL_VERSION` | Versão dos Termos de Uso e da Política de Privacidade (`legal/*.md`, igual a `Legal.VERSION` no jogo). Mudar faz todos aceitarem de novo antes de jogar online. |
+| `STEAM_APP_ID`, `STEAM_WEB_API_KEY`, `STEAM_IDENTITY`, `STEAM_MICROTXN_SANDBOX`, `ORDER_RETENTION_DAYS` | Steam: login por ticket e loja paga pela carteira Steam (sandbox enquanto a loja não for aprovada; pedidos guardados 5 anos). Sem App ID e chave, a Steam fica desligada. Detalhes em `docs/STEAM.md`. |
 | `REPORT_MUTE` | Quantos jogadores diferentes denunciando alguém em 10 minutos o silenciam no chat por 10 minutos (3). |
 | `REPORT_RETENTION_DAYS` | Por quanto tempo uma denúncia analisada fica guardada (180). |
 | `AUDIT_RETENTION_DAYS`, `CHAT_RETENTION_DAYS`, `ACCESS_LOG_DAYS` | Prazos da Política de Privacidade: registro de atividades (365), chat dentro dele (90) e registros de acesso do Marco Civil (183, isto é, 6 meses). |
@@ -74,7 +75,11 @@ cd server/api && TEST_DATABASE_URL=postgres://frontier:frontier@localhost:5433/f
 godot --headless --path . --script tests/net_tests.gd
 godot --headless --path . --script tests/net_e2e_tests.gd
 
-# Contra a pilha Docker no ar (cria uma conta e joga uma partida contra IA)
+# A API em Go cobre contas, leilão, privacidade (privacy_test.go), denúncias (reports_test.go)
+# e a Steam (steam_test.go, com uma Steam Web API falsa em Go)
+
+# Contra a pilha Docker no ar (cria uma conta, joga uma partida contra IA, baixa a cópia
+# dos dados e exclui a conta pelo jogo)
 godot --headless --path . --script tests/online_stack_check.gd -- --api=http://localhost:8080
 
 # Leilão contra a API e o PostgreSQL de verdade (o servidor de jogo roda dentro do teste;
@@ -86,5 +91,5 @@ godot --headless --path . --script tests/auction_stack_check.gd -- --api=http://
 ## O que ainda falta
 
 - Troca de moedas (Estrela ↔ Solar) e lances no Leilão; o Correio só leva o que vem do Leilão.
-- Login pela Steam (GodotSteam) e pagamentos; hoje é conta e senha.
+- Steam: falta ler os estornos (`ISteamMicroTxn/GetReport`) e retirar o item; configurar na Steamworks (`docs/STEAM.md`).
 - Se duas cópias de uma batalha divergirem (o jogador avisa o servidor com `desync`), o jogador continua vendo a própria cópia até o fim; o resultado que vale é sempre o do servidor. O registro de auditoria conta quantas vezes isso acontece.

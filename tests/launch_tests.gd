@@ -79,6 +79,7 @@ func run_tests() -> void:
 	test_legal_texts()
 	await test_privacy_screens()
 	await test_steam_client()
+	test_steam_page()
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
 	print("LAUNCH RESULT: %d checks, %d failures" % [checks, failures])
@@ -311,3 +312,31 @@ func test_steam_client() -> void:
 	newer.free()
 	if FileAccess.file_exists(AuthClient.config_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(AuthClient.config_path))
+
+# ---------- Steam store page (store/steam, tools/steam_store.py) ----------
+
+func test_steam_page() -> void:
+	var sizes: Dictionary = {"header_capsule": Vector2i(920, 430), "small_capsule": Vector2i(462, 174), "main_capsule": Vector2i(1232, 706), "vertical_capsule": Vector2i(748, 896), "page_background": Vector2i(1438, 810), "library_capsule": Vector2i(600, 900), "library_header": Vector2i(920, 430), "library_hero": Vector2i(3840, 1240), "library_logo": Vector2i(1280, 720)}
+	for name: String in sizes:
+		var image: Image = Image.load_from_file(ProjectSettings.globalize_path("res://store/steam/capsules/%s.png" % name))
+		check(image != null and image.get_size() == sizes[name], "Steam %s is %dx%d" % [name, sizes[name].x, sizes[name].y])
+	for language in ["pt", "en"]:
+		var lines: PackedStringArray = FileAccess.get_file_as_string("res://store/steam/page_%s.md" % language).split("\n")
+		var short: String = ""
+		for i in range(lines.size()):
+			if lines[i].begins_with("## Descrição curta") or lines[i].begins_with("## Short description"):
+				short = lines[i + 2]
+		check(short.length() > 100 and short.length() <= 300, "the %s short description fits Steam's 300 characters (%d)" % [language, short.length()])
+		var shots: PackedStringArray = DirAccess.get_files_at("res://store/steam/screenshots/" + language)
+		check(Array(shots).filter(func(file: String) -> bool: return file.ends_with(".png")).size() >= 5, "at least 5 screenshots in %s" % language)
+	var table: String = FileAccess.get_file_as_string("res://store/steam/achievements/achievements.csv")
+	for entry: Dictionary in Achievements.list():
+		check(table.contains(str(entry.id) + ",") and FileAccess.file_exists("res://store/steam/achievements/%s_locked.png" % entry.id), "achievement %s is ready for Steamworks" % entry.id)
+	var presets: ConfigFile = ConfigFile.new()
+	presets.load("res://export_presets.cfg")
+	var platforms: Array = []
+	for section in presets.get_sections():
+		if not section.ends_with(".options"):
+			platforms.append(str(presets.get_value(section, "platform", "")))
+			check(str(presets.get_value(section, "exclude_filter", "")).contains("store/*") and str(presets.get_value(section, "include_filter", "")).contains("legal/*.md"), "%s leaves the store art out and takes the legal texts" % presets.get_value(section, "name", ""))
+	check(platforms.has("Windows Desktop") and platforms.has("Linux") and platforms.has("Web"), "presets for Windows, Linux (Steam Deck) and the web")

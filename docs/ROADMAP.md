@@ -8,7 +8,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo); grupos online na 0.11 — **feito** |
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) — **feito** |
 | — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
-| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito** |
+| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito**; preparação do lançamento (web, nomes, privacidade, denúncia, Steam) na 0.13 — **feito**, faltam as pendências externas do checklist |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -325,12 +325,19 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - Os documentos internos (`docs/DDTANK_RESEARCH.md`, `docs/ddtank_references*`, este roadmap, `ARCHITECTURE.md`, `GAME_DESIGN_DOCUMENT.md`) continuam citando o DDTank como referência de desenvolvimento e **não devem ser publicados**; o README foi limpo. Se o repositório ficar público, tirar esses arquivos antes.
 - **Continuam genéricos e ficaram**: Pedra de Fortalecimento, Cristal Dourado, POW, avião de papel, Salão de Jogos, Centro Comercial, Ferreiro, qualidades Normal/Excelente/Verdadeira.
 - **Decisão pendente, a marca**: "Nova Era" também é o nome de uma edição brasileira do DDTank (ver `docs/DDTANK_RESEARCH.md`, complemento 0.4). O subtítulo aparece no logotipo, na janela, no nome do servidor padrão ("S1 · Nova Era") e na página da Steam. Antes da página "em breve", vale trocar o subtítulo (e redesenhar o logotipo) ou confirmar com um advogado que não há risco.
-- [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês.
-- [ ] Integração com a Steam (GodotSteam): login por ticket, microtransações, conquistas.
+- [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês. *(25/09/2026: textos em pt e en, cápsulas em todos os tamanhos, capturas nos dois idiomas, ícones e tabela das conquistas e modelos do SteamPipe em `store/steam/`, com `tools/steam_store.py`. Faltam: o trailer, a decisão sobre o subtítulo "Nova Era", pagar a taxa e enviar a página na Steamworks — passo a passo em `docs/STEAM.md`.)*
+- [x] Integração com a Steam (GodotSteam): login por ticket, microtransações, conquistas. *(25/09/2026: `SteamService` com GodotSteam opcional, ENTRAR COM A STEAM e Vincular à Steam, loja Premium paga pela carteira Steam com entrega pelo Correio, 11 conquistas pelo perfil online, presets Windows e Linux. Falta instalar a extensão e o App ID; estornos via `GetReport`.)*
 - [x] Política de privacidade e termos de uso (obrigatórios com contas, pagamentos e dados de jogadores). *(Modelos prontos em `legal/`; precisam dos dados da empresa e de revisão jurídica.)*
 
 
 ---
+
+### Pendências externas (não dá para resolver no código)
+- Preencher `legal/controller.json` (empresa, CNPJ, e-mail, encarregado) e fazer a **revisão jurídica** dos Termos, da Política e do ECA Digital.
+- Decidir o **subtítulo** do jogo ("Nova Era") antes da página da Steam.
+- **Medir o FPS da web numa máquina com placa de vídeo** (`node tools/web_bench.cjs --headed` ou `?bench=30`).
+- Definir quem **modera** as denúncias e em quanto tempo.
+- Steamworks: taxa, App ID, chave de publicador, conquistas, microtransações e envio da página.
 
 ## Ordem sugerida
 
