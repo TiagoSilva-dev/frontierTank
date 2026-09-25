@@ -1139,8 +1139,8 @@ msgid "%s (V)\n%s"
 msgstr "%s (V)\n%s"
 
 #: client/ui/battle_hud.gd:110
-msgid "Sem item auxiliar. Equipe um na Mochila (Dom de Anjo ou escudo)."
-msgstr "No support item. Equip one in the Bag (Angel's Gift or a shield)."
+msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
+msgstr "No support item. Equip one in the Bag (Balm or shield)."
 
 #: client/ui/battle_hud.gd:115
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
@@ -3199,32 +3199,32 @@ msgid "Recupera 20% da vida. 2 usos por partida (tecla V)."
 msgstr "Restores 20% HP. 2 uses per match (key V)."
 
 #: shared/balance/items.json:auxiliary[0].name
-msgid "Dom de Anjo"
-msgstr "Angel's Gift"
+msgid "Bálsamo"
+msgstr "Balm"
 
 #: shared/balance/items.json:auxiliary[1].desc
 msgid "Recupera 30% da vida. 3 usos por partida (tecla V)."
 msgstr "Restores 30% HP. 3 uses per match (key V)."
 
 #: shared/balance/items.json:auxiliary[1].name
-msgid "Verdadeiro Dom de Anjo"
-msgstr "True Angel's Gift"
+msgid "Grande Bálsamo"
+msgstr "Grand Balm"
 
 #: shared/balance/items.json:auxiliary[2].desc
 msgid "O próximo dano recebido cai para 60%. 2 usos por partida (tecla V)."
 msgstr "The next damage taken drops to 60%. 2 uses per match (key V)."
 
 #: shared/balance/items.json:auxiliary[2].name
-msgid "Escudo de Bugou"
-msgstr "Bugou's Shield"
+msgid "Broquel de Latão"
+msgstr "Brass Buckler"
 
 #: shared/balance/items.json:auxiliary[3].desc
 msgid "O próximo dano recebido cai pela metade. 3 usos por partida (tecla V)."
 msgstr "The next damage taken is halved. 3 uses per match (key V)."
 
 #: shared/balance/items.json:auxiliary[3].name
-msgid "Escudo do Barão"
-msgstr "Baron's Shield"
+msgid "Égide de Aço"
+msgstr "Steel Aegis"
 
 #: shared/balance/items.json:cosmetics[0].name
 msgid "Roupa de Explorador"
@@ -3343,8 +3343,8 @@ msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, roup
 msgstr "Every weapon (every quality), super weapons, support items, outfits, hats, glasses, wings, hair colors, 200 stones of each level, 50 crystals and 99,999 gold."
 
 #: shared/balance/items.json:coupons[1].desc
-msgid "Quatro Quebra Tijolos Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras."
-msgstr "Four True Brickbreakers at +3, +7, +10 and +12 to see the four auras."
+msgid "Quatro Tijolaços Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras."
+msgstr "Four True Bricklayers at +3, +7, +10 and +12 to see the four auras."
 
 #: shared/balance/items.json:coupons[2].desc
 msgid "50 pedras de cada nível."
@@ -3407,8 +3407,8 @@ msgid "Espelho Celeste"
 msgstr "Sky Mirror"
 
 #: shared/balance/items.json:weapons[0].name
-msgid "Quebra Tijolos"
-msgstr "Brickbreaker"
+msgid "Tijolaço"
+msgstr "Bricklayer"
 
 #: shared/balance/items.json:weapons[0].pow.desc
 msgid "O tijolo explode e solta 4 tijolos menores que quicam ao redor."
@@ -3419,8 +3419,8 @@ msgid "Desabamento"
 msgstr "Collapse"
 
 #: shared/balance/items.json:weapons[10].name
-msgid "Super Bumerangue do Amor"
-msgstr "Super Love Boomerang"
+msgid "Super Cupido"
+msgstr "Super Cupid"
 
 #: shared/balance/items.json:weapons[10].pow.desc
 msgid "O bumerangue acerta, volta acertando de novo e cura 25% do dano causado."
@@ -3431,8 +3431,8 @@ msgid "Amor de Ida e Volta"
 msgstr "Round-Trip Love"
 
 #: shared/balance/items.json:weapons[11].name
-msgid "Super Lança"
-msgstr "Super Spear"
+msgid "Super Lança de Jade"
+msgstr "Super Jade Spear"
 
 #: shared/balance/items.json:weapons[11].pow.desc
 msgid "Cinco lanças caem do céu em fila sobre o alvo."
@@ -3443,8 +3443,8 @@ msgid "Chuva de Lanças"
 msgstr "Spear Rain"
 
 #: shared/balance/items.json:weapons[1].name
-msgid "Fogo Intenso"
-msgstr "Blazing Fire"
+msgid "Braseiro"
+msgstr "Brazier"
 
 #: shared/balance/items.json:weapons[1].pow.desc
 msgid "Três balas flamejantes de uma vez (POW triplo)."
@@ -3455,44 +3455,44 @@ msgid "Rajada Infernal"
 msgstr "Infernal Volley"
 
 #: shared/balance/items.json:weapons[2].name
-msgid "Canhão Arco-Íris"
-msgstr "Rainbow Cannon"
+msgid "Prisma"
+msgstr "Prism"
 
 #: shared/balance/items.json:weapons[2].pow.desc
 msgid "Um raio de arco-íris desce do céu no ponto de impacto."
 msgstr "A rainbow beam strikes down from the sky where it lands."
 
 #: shared/balance/items.json:weapons[2].pow.name
-msgid "Raio Arco-Íris"
-msgstr "Rainbow Beam"
+msgid "Raio Prismático"
+msgstr "Prismatic Ray"
 
 #: shared/balance/items.json:weapons[3].name
-msgid "Vento de Deus"
-msgstr "Divine Wind"
+msgid "Cata-Vento"
+msgstr "Pinwheel"
 
 #: shared/balance/items.json:weapons[3].pow.desc
 msgid "Uma shuriken gigante que ignora o vento."
 msgstr "A giant shuriken that ignores the wind."
 
 #: shared/balance/items.json:weapons[3].pow.name
-msgid "Furacão Divino"
-msgstr "Divine Hurricane"
+msgid "Olho do Furacão"
+msgstr "Eye of the Storm"
 
 #: shared/balance/items.json:weapons[4].name
-msgid "Cesto de Frutas de Newton"
-msgstr "Newton's Fruit Basket"
+msgid "Pomar"
+msgstr "Orchard"
 
 #: shared/balance/items.json:weapons[4].pow.desc
 msgid "Depois do impacto, quatro frutas caem do céu em volta do alvo."
 msgstr "After the hit, four fruits fall from the sky around the target."
 
 #: shared/balance/items.json:weapons[4].pow.name
-msgid "Lei da Gravidade"
-msgstr "Law of Gravity"
+msgid "Chuva de Frutas"
+msgstr "Fruit Shower"
 
 #: shared/balance/items.json:weapons[5].name
-msgid "Kit Médico"
-msgstr "Medic Kit"
+msgid "Tônico"
+msgstr "Tonic"
 
 #: shared/balance/items.json:weapons[5].pow.desc
 msgid "Cura aliados perto da explosão (+350) e o atirador (+150)."
@@ -3503,8 +3503,8 @@ msgid "Cura Milagrosa"
 msgstr "Miracle Cure"
 
 #: shared/balance/items.json:weapons[6].name
-msgid "Eletrodoméstico"
-msgstr "Home Appliance"
+msgid "Bota-Fora"
+msgstr "Clear-Out"
 
 #: shared/balance/items.json:weapons[6].pow.desc
 msgid "A TV marca o alvo e uma geladeira gigante cai do céu."
@@ -3515,16 +3515,16 @@ msgid "Geladeira Gigante"
 msgstr "Giant Fridge"
 
 #: shared/balance/items.json:weapons[7].name
-msgid "Trovão"
-msgstr "Thunder"
+msgid "Para-Raios"
+msgstr "Lightning Rod"
 
 #: shared/balance/items.json:weapons[7].pow.desc
 msgid "Três raios caem do céu sobre o alvo (POW triplo)."
 msgstr "Three lightning bolts strike the target (triple POW)."
 
 #: shared/balance/items.json:weapons[8].name
-msgid "Desentupidor"
-msgstr "Plunger"
+msgid "Sugador"
+msgstr "Suction Gun"
 
 #: shared/balance/items.json:weapons[8].pow.desc
 msgid "Três desentupidores que puxam os inimigos para o centro (POW triplo)."
@@ -3535,13 +3535,13 @@ msgid "Sucção Tripla"
 msgstr "Triple Suction"
 
 #: shared/balance/items.json:weapons[9].name
-msgid "Super Cabeça de Boi"
-msgstr "Super Bull Head"
+msgid "Super Minotauro"
+msgstr "Super Minotaur"
 
 #: shared/balance/items.json:weapons[9].pow.desc
 msgid "Uma cabeça de touro espectral arremessa os inimigos longe."
 msgstr "A spectral bull head throws enemies far away."
 
 #: shared/balance/items.json:weapons[9].pow.name
-msgid "Estouro do Touro"
-msgstr "Bull Stampede"
+msgid "Estouro da Manada"
+msgstr "Stampede"

@@ -359,7 +359,7 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	node.position = point
 	node.top = camera.position.y - 420.0
 	effects.add_child(node)
-	# Dom de Anjo heals through the same effect but has its own angelic chord.
+	# The Bálsamo heals through the same effect but has its own angelic chord.
 	app.audio.play("aux_angel" if data.get("aux", false) else str(EFFECT_SOUNDS.get(kind, "")), 0.0, 1.0, 120)
 	match kind:
 		"lightning":

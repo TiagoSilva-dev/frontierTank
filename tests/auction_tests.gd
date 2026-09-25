@@ -135,7 +135,7 @@ func mail_tests() -> void:
 		Auction.undo_mail(profile, step)
 	check(profile.find_instance(int(undo.uids[0])).is_empty() and profile.maps.is_empty() and profile.currency_count("solar") == 0 and profile.coins == coins, "a refused claim takes everything out again")
 	check(PlayerProfile.clean_instance({"id": "nao_existe"}).is_empty() and PlayerProfile.clean_map({"instance": "nenhuma"}).is_empty(), "unknown items and instances are refused")
-	check(Auction.mail_title({"kind": "sale", "detail": {"item_kind": "item", "item": item}}).contains("Verdadeiro Trovão"), "the mail says what was sold")
+	check(Auction.mail_title({"kind": "sale", "detail": {"item_kind": "item", "item": item}}).contains("Verdadeiro Para-Raios"), "the mail says what was sold")
 
 func memory_api_tests() -> void:
 	var api: ApiClient = ApiClient.new()

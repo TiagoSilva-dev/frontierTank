@@ -2,8 +2,8 @@ class_name PowImpact
 extends Node2D
 
 # Where a POW lands. Every special has its own colours, shape and particles: rubble for
-# the Quebra Tijolos, lava for the Fogo Intenso, ice crystals for the Geladeira, double
-# lightning for the Trovão, hearts for the Bumerangue do Amor and so on. It plays on top
+# the Tijolaço, lava for the Braseiro, ice crystals for the Geladeira, double
+# lightning for the Para-Raios, hearts for the Super Cupido and so on. It plays on top
 # of the normal explosion (ImpactFx); the match holds still for a few frames (hit-stop)
 # and the camera shakes. Drawn on the 2 px art grid, then freed.
 

@@ -112,7 +112,7 @@ func run_tests() -> void:
 	game.power = 55
 	game.state = LocalMatch.State.PLAYER_CHARGING
 	game.release_shot()
-	check(me.pow_gauge == 0 and str(game.projectiles[0].special.get("kind", "")) == "split" and game.projectiles[0].damage == roundi(260 * 1.2), "Quebra Tijolos POW (Desabamento) resets the bar")
+	check(me.pow_gauge == 0 and str(game.projectiles[0].special.get("kind", "")) == "split" and game.projectiles[0].damage == roundi(260 * 1.2), "Tijolaço POW (Desabamento) resets the bar")
 	settle(game)
 	# Paper plane
 	make_turn(game, me)

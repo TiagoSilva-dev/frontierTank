@@ -18,18 +18,18 @@ Cada arma tem `fire_<id>` (disparo) e `impact_<id>` (camada tocada junto com a e
 
 | Arma | Disparo | Impacto |
 |---|---|---|
-| Quebra Tijolos | pancada seca de pedra, cascalho e o tijolo girando no ar | desmoronamento de entulho |
-| Fogo Intenso | ignição "fwoosh" com varredura, rugido de fogo e estalos | labareda |
-| Canhão Arco-Íris | disparo de canhão com arpejo mágico de sinos subindo e brilhos | sinos descendo e brilhos |
-| Vento de Deus | rajada girando (a shuriken) e o "shing" metálico | lufada de vento |
-| Cesto de Frutas de Newton | "pop" do arremesso, folhas e apito subindo | fruta esmagando |
-| Kit Médico | "pssht" pneumático e sino de cura | vidro, efervescência e sino |
-| Eletrodoméstico | baque, zumbido de 60 Hz, chiado de TV e o apito do tubo | vidro estilhaçando e faísca |
-| Trovão | arco elétrico, estalos e trovão rolando | estalo elétrico |
-| Desentupidor | sucção "thwop", "plop", mola e bolhas | "splash" com bolhas |
-| Super Cabeça de Boi | bufada e mugido/rugido do touro com estrondo | pisadas pesadas |
-| Super Bumerangue do Amor | "vup-vup" girando e sininhos de amor | sininhos |
-| Super Lança | lança cortando o ar, anel de bronze e brilho de jade | metal batendo na terra |
+| Tijolaço | pancada seca de pedra, cascalho e o tijolo girando no ar | desmoronamento de entulho |
+| Braseiro | ignição "fwoosh" com varredura, rugido de fogo e estalos | labareda |
+| Prisma | disparo de canhão com arpejo mágico de sinos subindo e brilhos | sinos descendo e brilhos |
+| Cata-Vento | rajada girando (a shuriken) e o "shing" metálico | lufada de vento |
+| Pomar | "pop" do arremesso, folhas e apito subindo | fruta esmagando |
+| Tônico | "pssht" pneumático e sino de cura | vidro, efervescência e sino |
+| Bota-Fora | baque, zumbido de 60 Hz, chiado de TV e o apito do tubo | vidro estilhaçando e faísca |
+| Para-Raios | arco elétrico, estalos e trovão rolando | estalo elétrico |
+| Sugador | sucção "thwop", "plop", mola e bolhas | "splash" com bolhas |
+| Super Minotauro | bufada e mugido/rugido do touro com estrondo | pisadas pesadas |
+| Super Cupido | "vup-vup" girando e sininhos de amor | sininhos |
+| Super Lança de Jade | lança cortando o ar, anel de bronze e brilho de jade | metal batendo na terra |
 | Rei Hélio (chefe) | fogo solar, braam grave e estrondo | — |
 
 Outros projéteis: `fire_plane` (avião de papel), `drop_whistle` (o que cai do céu), `split_pop` (tijolos que se partem), `boomerang_return`.

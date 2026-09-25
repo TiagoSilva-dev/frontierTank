@@ -163,10 +163,10 @@ func run_tests() -> void:
 	Lang.setup("en")
 	check(Lang.is_english(), "--lang=en picks English")
 	Lang.setup("pt_BR")
-	check(not Lang.is_english() and Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "Verdadeiro Kit Médico +5", "Portuguese stays the source language")
+	check(not Lang.is_english() and Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "Verdadeiro Tônico +5", "Portuguese stays the source language")
 	Lang.override = "en"
 	Lang.setup()
-	check(Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "True Medic Kit +5" and Armory.item_name({"id": "trovao", "quality": "excelente"}) == "Excellent Thunder", "item names follow the language (True Medic Kit +5)")
+	check(Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "True Tonic +5" and Armory.item_name({"id": "trovao", "quality": "excelente"}) == "Excellent Lightning Rod", "item names follow the language (True Tonic +5)")
 	check(Crafting.mod_text({"id": "dano", "value": 12}) == "+12% damage" and Crafting.currency_name("espelho") == "Sky Mirror" and Crafting.tier_name(1) == "T1", "bonuses, currencies and tiers in English")
 	check(InstanceRun.map_name({"instance": "picos_gelados", "level": 7}) == "Map: Frozen Peaks — Level 7" and InstanceRun.mod_text({"id": "enemy_hp", "value": 30}) == "Enemies have +30% HP", "maps and their modifiers in English")
 	check(TankFighter.rank_for(1) == "Recruit" and Armory.slot_name("asas") == "Wings" and Armory.quality_label("verdadeira") == "True", "ranks, slots and qualities in English")

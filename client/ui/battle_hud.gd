@@ -103,11 +103,11 @@ func build() -> void:
 	UiKit.panel(self, Rect2(138, 600, 54, 52), "glass")
 	fly_button = slot_button(Rect2(142, 604, 46, 44), PixelIcons.get_icon("plane"), "F", game.toggle_fly)
 	fly_button.tooltip_text = tr("Avião de papel (F): voe até onde o disparo cair. %d de energia.") % int(game.balance.fly.energy)
-	# Item auxiliar (V): Dom de Anjo heals, the shields halve the next hit.
+	# Item auxiliar (V): the Bálsamo heals, the shields halve the next hit.
 	var aux: Dictionary = Armory.aux_def(me.aux_id)
 	UiKit.panel(self, Rect2(138, 546, 54, 52), "glass")
 	aux_button = slot_button(Rect2(142, 550, 46, 44), load(str(aux.icon)) if not aux.is_empty() else null, "V", game.use_aux)
-	aux_button.tooltip_text = tr("%s (V)\n%s") % [tr(str(aux.name)), tr(str(aux.desc))] if not aux.is_empty() else tr("Sem item auxiliar. Equipe um na Mochila (Dom de Anjo ou escudo).")
+	aux_button.tooltip_text = tr("%s (V)\n%s") % [tr(str(aux.name)), tr(str(aux.desc))] if not aux.is_empty() else tr("Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo).")
 	aux_count = UiKit.label(aux_button, "", Rect2(20, 26, 26, 18), 12, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	for i in range(game.balance.items.size()):
 		var item: Dictionary = game.balance.items[i]

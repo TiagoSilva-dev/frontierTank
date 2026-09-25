@@ -126,7 +126,7 @@ func load_data(data: Dictionary) -> bool:
 	return migrated
 
 func ensure_starter() -> void:
-	# Every account starts with the basic look (t-shirt and shorts) and a Quebra Tijolos.
+	# Every account starts with the basic look (t-shirt and shorts) and a Tijolaço.
 	if equipped_instance("arma").is_empty():
 		var weapon: Dictionary = {}
 		for inst in inventory:
