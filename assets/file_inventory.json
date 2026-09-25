@@ -1,0 +1,482 @@
+[
+  {
+    "file": "characters/lia/east.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "407763c56bb91fab387f48beba53c33f1b6f1a6914b0abeb9f490d427a741ed1"
+  },
+  {
+    "file": "characters/lia/north.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "7df5c5a17cf9c7949d14700f3c237e08d6354756e64719e2d32d2c5aec7a150a"
+  },
+  {
+    "file": "characters/lia/south.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "b5f507cc1470c7e4d29ba5cb37d74ef43b36166cad8583ad857a910b9f477246"
+  },
+  {
+    "file": "characters/lia/west.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "99484b4aab867afaa2e49d46a1504aa1e99dbbf1f800c498d6ed59d4c91d403f"
+  },
+  {
+    "file": "characters/nilo/east.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "619fb6c7459755c789790f9af378c83f99a5a1df0819f09a30871b085b2abf2b"
+  },
+  {
+    "file": "characters/nilo/north.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "0307a63188b450de797481fb1f0cb043dede2b9afdc6085154c4ca66d7643c14"
+  },
+  {
+    "file": "characters/nilo/south.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "22b7659e60a3eddb441ef755112de2849e5e40dc724d94a79d447a2b4028a596"
+  },
+  {
+    "file": "characters/nilo/west.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "56d7012ef2617896ef56d2f0b6b419266e9d665724d438a6d15bc1bf0b3dd009"
+  },
+  {
+    "file": "effects/explosao.png",
+    "width": 96,
+    "height": 96,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "231972a313b798712a6b7a616f318f60b69b9c70e3ce98af2ece15bf83fe7fc5"
+  },
+  {
+    "file": "effects/projetil.png",
+    "width": 32,
+    "height": 32,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "9fdd45cc93d81ff6c00496c19b95c58f14818c4fbab69c1299e9d29d43152f3b"
+  },
+  {
+    "file": "items/moeda.png",
+    "width": 32,
+    "height": 32,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "8eabd8788fc0cdafabe9fc8111c0d9c05306483da209c722717c9e2382662303"
+  },
+  {
+    "file": "items/pedra_fortalecimento.png",
+    "width": 32,
+    "height": 32,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "d0ba686e65d63b2dd10e8bf60183394730bf79457e1afb125d5360b63450a361"
+  },
+  {
+    "file": "maps/ilha_celeste_bg.png",
+    "width": 400,
+    "height": 224,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "sha256": "1b2a0bd6dcedb6513554797f3a787cca5c76ecf58628781589adbe0ce382cc47"
+  },
+  {
+    "file": "pets/fenix_dourada.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "281ed444825742f5b7ebbff224902f40f85e775958b3fd91fed7a563601c36c2"
+  },
+  {
+    "file": "pets/raposa_glacial.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "fdb15f774afa1adf158c11e18b36ee068200eca9e2e2772b7dc4c81a36d7de83"
+  },
+  {
+    "file": "pve/boss_attack/frame_00.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "a8a59cc308a8f09208baefefe181cd1fc015f86db5200a39e3c0e4b161237df3"
+  },
+  {
+    "file": "pve/boss_attack/frame_01.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "45f9afcdeb5b992b1db826c34b18ed13a5a4e7b67f6efe6f385a9d11df0a0247"
+  },
+  {
+    "file": "pve/boss_attack/frame_02.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "eaa71309a0aea7b40bf740c3f44c6a7bd930cc48789a652feb1df44503212508"
+  },
+  {
+    "file": "pve/boss_attack/frame_03.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "686eb984d77b88b52ffa6683ba281899fe0784dcccf6003cf6814933271e633f"
+  },
+  {
+    "file": "pve/boss_attack/frame_04.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "43ddd0e31f4545021132f792133d7feb4afbb4efbf7c0f706d345b23cabd2dd0"
+  },
+  {
+    "file": "pve/boss_attack/frame_05.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "db5222a79761aa955cc6b2b2063686a4f00675439c04a488e4f5bdd1adfce207"
+  },
+  {
+    "file": "pve/boss_attack/frame_06.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "06c861beea2ae3ee5ddbf3296b338daf781e6e3dd478671298d02837aae4ac1a"
+  },
+  {
+    "file": "pve/boss_attack/frame_07.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "871b28c81a76c3a1408207eca372fc2c5a42ecb49d3cffbe9669025baa231111"
+  },
+  {
+    "file": "pve/boss_attack/frame_08.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "0ce9977b57727bd2114fd1bdb8a17aa58ff8d98ba795f9d69706ce8a747a6ca9"
+  },
+  {
+    "file": "pve/boss_idle/frame_00.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "a8a59cc308a8f09208baefefe181cd1fc015f86db5200a39e3c0e4b161237df3"
+  },
+  {
+    "file": "pve/boss_idle/frame_01.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "0b7bfc2432592fb839cd1262e751ee289ef36defb2aff7b95e7d1089540e507b"
+  },
+  {
+    "file": "pve/boss_idle/frame_02.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "e48100a9733b88cf12ea8a239214797c79cfe82f5c82b4c6ace1e794ee2cb204"
+  },
+  {
+    "file": "pve/boss_idle/frame_03.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "fd2f13bbd4d2d8f58799d853a9aa3144447b0afd1be1b4a74b82d69b891a3f8f"
+  },
+  {
+    "file": "pve/boss_idle/frame_04.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "c13c2830852b0c076dc74f63a5b32c95c31eb7bcc34fe7313353dc8daaede74e"
+  },
+  {
+    "file": "pve/hero_idle/frame_00.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "1e090d2c1a0005808d21a4e1ec42c47aa9d4837fceb8c015fa83237815cd8d88"
+  },
+  {
+    "file": "pve/hero_idle/frame_01.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "6c6b5d40bb3006848bf20039bd69d214add5e9b80e2c94a7f14a54a63b0ccb8f"
+  },
+  {
+    "file": "pve/hero_idle/frame_02.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "48b8b0681ce9247ff5be7cbed74150f826348ee5dba95bef0016554977da1691"
+  },
+  {
+    "file": "pve/hero_idle/frame_03.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "019aabd0ca2aa72159d77a3b178a1c1f625aa33a75a2505ee0e300455286f6c5"
+  },
+  {
+    "file": "pve/hero_idle/frame_04.png",
+    "width": 136,
+    "height": 136,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "7ee86aab53d98e95408f21c4e5fe0c8be7ea1b0c857c47423a372bc8e6bf839b"
+  },
+  {
+    "file": "pve/hub_celeste.png",
+    "width": 400,
+    "height": 224,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "sha256": "ba3bbeb894bc5b6393ff17c4a47ff46511faa5877f9af1e9f55e5d5a5730ca46"
+  },
+  {
+    "file": "pve/portal.png",
+    "width": 96,
+    "height": 96,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "043ffe7e5aa384436f2eb274097a87d690eb7ec523ce96ce45ce5c9b5246c41d"
+  },
+  {
+    "file": "pve/rei_sol.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "e2e7bbf01ecbfea494e5550805274521a8798663e12f3d1a01dd72ad43872575"
+  },
+  {
+    "file": "pve/templo_bg.png",
+    "width": 400,
+    "height": 224,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "sha256": "c12edddb47990395ab9baba4fd4b54887a8723f314ef1e54c140c998374d8de5"
+  },
+  {
+    "file": "pve/templo_bloco.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "sha256": "d5dee813cd9171bbd1dc30409cba2cc5f29e8af9ab03caa3277d5b89db281975"
+  },
+  {
+    "file": "tilesets/ilha_celeste.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "a9fc15fb49f90e67d01e005cc1a9bb60cee37ab82cb48fa4a78b7c962fb9d03c"
+  },
+  {
+    "file": "tilesets/rocha_grama.png",
+    "width": 128,
+    "height": 128,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "212210c8c05701e71715d68ded10d2de604e837afa39bd273d2cc1ab9b31e594"
+  },
+  {
+    "file": "ui/icone_cura.png",
+    "width": 32,
+    "height": 32,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "111f982d1ba2fb5a0a4819e7dca8e4bad8db6743dceca6154c52b23ea6b1e427"
+  },
+  {
+    "file": "ui/icone_escudo.png",
+    "width": 32,
+    "height": 32,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "9544e2dcb75b21d0acedc38aa27ec2531cb44a1c3600adffb40316ba7bf3b1f0"
+  },
+  {
+    "file": "weapons/canhao_celestial.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "87c45beedad2eec4f10e61b246dafd395f5242e3c641c50010360dd4a255b006"
+  },
+  {
+    "file": "weapons/canhao_explorador.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "f6d91dbfba89d546621184995bf832faf6660119ae4e65231bb96df68a9c9fe9"
+  },
+  {
+    "file": "weapons/canhao_glacial.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "409300c4daf88294e7a3e8107070c4256cefa6ebc6d008bcc5727d81312ed462"
+  },
+  {
+    "file": "weapons/lancador_eletrico.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "550177c267eba5a435255c963eee0e18090abcaa5b7a65bd01d2132c4a2038d1"
+  },
+  {
+    "file": "weapons/lancador_vulcanico.png",
+    "width": 64,
+    "height": 64,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "e450909fa75c30814535a6839cccee76102657d3f7ee4a1aaab0beeda20d4c8f"
+  }
+]

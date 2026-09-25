@@ -1,0 +1,997 @@
+{
+  "version": 1,
+  "provider": "PixelLab MCP",
+  "jobs": [
+    {
+      "path": "lobby/player_slot_frame",
+      "job_id": "14a482e3-230e-4ede-b02f-8a22a6d3e6f2",
+      "prompt": "empty horizontal navy panel ornate gold brass brackets",
+      "width": 160,
+      "height": 64,
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/14a482e3-230e-4ede-b02f-8a22a6d3e6f2/download"
+    },
+    {
+      "path": "lobby/ready_icon",
+      "prompt": {
+        "description": "bright emerald checkmark on round brass medallion. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "2b84d5b9-e31f-4336-afec-165e06181e89",
+      "response": "id: 2b84d5b9-e31f-4336-afec-165e06181e89\njob_id: 2b84d5b9-e31f-4336-afec-165e06181e89\ndescription: bright emerald checkmark on round brass medallion. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: 8d01b152-a319-5d87-9db0-a964716188c4\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"2b84d5b9-e31f-4336-afec-165e06181e89\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/2b84d5b9-e31f-4336-afec-165e06181e89/download"
+    },
+    {
+      "path": "lobby/leader_icon",
+      "prompt": {
+        "description": "small royal golden crown with three cyan gems. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "ed24398e-2061-4afb-9537-a3e53ddcb37a",
+      "response": "id: ed24398e-2061-4afb-9537-a3e53ddcb37a\njob_id: ed24398e-2061-4afb-9537-a3e53ddcb37a\ndescription: small royal golden crown with three cyan gems. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: d2fe0e36-cc14-549e-bdce-184ad66ed510\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"ed24398e-2061-4afb-9537-a3e53ddcb37a\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/ed24398e-2061-4afb-9537-a3e53ddcb37a/download"
+    },
+    {
+      "path": "lobby/difficulty_normal",
+      "prompt": {
+        "description": "bronze shield with one star. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "ff5801bf-2925-4d29-9e27-a99ebd73e987",
+      "response": "id: ff5801bf-2925-4d29-9e27-a99ebd73e987\njob_id: ff5801bf-2925-4d29-9e27-a99ebd73e987\ndescription: bronze shield with one star. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: 097adc7b-ae5e-5ee7-ba79-81ee371a58cd\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"ff5801bf-2925-4d29-9e27-a99ebd73e987\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/ff5801bf-2925-4d29-9e27-a99ebd73e987/download"
+    },
+    {
+      "path": "lobby/difficulty_hard",
+      "prompt": {
+        "description": "silver shield two stars. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "07f0bfd1-9062-48ee-996c-d33fa851cd87",
+      "response": "id: 07f0bfd1-9062-48ee-996c-d33fa851cd87\njob_id: 07f0bfd1-9062-48ee-996c-d33fa851cd87\ndescription: silver shield two stars. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: 785439dc-d0d3-5ec7-82bd-58eb9dc27223\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"07f0bfd1-9062-48ee-996c-d33fa851cd87\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/07f0bfd1-9062-48ee-996c-d33fa851cd87/download"
+    },
+    {
+      "path": "lobby/difficulty_heroic",
+      "prompt": {
+        "description": "gold shield three stars. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "07670606-0521-4e11-8baa-340532c5b8f1",
+      "response": "id: 07670606-0521-4e11-8baa-340532c5b8f1\njob_id: 07670606-0521-4e11-8baa-340532c5b8f1\ndescription: gold shield three stars. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: 9eff5595-3a81-5e0c-8485-487bbf871e8b\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"07670606-0521-4e11-8baa-340532c5b8f1\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/07670606-0521-4e11-8baa-340532c5b8f1/download"
+    },
+    {
+      "path": "lobby/difficulty_nightmare",
+      "prompt": {
+        "description": "violet demonic shield skull. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "c29914d5-2cf7-4094-ad9f-f814fec17f1b",
+      "response": "id: c29914d5-2cf7-4094-ad9f-f814fec17f1b\njob_id: c29914d5-2cf7-4094-ad9f-f814fec17f1b\ndescription: violet demonic shield skull. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 32x32px\ntransparent: True\nasset_id: 3efb964d-da59-58e5-9704-550155ff59b8\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"c29914d5-2cf7-4094-ad9f-f814fec17f1b\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/c29914d5-2cf7-4094-ad9f-f814fec17f1b/download"
+    },
+    {
+      "path": "lobby/instance_preview",
+      "prompt": {
+        "description": "panorama of ancient golden solar temple on floating island turquoise waterfall warm sunset, no interface. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "d10b9379-4758-4a22-a14d-1ffdd704d1eb",
+      "response": "id: d10b9379-4758-4a22-a14d-1ffdd704d1eb\njob_id: d10b9379-4758-4a22-a14d-1ffdd704d1eb\ndescription: panorama of ancient golden solar temple on floating island turquoise waterfall warm sunset, no interface. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 256x144px\ntransparent: False\nasset_id: f3abd1be-6a91-5005-aebf-639144224a4f\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"d10b9379-4758-4a22-a14d-1ffdd704d1eb\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/d10b9379-4758-4a22-a14d-1ffdd704d1eb/download"
+    },
+    {
+      "path": "lobby/loot_slot",
+      "prompt": {
+        "description": "empty square dark navy recessed item slot gold rim. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "1192027f-4f5a-4382-a2b1-a64d4bb409a3",
+      "response": "id: 1192027f-4f5a-4382-a2b1-a64d4bb409a3\njob_id: 1192027f-4f5a-4382-a2b1-a64d4bb409a3\ndescription: empty square dark navy recessed item slot gold rim. Original Frontier Tank fantasy steampunk pixel art, crisp clusters navy outlines gold brass cyan accents warm upper left lighting, no letters no numbers.\nsize: 48x48px\ntransparent: True\nasset_id: 05192598-0d0a-505b-bd96-d3d0abe50084\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"1192027f-4f5a-4382-a2b1-a64d4bb409a3\")",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/1192027f-4f5a-4382-a2b1-a64d4bb409a3/download"
+    },
+    {
+      "path": "lobby/tool_slot",
+      "prompt": {
+        "description": "empty square dark navy recessed potion slot cyan rim. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "fdb2d054-1214-4427-99a6-19817af2296f",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/fdb2d054-1214-4427-99a6-19817af2296f/download"
+    },
+    {
+      "path": "combat/energy_bar",
+      "prompt": {
+        "description": "horizontal green emerald energy gauge full with brass border no symbols. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 160,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "c89ef1b5-2750-4db0-a71e-a39f688ee148",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/c89ef1b5-2750-4db0-a71e-a39f688ee148/download"
+    },
+    {
+      "path": "combat/pow_bar",
+      "provider": "PixelLab MCP pixelart_workbench",
+      "job_id": "939a4fb4-dfc1-4f64-b8ac-71e2a3b34742",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/pixel-tools/939a4fb4-dfc1-4f64-b8ac-71e2a3b34742/assets/front/full.png",
+      "prompt": "Exact gold bordered orange power meter, authored pixel rectangles.",
+      "supersedes": {
+        "path": "combat/pow_bar",
+        "job_id": "da0095b5-3210-40df-8586-13909a21e9a0",
+        "prompt": {
+          "description": "One plain horizontal rectangular meter fully filled with solid orange energy, thin gold border, navy shadow, no other elements. NO text, glyphs or decorative marks inside. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+          "width": 160,
+          "height": 32,
+          "no_background": true
+        },
+        "provider": "PixelLab Pixen",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/da0095b5-3210-40df-8586-13909a21e9a0/download",
+        "supersedes": {
+          "path": "combat/pow_bar",
+          "prompt": {
+            "description": "horizontal orange glowing special power gauge full with brass border no symbols. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+            "width": 160,
+            "height": 32,
+            "no_background": true,
+            "view": "side",
+            "detail": "highly detailed"
+          },
+          "job_id": "5ab421ed-c720-4f83-b7a6-fb95d0a7eaa4",
+          "status": "completed",
+          "download": "https://api.pixellab.ai/mcp/images/5ab421ed-c720-4f83-b7a6-fb95d0a7eaa4/download"
+        }
+      }
+    },
+    {
+      "path": "combat/angle_indicator",
+      "prompt": {
+        "description": "semicircular aiming protractor brass navy dial cyan needle pointed upper right no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 96,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "9fe98895-c48d-4434-a4c0-9c91019b5aea",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/9fe98895-c48d-4434-a4c0-9c91019b5aea/download"
+    },
+    {
+      "path": "combat/force_bar",
+      "prompt": {
+        "description": "long horizontal power gauge green left yellow center red right brass border no text no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "9adac91b-43d1-4f22-860c-10bb9a3c3162",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/9adac91b-43d1-4f22-860c-10bb9a3c3162/download"
+    },
+    {
+      "path": "combat/wind_indicator",
+      "job_id": "e74a80a8-f0fa-4129-a317-c71ae40eeb2e",
+      "prompt": {
+        "description": "A simple cyan wind gust symbol, three curved flowing lines ending in one arrow pointing right. Flat game UI icon. Transparent background. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 64,
+        "height": 32,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/e74a80a8-f0fa-4129-a317-c71ae40eeb2e/download",
+      "supersedes": {
+        "path": "combat/wind_indicator",
+        "prompt": {
+          "description": "turquoise gust of wind sweeping right with arrow tip. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 64,
+          "height": 32,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "dac9659e-0e81-4e60-9cc2-295562d336c0",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/dac9659e-0e81-4e60-9cc2-295562d336c0/download"
+      }
+    },
+    {
+      "path": "combat/turn_indicator",
+      "job_id": "9050bd54-f12b-4a10-bed4-baf9bf9f2626",
+      "prompt": {
+        "description": "One upright hourglass, brass top and bottom, two transparent glass bulbs, cyan sand flowing. Clear readable game UI icon. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/9050bd54-f12b-4a10-bed4-baf9bf9f2626/download",
+      "supersedes": {
+        "path": "combat/turn_indicator",
+        "prompt": {
+          "description": "gold hourglass cyan sand. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 32,
+          "height": 32,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "15219c5b-0614-4789-a9d8-05fb5cca94e6",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/15219c5b-0614-4789-a9d8-05fb5cca94e6/download"
+      }
+    },
+    {
+      "path": "combat/boss_hp_frame",
+      "prompt": {
+        "description": "wide empty menacing boss health frame golden mask centered above dark navy bar red gem corners. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 48,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "e72a5092-4dbf-43fd-a398-ebec22133fbd",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/e72a5092-4dbf-43fd-a398-ebec22133fbd/download"
+    },
+    {
+      "path": "combat/minimap_frame",
+      "prompt": {
+        "description": "empty rectangular minimap frame brass corner brackets dark translucent blue interior. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 128,
+        "height": 80,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "aca7296f-a6b6-41fd-bb2b-977b96ab8079",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/aca7296f-a6b6-41fd-bb2b-977b96ab8079/download"
+    },
+    {
+      "path": "combat/skill_double",
+      "prompt": {
+        "description": "two parallel glowing cannonballs orange trails ability icon. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "599a1f84-30c7-42a5-8e97-0f1edda5056c",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/599a1f84-30c7-42a5-8e97-0f1edda5056c/download"
+    },
+    {
+      "path": "combat/skill_trident",
+      "prompt": {
+        "description": "three blue arrows spreading upwards trident attack ability icon. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "fe40ee59-c49d-4124-8439-07fb6f1055d8",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/fe40ee59-c49d-4124-8439-07fb6f1055d8/download"
+    },
+    {
+      "path": "combat/skill_extra",
+      "prompt": {
+        "description": "orange cannonball with small golden plus symbol ability icon. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "747781cd-abf6-4066-8313-882722fb4591",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/747781cd-abf6-4066-8313-882722fb4591/download"
+    },
+    {
+      "path": "combat/skill_damage_50",
+      "prompt": {
+        "description": "5 crimson flame tongues around golden sword damage ability icon no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "bc45d987-a79c-4f8c-955b-aeb3ec23c926",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/bc45d987-a79c-4f8c-955b-aeb3ec23c926/download"
+    },
+    {
+      "path": "combat/skill_damage_40",
+      "prompt": {
+        "description": "4 crimson flame tongues around golden sword damage ability icon no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "fcd6ab95-3d30-4a1f-903c-b305c9505ba5",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/fcd6ab95-3d30-4a1f-903c-b305c9505ba5/download"
+    },
+    {
+      "path": "combat/skill_damage_30",
+      "prompt": {
+        "description": "3 crimson flame tongues around golden sword damage ability icon no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "931963cd-ed91-4cc8-b986-54079f78c223",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/931963cd-ed91-4cc8-b986-54079f78c223/download"
+    },
+    {
+      "path": "combat/skill_damage_20",
+      "prompt": {
+        "description": "2 crimson flame tongues around golden sword damage ability icon no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "2bd02a1a-791f-4f7f-9163-6ff10a7581a9",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/2bd02a1a-791f-4f7f-9163-6ff10a7581a9/download"
+    },
+    {
+      "path": "combat/skill_damage_10",
+      "prompt": {
+        "description": "1 crimson flame tongues around golden sword damage ability icon no numbers. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "86b00fc1-841e-46ae-a8c5-ff5e68089fc5",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/86b00fc1-841e-46ae-a8c5-ff5e68089fc5/download"
+    },
+    {
+      "path": "combat/tool_hp",
+      "prompt": {
+        "description": "red healing potion glass bottle golden stopper heart symbol. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "e41c05f7-f6c1-457f-b97a-743f5eec55a4",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/e41c05f7-f6c1-457f-b97a-743f5eec55a4/download"
+    },
+    {
+      "path": "combat/tool_hp_team",
+      "prompt": {
+        "description": "three small green healing potions glass bottles group healing. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "7e79fc98-b720-4a7c-b440-52934cbda8cc",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/7e79fc98-b720-4a7c-b440-52934cbda8cc/download"
+    },
+    {
+      "path": "combat/tool_pow",
+      "prompt": {
+        "description": "violet potion glass bottle gold lightning bolt. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "33b2fb07-eeb7-4940-902e-213d797e2961",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/33b2fb07-eeb7-4940-902e-213d797e2961/download"
+    },
+    {
+      "path": "rewards/reward_card_back",
+      "job_id": "26fe3ffa-b959-4e75-89f3-40ebfc61fdd3",
+      "prompt": {
+        "description": "Vertical navy blue reward card with ornate gold border. In the exact center a clearly recognizable small locked treasure chest with curved lid. Cyan highlights. No writing. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 64,
+        "height": 96,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/26fe3ffa-b959-4e75-89f3-40ebfc61fdd3/download",
+      "supersedes": {
+        "path": "rewards/reward_card_back",
+        "prompt": {
+          "description": "vertical ornate blue gold reward card back centered locked treasure chest embossed sun motif. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 64,
+          "height": 96,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "c5fd5392-0f09-440f-9816-63a593a01d04",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/c5fd5392-0f09-440f-9816-63a593a01d04/download"
+      }
+    },
+    {
+      "path": "rewards/reward_card_common",
+      "prompt": {
+        "description": "vertical empty reward card face large blank dark center ornate silver frame small corner gems. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "ed8a7478-b88d-4841-b0f9-6edced3cf7a5",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/ed8a7478-b88d-4841-b0f9-6edced3cf7a5/download"
+    },
+    {
+      "path": "rewards/reward_card_rare",
+      "prompt": {
+        "description": "vertical empty reward card face large blank dark center ornate sapphire blue frame small corner gems. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "39334f44-de66-47b9-a9a5-b53cca4044c8",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/39334f44-de66-47b9-a9a5-b53cca4044c8/download"
+    },
+    {
+      "path": "rewards/reward_card_epic",
+      "prompt": {
+        "description": "vertical empty reward card face large blank dark center ornate amethyst purple frame small corner gems. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "4f098cd0-adfb-4ee0-87b4-05dfd381c56b",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/4f098cd0-adfb-4ee0-87b4-05dfd381c56b/download"
+    },
+    {
+      "path": "rewards/reward_card_legendary",
+      "prompt": {
+        "description": "vertical empty reward card face large blank dark center ornate radiant gold frame small corner gems. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "cc95e3d1-97dc-4401-82fc-47cbb5be4106",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/cc95e3d1-97dc-4401-82fc-47cbb5be4106/download"
+    },
+    {
+      "path": "rewards/treasure_chest_icon",
+      "prompt": {
+        "description": "closed golden treasure chest navy enamel cyan lock. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "ec4d0bf6-a2af-4b28-ba11-cb4ac65a6664",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/ec4d0bf6-a2af-4b28-ba11-cb4ac65a6664/download"
+    },
+    {
+      "path": "items/golden_crystal",
+      "job_id": "0c32b236-f2a0-4d12-8303-70c606bc7e1e",
+      "prompt": {
+        "description": "Three sharp translucent amber crystal shards growing upward as one small cluster. Glowing yellow highlights. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/0c32b236-f2a0-4d12-8303-70c606bc7e1e/download",
+      "supersedes": {
+        "path": "items/golden_crystal",
+        "prompt": {
+          "description": "golden crystal cluster amber glowing. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 32,
+          "height": 32,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "639a31b2-05dc-4b8d-82dc-35541b7b23a5",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/639a31b2-05dc-4b8d-82dc-35541b7b23a5/download"
+      }
+    },
+    {
+      "path": "items/king_fragment",
+      "prompt": {
+        "description": "broken fragment of ancient golden royal mask cyan eye. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "6b1fbfed-895b-4975-b0ed-c5a5b1340f73",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/6b1fbfed-895b-4975-b0ed-c5a5b1340f73/download"
+    },
+    {
+      "path": "items/strength_stone_ii",
+      "prompt": {
+        "description": "polished blue enhancement gemstone two golden flecks. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "cbb0fbd7-b27e-4035-a7a9-92da18445e88",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/cbb0fbd7-b27e-4035-a7a9-92da18445e88/download"
+    },
+    {
+      "path": "items/strength_stone_iii",
+      "prompt": {
+        "description": "polished violet enhancement gemstone three golden flecks. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "d4c297da-1d19-4dbf-83ca-4eeba936b65c",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/d4c297da-1d19-4dbf-83ca-4eeba936b65c/download"
+    },
+    {
+      "path": "weapons/mechanical_bow",
+      "prompt": {
+        "description": "oversized mechanical brass crossbow cyan energy string facing right side view. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "bbd80c41-321f-4db0-8883-598220c5c458",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/bbd80c41-321f-4db0-8883-598220c5c458/download"
+    },
+    {
+      "path": "enemies/temple_guard",
+      "prompt": {
+        "description": "full body chibi temple guardian golden armor turquoise plume round mask spear facing left side view. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 96,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "44791217-dfa2-4235-a6cc-5aa1dfadda10",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/44791217-dfa2-4235-a6cc-5aa1dfadda10/download"
+    },
+    {
+      "path": "enemies/mask_king",
+      "prompt": {
+        "description": "full body chibi boss King of Masks floating enormous gold ritual mask dark cloak cyan energy crown facing left side view. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 128,
+        "height": 128,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "b5234dc7-a255-46a6-ba59-539793be3012",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/b5234dc7-a255-46a6-ba59-539793be3012/download"
+    },
+    {
+      "path": "objects/protection_crystal",
+      "prompt": {
+        "description": "large cyan crystal on gold stone pedestal objective to defend. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "aea1f8aa-f48d-4a95-af8d-54ee10febb96",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/aea1f8aa-f48d-4a95-af8d-54ee10febb96/download"
+    },
+    {
+      "path": "maps/temple_courtyard",
+      "prompt": {
+        "description": "side view background golden temple courtyard ancient pillars blue sky vines distant floating islands center open no foreground no UI. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "3484eb0f-5834-4d03-98e2-56e84d2d06fe",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/3484eb0f-5834-4d03-98e2-56e84d2d06fe/download"
+    },
+    {
+      "path": "maps/guardian_chamber",
+      "prompt": {
+        "description": "side view background inside ancient golden temple turquoise crystals enormous columns dark arches center clear no foreground no UI. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "6216b0c3-3a04-4677-b7ad-55445d57ef0c",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/6216b0c3-3a04-4677-b7ad-55445d57ef0c/download"
+    },
+    {
+      "path": "maps/mask_throne",
+      "prompt": {
+        "description": "side view background golden throne room enormous ceremonial mask on back wall cyan braziers symmetrical pillars center open no foreground no UI. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "12e19384-6cb7-49c6-a3e2-3f9496150c36",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/12e19384-6cb7-49c6-a3e2-3f9496150c36/download"
+    },
+    {
+      "path": "screens/blacksmith",
+      "prompt": {
+        "description": "cozy floating island fantasy steampunk blacksmith workshop forge orange furnace anvil tool racks blue gold stone walls no characters no UI. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "0d01cdba-2de2-4163-ad21-ab045d814388",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/0d01cdba-2de2-4163-ad21-ab045d814388/download"
+    },
+    {
+      "path": "screens/inventory",
+      "prompt": {
+        "description": "fantasy steampunk armory interior weapon racks warm wood brass blue banners open central wall for UI no characters no UI. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 256,
+        "height": 144,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "713ffabf-b300-4633-abd3-62ce5af0d229",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/713ffabf-b300-4633-abd3-62ce5af0d229/download"
+    },
+    {
+      "path": "effects/celestial_pow",
+      "prompt": {
+        "description": "burst of celestial cyan golden energy star explosive impact isolated. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 96,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "021d938d-4b16-4f20-b305-5cfe134f10cb",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/021d938d-4b16-4f20-b305-5cfe134f10cb/download"
+    },
+    {
+      "path": "effects/glacial_pow",
+      "job_id": "3987aeda-61f3-46f4-88a6-c152bc9636c3",
+      "prompt": {
+        "description": "An isolated explosion of jagged cyan and blue ice shards radiating outward from a bright white center. Only magical ice fragments. Transparent. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 96,
+        "height": 96,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/3987aeda-61f3-46f4-88a6-c152bc9636c3/download",
+      "supersedes": {
+        "path": "effects/glacial_pow",
+        "prompt": {
+          "description": "burst of jagged blue ice crystals explosive impact isolated. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 96,
+          "height": 96,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "3ba59d94-29ae-47bc-88d1-6901e68527cb",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/3ba59d94-29ae-47bc-88d1-6901e68527cb/download"
+      }
+    },
+    {
+      "path": "effects/volcanic_pow",
+      "prompt": {
+        "description": "blazing orange meteor with red fire trail pointing down right isolated. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 96,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "5dcba2ff-90b9-40f5-9d20-9ee7ad7b4e42",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/5dcba2ff-90b9-40f5-9d20-9ee7ad7b4e42/download"
+    },
+    {
+      "path": "effects/mechanical_pow",
+      "job_id": "386e2346-93c1-4f4a-a928-8a60f141d181",
+      "prompt": {
+        "description": "Exactly three golden arrows flying parallel to the right, blue glowing arrowheads on the right, cyan motion trails on the left. Isolated projectiles only. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+        "width": 96,
+        "height": 96,
+        "no_background": true
+      },
+      "provider": "PixelLab Pixen",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/386e2346-93c1-4f4a-a928-8a60f141d181/download",
+      "supersedes": {
+        "path": "effects/mechanical_pow",
+        "prompt": {
+          "description": "three mechanical glowing cyan arrows golden trails moving right isolated. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 96,
+          "height": 96,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "d2ac44eb-a2a9-4b18-82f8-8a3ee0818864",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/d2ac44eb-a2a9-4b18-82f8-8a3ee0818864/download"
+      }
+    },
+    {
+      "path": "ui/victory_emblem",
+      "prompt": {
+        "description": "victory golden winged sun medal laurels cyan gem no text. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 128,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "f5b5f13d-78ee-4203-9c5d-9333f5d3759e",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/f5b5f13d-78ee-4203-9c5d-9333f5d3759e/download"
+    },
+    {
+      "path": "ui/defeat_emblem",
+      "prompt": {
+        "description": "defeat cracked silver shield drooping purple wings no text. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 128,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "5c8b1e9d-0bcf-44e2-a98c-f135a56bbd3c",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/5c8b1e9d-0bcf-44e2-a98c-f135a56bbd3c/download"
+    },
+    {
+      "path": "ui/stage_clear",
+      "prompt": {
+        "description": "stage completed golden laurel wreath green checkmark no text. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 128,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "8d577477-bf6f-4d7b-9ded-452a2cbeeaac",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/8d577477-bf6f-4d7b-9ded-452a2cbeeaac/download"
+    },
+    {
+      "path": "ui/button",
+      "prompt": {
+        "description": "empty beveled navy blue rectangular button brass border cyan highlight no text. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 96,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "f2e44cfd-ec95-4db7-8b48-c4a9a41e0fd1",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/f2e44cfd-ec95-4db7-8b48-c4a9a41e0fd1/download"
+    },
+    {
+      "path": "ui/close_icon",
+      "prompt": {
+        "description": "golden cross X on dark navy round button. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "75e32296-5fbb-41ca-8df7-47e5ea72b469",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/75e32296-5fbb-41ca-8df7-47e5ea72b469/download"
+    },
+    {
+      "path": "ui/lock_icon",
+      "prompt": {
+        "description": "brass padlock cyan keyhole. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "c76f8210-34c6-4cfb-beec-ede0747f5f34",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/c76f8210-34c6-4cfb-beec-ede0747f5f34/download"
+    },
+    {
+      "path": "combat/tool_teleport",
+      "prompt": {
+        "description": "paper glider crossing cyan magical portal. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "2dbf925e-e20e-4162-a64d-5f05ed3577cc",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/2dbf925e-e20e-4162-a64d-5f05ed3577cc/download"
+    },
+    {
+      "path": "combat/tool_energy",
+      "prompt": {
+        "description": "green potion with golden lightning bolt. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "44c143bd-f258-4568-b1cf-a468ce1019a7",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/44c143bd-f258-4568-b1cf-a468ce1019a7/download"
+    },
+    {
+      "path": "items/strength_stone_iv",
+      "prompt": {
+        "description": "radiant orange enhancement gemstone four golden flecks. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "6531cbef-3d6f-4393-a85f-0f43930b809a",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/6531cbef-3d6f-4393-a85f-0f43930b809a/download"
+    },
+    {
+      "path": "items/pet_egg",
+      "job_id": "1b35ae19-7f4b-49b6-8572-94879165cb57",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/1b35ae19-7f4b-49b6-8572-94879165cb57/download",
+      "prompt": "A single oval egg standing upright, eggshell ivory with simple gold spots and a small cyan diamond on the shell, fully visible, clear egg silhouette, pixel art inventory icon, transparent background",
+      "supersedes": {
+        "path": "items/pet_egg",
+        "prompt": {
+          "description": "golden royal pet egg turquoise mask markings. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+          "width": 48,
+          "height": 48,
+          "no_background": true,
+          "view": "side",
+          "detail": "highly detailed"
+        },
+        "job_id": "69b19608-cf4f-4afd-a4c2-3321505fece9",
+        "status": "completed",
+        "download": "https://api.pixellab.ai/mcp/images/69b19608-cf4f-4afd-a4c2-3321505fece9/download"
+      }
+    },
+    {
+      "path": "pets/mask_king_pet",
+      "prompt": {
+        "description": "tiny cute floating golden mask king pet turquoise cape chibi side view. Original Frontier Tank fantasy steampunk pixel art crisp clusters navy gold brass cyan warm upper left lighting no letters no numbers.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed"
+      },
+      "job_id": "52ec1252-ff92-4498-8967-4cf64471e0ba",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/52ec1252-ff92-4498-8967-4cf64471e0ba/download"
+    }
+  ]
+}

@@ -1,0 +1,516 @@
+{
+  "lobby_player_slot_frame": {
+    "texture": "res://assets/expansion/lobby/player_slot_frame.png",
+    "size": [
+      160,
+      64
+    ]
+  },
+  "lobby_ready_icon": {
+    "texture": "res://assets/expansion/lobby/ready_icon.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_leader_icon": {
+    "texture": "res://assets/expansion/lobby/leader_icon.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_difficulty_normal": {
+    "texture": "res://assets/expansion/lobby/difficulty_normal.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_difficulty_hard": {
+    "texture": "res://assets/expansion/lobby/difficulty_hard.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_difficulty_heroic": {
+    "texture": "res://assets/expansion/lobby/difficulty_heroic.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_difficulty_nightmare": {
+    "texture": "res://assets/expansion/lobby/difficulty_nightmare.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "lobby_instance_preview": {
+    "texture": "res://assets/expansion/lobby/instance_preview.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "lobby_loot_slot": {
+    "texture": "res://assets/expansion/lobby/loot_slot.png",
+    "size": [
+      48,
+      48
+    ]
+  },
+  "lobby_tool_slot": {
+    "texture": "res://assets/expansion/lobby/tool_slot.png",
+    "size": [
+      48,
+      48
+    ]
+  },
+  "combat_energy_bar": {
+    "texture": "res://assets/expansion/combat/energy_bar.png",
+    "size": [
+      160,
+      32
+    ]
+  },
+  "combat_pow_bar": {
+    "texture": "res://assets/expansion/combat/pow_bar.png",
+    "size": [
+      160,
+      32
+    ]
+  },
+  "combat_angle_indicator": {
+    "texture": "res://assets/expansion/combat/angle_indicator.png",
+    "size": [
+      96,
+      64
+    ]
+  },
+  "combat_force_bar": {
+    "texture": "res://assets/expansion/combat/force_bar.png",
+    "size": [
+      256,
+      32
+    ]
+  },
+  "combat_wind_indicator": {
+    "texture": "res://assets/expansion/combat/wind_indicator.png",
+    "size": [
+      64,
+      32
+    ]
+  },
+  "combat_turn_indicator": {
+    "texture": "res://assets/expansion/combat/turn_indicator.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_boss_hp_frame": {
+    "texture": "res://assets/expansion/combat/boss_hp_frame.png",
+    "size": [
+      256,
+      48
+    ]
+  },
+  "combat_minimap_frame": {
+    "texture": "res://assets/expansion/combat/minimap_frame.png",
+    "size": [
+      128,
+      80
+    ]
+  },
+  "combat_skill_double": {
+    "texture": "res://assets/expansion/combat/skill_double.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_trident": {
+    "texture": "res://assets/expansion/combat/skill_trident.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_extra": {
+    "texture": "res://assets/expansion/combat/skill_extra.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_damage_50": {
+    "texture": "res://assets/expansion/combat/skill_damage_50.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_damage_40": {
+    "texture": "res://assets/expansion/combat/skill_damage_40.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_damage_30": {
+    "texture": "res://assets/expansion/combat/skill_damage_30.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_damage_20": {
+    "texture": "res://assets/expansion/combat/skill_damage_20.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_skill_damage_10": {
+    "texture": "res://assets/expansion/combat/skill_damage_10.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_tool_hp": {
+    "texture": "res://assets/expansion/combat/tool_hp.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_tool_hp_team": {
+    "texture": "res://assets/expansion/combat/tool_hp_team.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_tool_pow": {
+    "texture": "res://assets/expansion/combat/tool_pow.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "rewards_reward_card_back": {
+    "texture": "res://assets/expansion/rewards/reward_card_back.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "rewards_reward_card_common": {
+    "texture": "res://assets/expansion/rewards/reward_card_common.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "rewards_reward_card_rare": {
+    "texture": "res://assets/expansion/rewards/reward_card_rare.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "rewards_reward_card_epic": {
+    "texture": "res://assets/expansion/rewards/reward_card_epic.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "rewards_reward_card_legendary": {
+    "texture": "res://assets/expansion/rewards/reward_card_legendary.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "rewards_treasure_chest_icon": {
+    "texture": "res://assets/expansion/rewards/treasure_chest_icon.png",
+    "size": [
+      48,
+      48
+    ]
+  },
+  "items_golden_crystal": {
+    "texture": "res://assets/expansion/items/golden_crystal.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "items_king_fragment": {
+    "texture": "res://assets/expansion/items/king_fragment.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "items_strength_stone_ii": {
+    "texture": "res://assets/expansion/items/strength_stone_ii.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "items_strength_stone_iii": {
+    "texture": "res://assets/expansion/items/strength_stone_iii.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "weapons_mechanical_bow": {
+    "texture": "res://assets/expansion/weapons/mechanical_bow.png",
+    "size": [
+      64,
+      64
+    ]
+  },
+  "enemies_temple_guard": {
+    "texture": "res://assets/expansion/enemies/temple_guard.png",
+    "size": [
+      96,
+      96
+    ]
+  },
+  "enemies_mask_king": {
+    "texture": "res://assets/expansion/enemies/mask_king.png",
+    "size": [
+      128,
+      128
+    ]
+  },
+  "objects_protection_crystal": {
+    "texture": "res://assets/expansion/objects/protection_crystal.png",
+    "size": [
+      64,
+      96
+    ]
+  },
+  "maps_temple_courtyard": {
+    "texture": "res://assets/expansion/maps/temple_courtyard.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "maps_guardian_chamber": {
+    "texture": "res://assets/expansion/maps/guardian_chamber.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "maps_mask_throne": {
+    "texture": "res://assets/expansion/maps/mask_throne.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "screens_blacksmith": {
+    "texture": "res://assets/expansion/screens/blacksmith.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "screens_inventory": {
+    "texture": "res://assets/expansion/screens/inventory.png",
+    "size": [
+      256,
+      144
+    ]
+  },
+  "effects_celestial_pow": {
+    "texture": "res://assets/expansion/effects/celestial_pow.png",
+    "size": [
+      96,
+      96
+    ]
+  },
+  "effects_glacial_pow": {
+    "texture": "res://assets/expansion/effects/glacial_pow.png",
+    "size": [
+      96,
+      96
+    ]
+  },
+  "effects_volcanic_pow": {
+    "texture": "res://assets/expansion/effects/volcanic_pow.png",
+    "size": [
+      96,
+      96
+    ]
+  },
+  "effects_mechanical_pow": {
+    "texture": "res://assets/expansion/effects/mechanical_pow.png",
+    "size": [
+      96,
+      96
+    ]
+  },
+  "ui_victory_emblem": {
+    "texture": "res://assets/expansion/ui/victory_emblem.png",
+    "size": [
+      128,
+      64
+    ]
+  },
+  "ui_defeat_emblem": {
+    "texture": "res://assets/expansion/ui/defeat_emblem.png",
+    "size": [
+      128,
+      64
+    ]
+  },
+  "ui_stage_clear": {
+    "texture": "res://assets/expansion/ui/stage_clear.png",
+    "size": [
+      128,
+      64
+    ]
+  },
+  "ui_button": {
+    "texture": "res://assets/expansion/ui/button.png",
+    "size": [
+      96,
+      32
+    ]
+  },
+  "ui_close_icon": {
+    "texture": "res://assets/expansion/ui/close_icon.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "ui_lock_icon": {
+    "texture": "res://assets/expansion/ui/lock_icon.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_tool_teleport": {
+    "texture": "res://assets/expansion/combat/tool_teleport.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "combat_tool_energy": {
+    "texture": "res://assets/expansion/combat/tool_energy.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "items_strength_stone_iv": {
+    "texture": "res://assets/expansion/items/strength_stone_iv.png",
+    "size": [
+      32,
+      32
+    ]
+  },
+  "items_pet_egg": {
+    "texture": "res://assets/expansion/items/pet_egg.png",
+    "size": [
+      48,
+      48
+    ]
+  },
+  "pets_mask_king_pet": {
+    "texture": "res://assets/expansion/pets/mask_king_pet.png",
+    "size": [
+      64,
+      64
+    ]
+  },
+  "combat_tool_shield": {
+    "texture": "res://assets/ui/icone_escudo.png"
+  },
+  "items_gold": {
+    "texture": "res://assets/items/moeda.png"
+  },
+  "items_strength_stone_i": {
+    "texture": "res://assets/items/pedra_fortalecimento.png"
+  },
+  "animation_card_flip_effect": {
+    "frames": [
+      "res://assets/expansion/animations/card_flip_effect/frame_00.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_01.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_02.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_03.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_04.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_05.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_06.png",
+      "res://assets/expansion/animations/card_flip_effect/frame_07.png"
+    ],
+    "durations_ms": [
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70
+    ],
+    "loop": false,
+    "events_1_based": {
+      "reveal": 4
+    }
+  },
+  "animation_mask_king_idle": {
+    "frames": [
+      "res://assets/expansion/animations/mask_king_idle/frame_00.png",
+      "res://assets/expansion/animations/mask_king_idle/frame_01.png",
+      "res://assets/expansion/animations/mask_king_idle/frame_02.png",
+      "res://assets/expansion/animations/mask_king_idle/frame_03.png"
+    ],
+    "durations_ms": [
+      180,
+      180,
+      180,
+      180
+    ],
+    "loop": true,
+    "events_1_based": {}
+  },
+  "animation_mask_king_attack": {
+    "frames": [
+      "res://assets/expansion/animations/mask_king_attack/frame_00.png",
+      "res://assets/expansion/animations/mask_king_attack/frame_01.png",
+      "res://assets/expansion/animations/mask_king_attack/frame_02.png",
+      "res://assets/expansion/animations/mask_king_attack/frame_03.png",
+      "res://assets/expansion/animations/mask_king_attack/frame_04.png",
+      "res://assets/expansion/animations/mask_king_attack/frame_05.png"
+    ],
+    "durations_ms": [
+      100,
+      100,
+      140,
+      80,
+      80,
+      140
+    ],
+    "loop": false,
+    "events_1_based": {
+      "cast": 4
+    }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "characters": [
+    {
+      "name": "lia",
+      "id": "2ff737fd-4e3c-4e7f-8391-caacec05e84a",
+      "result": "status: completed\nid: 2ff737fd-4e3c-4e7f-8391-caacec05e84a\nname: Frontier Tank - Lia Chibi\nstate_name: Idle\ndirections: 4 (south, east, north, west)\nsize: 136x136px\nview: side\nstyle: detailed shading, single color outline, high detail\ngroup: e9dc802d-f1f4-4574-91c5-7d3955b8f70b (1 state)\n\nrotations:\n  south: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/south.png?t=1790219667\n  east: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/east.png?t=1790219667\n  north: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/north.png?t=1790219667\n  west: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/west.png?t=1790219667\n\nanimations: none\n\ndownload: https://api.pixellab.ai/mcp/characters/2ff737fd-4e3c-4e7f-8391-caacec05e84a/download\nspritesheet: https://api.pixellab.ai/mcp/characters/2ff737fd-4e3c-4e7f-8391-caacec05e84a/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)\n\navailable_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9\n\nactions: animate_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", ...) | create_character_state(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", ...) | delete_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\")\nhint: animate_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", template_animation_id=\"backflip\")",
+      "proportions": {
+        "type": "preset",
+        "name": "chibi"
+      },
+      "supersedes": "cd24e9d2-58a9-4946-a1e7-1f994ce2672d",
+      "rotations": [
+        {
+          "direction": "south",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/south.png?t=1790219667"
+        },
+        {
+          "direction": "east",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/east.png?t=1790219667"
+        },
+        {
+          "direction": "north",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/north.png?t=1790219667"
+        },
+        {
+          "direction": "west",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/west.png?t=1790219667"
+        }
+      ]
+    },
+    {
+      "name": "nilo",
+      "id": "7533c6f2-c452-4a00-b126-69a46ee0348f",
+      "result": "status: completed\nid: 7533c6f2-c452-4a00-b126-69a46ee0348f\nname: Frontier Tank - Nilo Explorador\nstate_name: Idle\ndirections: 4 (south, east, north, west)\nsize: 136x136px\nview: side\nstyle: detailed shading, single color outline, high detail\ngroup: 451fe99f-6f38-412f-b2c9-097d289b82fb (1 state)\n\nrotations:\n  south: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/south.png?t=1790219475\n  east: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/east.png?t=1790219475\n  north: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/north.png?t=1790219475\n  west: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/west.png?t=1790219475\n\nanimations: none\n\ndownload: https://api.pixellab.ai/mcp/characters/7533c6f2-c452-4a00-b126-69a46ee0348f/download\nspritesheet: https://api.pixellab.ai/mcp/characters/7533c6f2-c452-4a00-b126-69a46ee0348f/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)\n\navailable_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9\n\nactions: animate_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", ...) | create_character_state(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", ...) | delete_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\")\nhint: animate_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", template_animation_id=\"backflip\")",
+      "rotations": [
+        {
+          "direction": "south",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/south.png?t=1790219475"
+        },
+        {
+          "direction": "east",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/east.png?t=1790219475"
+        },
+        {
+          "direction": "north",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/north.png?t=1790219475"
+        },
+        {
+          "direction": "west",
+          "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/west.png?t=1790219475"
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "path": "maps/ilha_celeste_bg",
+      "prompt": {
+        "description": "Panoramic background for a side view artillery game, vast bright azure sky, soft white clouds, distant floating islands carrying a whimsical medieval castle with gold roofs, small steampunk airship, waterfalls disappearing into mist. Atmospheric pale blue distant layers, central open sky for projectile readability. No foreground platform, no characters, no UI, no text. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 400,
+        "height": 224,
+        "no_background": false,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "bf7b9bbe-0a52-4371-9465-3600191cf898",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/bf7b9bbe-0a52-4371-9465-3600191cf898/download"
+    },
+    {
+      "path": "weapons/canhao_explorador",
+      "prompt": {
+        "description": "One handheld oversized explorer cannon, brass golden barrel, navy steel bands, wooden grip, glowing amber muzzle, side profile facing right, isolated weapon, no hands. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "a58a5c5f-1093-4217-9c0c-7bb22625f735",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/a58a5c5f-1093-4217-9c0c-7bb22625f735/download"
+    },
+    {
+      "path": "weapons/lancador_vulcanico",
+      "prompt": {
+        "description": "One handheld oversized volcanic cannon, dark basalt barrel with red lava cracks, copper bands, orange molten muzzle, wooden grip, side profile facing right, isolated weapon, no hands. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "b9ef1895-3f67-4c6b-aa4c-4736ec23bdbc",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/b9ef1895-3f67-4c6b-aa4c-4736ec23bdbc/download"
+    },
+    {
+      "path": "weapons/canhao_glacial",
+      "prompt": {
+        "description": "One handheld oversized glacial cannon, icy cyan crystal barrel, navy steel and silver bands, frost fins, wooden grip, side profile facing right, isolated weapon, no hands. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "45357ad1-3cef-426d-96ec-9dc231a2fc82",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/45357ad1-3cef-426d-96ec-9dc231a2fc82/download"
+    },
+    {
+      "path": "weapons/lancador_eletrico",
+      "prompt": {
+        "description": "One handheld oversized electric tesla cannon, cobalt blue barrel, brass coils and cyan energy core, compact wooden grip, side profile facing right, isolated weapon, no hands. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "291c10de-372b-443c-9a85-588c97510fab",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/291c10de-372b-443c-9a85-588c97510fab/download"
+    },
+    {
+      "path": "weapons/canhao_celestial",
+      "prompt": {
+        "description": "One handheld oversized celestial cannon, deep violet barrel, golden crescent ornament and glowing magenta star crystal muzzle, wooden grip, side profile facing right, isolated weapon, no hands. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "329b43a2-53de-4b60-bfa8-82111d1de7f2",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/329b43a2-53de-4b60-bfa8-82111d1de7f2/download"
+    },
+    {
+      "path": "pets/raposa_glacial",
+      "prompt": {
+        "description": "One adorable tiny chibi arctic fox companion, fluffy white fur, cyan ear tips and tail, huge blue eyes, navy outline, standing full body side view facing right. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "5592fc83-f3c4-4c39-9c09-ba4c2e8f40b2",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/5592fc83-f3c4-4c39-9c09-ba4c2e8f40b2/download"
+    },
+    {
+      "path": "pets/fenix_dourada",
+      "prompt": {
+        "description": "One adorable tiny chibi phoenix companion hovering, orange and gold feathers, red crest, small spread wings, expressive eyes, full body side view facing right. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "7c185ec1-8c15-4065-8875-4c9328c94c63",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/7c185ec1-8c15-4065-8875-4c9328c94c63/download"
+    },
+    {
+      "path": "effects/explosao",
+      "prompt": {
+        "description": "Single radial cartoon explosion impact sprite, bright cream center, golden yellow burst, orange and red pixel flames, small smoke puffs at edges, isolated circular game VFX, no text. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 96,
+        "height": 96,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "33f33766-8f54-4c99-962a-0bee6785d0d8",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/33f33766-8f54-4c99-962a-0bee6785d0d8/download"
+    },
+    {
+      "path": "effects/projetil",
+      "prompt": {
+        "description": "Single small spherical brass cannonball with blue glowing core and short golden sparks trailing to the left, traveling right, isolated game projectile. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "707b793a-4cd5-4477-93db-d521a18aabde",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/707b793a-4cd5-4477-93db-d521a18aabde/download"
+    },
+    {
+      "path": "items/pedra_fortalecimento",
+      "prompt": {
+        "description": "Single faceted luminous violet upgrade crystal with a gold base, readable inventory game item, centered. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "9bbf98ff-81d9-4025-9709-b5b14e894282",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/9bbf98ff-81d9-4025-9709-b5b14e894282/download"
+    },
+    {
+      "path": "items/moeda",
+      "prompt": {
+        "description": "Single shiny gold coin with embossed five pointed star, readable inventory game item, centered. No letters. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "82f8574d-df7c-4bb2-bf36-34bd180e9e1c",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/82f8574d-df7c-4bb2-bf36-34bd180e9e1c/download"
+    },
+    {
+      "path": "ui/icone_escudo",
+      "prompt": {
+        "description": "Single ornate blue and gold shield icon with bright cyan central gem, readable game ability symbol, centered. No letters. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "db067b2b-d38d-4581-9eec-7375d1369f01",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/db067b2b-d38d-4581-9eec-7375d1369f01/download"
+    },
+    {
+      "path": "ui/icone_cura",
+      "prompt": {
+        "description": "Single green healing potion bottle with golden cap and luminous pale green liquid, readable game ability symbol, centered. No letters. Original fantasy steampunk game pixel art, crisp pixel clusters, dark navy selective outlines, saturated jewel palette, warm upper-left lighting, no lettering.",
+        "width": 32,
+        "height": 32,
+        "no_background": true,
+        "view": "side",
+        "detail": "highly detailed",
+        "outline": "selective outline",
+        "shading": "detailed shading"
+      },
+      "job_id": "6d501588-b188-4b2a-9cc6-f9439790d403",
+      "status": "completed",
+      "download": "https://api.pixellab.ai/mcp/images/6d501588-b188-4b2a-9cc6-f9439790d403/download"
+    }
+  ],
+  "tilesets": [
+    {
+      "id": "bc2e4d94-2150-48e9-b071-309d3f970966",
+      "status": "completed",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: bc2e4d94-2150-48e9-b071-309d3f970966\nterrain: weathered chunky warm sandstone ruins mixed with dark slate rock, floating island earth, navy shadow crevices, golden sunlit edges, fantasy steampunk pixel art\ntiles: 16 platform tiles\ntile_size: 32x32px\nview: side (2D platformer)\nbackground: transparent\n\ndownload_png: https://api.pixellab.ai/mcp/sidescroller-tilesets/bc2e4d94-2150-48e9-b071-309d3f970966/image\ndownload_metadata: https://api.pixellab.ai/mcp/sidescroller-tilesets/bc2e4d94-2150-48e9-b071-309d3f970966/metadata\n\nbase_tile_id (for chaining): 33b7e74b-8429-4a37-b888-ecfb58ae9dec\n\nhint: use edge-matching logic to select tiles for platformer levels"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "id": "674adc23-efbd-46ae-9258-97d7f493cfa6",
+      "status": "completed",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: 674adc23-efbd-46ae-9258-97d7f493cfa6\nterrain: solid chunky gray rock and brown earth, large natural stones\ntiles: 16 platform tiles\ntile_size: 32x32px\nview: side (2D platformer)\nbackground: transparent\n\ndownload_png: https://api.pixellab.ai/mcp/sidescroller-tilesets/674adc23-efbd-46ae-9258-97d7f493cfa6/image\ndownload_metadata: https://api.pixellab.ai/mcp/sidescroller-tilesets/674adc23-efbd-46ae-9258-97d7f493cfa6/metadata\n\nbase_tile_id (for chaining): fa16e4d2-2d1c-475b-b791-aad18ade8e45\n\nhint: use edge-matching logic to select tiles for platformer levels"
+          }
+        ],
+        "isError": false
+      }
+    }
+  ]
+}

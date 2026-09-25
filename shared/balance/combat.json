@@ -1,0 +1,81 @@
+{
+  "version": 2,
+  "base_hp": 1500,
+  "hp_per_level": 40,
+  "base_agility": 120,
+  "agility_per_level": 8,
+  "energy": 240,
+  "move_energy_per_px": 0.6,
+  "move_speed": 70.0,
+  "turn_seconds": 10,
+  "turn_seconds_options": [10, 15, 20],
+  "gravity": 420.0,
+  "min_speed": 190.0,
+  "max_speed": 900.0,
+  "wind_max": 5.0,
+  "wind_accel": 8.0,
+  "charge_rate": 55.0,
+  "pow_max": 100,
+  "pow_per_damage_dealt": 0.08,
+  "pow_per_damage_taken": 0.1,
+  "pow_per_turn": 12,
+  "splash_scale": 1.65,
+  "delay": {"base": 1000, "agility": 1.0, "pass_scale": 0.55, "move_per_px": 0.5, "tool": 60, "frozen": 900},
+  "fly": {"energy": 100, "cooldown": 2, "delay": 220},
+  "items": [
+    {"id": "plus2", "key": "1", "name": "+2 Ataques", "icon": "res://assets/ui/skills/item_1.png", "energy": 120, "delay": 200, "extra_shots": 2, "damage_scale": 0.6, "desc": "Dispara mais 2 vezes com -40% de dano."},
+    {"id": "triple", "key": "2", "name": "Três Bolas", "icon": "res://assets/ui/skills/item_2.png", "energy": 120, "delay": 190, "balls": 3, "damage_scale": 0.5, "desc": "Três projéteis simultâneos com -50% de dano. Não combina com POW."},
+    {"id": "plus1", "key": "3", "name": "+1 Ataque", "icon": "res://assets/ui/skills/item_3.png", "energy": 110, "delay": 170, "extra_shots": 1, "damage_scale": 0.9, "desc": "Dispara mais 1 vez com -10% de dano."},
+    {"id": "dmg50", "key": "4", "name": "+50% Dano", "icon": "res://assets/ui/skills/item_4.png", "energy": 80, "delay": 120, "damage_bonus": 0.5, "desc": "Aumenta o dano do turno em 50%."},
+    {"id": "dmg40", "key": "5", "name": "+40% Dano", "icon": "res://assets/ui/skills/item_5.png", "energy": 65, "delay": 100, "damage_bonus": 0.4, "desc": "Aumenta o dano do turno em 40%."},
+    {"id": "dmg30", "key": "6", "name": "+30% Dano", "icon": "res://assets/ui/skills/item_6.png", "energy": 50, "delay": 80, "damage_bonus": 0.3, "desc": "Aumenta o dano do turno em 30%."},
+    {"id": "dmg20", "key": "7", "name": "+20% Dano", "icon": "res://assets/ui/skills/item_7.png", "energy": 40, "delay": 60, "damage_bonus": 0.2, "desc": "Aumenta o dano do turno em 20%."},
+    {"id": "dmg10", "key": "8", "name": "+10% Dano", "icon": "res://assets/ui/skills/item_8.png", "energy": 25, "delay": 40, "damage_bonus": 0.1, "desc": "Aumenta o dano do turno em 10%."},
+    {"id": "powmax", "key": "9", "name": "POW Máx", "icon": "res://assets/ui/skills/item_9.png", "energy": 110, "delay": 160, "pow_fill": true, "desc": "Enche a barra de POW na hora; aperte B para soltar o especial neste turno."}
+  ],
+  "tools": [
+    {"id": "hp", "name": "Poção de Vida", "icon": "res://assets/expansion/combat/tool_hp.png", "price": 60, "heal": 300, "desc": "Recupera 300 de vida."},
+    {"id": "hp_team", "name": "Poção da Equipe", "icon": "res://assets/expansion/combat/tool_hp_team.png", "price": 90, "team_heal": 150, "desc": "Recupera 150 de vida de toda a equipe."},
+    {"id": "energy", "name": "Poção de Energia", "icon": "res://assets/expansion/combat/tool_energy.png", "price": 50, "energy": 120, "desc": "+120 de energia neste turno."},
+    {"id": "pow", "name": "Frasco de POW", "icon": "res://assets/expansion/combat/tool_pow.png", "price": 80, "pow": 100, "desc": "Enche a barra de POW."},
+    {"id": "shield", "name": "Escudo", "icon": "res://assets/ui/icone_escudo.png", "price": 70, "shield": 0.5, "desc": "Reduz pela metade o próximo dano recebido."},
+    {"id": "wing", "name": "Pena de Voo", "icon": "res://assets/expansion/combat/tool_teleport.png", "price": 70, "fly_reset": true, "desc": "Recarrega o avião de papel (F)."}
+  ],
+  "pve": {
+    "boss_hp": 4200, "damage": 230, "enraged_damage": 320, "radius": 42, "agility": 60,
+    "think_seconds": 1.6, "power_error": 3.0,
+    "difficulties": [
+      {"id": "normal", "name": "Normal", "hp": 1.0, "damage": 1.0, "icon": "res://assets/expansion/lobby/difficulty_normal.png", "reward": 1.0},
+      {"id": "hard", "name": "Difícil", "hp": 1.4, "damage": 1.2, "icon": "res://assets/expansion/lobby/difficulty_hard.png", "reward": 1.4},
+      {"id": "heroic", "name": "Heroico", "hp": 1.9, "damage": 1.4, "icon": "res://assets/expansion/lobby/difficulty_heroic.png", "reward": 1.9},
+      {"id": "nightmare", "name": "Pesadelo", "hp": 2.6, "damage": 1.7, "icon": "res://assets/expansion/lobby/difficulty_nightmare.png", "reward": 2.6}
+    ]
+  },
+  "bots": {"think_min": 1.2, "think_max": 2.4, "power_error_min": 3.5, "power_error_max": 9.0, "item_chance": 0.45},
+  "maps": [
+    {"id": "ilha_celeste", "name": "Ilha Celeste", "bg": "res://assets/maps/ilha_celeste_bg.png", "size": [2000, 1100], "palette": "meadow",
+     "islands": [[60, 780, 560, 200], [860, 1140, 470, 110], [1220, 1940, 590, 200]], "spawns": [[140, 700], [1300, 1860]]},
+    {"id": "patio_templo", "name": "Pátio do Templo", "bg": "res://assets/expansion/maps/temple_courtyard.png", "size": [2200, 1150], "palette": "sand",
+     "islands": [[60, 660, 600, 170], [740, 1460, 660, 230], [1540, 2140, 580, 170]], "spawns": [[130, 600], [1600, 2080]]},
+    {"id": "camara_guardiao", "name": "Câmara do Guardião", "bg": "res://assets/expansion/maps/guardian_chamber.png", "size": [1900, 1050], "palette": "frost",
+     "islands": [[40, 900, 560, 220], [1000, 1860, 540, 220]], "spawns": [[100, 820], [1080, 1800]]},
+    {"id": "trono_mascaras", "name": "Trono das Máscaras", "bg": "res://assets/expansion/maps/mask_throne.png", "size": [2100, 1100], "palette": "obsidian",
+     "islands": [[80, 640, 520, 170], [720, 1380, 640, 210], [1460, 2020, 520, 170]], "spawns": [[140, 600], [1500, 1960]]},
+    {"id": "templo_sol", "name": "Templo do Sol", "bg": "res://assets/pve/templo_bg.png", "size": [1600, 900], "palette": "temple", "style": "temple", "pve_only": true,
+     "islands": [[0, 1600, 500, 190]], "spawns": [[120, 620], [1300, 1400]]}
+  ],
+  "rewards": {
+    "win_exp": 40, "loss_exp": 12, "exp_per_damage": 0.04, "exp_per_kill": 15,
+    "merit_win": 10, "merit_loss": 2, "merit_per_kill": 2, "pve_exp": 60,
+    "cards": [
+      {"id": "coins_s", "name": "80 Moedas", "coins": 80, "weight": 34, "rarity": "common", "icon": "res://assets/items/moeda.png"},
+      {"id": "coins_l", "name": "200 Moedas", "coins": 200, "weight": 12, "rarity": "rare", "icon": "res://assets/items/moeda.png"},
+      {"id": "stone_1", "name": "Pedra de Fortalecimento", "item": "pedra_fortalecimento", "weight": 18, "rarity": "common", "icon": "res://assets/items/pedra_i.png"},
+      {"id": "stone_2", "name": "Pedra de Fortalecimento II", "item": "strength_stone_ii", "weight": 10, "rarity": "rare", "icon": "res://assets/items/pedra_ii.png"},
+      {"id": "stone_3", "name": "Pedra de Fortalecimento III", "item": "strength_stone_iii", "weight": 5, "rarity": "epic", "icon": "res://assets/items/pedra_iii.png"},
+      {"id": "crystal", "name": "Cristal Dourado", "item": "golden_crystal", "weight": 5, "rarity": "epic", "icon": "res://assets/expansion/items/golden_crystal.png"},
+      {"id": "egg", "name": "Ovo de Mascote", "item": "pet_egg", "weight": 2, "rarity": "legendary", "icon": "res://assets/expansion/items/pet_egg.png"},
+      {"id": "potion", "name": "Poção de Vida", "tool": "hp", "weight": 14, "rarity": "common", "icon": "res://assets/expansion/combat/tool_hp.png"}
+    ]
+  }
+}

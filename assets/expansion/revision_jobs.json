@@ -1,0 +1,95 @@
+[
+  {
+    "path": "combat/wind_indicator",
+    "job_id": "e74a80a8-f0fa-4129-a317-c71ae40eeb2e",
+    "prompt": {
+      "description": "A simple cyan wind gust symbol, three curved flowing lines ending in one arrow pointing right. Flat game UI icon. Transparent background. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 64,
+      "height": 32,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/e74a80a8-f0fa-4129-a317-c71ae40eeb2e/download"
+  },
+  {
+    "path": "combat/turn_indicator",
+    "job_id": "9050bd54-f12b-4a10-bed4-baf9bf9f2626",
+    "prompt": {
+      "description": "One upright hourglass, brass top and bottom, two transparent glass bulbs, cyan sand flowing. Clear readable game UI icon. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/9050bd54-f12b-4a10-bed4-baf9bf9f2626/download"
+  },
+  {
+    "path": "items/golden_crystal",
+    "job_id": "0c32b236-f2a0-4d12-8303-70c606bc7e1e",
+    "prompt": {
+      "description": "Three sharp translucent amber crystal shards growing upward as one small cluster. Glowing yellow highlights. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/0c32b236-f2a0-4d12-8303-70c606bc7e1e/download"
+  },
+  {
+    "path": "rewards/reward_card_back",
+    "job_id": "26fe3ffa-b959-4e75-89f3-40ebfc61fdd3",
+    "prompt": {
+      "description": "Vertical navy blue reward card with ornate gold border. In the exact center a clearly recognizable small locked treasure chest with curved lid. Cyan highlights. No writing. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 64,
+      "height": 96,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/26fe3ffa-b959-4e75-89f3-40ebfc61fdd3/download"
+  },
+  {
+    "path": "effects/glacial_pow",
+    "job_id": "3987aeda-61f3-46f4-88a6-c152bc9636c3",
+    "prompt": {
+      "description": "An isolated explosion of jagged cyan and blue ice shards radiating outward from a bright white center. Only magical ice fragments. Transparent. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 96,
+      "height": 96,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/3987aeda-61f3-46f4-88a6-c152bc9636c3/download"
+  },
+  {
+    "path": "effects/mechanical_pow",
+    "job_id": "386e2346-93c1-4f4a-a928-8a60f141d181",
+    "prompt": {
+      "description": "Exactly three golden arrows flying parallel to the right, blue glowing arrowheads on the right, cyan motion trails on the left. Isolated projectiles only. Crisp pixel art, navy outline, gold cyan palette, no lettering.",
+      "width": 96,
+      "height": 96,
+      "no_background": true
+    },
+    "provider": "PixelLab Pixen",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/386e2346-93c1-4f4a-a928-8a60f141d181/download"
+  },
+  {
+    "path": "combat/pow_bar",
+    "provider": "PixelLab MCP pixelart_workbench",
+    "job_id": "939a4fb4-dfc1-4f64-b8ac-71e2a3b34742",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/pixel-tools/939a4fb4-dfc1-4f64-b8ac-71e2a3b34742/assets/front/full.png",
+    "prompt": "Exact gold bordered orange power meter, authored pixel rectangles."
+  },
+  {
+    "path": "items/pet_egg",
+    "job_id": "1b35ae19-7f4b-49b6-8572-94879165cb57",
+    "status": "completed",
+    "download": "https://api.pixellab.ai/mcp/images/1b35ae19-7f4b-49b6-8572-94879165cb57/download",
+    "prompt": "A single oval egg standing upright, eggshell ivory with simple gold spots and a small cyan diamond on the shell, fully visible, clear egg silhouette, pixel art inventory icon, transparent background"
+  }
+]

@@ -1,0 +1,758 @@
+[
+  {
+    "id": "lobby_player_slot_frame",
+    "path": "assets/expansion/lobby/player_slot_frame.png",
+    "width": 160,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "6eef7b31adc2cd02a5ae8d7840c55bab2f4ca495a62d198e22c66a6b6d69c03a",
+    "job_id": "14a482e3-230e-4ede-b02f-8a22a6d3e6f2"
+  },
+  {
+    "id": "lobby_ready_icon",
+    "path": "assets/expansion/lobby/ready_icon.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "39141a2925deb04c0b3cb87ee2a44a2378c5c19e374430232bc76e9d4c4018d4",
+    "job_id": "2b84d5b9-e31f-4336-afec-165e06181e89"
+  },
+  {
+    "id": "lobby_leader_icon",
+    "path": "assets/expansion/lobby/leader_icon.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "d5206754f27a279979b90b3981467282de73e45d00e4d9d05c805d66b7a0c89e",
+    "job_id": "ed24398e-2061-4afb-9537-a3e53ddcb37a"
+  },
+  {
+    "id": "lobby_difficulty_normal",
+    "path": "assets/expansion/lobby/difficulty_normal.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "126ba83bdba423d52d7ac2b0c5ede43d9aad52c95b5066ab1be92b40fc2d9763",
+    "job_id": "ff5801bf-2925-4d29-9e27-a99ebd73e987"
+  },
+  {
+    "id": "lobby_difficulty_hard",
+    "path": "assets/expansion/lobby/difficulty_hard.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "5755112922a4ac699fc7626212ac71892519fe27e131f57311b5669df81960c4",
+    "job_id": "07f0bfd1-9062-48ee-996c-d33fa851cd87"
+  },
+  {
+    "id": "lobby_difficulty_heroic",
+    "path": "assets/expansion/lobby/difficulty_heroic.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "c715e873214b6b4c21a2f474f999fbe7b7c37584c0a9714f94811fb7175865da",
+    "job_id": "07670606-0521-4e11-8baa-340532c5b8f1"
+  },
+  {
+    "id": "lobby_difficulty_nightmare",
+    "path": "assets/expansion/lobby/difficulty_nightmare.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "e0f2ba250f6409438ff4da8c8d58701ce1655604ee315d44aefbb0bb864a4ed2",
+    "job_id": "c29914d5-2cf7-4094-ad9f-f814fec17f1b"
+  },
+  {
+    "id": "lobby_instance_preview",
+    "path": "assets/expansion/lobby/instance_preview.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "b55d60efb182c6c06fd5899c1f8645c7669e7a63cbfbd8ef43e6da5db6a5cc8d",
+    "job_id": "d10b9379-4758-4a22-a14d-1ffdd704d1eb"
+  },
+  {
+    "id": "lobby_loot_slot",
+    "path": "assets/expansion/lobby/loot_slot.png",
+    "width": 48,
+    "height": 48,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "da39fc7813a7eaef762bc63cf434c100602cdefd137fafe3f2fa8dae942263ef",
+    "job_id": "1192027f-4f5a-4382-a2b1-a64d4bb409a3"
+  },
+  {
+    "id": "lobby_tool_slot",
+    "path": "assets/expansion/lobby/tool_slot.png",
+    "width": 48,
+    "height": 48,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "c2f3adaedcb0f4c1e4f77cc009d11277ecd2512b0bf95f054c2772635a82238c",
+    "job_id": "fdb2d054-1214-4427-99a6-19817af2296f"
+  },
+  {
+    "id": "combat_energy_bar",
+    "path": "assets/expansion/combat/energy_bar.png",
+    "width": 160,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "3040f9bf05c3866e4019010eee99219ad9a3db4e3484c971821349dafa3b4be8",
+    "job_id": "c89ef1b5-2750-4db0-a71e-a39f688ee148"
+  },
+  {
+    "id": "combat_pow_bar",
+    "path": "assets/expansion/combat/pow_bar.png",
+    "width": 160,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "0159ca3f2041844f739650c97ec28c9deee23ca65b4b9c4a7a14fafe80030d41",
+    "job_id": "939a4fb4-dfc1-4f64-b8ac-71e2a3b34742"
+  },
+  {
+    "id": "combat_angle_indicator",
+    "path": "assets/expansion/combat/angle_indicator.png",
+    "width": 96,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "90a3cbaad58cc66d0e4bd643c98e191acf8c865e555613c278f32e5f2bb1510f",
+    "job_id": "9fe98895-c48d-4434-a4c0-9c91019b5aea"
+  },
+  {
+    "id": "combat_force_bar",
+    "path": "assets/expansion/combat/force_bar.png",
+    "width": 256,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "967744ecb8bab3a226752106315633ce8b2fd0cab3b17e8fe6fdf194cc3aaf46",
+    "job_id": "9adac91b-43d1-4f22-860c-10bb9a3c3162"
+  },
+  {
+    "id": "combat_wind_indicator",
+    "path": "assets/expansion/combat/wind_indicator.png",
+    "width": 64,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "708f6f426617c8d19bbe88c71deeba0ed3ebb195b52fbed1246a359d0e80411b",
+    "job_id": "e74a80a8-f0fa-4129-a317-c71ae40eeb2e"
+  },
+  {
+    "id": "combat_turn_indicator",
+    "path": "assets/expansion/combat/turn_indicator.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "df83a2c952860da7085c20d8ca3d833f8e4aba35d012c8b5e137285da754bff8",
+    "job_id": "9050bd54-f12b-4a10-bed4-baf9bf9f2626"
+  },
+  {
+    "id": "combat_boss_hp_frame",
+    "path": "assets/expansion/combat/boss_hp_frame.png",
+    "width": 256,
+    "height": 48,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "1c91cded44de19a435f09719a3310257a6f2c4696f53687f263662833b779336",
+    "job_id": "e72a5092-4dbf-43fd-a398-ebec22133fbd"
+  },
+  {
+    "id": "combat_minimap_frame",
+    "path": "assets/expansion/combat/minimap_frame.png",
+    "width": 128,
+    "height": 80,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "04cbde0dbeb20c4749a330a8b5a704bfc06557af2e064243a332aab4eafcf4b3",
+    "job_id": "aca7296f-a6b6-41fd-bb2b-977b96ab8079"
+  },
+  {
+    "id": "combat_skill_double",
+    "path": "assets/expansion/combat/skill_double.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "0671711d238dd38b04daf872d6a8751d62d3f691d8de2583e6adece099b85b40",
+    "job_id": "599a1f84-30c7-42a5-8e97-0f1edda5056c"
+  },
+  {
+    "id": "combat_skill_trident",
+    "path": "assets/expansion/combat/skill_trident.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "997cfdf3bf2eb562dbb000e5d2b9755c7b2da087b074a15a8d523350ac495b13",
+    "job_id": "fe40ee59-c49d-4124-8439-07fb6f1055d8"
+  },
+  {
+    "id": "combat_skill_extra",
+    "path": "assets/expansion/combat/skill_extra.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "54e154105e56820c14415f78badb32bbfc1f2819d23c560885f0dd03b13deb0b",
+    "job_id": "747781cd-abf6-4066-8313-882722fb4591"
+  },
+  {
+    "id": "combat_skill_damage_50",
+    "path": "assets/expansion/combat/skill_damage_50.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "0dd53de7fcd9879d5a50ff387733f4d994236a2005f26297307f2d59fa14f8bd",
+    "job_id": "bc45d987-a79c-4f8c-955b-aeb3ec23c926"
+  },
+  {
+    "id": "combat_skill_damage_40",
+    "path": "assets/expansion/combat/skill_damage_40.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "22ddfb7f482d7ba6a41c508af48d520e64cfd1089c9f50eb5d3100c2c5d8ff4b",
+    "job_id": "fcd6ab95-3d30-4a1f-903c-b305c9505ba5"
+  },
+  {
+    "id": "combat_skill_damage_30",
+    "path": "assets/expansion/combat/skill_damage_30.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "e5efd493138f299e677b469b765c03a99ccf4470792ad9f9d597cc8561640ca0",
+    "job_id": "931963cd-ed91-4cc8-b986-54079f78c223"
+  },
+  {
+    "id": "combat_skill_damage_20",
+    "path": "assets/expansion/combat/skill_damage_20.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "823440d5a1d41d7dafdec5cfb042a043c47bdc37afa14b631f83f7246ae9494e",
+    "job_id": "2bd02a1a-791f-4f7f-9163-6ff10a7581a9"
+  },
+  {
+    "id": "combat_skill_damage_10",
+    "path": "assets/expansion/combat/skill_damage_10.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "1e5447488b1c1b1af71b2f42262ebadfb62c7a42fd02e28ef2790ad78cb659f1",
+    "job_id": "86b00fc1-841e-46ae-a8c5-ff5e68089fc5"
+  },
+  {
+    "id": "combat_tool_hp",
+    "path": "assets/expansion/combat/tool_hp.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "fc07e0028173f9b980f683e1e2aa5872d4ffdd3c55b5b3539e80a8287bbb76bf",
+    "job_id": "e41c05f7-f6c1-457f-b97a-743f5eec55a4"
+  },
+  {
+    "id": "combat_tool_hp_team",
+    "path": "assets/expansion/combat/tool_hp_team.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "5d9d0f61923310a8d799c2bb88d91efad5349a43ac0a2490d3107c93d0b21234",
+    "job_id": "7e79fc98-b720-4a7c-b440-52934cbda8cc"
+  },
+  {
+    "id": "combat_tool_pow",
+    "path": "assets/expansion/combat/tool_pow.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "72f75d6f73de4c46034c0edc6ab8458d3f5ac082dcfdf44949df710a095c45ad",
+    "job_id": "33b2fb07-eeb7-4940-902e-213d797e2961"
+  },
+  {
+    "id": "rewards_reward_card_back",
+    "path": "assets/expansion/rewards/reward_card_back.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "44f3fcac2184266a7b3efaf56d042dadb72c2f5ec85d34f02a6b5d0362547845",
+    "job_id": "26fe3ffa-b959-4e75-89f3-40ebfc61fdd3"
+  },
+  {
+    "id": "rewards_reward_card_common",
+    "path": "assets/expansion/rewards/reward_card_common.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "ac3d77e4793d2a81ff379d7f5b0efd78fa9fc081e1a2bbe48c28383a88ccc038",
+    "job_id": "ed8a7478-b88d-4841-b0f9-6edced3cf7a5"
+  },
+  {
+    "id": "rewards_reward_card_rare",
+    "path": "assets/expansion/rewards/reward_card_rare.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "ed318f6d3dee22746d55774c844cad9ee0b19bd9562924f1c67445528dc61ef4",
+    "job_id": "39334f44-de66-47b9-a9a5-b53cca4044c8"
+  },
+  {
+    "id": "rewards_reward_card_epic",
+    "path": "assets/expansion/rewards/reward_card_epic.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "b91c194c5d20bbd5f962b489549afe111e180c9ca2782aa4b0310e11b00ac846",
+    "job_id": "4f098cd0-adfb-4ee0-87b4-05dfd381c56b"
+  },
+  {
+    "id": "rewards_reward_card_legendary",
+    "path": "assets/expansion/rewards/reward_card_legendary.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "b677f1270e1e80b0a95b4c1fe19ca5fa19acbb1a455b68b48759c79356c34fe5",
+    "job_id": "cc95e3d1-97dc-4401-82fc-47cbb5be4106"
+  },
+  {
+    "id": "rewards_treasure_chest_icon",
+    "path": "assets/expansion/rewards/treasure_chest_icon.png",
+    "width": 48,
+    "height": 48,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "719fed8104ba0a79ab462f90e6f3f5271738b86b4310009df2164d70a59a48fd",
+    "job_id": "ec4d0bf6-a2af-4b28-ba11-cb4ac65a6664"
+  },
+  {
+    "id": "items_golden_crystal",
+    "path": "assets/expansion/items/golden_crystal.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "b8d04acae117bd5aae738ff2a2d9efe1e6b88e34d6452dc1e6d34c81c8d797fa",
+    "job_id": "0c32b236-f2a0-4d12-8303-70c606bc7e1e"
+  },
+  {
+    "id": "items_king_fragment",
+    "path": "assets/expansion/items/king_fragment.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "10103822bf5e4c830518d6d99eaf0d4bdff85665efd3e0f62e45195a206963aa",
+    "job_id": "6b1fbfed-895b-4975-b0ed-c5a5b1340f73"
+  },
+  {
+    "id": "items_strength_stone_ii",
+    "path": "assets/expansion/items/strength_stone_ii.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "a9033aec0180abb67b1b2130d7b630d17f50a7d9b140d50f7a0ed9b40fab287d",
+    "job_id": "cbb0fbd7-b27e-4035-a7a9-92da18445e88"
+  },
+  {
+    "id": "items_strength_stone_iii",
+    "path": "assets/expansion/items/strength_stone_iii.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "a7b62bea67a202a89c4c4b38fb4045a7af91489141625cd26f00cd40e0f1ce7d",
+    "job_id": "d4c297da-1d19-4dbf-83ca-4eeba936b65c"
+  },
+  {
+    "id": "weapons_mechanical_bow",
+    "path": "assets/expansion/weapons/mechanical_bow.png",
+    "width": 64,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "af2d14a96c976a6340e1a5ad2db8a3584c265ceeaa804d4d0ae1c953fb42f270",
+    "job_id": "bbd80c41-321f-4db0-8883-598220c5c458"
+  },
+  {
+    "id": "enemies_temple_guard",
+    "path": "assets/expansion/enemies/temple_guard.png",
+    "width": 96,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "8fa5ee3b5bdba3e70b611cb1b45f5f3f0910ff39c538a0c5a6767c1c74cf88e6",
+    "job_id": "44791217-dfa2-4235-a6cc-5aa1dfadda10"
+  },
+  {
+    "id": "enemies_mask_king",
+    "path": "assets/expansion/enemies/mask_king.png",
+    "width": 128,
+    "height": 128,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "dc6b7c941aa9f4ff89f3bea65e2f3f1f44eaebc452f330ac45d7bd3b5a3d035b",
+    "job_id": "b5234dc7-a255-46a6-ba59-539793be3012"
+  },
+  {
+    "id": "objects_protection_crystal",
+    "path": "assets/expansion/objects/protection_crystal.png",
+    "width": 64,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "5abcd86821a14c6c63dab0caec1b3f52e86faf80de5f10b531764cb14dd6bccb",
+    "job_id": "aea1f8aa-f48d-4a95-af8d-54ee10febb96"
+  },
+  {
+    "id": "maps_temple_courtyard",
+    "path": "assets/expansion/maps/temple_courtyard.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "a98b93d26fd8cb051cb4dd4a283b710c2ea10c0f02fc00f0758853d4c56d43c1",
+    "job_id": "3484eb0f-5834-4d03-98e2-56e84d2d06fe"
+  },
+  {
+    "id": "maps_guardian_chamber",
+    "path": "assets/expansion/maps/guardian_chamber.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "9278046e00b98136a046da605d5c43989a082afefb99b4ccf9e7c5395ec896f7",
+    "job_id": "6216b0c3-3a04-4677-b7ad-55445d57ef0c"
+  },
+  {
+    "id": "maps_mask_throne",
+    "path": "assets/expansion/maps/mask_throne.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "8c8de8534adef45c0a4c836f8ec122a639283cd20729fee5808b6c693fd1ab40",
+    "job_id": "12e19384-6cb7-49c6-a3e2-3f9496150c36"
+  },
+  {
+    "id": "screens_blacksmith",
+    "path": "assets/expansion/screens/blacksmith.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "10e3777f56a4ddacddcb4afd513e367275fb40da6fa2634e9bed5f3af58ca268",
+    "job_id": "0d01cdba-2de2-4163-ad21-ab045d814388"
+  },
+  {
+    "id": "screens_inventory",
+    "path": "assets/expansion/screens/inventory.png",
+    "width": 256,
+    "height": 144,
+    "alpha_extrema": [
+      255,
+      255
+    ],
+    "sha256": "7c0e2dfa7b06307472a4963c5a1da6500a94e0cb0997e659a519cc567efb7912",
+    "job_id": "713ffabf-b300-4633-abd3-62ce5af0d229"
+  },
+  {
+    "id": "effects_celestial_pow",
+    "path": "assets/expansion/effects/celestial_pow.png",
+    "width": 96,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "03c17e5ecf7ecb9c4d07cb758eb83a81282fd2ef3176e28669af2148297ae2b0",
+    "job_id": "021d938d-4b16-4f20-b305-5cfe134f10cb"
+  },
+  {
+    "id": "effects_glacial_pow",
+    "path": "assets/expansion/effects/glacial_pow.png",
+    "width": 96,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "12421dc38153295084780dfe35c5ad9319d126d4741e7fcba193023a6977f833",
+    "job_id": "3987aeda-61f3-46f4-88a6-c152bc9636c3"
+  },
+  {
+    "id": "effects_volcanic_pow",
+    "path": "assets/expansion/effects/volcanic_pow.png",
+    "width": 96,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "f451e31400b4774a4cb38560c1c89199a9bd0bb5b9acfdea0ab2094eb6ca4968",
+    "job_id": "5dcba2ff-90b9-40f5-9d20-9ee7ad7b4e42"
+  },
+  {
+    "id": "effects_mechanical_pow",
+    "path": "assets/expansion/effects/mechanical_pow.png",
+    "width": 96,
+    "height": 96,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "c5286d5e7bf2f5b0ceb721abf7e6aa8c85187543ac3720d63f1981d1b797978d",
+    "job_id": "386e2346-93c1-4f4a-a928-8a60f141d181"
+  },
+  {
+    "id": "ui_victory_emblem",
+    "path": "assets/expansion/ui/victory_emblem.png",
+    "width": 128,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "c821fe87a1740bed60de43e6f4850177fb32c735adb8f2bc31ce79242c965191",
+    "job_id": "f5b5f13d-78ee-4203-9c5d-9333f5d3759e"
+  },
+  {
+    "id": "ui_defeat_emblem",
+    "path": "assets/expansion/ui/defeat_emblem.png",
+    "width": 128,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "0c46951b76367a980fe313f78cf9eb9bf0e2d1eebd9419123af4b4c01a92c403",
+    "job_id": "5c8b1e9d-0bcf-44e2-a98c-f135a56bbd3c"
+  },
+  {
+    "id": "ui_stage_clear",
+    "path": "assets/expansion/ui/stage_clear.png",
+    "width": 128,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "2dc8155b740058a940e0cd612c0111391eadfdae92f11ae9910f5b5c52712f6a",
+    "job_id": "8d577477-bf6f-4d7b-9ded-452a2cbeeaac"
+  },
+  {
+    "id": "ui_button",
+    "path": "assets/expansion/ui/button.png",
+    "width": 96,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "216ea883d503f9f95312562b98af4aca02cfd3e037c95345e56d4df56d00f3bb",
+    "job_id": "f2e44cfd-ec95-4db7-8b48-c4a9a41e0fd1"
+  },
+  {
+    "id": "ui_close_icon",
+    "path": "assets/expansion/ui/close_icon.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "de9e49739f926dbbbae1e006107fe58d4aac40b1794a284a4c42960784f11b0d",
+    "job_id": "75e32296-5fbb-41ca-8df7-47e5ea72b469"
+  },
+  {
+    "id": "ui_lock_icon",
+    "path": "assets/expansion/ui/lock_icon.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "2bcbd9af4b0365722247b282463f41ce3567a58dfc345c3d057d737a4c73b011",
+    "job_id": "c76f8210-34c6-4cfb-beec-ede0747f5f34"
+  },
+  {
+    "id": "combat_tool_teleport",
+    "path": "assets/expansion/combat/tool_teleport.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "a1af7d10113234c1a1fc38622cc4733c1d764c4f15a82d1095f4882c2d71c4a8",
+    "job_id": "2dbf925e-e20e-4162-a64d-5f05ed3577cc"
+  },
+  {
+    "id": "combat_tool_energy",
+    "path": "assets/expansion/combat/tool_energy.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "52d888edb4c74cbb696760f53229a9a1cc05d5ba451bef42cd34b15ea3e8d989",
+    "job_id": "44c143bd-f258-4568-b1cf-a468ce1019a7"
+  },
+  {
+    "id": "items_strength_stone_iv",
+    "path": "assets/expansion/items/strength_stone_iv.png",
+    "width": 32,
+    "height": 32,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "04eca4964e28ede7a6fd21a023a649ad4d35f0578d542c401c9ba536572d2a02",
+    "job_id": "6531cbef-3d6f-4393-a85f-0f43930b809a"
+  },
+  {
+    "id": "items_pet_egg",
+    "path": "assets/expansion/items/pet_egg.png",
+    "width": 48,
+    "height": 48,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "a3888e639aea3e70e9b471494476a5cfe74827bd09c9d5a29c83c729be1b96ba",
+    "job_id": "1b35ae19-7f4b-49b6-8572-94879165cb57"
+  },
+  {
+    "id": "pets_mask_king_pet",
+    "path": "assets/expansion/pets/mask_king_pet.png",
+    "width": 64,
+    "height": 64,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": "ca7cbe9172977f18150d5cf8815ec2ec6d267319414b62b7ca330b47b9d7bb9f",
+    "job_id": "52ec1252-ff92-4498-8967-4cf64471e0ba"
+  }
+]

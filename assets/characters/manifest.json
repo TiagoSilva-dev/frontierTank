@@ -1,0 +1,53 @@
+[
+  {
+    "name": "lia",
+    "id": "2ff737fd-4e3c-4e7f-8391-caacec05e84a",
+    "result": "status: completed\nid: 2ff737fd-4e3c-4e7f-8391-caacec05e84a\nname: Frontier Tank - Lia Chibi\nstate_name: Idle\ndirections: 4 (south, east, north, west)\nsize: 136x136px\nview: side\nstyle: detailed shading, single color outline, high detail\ngroup: e9dc802d-f1f4-4574-91c5-7d3955b8f70b (1 state)\n\nrotations:\n  south: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/south.png?t=1790219667\n  east: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/east.png?t=1790219667\n  north: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/north.png?t=1790219667\n  west: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/west.png?t=1790219667\n\nanimations: none\n\ndownload: https://api.pixellab.ai/mcp/characters/2ff737fd-4e3c-4e7f-8391-caacec05e84a/download\nspritesheet: https://api.pixellab.ai/mcp/characters/2ff737fd-4e3c-4e7f-8391-caacec05e84a/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)\n\navailable_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9\n\nactions: animate_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", ...) | create_character_state(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", ...) | delete_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\")\nhint: animate_character(character_id=\"2ff737fd-4e3c-4e7f-8391-caacec05e84a\", template_animation_id=\"backflip\")",
+    "proportions": {
+      "type": "preset",
+      "name": "chibi"
+    },
+    "supersedes": "cd24e9d2-58a9-4946-a1e7-1f994ce2672d",
+    "rotations": [
+      {
+        "direction": "south",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/south.png?t=1790219667"
+      },
+      {
+        "direction": "east",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/east.png?t=1790219667"
+      },
+      {
+        "direction": "north",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/north.png?t=1790219667"
+      },
+      {
+        "direction": "west",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/2ff737fd-4e3c-4e7f-8391-caacec05e84a/rotations/west.png?t=1790219667"
+      }
+    ]
+  },
+  {
+    "name": "nilo",
+    "id": "7533c6f2-c452-4a00-b126-69a46ee0348f",
+    "result": "status: completed\nid: 7533c6f2-c452-4a00-b126-69a46ee0348f\nname: Frontier Tank - Nilo Explorador\nstate_name: Idle\ndirections: 4 (south, east, north, west)\nsize: 136x136px\nview: side\nstyle: detailed shading, single color outline, high detail\ngroup: 451fe99f-6f38-412f-b2c9-097d289b82fb (1 state)\n\nrotations:\n  south: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/south.png?t=1790219475\n  east: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/east.png?t=1790219475\n  north: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/north.png?t=1790219475\n  west: https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/west.png?t=1790219475\n\nanimations: none\n\ndownload: https://api.pixellab.ai/mcp/characters/7533c6f2-c452-4a00-b126-69a46ee0348f/download\nspritesheet: https://api.pixellab.ai/mcp/characters/7533c6f2-c452-4a00-b126-69a46ee0348f/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)\n\navailable_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9\n\nactions: animate_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", ...) | create_character_state(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", ...) | delete_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\")\nhint: animate_character(character_id=\"7533c6f2-c452-4a00-b126-69a46ee0348f\", template_animation_id=\"backflip\")",
+    "rotations": [
+      {
+        "direction": "south",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/south.png?t=1790219475"
+      },
+      {
+        "direction": "east",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/east.png?t=1790219475"
+      },
+      {
+        "direction": "north",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/north.png?t=1790219475"
+      },
+      {
+        "direction": "west",
+        "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/west.png?t=1790219475"
+      }
+    ]
+  }
+]

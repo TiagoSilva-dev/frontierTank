@@ -1,0 +1,47 @@
+{
+  "hero_idle": {
+    "job_id": "10d7a102-de87-4a63-bdf6-21b954c143b1",
+    "frames": 5,
+    "fps": 7
+  },
+  "boss_idle": {
+    "args": {
+      "first_frame_url": "https://api.pixellab.ai/mcp/images/472e2e34-f2c0-44f9-b16b-2cd48af6f353/download",
+      "action": "Subtle imposing idle breathing loop, cape gently flutters, jewel glints, staff held steady, feet fixed in place, facing left throughout.",
+      "frame_count": 4,
+      "no_background": true
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 04dd1494-8bf4-4e58-bc5a-77878c770ace\njob_id: 04dd1494-8bf4-4e58-bc5a-77878c770ace\naction: Subtle imposing idle breathing loop, cape gently flutters, jewel glints, staff held steady, feet fixed in place, facing left throughout.\nframes: 4\nsize: 128x128px\ntransparent: True\nasset_id: 00bce81f-5d7c-5be6-98c0-2f1f3b1073a6\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~30-180s)\n\nhint: get_image(job_id=\"04dd1494-8bf4-4e58-bc5a-77878c770ace\")"
+        }
+      ],
+      "isError": false
+    },
+    "job_id": "04dd1494-8bf4-4e58-bc5a-77878c770ace",
+    "frames": 5,
+    "fps": 7
+  },
+  "boss_attack": {
+    "args": {
+      "first_frame_url": "https://api.pixellab.ai/mcp/images/472e2e34-f2c0-44f9-b16b-2cd48af6f353/download",
+      "action": "Lift staff to charge a bright cyan solar orb, thrust staff to the left casting the orb, then return to original standing pose, feet planted, facing left.",
+      "frame_count": 8,
+      "no_background": true
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 7c4a8384-e31d-4284-bc59-9dc93726074d\njob_id: 7c4a8384-e31d-4284-bc59-9dc93726074d\naction: Lift staff to charge a bright cyan solar orb, thrust staff to the left casting the orb, then return to original standing pose, feet planted, facing left.\nframes: 8\nsize: 128x128px\ntransparent: True\nasset_id: 1bd04b84-4459-5960-a5f3-3fe17b026d05\nasset_status: pending (saved when generation completes)\ncost: 2 generations\nstatus: processing (~30-180s)\n\nhint: get_image(job_id=\"7c4a8384-e31d-4284-bc59-9dc93726074d\")"
+        }
+      ],
+      "isError": false
+    },
+    "job_id": "7c4a8384-e31d-4284-bc59-9dc93726074d",
+    "frames": 9,
+    "fps": 7
+  }
+}

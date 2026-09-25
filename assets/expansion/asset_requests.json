@@ -1,0 +1,380 @@
+[
+  [
+    "lobby/player_slot_frame",
+    160,
+    64,
+    "empty navy player party panel with brass corner brackets cyan rivets"
+  ],
+  [
+    "lobby/ready_icon",
+    32,
+    32,
+    "bright emerald checkmark on round brass medallion"
+  ],
+  [
+    "lobby/leader_icon",
+    32,
+    32,
+    "small royal golden crown with three cyan gems"
+  ],
+  [
+    "lobby/difficulty_normal",
+    32,
+    32,
+    "bronze shield with one star"
+  ],
+  [
+    "lobby/difficulty_hard",
+    32,
+    32,
+    "silver shield two stars"
+  ],
+  [
+    "lobby/difficulty_heroic",
+    32,
+    32,
+    "gold shield three stars"
+  ],
+  [
+    "lobby/difficulty_nightmare",
+    32,
+    32,
+    "violet demonic shield skull"
+  ],
+  [
+    "lobby/instance_preview",
+    256,
+    144,
+    "panorama of ancient golden solar temple on floating island turquoise waterfall warm sunset, no interface"
+  ],
+  [
+    "lobby/loot_slot",
+    48,
+    48,
+    "empty square dark navy recessed item slot gold rim"
+  ],
+  [
+    "lobby/tool_slot",
+    48,
+    48,
+    "empty square dark navy recessed potion slot cyan rim"
+  ],
+  [
+    "combat/energy_bar",
+    160,
+    32,
+    "horizontal green emerald energy gauge full with brass border no symbols"
+  ],
+  [
+    "combat/pow_bar",
+    160,
+    32,
+    "horizontal orange glowing special power gauge full with brass border no symbols"
+  ],
+  [
+    "combat/angle_indicator",
+    96,
+    64,
+    "semicircular aiming protractor brass navy dial cyan needle pointed upper right no numbers"
+  ],
+  [
+    "combat/force_bar",
+    256,
+    32,
+    "long horizontal power gauge green left yellow center red right brass border no text no numbers"
+  ],
+  [
+    "combat/wind_indicator",
+    64,
+    32,
+    "turquoise gust of wind sweeping right with arrow tip"
+  ],
+  [
+    "combat/turn_indicator",
+    32,
+    32,
+    "gold hourglass cyan sand"
+  ],
+  [
+    "combat/boss_hp_frame",
+    256,
+    48,
+    "wide empty menacing boss health frame golden mask centered above dark navy bar red gem corners"
+  ],
+  [
+    "combat/minimap_frame",
+    128,
+    80,
+    "empty rectangular minimap frame brass corner brackets dark translucent blue interior"
+  ],
+  [
+    "combat/skill_double",
+    32,
+    32,
+    "two parallel glowing cannonballs orange trails ability icon"
+  ],
+  [
+    "combat/skill_trident",
+    32,
+    32,
+    "three blue arrows spreading upwards trident attack ability icon"
+  ],
+  [
+    "combat/skill_extra",
+    32,
+    32,
+    "orange cannonball with small golden plus symbol ability icon"
+  ],
+  [
+    "combat/skill_damage_50",
+    32,
+    32,
+    "5 crimson flame tongues around golden sword damage ability icon no numbers"
+  ],
+  [
+    "combat/skill_damage_40",
+    32,
+    32,
+    "4 crimson flame tongues around golden sword damage ability icon no numbers"
+  ],
+  [
+    "combat/skill_damage_30",
+    32,
+    32,
+    "3 crimson flame tongues around golden sword damage ability icon no numbers"
+  ],
+  [
+    "combat/skill_damage_20",
+    32,
+    32,
+    "2 crimson flame tongues around golden sword damage ability icon no numbers"
+  ],
+  [
+    "combat/skill_damage_10",
+    32,
+    32,
+    "1 crimson flame tongues around golden sword damage ability icon no numbers"
+  ],
+  [
+    "combat/tool_hp",
+    32,
+    32,
+    "red healing potion glass bottle golden stopper heart symbol"
+  ],
+  [
+    "combat/tool_hp_team",
+    32,
+    32,
+    "three small green healing potions glass bottles group healing"
+  ],
+  [
+    "combat/tool_pow",
+    32,
+    32,
+    "violet potion glass bottle gold lightning bolt"
+  ],
+  [
+    "rewards/reward_card_back",
+    64,
+    96,
+    "vertical ornate blue gold reward card back centered locked treasure chest embossed sun motif"
+  ],
+  [
+    "rewards/reward_card_common",
+    64,
+    96,
+    "vertical empty reward card face large blank dark center ornate silver frame small corner gems"
+  ],
+  [
+    "rewards/reward_card_rare",
+    64,
+    96,
+    "vertical empty reward card face large blank dark center ornate sapphire blue frame small corner gems"
+  ],
+  [
+    "rewards/reward_card_epic",
+    64,
+    96,
+    "vertical empty reward card face large blank dark center ornate amethyst purple frame small corner gems"
+  ],
+  [
+    "rewards/reward_card_legendary",
+    64,
+    96,
+    "vertical empty reward card face large blank dark center ornate radiant gold frame small corner gems"
+  ],
+  [
+    "rewards/treasure_chest_icon",
+    48,
+    48,
+    "closed golden treasure chest navy enamel cyan lock"
+  ],
+  [
+    "items/golden_crystal",
+    32,
+    32,
+    "golden crystal cluster amber glowing"
+  ],
+  [
+    "items/king_fragment",
+    32,
+    32,
+    "broken fragment of ancient golden royal mask cyan eye"
+  ],
+  [
+    "items/strength_stone_ii",
+    32,
+    32,
+    "polished blue enhancement gemstone two golden flecks"
+  ],
+  [
+    "items/strength_stone_iii",
+    32,
+    32,
+    "polished violet enhancement gemstone three golden flecks"
+  ],
+  [
+    "weapons/mechanical_bow",
+    64,
+    64,
+    "oversized mechanical brass crossbow cyan energy string facing right side view"
+  ],
+  [
+    "enemies/temple_guard",
+    96,
+    96,
+    "full body chibi temple guardian golden armor turquoise plume round mask spear facing left side view"
+  ],
+  [
+    "enemies/mask_king",
+    128,
+    128,
+    "full body chibi boss King of Masks floating enormous gold ritual mask dark cloak cyan energy crown facing left side view"
+  ],
+  [
+    "objects/protection_crystal",
+    64,
+    96,
+    "large cyan crystal on gold stone pedestal objective to defend"
+  ],
+  [
+    "maps/temple_courtyard",
+    256,
+    144,
+    "side view background golden temple courtyard ancient pillars blue sky vines distant floating islands center open no foreground no UI"
+  ],
+  [
+    "maps/guardian_chamber",
+    256,
+    144,
+    "side view background inside ancient golden temple turquoise crystals enormous columns dark arches center clear no foreground no UI"
+  ],
+  [
+    "maps/mask_throne",
+    256,
+    144,
+    "side view background golden throne room enormous ceremonial mask on back wall cyan braziers symmetrical pillars center open no foreground no UI"
+  ],
+  [
+    "screens/blacksmith",
+    256,
+    144,
+    "cozy floating island fantasy steampunk blacksmith workshop forge orange furnace anvil tool racks blue gold stone walls no characters no UI"
+  ],
+  [
+    "screens/inventory",
+    256,
+    144,
+    "fantasy steampunk armory interior weapon racks warm wood brass blue banners open central wall for UI no characters no UI"
+  ],
+  [
+    "effects/celestial_pow",
+    96,
+    96,
+    "burst of celestial cyan golden energy star explosive impact isolated"
+  ],
+  [
+    "effects/glacial_pow",
+    96,
+    96,
+    "burst of jagged blue ice crystals explosive impact isolated"
+  ],
+  [
+    "effects/volcanic_pow",
+    96,
+    96,
+    "blazing orange meteor with red fire trail pointing down right isolated"
+  ],
+  [
+    "effects/mechanical_pow",
+    96,
+    96,
+    "three mechanical glowing cyan arrows golden trails moving right isolated"
+  ],
+  [
+    "ui/victory_emblem",
+    128,
+    64,
+    "victory golden winged sun medal laurels cyan gem no text"
+  ],
+  [
+    "ui/defeat_emblem",
+    128,
+    64,
+    "defeat cracked silver shield drooping purple wings no text"
+  ],
+  [
+    "ui/stage_clear",
+    128,
+    64,
+    "stage completed golden laurel wreath green checkmark no text"
+  ],
+  [
+    "ui/button",
+    96,
+    32,
+    "empty beveled navy blue rectangular button brass border cyan highlight no text"
+  ],
+  [
+    "ui/close_icon",
+    32,
+    32,
+    "golden cross X on dark navy round button"
+  ],
+  [
+    "ui/lock_icon",
+    32,
+    32,
+    "brass padlock cyan keyhole"
+  ],
+  [
+    "combat/tool_teleport",
+    32,
+    32,
+    "paper glider crossing cyan magical portal"
+  ],
+  [
+    "combat/tool_energy",
+    32,
+    32,
+    "green potion with golden lightning bolt"
+  ],
+  [
+    "items/strength_stone_iv",
+    32,
+    32,
+    "radiant orange enhancement gemstone four golden flecks"
+  ],
+  [
+    "items/pet_egg",
+    48,
+    48,
+    "golden royal pet egg turquoise mask markings"
+  ],
+  [
+    "pets/mask_king_pet",
+    64,
+    64,
+    "tiny cute floating golden mask king pet turquoise cape chibi side view"
+  ]
+]

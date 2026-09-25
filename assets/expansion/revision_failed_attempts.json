@@ -1,0 +1,76 @@
+[
+  {
+    "path": "combat/wind_indicator",
+    "job_id": "d582ff3b-3cec-4fff-8b62-84a6e6a1d799",
+    "prompt": "A simple cyan wind gust symbol, three curved flowing lines ending in one arrow pointing right. Flat game UI icon. Transparent background.",
+    "width": 64,
+    "height": 32,
+    "status": "failed"
+  },
+  {
+    "path": "combat/turn_indicator",
+    "job_id": "f4ed7453-6c24-444e-bba3-56da3e3a0902",
+    "prompt": {
+      "description": "One upright hourglass, brass top and bottom, two transparent glass bulbs, cyan sand flowing. Clear readable game UI icon. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    },
+    "status": "failed"
+  },
+  {
+    "path": "combat/pow_bar",
+    "job_id": "e2ab430e-c86d-418a-99ed-c94255e9b518",
+    "prompt": {
+      "description": "One plain horizontal rectangular meter fully filled with solid orange energy, thin gold border, navy shadow, no other elements. NO text, glyphs or decorative marks inside. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 160,
+      "height": 32,
+      "no_background": true
+    },
+    "status": "failed"
+  },
+  {
+    "path": "items/golden_crystal",
+    "job_id": "49f153fa-7e28-49b4-968a-ce00022b9995",
+    "prompt": {
+      "description": "Three sharp translucent amber crystal shards growing upward as one small cluster. Glowing yellow highlights. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    },
+    "status": "failed"
+  },
+  {
+    "path": "rewards/reward_card_back",
+    "job_id": "64c0ddbf-1b81-47cd-884f-4d4649e39c73",
+    "prompt": {
+      "description": "Vertical navy blue reward card with ornate gold border. In the exact center a clearly recognizable small locked treasure chest with curved lid. Cyan highlights. No writing. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 64,
+      "height": 96,
+      "no_background": true
+    },
+    "status": "failed"
+  },
+  {
+    "path": "effects/glacial_pow",
+    "job_id": "1085c940-f3fa-4076-ba1d-825df832ebf4",
+    "prompt": {
+      "description": "An isolated explosion of jagged cyan and blue ice shards radiating outward from a bright white center. Only magical ice fragments. Transparent. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 96,
+      "height": 96,
+      "no_background": true
+    },
+    "status": "processing"
+  },
+  {
+    "path": "effects/mechanical_pow",
+    "job_id": "37a98ce9-d4d2-48e6-a9cd-9b8dd6ade433",
+    "prompt": {
+      "description": "Exactly three golden arrows flying parallel to the right, blue glowing arrowheads on the right, cyan motion trails on the left. Isolated projectiles only. Crisp pixel art, navy outline, fantasy game palette, no text, no vehicles.",
+      "width": 96,
+      "height": 96,
+      "no_background": true
+    },
+    "status": "processing"
+  }
+]

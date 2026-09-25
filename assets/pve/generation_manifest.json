@@ -1,0 +1,122 @@
+[
+  {
+    "name": "templo_bg",
+    "args": {
+      "width": 400,
+      "height": 224,
+      "no_background": false,
+      "description": "Grand golden sun temple ruins interior opening into blue sky, towering ornate sandstone columns, golden light shafts, central distant stairway and altar, vines, royal red banners, bright fantasy steampunk pixel art. Side view artillery game backdrop, empty foreground, no characters, no text or interface.",
+      "detail": "highly detailed",
+      "shading": "detailed shading",
+      "outline": "selective outline",
+      "view": "side"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679\njob_id: c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679\ndescription: Grand golden sun temple ruins interior opening into blue sky, towering ornate sandstone columns, golden light shafts, central distant stairway and altar, vines, royal red banners, bright fantasy steampunk pixel art. Side view artillery game backdrop, empty foreground, no characters, no text or interface.\nsize: 400x224px\ntransparent: False\nasset_id: 46cf1886-4405-5a55-bbab-676f83158375\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679\")"
+        }
+      ],
+      "isError": false
+    },
+    "id": "c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679",
+    "status": "status: completed\nid: c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679\njob_id: c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679\nframes: 1\ntransparent: no — every pixel is opaque. If you asked for no_background, background removal did not find one; retry or describe the subject on a plain background.\nasset_id: 46cf1886-4405-5a55-bbab-676f83158375\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ndownload: https://api.pixellab.ai/mcp/images/c7fe8fcc-abad-40d4-a3c4-b1f9f7fba679/download"
+  },
+  {
+    "name": "rei_sol",
+    "args": {
+      "width": 128,
+      "height": 128,
+      "no_background": true,
+      "description": "Original chibi sun-mask guardian boss, round golden armored automaton, angular glowing orange eyes in ornate sun mask, large jeweled crown, burgundy royal cape, short armored legs, holds tall staff topped by cyan sun crystal, facing left, full body, standing. Ornate fantasy steampunk pixel art, bold dark contour, warm golden highlights and blue jewel accents. No floor or background.",
+      "detail": "highly detailed",
+      "shading": "detailed shading",
+      "outline": "selective outline",
+      "view": "side"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 472e2e34-f2c0-44f9-b16b-2cd48af6f353\njob_id: 472e2e34-f2c0-44f9-b16b-2cd48af6f353\ndescription: Original chibi sun-mask guardian boss, round golden armored automaton, angular glowing orange eyes in ornate sun mask, large jeweled crown, burgundy royal cape, short armored legs, holds tall staff topped by cyan sun crystal, facing left, full body, standing. Ornate fantasy steampunk pixel art, bold dark contour, warm golden highlights and blue jewel accents. No floor or background.\nsize: 128x128px\ntransparent: True\nasset_id: a2945984-00fd-57b7-ad88-21cfe2792ffc\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"472e2e34-f2c0-44f9-b16b-2cd48af6f353\")"
+        }
+      ],
+      "isError": false
+    },
+    "id": "472e2e34-f2c0-44f9-b16b-2cd48af6f353",
+    "status": "status: completed\nid: 472e2e34-f2c0-44f9-b16b-2cd48af6f353\njob_id: 472e2e34-f2c0-44f9-b16b-2cd48af6f353\nframes: 1\ntransparent: yes\nasset_id: a2945984-00fd-57b7-ad88-21cfe2792ffc\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ndownload: https://api.pixellab.ai/mcp/images/472e2e34-f2c0-44f9-b16b-2cd48af6f353/download"
+  },
+  {
+    "name": "templo_bloco",
+    "args": {
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "description": "Seamless solid golden sandstone temple masonry texture, large carved square stone blocks with subtle ancient spiral engravings, warm brown recesses, top left golden light, side view pixel art, fills entire canvas, no sky no grass no text.",
+      "detail": "highly detailed",
+      "shading": "detailed shading",
+      "outline": "selective outline",
+      "view": "side"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: dda760e8-d794-41e2-b012-0889449b407b\njob_id: dda760e8-d794-41e2-b012-0889449b407b\ndescription: Seamless solid golden sandstone temple masonry texture, large carved square stone blocks with subtle ancient spiral engravings, warm brown recesses, top left golden light, side view pixel art, fills entire canvas, no sky no grass no text.\nsize: 64x64px\ntransparent: False\nasset_id: c2ef6152-aaab-5fd7-91f3-33fa295fd9c5\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"dda760e8-d794-41e2-b012-0889449b407b\")"
+        }
+      ],
+      "isError": false
+    },
+    "id": "dda760e8-d794-41e2-b012-0889449b407b",
+    "status": "status: completed\nid: dda760e8-d794-41e2-b012-0889449b407b\njob_id: dda760e8-d794-41e2-b012-0889449b407b\nframes: 1\ntransparent: no — every pixel is opaque. If you asked for no_background, background removal did not find one; retry or describe the subject on a plain background.\nasset_id: c2ef6152-aaab-5fd7-91f3-33fa295fd9c5\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ndownload: https://api.pixellab.ai/mcp/images/dda760e8-d794-41e2-b012-0889449b407b/download"
+  },
+  {
+    "name": "portal",
+    "args": {
+      "width": 96,
+      "height": 96,
+      "no_background": true,
+      "description": "Ornate golden circular portal on stone pedestal, luminous cyan magical vortex, small brass wings and blue crystals, fantasy steampunk pixel art, front view, full object isolated, no text.",
+      "detail": "highly detailed",
+      "shading": "detailed shading",
+      "outline": "selective outline",
+      "view": "side"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 3ade1007-d32b-48d8-b810-2c5690bb8b8d\njob_id: 3ade1007-d32b-48d8-b810-2c5690bb8b8d\ndescription: Ornate golden circular portal on stone pedestal, luminous cyan magical vortex, small brass wings and blue crystals, fantasy steampunk pixel art, front view, full object isolated, no text.\nsize: 96x96px\ntransparent: True\nasset_id: 642381d8-830d-53ed-a3aa-38b4e9508b50\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"3ade1007-d32b-48d8-b810-2c5690bb8b8d\")"
+        }
+      ],
+      "isError": false
+    },
+    "id": "3ade1007-d32b-48d8-b810-2c5690bb8b8d",
+    "status": "status: completed\nid: 3ade1007-d32b-48d8-b810-2c5690bb8b8d\njob_id: 3ade1007-d32b-48d8-b810-2c5690bb8b8d\nframes: 1\ntransparent: yes\nasset_id: 642381d8-830d-53ed-a3aa-38b4e9508b50\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ndownload: https://api.pixellab.ai/mcp/images/3ade1007-d32b-48d8-b810-2c5690bb8b8d/download"
+  },
+  {
+    "name": "hub_celeste",
+    "args": {
+      "width": 400,
+      "height": 224,
+      "no_background": false,
+      "description": "Whimsical fantasy steampunk city on floating island, central fountain plaza, blue roof castle in distance, ornate brass portal at right, orange roof workshop at left, flowering pink trees, hanging bridges, airships in clear azure sky, gold afternoon light. Detailed vibrant pixel art, elevated three quarter view, no text no interface no characters.",
+      "detail": "highly detailed",
+      "shading": "detailed shading",
+      "outline": "selective outline",
+      "view": "side"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: ca8c5cf4-7b9f-4234-ab25-a75dc2988863\njob_id: ca8c5cf4-7b9f-4234-ab25-a75dc2988863\ndescription: Whimsical fantasy steampunk city on floating island, central fountain plaza, blue roof castle in distance, ornate brass portal at right, orange roof workshop at left, flowering pink trees, hanging bridges, airships in clear azure sky, gold afternoon light. Detailed vibrant pixel art, elevated three quarter view, no text no interface no characters.\nsize: 400x224px\ntransparent: False\nasset_id: 0f709bfd-21b1-5aa4-ad2d-bdf3141b86d1\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"ca8c5cf4-7b9f-4234-ab25-a75dc2988863\")"
+        }
+      ],
+      "isError": false
+    },
+    "id": "ca8c5cf4-7b9f-4234-ab25-a75dc2988863",
+    "status": "status: completed\nid: ca8c5cf4-7b9f-4234-ab25-a75dc2988863\njob_id: ca8c5cf4-7b9f-4234-ab25-a75dc2988863\nframes: 1\ntransparent: no — every pixel is opaque. If you asked for no_background, background removal did not find one; retry or describe the subject on a plain background.\nasset_id: 0f709bfd-21b1-5aa4-ad2d-bdf3141b86d1\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ndownload: https://api.pixellab.ai/mcp/images/ca8c5cf4-7b9f-4234-ab25-a75dc2988863/download"
+  }
+]

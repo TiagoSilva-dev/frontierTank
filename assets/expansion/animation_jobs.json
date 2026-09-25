@@ -1,0 +1,8 @@
+[
+  {
+    "name": "mask_king_idle",
+    "job_id": "514ee928-7ac7-4cb2-94c5-056e2520d52c",
+    "status": "cancelled",
+    "reason": "Backend ETA grew to 900 seconds; replaced by exact PixelLab workbench animation."
+  }
+]

@@ -1,0 +1,87 @@
+{
+  "card_flip_effect": {
+    "provider": "PixelLab MCP pixelart_workbench",
+    "drawing_id": "6503068b-d9ed-498c-a8e9-759ec00d036e",
+    "width": 96,
+    "height": 96,
+    "frames": [
+      "assets/expansion/animations/card_flip_effect/frame_00.png",
+      "assets/expansion/animations/card_flip_effect/frame_01.png",
+      "assets/expansion/animations/card_flip_effect/frame_02.png",
+      "assets/expansion/animations/card_flip_effect/frame_03.png",
+      "assets/expansion/animations/card_flip_effect/frame_04.png",
+      "assets/expansion/animations/card_flip_effect/frame_05.png",
+      "assets/expansion/animations/card_flip_effect/frame_06.png",
+      "assets/expansion/animations/card_flip_effect/frame_07.png"
+    ],
+    "durations_ms": [
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70
+    ],
+    "loop": false,
+    "events_1_based": {
+      "reveal": 4
+    },
+    "sheet_columns": 3,
+    "sheet_path": "assets/expansion/animations/card_flip_effect/spritesheet.png",
+    "method": "Exact sprite translation and authored VFX; not generative skeletal animation."
+  },
+  "mask_king_idle": {
+    "provider": "PixelLab MCP pixelart_workbench",
+    "drawing_id": "15c894d8-e5c2-4761-8feb-4c5b68c67786",
+    "width": 144,
+    "height": 144,
+    "frames": [
+      "assets/expansion/animations/mask_king_idle/frame_00.png",
+      "assets/expansion/animations/mask_king_idle/frame_01.png",
+      "assets/expansion/animations/mask_king_idle/frame_02.png",
+      "assets/expansion/animations/mask_king_idle/frame_03.png"
+    ],
+    "durations_ms": [
+      180,
+      180,
+      180,
+      180
+    ],
+    "loop": true,
+    "events_1_based": {},
+    "sheet_columns": 2,
+    "sheet_path": "assets/expansion/animations/mask_king_idle/spritesheet.png",
+    "method": "Exact sprite translation and authored VFX; not generative skeletal animation."
+  },
+  "mask_king_attack": {
+    "provider": "PixelLab MCP pixelart_workbench",
+    "drawing_id": "e007a04b-3d93-44e2-aea4-1c945fecc89e",
+    "width": 160,
+    "height": 160,
+    "frames": [
+      "assets/expansion/animations/mask_king_attack/frame_00.png",
+      "assets/expansion/animations/mask_king_attack/frame_01.png",
+      "assets/expansion/animations/mask_king_attack/frame_02.png",
+      "assets/expansion/animations/mask_king_attack/frame_03.png",
+      "assets/expansion/animations/mask_king_attack/frame_04.png",
+      "assets/expansion/animations/mask_king_attack/frame_05.png"
+    ],
+    "durations_ms": [
+      100,
+      100,
+      140,
+      80,
+      80,
+      140
+    ],
+    "loop": false,
+    "events_1_based": {
+      "cast": 4
+    },
+    "sheet_columns": 3,
+    "sheet_path": "assets/expansion/animations/mask_king_attack/spritesheet.png",
+    "method": "Exact sprite translation and authored VFX; not generative skeletal animation."
+  }
+}

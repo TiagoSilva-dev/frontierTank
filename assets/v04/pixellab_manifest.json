@@ -1,0 +1,753 @@
+{
+ "version": "0.4",
+ "provider": "PixelLab MCP",
+ "date": "2026-09-24",
+ "images": [
+  {
+   "target": "assets/city/city_bg.png",
+   "tool": "create_image_pixflux",
+   "job_id": "90c719ba-4060-4fea-b030-497d78206167",
+   "args": {
+    "description": "Cheerful town hub on a floating island seen from a high three-quarter top-down view, a large empty cobblestone plaza in the middle and several empty grass lots around it for buildings, winding stone paths, small round fountain, flower beds, lamp posts, round green trees and pink blossom trees at the edges, sea and sandy beach at the bottom right, waterfall cliffs on the left, distant blue mountains and clouds at the top, bright daylight, no buildings, no houses, no characters. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 400,
+    "height": 224,
+    "no_background": false,
+    "view": "high top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading",
+    "outline": "selective outline"
+   }
+  },
+  {
+   "target": "assets/city/buildings/hall.png",
+   "tool": "create_image_pixflux",
+   "job_id": "8c0f839f-1f8b-4c0e-b9c3-f24af7ae07d2",
+   "args": {
+    "description": "Grand round colosseum game hall building with tall sandstone arches, open top with glowing orange canopies inside, red and gold banners, wide bright entrance with stairs, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 160,
+    "height": 160,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/city/buildings/smith.png",
+   "tool": "create_image_pixflux",
+   "job_id": "6a0f4cfa-8404-411f-8506-abe28515ff68",
+   "args": {
+    "description": "Blacksmith forge workshop building with stone chimney puffing smoke, anvil sign, glowing orange furnace door, racks of cannons, timber frame and green roof, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 128,
+    "height": 128,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/city/buildings/dating.png",
+   "tool": "create_image_pixflux",
+   "job_id": "7865265a-2829-474d-9bdf-547cdb8761de",
+   "args": {
+    "description": "Romantic little chapel building with pink tiled roof, heart shaped rose window, white walls, flower arch and pink ribbons, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 128,
+    "height": 128,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/city/buildings/auction.png",
+   "tool": "create_image_pixflux",
+   "job_id": "a020ae46-5963-4cc3-a125-83bb9018b6e9",
+   "args": {
+    "description": "Auction house building with blue slate roof, cream marble columns, golden gavel emblem above the door, bright arched windows, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 128,
+    "height": 128,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/city/buildings/mall.png",
+   "tool": "create_image_pixflux",
+   "job_id": "2046f648-0ddd-4f54-8c9b-c09e383db144",
+   "args": {
+    "description": "Shopping center market hall building with red and white striped awnings, shop windows full of hats and cannons, colorful balloons on the roof, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 144,
+    "height": 128,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/city/buildings/instance.png",
+   "tool": "create_image_pixflux",
+   "job_id": "2a549798-642c-4a20-a35a-6ba735fbec30",
+   "args": {
+    "description": "Adventure airship dock tower building with a moored brass steampunk airship above it and a glowing blue portal gate at its base, isolated building. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 144,
+    "height": 144,
+    "no_background": true,
+    "view": "low top-down",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/room/vs_art.png",
+   "tool": "create_image_pixflux",
+   "job_id": "52fdd24a-26e3-4555-bb10-62f1ff7bbe2d",
+   "args": {
+    "description": "Two cute chibi rivals facing each other before a duel, a brown haired goggles boy adventurer holding a brass cannon on the left and a pink haired girl holding a blue blaster on the right, a big fiery orange lightning bolt between them, dramatic orange and purple radial burst background. Cute colorful fantasy steampunk pixel art in the spirit of classic DDTank, crisp clusters, dark outlines, warm upper left lighting, no text, no letters.",
+    "width": 184,
+    "height": 152,
+    "no_background": false,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "detailed shading"
+   }
+  },
+  {
+   "target": "assets/ui/icons/shop.png",
+   "tool": "create_image_pixflux",
+   "job_id": "440de9a5-8a12-437d-81b3-6912f23bde0e",
+   "args": {
+    "description": "market stall with red and white striped awning and a gold coin Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/bag.png",
+   "tool": "create_image_pixflux",
+   "job_id": "501824e9-efda-49a0-953a-7fcf1dc11382",
+   "args": {
+    "description": "brown leather adventurer backpack with golden buckle Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/pet.png",
+   "tool": "create_image_pixflux",
+   "job_id": "ead977db-515f-4b77-8ff2-079d07fdbcb1",
+   "args": {
+    "description": "orange paw print on a round badge Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/mail.png",
+   "tool": "create_image_pixflux",
+   "job_id": "72c24a80-12eb-4677-9ed9-9830ed57eb44",
+   "args": {
+    "description": "sealed cream letter envelope with red wax seal Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/mission.png",
+   "tool": "create_image_pixflux",
+   "job_id": "c2978e6b-a7a7-4c61-b67b-def302d1becb",
+   "args": {
+    "description": "rolled parchment quest scroll with red ribbon Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/help.png",
+   "tool": "create_image_pixflux",
+   "job_id": "2a36f3d2-3c1f-4300-a853-9116279faf6a",
+   "args": {
+    "description": "blue book with a golden question mark on the cover Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/exit.png",
+   "tool": "create_image_pixflux",
+   "job_id": "d8b20183-f1d7-4162-b154-d1b9493a59c3",
+   "args": {
+    "description": "wooden door slightly open with warm light Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/search.png",
+   "tool": "create_image_pixflux",
+   "job_id": "5bfdf20a-2a34-419d-bc49-18d34f3b75de",
+   "args": {
+    "description": "brass magnifying glass with blue lens Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/plane.png",
+   "tool": "create_image_pixflux",
+   "job_id": "1e91d816-d9e4-4102-b502-5fe01c8fa54b",
+   "args": {
+    "description": "white folded paper plane Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/pow.png",
+   "tool": "create_image_pixflux",
+   "job_id": "151b1723-069a-40d1-a820-bcb3a756f98e",
+   "args": {
+    "description": "yellow lightning bolt burst with sparks Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/speaker.png",
+   "tool": "create_image_pixflux",
+   "job_id": "d2420a20-5186-434e-8368-ed02cd6a9fbd",
+   "args": {
+    "description": "brass megaphone Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/gear.png",
+   "tool": "create_image_pixflux",
+   "job_id": "ce5ca9d1-a189-41c8-aa6f-70478c33f2c6",
+   "args": {
+    "description": "silver cog gear Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/power.png",
+   "tool": "create_image_pixflux",
+   "job_id": "b490cc5c-befc-4727-8956-6f8b313bd7a7",
+   "args": {
+    "description": "red round power button Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/lock.png",
+   "tool": "create_image_pixflux",
+   "job_id": "3fc5e699-d205-46e2-8639-694e92bd63c8",
+   "args": {
+    "description": "golden padlock Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/chat.png",
+   "tool": "create_image_pixflux",
+   "job_id": "7b945bdb-57e0-4509-80cc-f91150fbc6b8",
+   "args": {
+    "description": "white speech bubble with three dots Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/smile.png",
+   "tool": "create_image_pixflux",
+   "job_id": "c58470b3-b079-4752-988f-774ebe54f990",
+   "args": {
+    "description": "yellow smiling face emoji Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/crown.png",
+   "tool": "create_image_pixflux",
+   "job_id": "a2b7c250-4cf4-42e2-87a7-709f7096a13a",
+   "args": {
+    "description": "golden crown with a ruby Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/trophy.png",
+   "tool": "create_image_pixflux",
+   "job_id": "2bb5df88-c89a-4fb2-a395-d2abf58c529c",
+   "args": {
+    "description": "golden trophy cup Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/star.png",
+   "tool": "create_image_pixflux",
+   "job_id": "5e4cd1e0-2e67-4e6a-9a3e-216f1cfec4c3",
+   "args": {
+    "description": "shiny golden star Game interface icon, centered, bold readable silhouette, dark outline, bright colors, fantasy steampunk pixel art, no text, no letters.",
+    "width": 32,
+    "height": 32,
+    "no_background": true,
+    "view": "side",
+    "detail": "highly detailed",
+    "shading": "medium shading",
+    "outline": "single color black outline"
+   }
+  },
+  {
+   "target": "assets/ui/icons/team.png",
+   "tool": "create_image_pixflux",
+   "job_id": "edc7317d-6d38-433c-92f7-0d677260a2a9",
+   "note": "48x48 replacement for a weak 32x32 result"
+  },
+  {
+   "target": "assets/ui/icons/play.png",
+   "tool": "create_image_pixflux",
+   "job_id": "f838b886-8bcc-4a6c-9594-21fb94dd332d",
+   "note": "48x48 replacement for a weak 32x32 result"
+  }
+ ],
+ "characters": [
+  {
+   "target": "assets/characters/bot_ruivo/",
+   "tool": "create_character",
+   "character_id": "2416a261-99fd-4d9f-b2d6-78ed00e5afc1",
+   "args": {
+    "description": "Cute chibi boy with spiky red hair, green bandana, brown bomber jacket, short pants and adventurer boots, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_ruivo",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  },
+  {
+   "target": "assets/characters/bot_pirata/",
+   "tool": "create_character",
+   "character_id": "18ba5d31-3bd7-4dc4-b278-33ed52777bcd",
+   "args": {
+    "description": "Cute chibi pirate girl with black tricorn hat, striped shirt, teal long coat and golden earrings, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_pirata",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  },
+  {
+   "target": "assets/characters/bot_maga/",
+   "tool": "create_character",
+   "character_id": "c40ab621-a78f-496f-b318-5077c553b958",
+   "args": {
+    "description": "Cute chibi mage girl with big purple witch hat with stars, lilac robe and brass goggles, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_maga",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  },
+  {
+   "target": "assets/characters/bot_ninja/",
+   "tool": "create_character",
+   "character_id": "9858ad77-f123-4f3a-9252-6b5f200a7681",
+   "args": {
+    "description": "Cute chibi ninja boy with long blue scarf, dark outfit with gold trims and a headband, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_ninja",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  },
+  {
+   "target": "assets/characters/bot_robo/",
+   "tool": "create_character",
+   "character_id": "bf888153-632d-464f-92af-44c3a9fc9bf4",
+   "args": {
+    "description": "Cute chibi kid wearing a round brass diving helmet with glass visor and copper steampunk overalls, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_robo",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  },
+  {
+   "target": "assets/characters/bot_princesa/",
+   "tool": "create_character",
+   "character_id": "10baae0d-c1f9-4994-b584-7b11ecc91070",
+   "args": {
+    "description": "Cute chibi princess with golden tiara, long blonde hair and pink ruffled dress with small armor shoulder pads, big head, fantasy steampunk adventurer, full body, side view.",
+    "name": "Frontier Tank - bot_princesa",
+    "size": 96,
+    "n_directions": 4,
+    "view": "side",
+    "proportions": "{\"type\": \"preset\", \"name\": \"chibi\"}",
+    "detail": "high detail",
+    "shading": "detailed shading",
+    "outline": "single color outline"
+   }
+  }
+ ],
+ "prone_states": [
+  {
+   "target": "assets/characters/nilo/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "7533c6f2-c452-4a00-b126-69a46ee0348f",
+   "character_id": "5cd50cd8-9864-4fbe-8e7b-07315fcf91c8",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/lia/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "2ff737fd-4e3c-4e7f-8391-caacec05e84a",
+   "character_id": "bbf00a34-1859-493a-8d3f-a8a2919107ec",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/bot_ruivo/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "2416a261-99fd-4d9f-b2d6-78ed00e5afc1",
+   "character_id": "42f7f0ae-c50c-498a-9187-74ecee4e0114",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/bot_pirata/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "18ba5d31-3bd7-4dc4-b278-33ed52777bcd",
+   "character_id": "cb6956c5-b2c6-4be0-a120-d2b15550ffbc",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/bot_maga/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "c40ab621-a78f-496f-b318-5077c553b958",
+   "character_id": "4f8ce2d5-8175-4f18-8276-c6016869a93c",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/bot_ninja/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "9858ad77-f123-4f3a-9252-6b5f200a7681",
+   "character_id": "a050516a-29de-4ff3-854a-68a5ceb7788b",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  },
+  {
+   "target": "assets/characters/bot_robo/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "bf888153-632d-464f-92af-44c3a9fc9bf4",
+   "character_id": "f10271d4-0731-421c-99a4-3f6090310c12",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": "bot_robo: generated east/west were swapped"
+  },
+  {
+   "target": "assets/characters/bot_princesa/prone/",
+   "tool": "create_character_state",
+   "source_character_id": "10baae0d-c1f9-4994-b584-7b11ecc91070",
+   "character_id": "60573f20-17d3-4d9e-bfee-a4dc8cd00cfe",
+   "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands",
+   "note": ""
+  }
+ ],
+ "prone_clips": [
+  {
+   "target": "assets/characters/nilo/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "5cd50cd8-9864-4fbe-8e7b-07315fcf91c8",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/nilo/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "5cd50cd8-9864-4fbe-8e7b-07315fcf91c8",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/lia/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "bbf00a34-1859-493a-8d3f-a8a2919107ec",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/lia/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "bbf00a34-1859-493a-8d3f-a8a2919107ec",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_ruivo/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "42f7f0ae-c50c-498a-9187-74ecee4e0114",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_ruivo/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "42f7f0ae-c50c-498a-9187-74ecee4e0114",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_maga/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "4f8ce2d5-8175-4f18-8276-c6016869a93c",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_maga/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "4f8ce2d5-8175-4f18-8276-c6016869a93c",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_pirata/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "cb6956c5-b2c6-4be0-a120-d2b15550ffbc",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_pirata/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "cb6956c5-b2c6-4be0-a120-d2b15550ffbc",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_ninja/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "a050516a-29de-4ff3-854a-68a5ceb7788b",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_ninja/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "a050516a-29de-4ff3-854a-68a5ceb7788b",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_robo/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "f10271d4-0731-421c-99a4-3f6090310c12",
+   "direction": "west",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_robo/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "f10271d4-0731-421c-99a4-3f6090310c12",
+   "direction": "west",
+   "frames": 7,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_princesa/prone/idle/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "60573f20-17d3-4d9e-bfee-a4dc8cd00cfe",
+   "direction": "east",
+   "frames": 5,
+   "status": "done"
+  },
+  {
+   "target": "assets/characters/bot_princesa/prone/crawl/",
+   "tool": "animate_character",
+   "mode": "v3",
+   "character_id": "60573f20-17d3-4d9e-bfee-a4dc8cd00cfe",
+   "direction": "east",
+   "frames": 7,
+   "status": "done"
+  }
+ ],
+ "standing_clips": [
+  {
+   "target": "assets/characters/nilo/walk/",
+   "character_id": "7533c6f2-c452-4a00-b126-69a46ee0348f",
+   "template": "walking-6-frames"
+  },
+  {
+   "target": "assets/characters/nilo/attack/",
+   "character_id": "7533c6f2-c452-4a00-b126-69a46ee0348f",
+   "template": "throw-object"
+  },
+  {
+   "target": "assets/characters/lia/walk/",
+   "character_id": "2ff737fd-4e3c-4e7f-8391-caacec05e84a",
+   "template": "walking-6-frames"
+  },
+  {
+   "target": "assets/characters/lia/idle/",
+   "character_id": "2ff737fd-4e3c-4e7f-8391-caacec05e84a",
+   "template": "breathing-idle"
+  }
+ ],
+ "discarded": [
+  "lia throw-object (turned toward the camera and changed hairstyle; deleted in PixelLab)",
+  "icon_team and icon_play 32x32 (replaced by 48x48)"
+ ]
+}
