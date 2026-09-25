@@ -13,8 +13,9 @@ const LETTERS: Dictionary = {
 	"es": "ÁÉÍÓÚÜÑáéíóúüñ¡¿",
 	"fr": "ÀÂÆÇÉÈÊËÎÏÔŒÙÛÜŸàâæçéèêëîïôœùûüÿ«»",
 }
-# Arrows and marks that already come from the system fallback font in Portuguese.
-const FALLBACK: String = "←→↑↓▶◀►⇄↵✓"
+# Arrows and marks Pixel Operator lacks: they come from the DejaVu subset the game ships
+# (UiKit.SYMBOLS_PATH), because the browser has no system fonts to fall back on.
+const SYMBOLS: String = "←→↑↓▶◀►⇄↵✓"
 
 func _initialize() -> void:
 	call_deferred("run_tests")
@@ -152,12 +153,17 @@ func run_tests() -> void:
 			if not font.has_char(ch.unicode_at(0)):
 				gaps += ch
 		check(gaps == "", "Pixel Operator covers the %s letters %s" % [language, gaps])
+	var missing_symbols: String = ""
+	for ch in SYMBOLS:
+		if not font.has_char(ch.unicode_at(0)):
+			missing_symbols += ch
+	check(missing_symbols == "", "the game's own fonts cover the arrows and marks (no system font on the web) %s" % missing_symbols)
 	var outside: Dictionary = {}
 	for text in keys:
-		for ch in String(english.get_message(text)):
-			if not font.has_char(ch.unicode_at(0)) and not FALLBACK.contains(ch) and ch != "\n":
+		for ch in String(text) + String(english.get_message(text)):
+			if not font.has_char(ch.unicode_at(0)) and ch != "\n":
 				outside[ch] = text
-	check(outside.is_empty(), "every English text uses letters the font has %s" % str(outside.keys()))
+	check(outside.is_empty(), "every text, in both languages, uses characters the game's fonts have %s" % str(outside.keys()))
 	# --- Switching the language
 	Lang.override = ""
 	Lang.setup("en")

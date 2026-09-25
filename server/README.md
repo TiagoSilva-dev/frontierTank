@@ -4,16 +4,23 @@ Três peças: **PostgreSQL**, a **API** em Go (`server/api/`) e o **servidor de 
 
 ## Subir tudo com Docker
 
+O jeito mais simples: **SubirLocal.cmd** no Windows (com o Docker Desktop aberto) ou `tools/local.sh` no Linux e no macOS. O script cria `server/.env` com senha e chave aleatórias (e os cupons de teste ligados), roda o `docker compose`, espera o servidor de jogo aparecer na API e abre **http://localhost:8000**. `tools/local.sh status|logs [serviço]|stop|reset` (no Windows `powershell -File tools/local.ps1 ...`).
+
+À mão:
+
 ```bash
 cd server
 cp .env.example .env
 docker compose up --build -d
 ```
 
-Antes, troque em `.env` a senha do banco (`DB_PASSWORD`) e a chave interna (`INTERNAL_KEY`, com pelo menos 16 caracteres). A primeira construção baixa o Godot 4.7.2 e importa os assets, o que leva alguns minutos.
+Antes, troque em `.env` a senha do banco (`DB_PASSWORD`) e a chave interna (`INTERNAL_KEY`, com pelo menos 16 caracteres). A primeira construção baixa o Godot 4.7.2, importa os assets e exporta o jogo para o navegador, o que leva alguns minutos.
 
-- API pública: `http://localhost:8080` (o jogo usa esse endereço por padrão). Teste com `curl localhost:8080/v1/servers`.
-- Servidor de jogo: `ws://localhost:7350`. A API mostra na lista o endereço de `GAME_PUBLIC_URL`, então para jogar de outro computador use ali o IP ou o domínio da máquina.
+Quatro serviços: `db` (PostgreSQL), `api`, `game` e `web`. O `web` (`server/docker/web.Dockerfile`) exporta o jogo com o preset Web (sem threads) e o serve com nginx (`server/docker/web.nginx.conf`), que também encaminha `/v1/` para a API e `/ws` para o servidor de jogo. Assim tudo fica num endereço só:
+
+- **Jogo no navegador**: `http://localhost:8000` (`WEB_PORT`). O jogo procura a API no próprio endereço e a API lista o servidor de jogo como `ws://localhost:8000/ws` (`GAME_PUBLIC_URL`).
+- **API e servidor de jogo direto** (para o jogo do computador, Jogar.cmd): `http://localhost:8080` e `ws://localhost:7350`, publicados só em `127.0.0.1` (`API_BIND`, `GAME_BIND`). O jogo do computador também entra pelo nginx: `--api=http://localhost:8000`.
+- A API confia no endereço que o nginx manda (`TRUST_PROXY=1`), para o limite de tentativas de login e o registro de acessos terem o IP do jogador. Por isso a porta 8080 não deve ficar aberta para fora.
 - A porta interna da API (8081) não sai da rede do Docker.
 - `docker compose stop game` desliga o servidor de jogo com calma: ele salva todos os perfis e libera as contas antes de sair.
 - Os dados ficam no volume `db-data`. `docker compose down` mantém o volume; `docker compose down -v` apaga tudo.
@@ -24,7 +31,10 @@ Variáveis do `.env`:
 |---|---|
 | `DB_PASSWORD` | Senha do PostgreSQL. |
 | `INTERNAL_KEY` | Chave que a API exige dos servidores de jogo. |
-| `GAME_PUBLIC_URL` | Endereço que os jogadores usam para chegar ao servidor de jogo (`ws://` ou `wss://`). |
+| `WEB_PORT` | Porta do jogo no navegador (8000). Numa VM, é a única que precisa ficar aberta. |
+| `GAME_PUBLIC_URL` | Endereço que os jogadores usam para chegar ao servidor de jogo: a porta web mais `/ws` (`ws://localhost:8000/ws`); atrás de TLS, `wss://`. |
+| `API_BIND`, `GAME_BIND` | Onde a API (8080) e o servidor de jogo (7350) ficam publicados: `127.0.0.1` (só nesta máquina, padrão) ou `0.0.0.0` (na rede). |
+| `TRUST_PROXY` | `1`: a API usa o `X-Forwarded-For` do nginx (o IP do jogador). |
 | `GAME_NAME` | Nome que aparece na tela de entrada. |
 | `TEST_COUPONS` | `1` libera os cupons de teste (TESTARTUDO, MOEDAS, MAPAS...). Só para testes fechados. |
 | `BOT_FILL_SECONDS` | Quanto tempo uma sala procura outra sala antes de completar com rivais de IA. |
@@ -54,9 +64,20 @@ godot --headless --path . -- --server --api=memory --test-coupons=1
 
 Parâmetros (ou as variáveis de ambiente `FT_*` equivalentes): `--port` (7350), `--bind`, `--public-url`, `--name`, `--id`, `--capacity`, `--test-coupons`, `--bot-fill`, `--api` (URL da porta interna ou `memory`), `--api-key`. No modo `memory` não há API para listar servidores; é o modo usado por `tests/net_e2e_tests.gd`.
 
+## Numa VM (próximo passo)
+
+A mesma pilha roda numa VM Linux com Docker (Ubuntu 24.04 com `docker.io` e `docker-compose-v2`, ou o Docker oficial; 2 vCPU e 4 GB de RAM bastam para os testes fechados):
+
+1. Copie o projeto para a VM (`git clone`) e rode `tools/local.sh` uma vez para criar `server/.env`.
+2. Em `server/.env`, troque `GAME_PUBLIC_URL` para `ws://<IP ou domínio da VM>:8000/ws` e rode `tools/local.sh` de novo.
+3. No firewall da VM, abra só a porta 8000 (e a 22 do SSH). As portas 8080 e 7350 já ficam presas a `127.0.0.1`.
+4. Os testadores abrem `http://<IP da VM>:8000`.
+
+Com um domínio, ponha o Caddy na frente para ter HTTPS automático (`https://` para a página e `wss://` para o servidor de jogo; o navegador bloqueia `ws://` numa página `https://`): o Caddy encaminha tudo para `localhost:8000`, `GAME_PUBLIC_URL` vira `wss://<domínio>/ws` e o firewall abre 80 e 443 em vez da 8000. Antes de abrir para mais gente, `TEST_COUPONS=0`.
+
 ## Produção (antes de abrir ao público)
 
-- Coloque um proxy com TLS (Caddy ou nginx) na frente: `https://` para a API e `wss://` para o servidor de jogo, e use `TRUST_PROXY=1` na API.
+- Coloque um proxy com TLS (Caddy ou nginx) na frente do serviço `web`: `https://` para a página e a API e `wss://` para o servidor de jogo (`TRUST_PROXY=1` já é o padrão).
 - Um servidor de jogo aguenta várias batalhas ao mesmo tempo (cada uma é uma cópia da partida no mesmo processo). Para mais jogadores, suba mais serviços `game` com `FT_ID`, `FT_NAME` e portas diferentes; todos aparecem na lista e a presença impede a mesma conta em dois servidores.
 - Faça backup do PostgreSQL (`pg_dump`) com frequência.
 - **Privacidade**: a API guarda a versão dos textos aceita (`accounts.terms_version`), os registros de acesso (`access_log`: IP, data e hora do cadastro e dos logins, 6 meses pelo Marco Civil) e apaga o registro de atividades pelos prazos acima. Rotas: `GET /v1/legal`, `POST /v1/me/terms`, `GET /v1/me/export` (cópia dos dados), `DELETE /v1/me` e, para o servidor de jogo, `POST /internal/accounts/{id}/delete`. Antes de abrir ao público, preencha `legal/controller.json` e faça a revisão jurídica dos textos.

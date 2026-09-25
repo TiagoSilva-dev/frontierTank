@@ -1,0 +1,11 @@
+# Build context of the web image (server/docker/web.Dockerfile). Unlike the game server
+# image, the web export needs tools/web_build.py and the legal texts (legal/*.md).
+.git
+.godot
+build
+*.zip
+docs
+store
+tests
+server/api
+**/__pycache__

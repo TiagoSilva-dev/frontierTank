@@ -19,6 +19,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 - **Moedas com nomes próprios** (item 3.2).
 - **Público internacional desde o começo**: jogo em português e inglês no lançamento (item 4.3).
 - **Nada de tempo com bots agora.** A escala por grupo considera só jogadores; regras para bots aliados ficam para depois.
+- **Primeiro a web, a Steam depois (25/09/2026).** A taxa da Steam (US$ 100) fica para mais tarde; os primeiros testes são na versão de navegador, primeiro tudo no computador (`SubirLocal.cmd` / `tools/local.sh`) e depois numa VM com a mesma pilha. O que já foi feito para a Steam (login por ticket, loja, conquistas, página) fica pronto para quando ela vier.
 - **As dificuldades Normal, Difícil, Heroico e Pesadelo saem.** Entra o sistema de mapas do PoE 2: mapas são itens que caem nas instâncias, e o nível do mapa define a dificuldade e a recompensa.
 
 ## Dependência: servidor
@@ -299,6 +300,8 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 
 ### Checklist de preparação
 - [x] **Backend** (ver "Dependência: servidor"): 0.11.
+- [x] Versão web completa em localhost com um comando: banco, API, servidor de jogo e o jogo no navegador em `http://localhost:8000`, com um nginx que encaminha `/v1/` e `/ws` (um endereço só, pronto para a VM).
+- [ ] Testes fechados numa VM com a mesma pilha (e HTTPS com domínio).
 - [x] Export web de teste (sem threads, sem cabeçalhos COOP/COEP) e medir o FPS na batalha. *(25/09/2026: preset Web, `tools/web_build.py`, teste de desempenho `?bench=30` e `tools/web_bench.cjs`; números no README, seção "Versão web para testes fechados". Falta medir numa máquina com placa de vídeo: o contêiner de testes só tem desenho em software.)*
 - [x] **Revisão de nomes e identidade antes de publicar**: armas, itens e textos com o mesmo nome do DDTank (Quebra Tijolos, Canhão Arco-Íris, Cesto de Frutas de Newton…) e qualquer menção a "DDTank" no material público. A mecânica pode ser parecida, mas nomes e marcas iguais são um risco numa loja comercial. *(Feito em 25/09/2026, tabela abaixo.)*
 
@@ -346,4 +349,4 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **0.11 — Backend** (**feito**): contas, grupos reais, partida com autoridade do servidor (lockstep), e drops, rolagens e moedas no servidor. Docker com PostgreSQL, API e servidor de jogo.
 5. **0.12 — Leilão** (item 3.3, **feito**): anúncios em custódia no PostgreSQL, compra imediata, Correio, taxa e comissão, histórico de preços. Falta a troca de moedas.
-6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam.
+6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam. Decidido em 25/09/2026: a web vem primeiro, tudo no computador (**feito**: `SubirLocal.cmd` / `tools/local.sh`, serviço `web` com nginx no Docker) e depois numa VM (passo a passo em `server/README.md`, seção "Numa VM"); a Steam fica para depois.

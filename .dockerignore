@@ -1,6 +1,8 @@
 # Build context of the game server image (server/docker/game.Dockerfile).
 .git
 .godot
+# Exports (tools/web_build.py); the web image builds its own.
+build
 *.zip
 docs
 server/api

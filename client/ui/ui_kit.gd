@@ -48,6 +48,9 @@ static var _smooth: ShaderMaterial
 # Pixel Operator Bold (CC0) replaced Jersey 10 for legibility: it is drawn on a 16px
 # grid, so sizes below 16 are raised to 16 and the rest stay close to the request.
 const FONT_PATH: String = "res://assets/fonts/PixelOperator-Bold.ttf"
+# The arrows and marks Pixel Operator lacks (← → ↑ ↓ ▶ ◀ ► ⇄ ↵ ✓), from DejaVu Sans Bold.
+# The desktop could find them in the system fonts; the browser has none.
+const SYMBOLS_PATH: String = "res://assets/fonts/DejaVuSans-Bold-Symbols.ttf"
 
 static func font(_bold: bool = true) -> Font:
 	if _font == null:
@@ -55,6 +58,10 @@ static func font(_bold: bool = true) -> Font:
 		base.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 		base.hinting = TextServer.HINTING_NONE
 		base.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+		var symbols: FontFile = load(SYMBOLS_PATH)
+		symbols.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+		symbols.hinting = TextServer.HINTING_NONE
+		base.fallbacks = [symbols]
 		_font = FontVariation.new()
 		_font.base_font = base
 	return _font

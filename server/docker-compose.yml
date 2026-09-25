@@ -1,8 +1,12 @@
-# Frontier Tank online: PostgreSQL + API (Go) + one game server (Godot headless).
+# Frontier Tank online: PostgreSQL + API (Go) + one game server (Godot headless) + the
+# web game (nginx), all on one machine.
+#   tools/local.sh (or SubirLocal.cmd on Windows) creates .env and runs everything, or:
 #   cd server && cp .env.example .env   (then change the passwords and the key)
 #   docker compose up --build
-# The game connects to the API at http://localhost:8080 and lists the game server,
-# which players reach at FT_PUBLIC_URL (ws://localhost:7350 by default).
+# Players open http://localhost:8000 (WEB_PORT): nginx serves the web game and forwards
+# /v1/ to the API and /ws to the game server, so only that port needs to be open.
+# The API (8080) and the game server (7350) are also published for the desktop game,
+# on 127.0.0.1 only unless API_BIND / GAME_BIND say otherwise.
 name: frontier-tank
 
 services:
@@ -33,7 +37,9 @@ services:
       INTERNAL_ADDR: ":8081"
       INTERNAL_KEY: ${INTERNAL_KEY:?set INTERNAL_KEY in .env}
       ALLOW_ORIGIN: ${ALLOW_ORIGIN:-*}
-      TRUST_PROXY: ${TRUST_PROXY:-0}
+      # The web players come through nginx, which sends their address in X-Forwarded-For
+      # (login limit per IP and the access log). Keep 8080 closed to the outside.
+      TRUST_PROXY: ${TRUST_PROXY:-1}
       # Privacy (launch checklist): the version of legal/*.md players must accept and how
       # long the logs are kept (see the Privacy Policy).
       LEGAL_VERSION: ${LEGAL_VERSION:-2026-09-25}
@@ -49,7 +55,7 @@ services:
       ORDER_RETENTION_DAYS: ${ORDER_RETENTION_DAYS:-1826}
     ports:
       # Only the public API is published; 8081 (internal) stays inside the network.
-      - "${API_PORT:-8080}:8080"
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
     networks:
       default:
         # Godot's HTTP client refuses host names shorter than 4 letters ("api").
@@ -69,7 +75,8 @@ services:
       FT_ID: s1
       FT_NAME: ${GAME_NAME:-S1 · Nova Era}
       FT_PORT: "7350"
-      FT_PUBLIC_URL: ${GAME_PUBLIC_URL:-ws://localhost:7350}
+      # Through the web port (nginx /ws); the desktop game can use it too.
+      FT_PUBLIC_URL: ${GAME_PUBLIC_URL:-ws://localhost:8000/ws}
       FT_CAPACITY: ${GAME_CAPACITY:-500}
       FT_TEST_COUPONS: ${TEST_COUPONS:-0}
       FT_BOT_FILL: ${BOT_FILL_SECONDS:-20}
@@ -77,7 +84,18 @@ services:
       FT_REPORT_MUTE: ${REPORT_MUTE:-3}
       FT_STOP_FILE: /tmp/frontier-stop
     ports:
-      - "${GAME_PORT:-7350}:7350"
+      - "${GAME_BIND:-127.0.0.1}:${GAME_PORT:-7350}:7350"
+
+  web:
+    build:
+      context: ..
+      dockerfile: server/docker/web.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+      - game
+    ports:
+      - "${WEB_PORT:-8000}:80"
 
 volumes:
   db-data:

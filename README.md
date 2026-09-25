@@ -37,6 +37,16 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | **Correio** (`mail.png`) | Online: vendas do Leilão e itens que voltam; RECEBER e RECEBER TUDO. O ícone CORREIO da barra mostra quantas cartas esperam. |
 | **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |
 
+## Tudo no seu computador, no navegador
+Um comando sobe o banco (PostgreSQL), a API, o servidor de jogo e o jogo web com o Docker, e o jogo abre em **http://localhost:8000**:
+
+- **Windows**: abra o Docker Desktop e dê dois cliques em **SubirLocal.cmd** (ou `powershell -File tools/local.ps1`).
+- **Linux e macOS** (e depois a VM): `tools/local.sh`.
+
+A primeira vez leva alguns minutos (baixa o Godot, importa os assets e exporta o jogo para o navegador); depois é rápido. O script cria `server/.env` com senha e chave aleatórias e os cupons de teste ligados, espera o servidor de jogo aparecer e abre o navegador. Crie a conta na própria página e jogue. Outros comandos: `status`, `logs [api|game|web|db]`, `stop` e `reset` (apaga o banco, pede confirmação). Detalhes, variáveis e o que muda numa VM em `server/README.md`.
+
+Tudo passa por um endereço só: o nginx do serviço `web` entrega o jogo, manda `/v1/...` para a API e `/ws` para o servidor de jogo. O jogo do computador (Jogar.cmd) continua entrando pelas portas 8080 e 7350, que ficam abertas só nesta máquina.
+
 ## Versão web para testes fechados
 A versão web roda sem threads, então não precisa de `SharedArrayBuffer` nem dos cabeçalhos COOP/COEP: qualquer hospedagem estática serve (itch.io, GitHub Pages, Netlify, nginx). Preset **Web** em `export_presets.cfg` (os documentos, testes, ferramentas e metadados do PixelLab ficam de fora do pacote).
 
@@ -51,6 +61,7 @@ node tools/web_bench.cjs --seconds 30 # FPS da batalha no Chromium (Playwright);
 - **Teste de desempenho** (`--bench=30` no computador, `?bench=30` na web): uma batalha 4 contra 4 jogada pela IA, 3 s de aquecimento e a medição: FPS médio e dos 1% mais lentos, tempo de quadro (média, 95%, 99%), tempo dos scripts separado do desenho, chamadas de desenho e nós. O resultado aparece na tela, no log (`BENCH {...}`) e em `window.ftBench`; usa um perfil de rascunho e nunca mexe no seu save.
 - **API na web**: por padrão o jogo procura a API no próprio endereço da página (o proxy de produção manda `/v1/...` para a API, sem CORS). Numa página `https://`, o servidor de jogo precisa de `wss://` (`GAME_PUBLIC_URL`), senão o navegador bloqueia.
 - No navegador não há botão SAIR na entrada; SAIR na cidade volta para a tela de entrada.
+- O navegador não tem fontes do sistema: as setas e marcas que a fonte pixel não tem (← → ↑ ↓ ▶ ◀ ► ⇄ ↵ ✓) vêm de um recorte da DejaVu Sans Bold que vai no jogo (`assets/fonts/DejaVuSans-Bold-Symbols.ttf`, 2 KB).
 
 **Medição (25/09/2026, batalha 4v4, 8 lutadores, 1280×720):**
 
