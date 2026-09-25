@@ -15,6 +15,9 @@ func check(value: bool, message: String) -> void:
 		push_error(message)
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	PlayerProfile.path_override = "user://test_profile.json"
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
@@ -193,7 +196,31 @@ func run_tests() -> void:
 	for i in range(3):
 		smith.do_strengthen()
 	check(int(app.profile.find_instance(int(thunder.uid)).level) == 3 and app.profile.look().weapon_level == 3, "Ferreiro strengthens the equipped weapon (green aura)")
+	# Moedas (0.10): currencies used on gear and maps from the Ferreiro.
+	app.profile.redeem("MOEDAS")
+	smith.select_tab("Moedas")
+	var crown: Dictionary = app.profile.inventory.filter(func(i: Dictionary) -> bool: return i.id == "chapeu_coroa").front()
+	smith.pick_craft(int(crown.uid))
+	await process_frame
+	var brasa_button: Button = smith.find_child("Currency_brasa", true, false)
+	var coroa_button: Button = smith.find_child("Currency_coroa", true, false)
+	check(brasa_button != null and not brasa_button.disabled and coroa_button.disabled, "the Moedas tab only enables the currencies that fit the item")
+	brasa_button.pressed.emit()
+	check(crown.quality == "excelente" and crown.mods.size() == 1 and smith.message.begins_with("Usou Brasa"), "a Brasa makes a hat Excelente with one bonus")
+	var loose_map: Dictionary = app.profile.add_map(InstanceRun.make_map("ilha_ruinas", 3, RandomNumberGenerator.new(), 0.0, "normal"))
+	smith.select_target("map")
+	smith.pick_craft(int(loose_map.uid))
+	await process_frame
+	check(smith.find_child("CraftMap_%d" % int(loose_map.uid), true, false) != null and smith.find_child("Currency_espelho", true, false).disabled, "maps can be crafted too (the Espelho only copies gear)")
+	smith.do_craft("brasa")
+	check(loose_map.quality == "excelente" and loose_map.mods.size() == 1, "a Brasa turns a map Excelente")
 	smith.close()
+	bag.filter_items("Materiais")
+	check(bag.entries().any(func(e: Dictionary) -> bool: return e.key == "item:solar" and int(e.count) == 5), "currencies show in the Materiais tab")
+	bag.select_item("item:solar")
+	check(bag.selected_label.text.contains("Rerola só os valores"), "a selected currency explains its use")
+	bag.select_item("uid:%d" % int(crown.uid))
+	check(bag.selected_label.text.contains("Nível do item") and bag.selected_label.text.contains("F"), "the Mochila lists the item's bonuses and item level")
 	bag.select_tab("Atributos")
 	bag.select_tab("Histórico")
 	app.close_bag()

@@ -3,15 +3,15 @@ extends Control
 
 # Tela de entrada, como o login do DDTank: arte PixelLab em 2x, o logotipo com um
 # brilho passando, a escolha de servidor (simulada, o jogo é offline) e ENTRAR,
-# que leva à cidade.
+# que leva à cidade. No canto, o idioma do jogo (português ou inglês, roadmap 4.3).
 
 const ART: String = "res://assets/title/title_bg.png"
 const LOGO: String = "res://assets/title/logo.png"
-const VERSION: String = "0.6"
+const VERSION: String = "0.10"
 const SERVERS: Array[Dictionary] = [
-	{"name": "S1 · Nova Era", "state": "Recomendado", "color": "8cff6a"},
-	{"name": "S2 · Ilha Celeste", "state": "Movimentado", "color": "ffd46b"},
-	{"name": "S3 · Templo do Sol", "state": "Novo", "color": "7ad8ff"},
+	{"name": "S1 · Nova Era", "state": "Recomendado", "color": "8cff6a"},  # i18n
+	{"name": "S2 · Ilha Celeste", "state": "Movimentado", "color": "ffd46b"},  # i18n
+	{"name": "S3 · Templo do Sol", "state": "Novo", "color": "7ad8ff"},  # i18n
 ]
 
 var app: Node
@@ -37,20 +37,33 @@ func _ready() -> void:
 	logo.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var box: Panel = UiKit.panel(self, Rect2(452, 452, 376, 236), "wood")
 	UiKit.panel(box, Rect2(12, 40, 352, 128), "paper")
-	UiKit.title(box, "SELECIONE O SERVIDOR", Rect2(0, 6, 376, 30), 20)
+	UiKit.title(box, tr("SELECIONE O SERVIDOR"), Rect2(0, 6, 376, 30), 20)
 	for i in range(SERVERS.size()):
 		var server: Dictionary = SERVERS[i]
 		var row: Button = UiKit.button(box, "", Rect2(20, 48 + i * 38, 336, 34), pick.bind(i), "card")
 		row.name = "Server_%d" % i
-		UiKit.label(row, str(server.name), Rect2(12, 0, 200, 34), 16, UiKit.TEXT_DARK)
-		UiKit.label(row, str(server.state), Rect2(196, 0, 128, 34), 15, Color(str(server.color)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+		UiKit.label(row, tr(str(server.name)), Rect2(12, 0, 200, 34), 16, UiKit.TEXT_DARK)
+		UiKit.label(row, tr(str(server.state)), Rect2(196, 0, 128, 34), 15, Color(str(server.color)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		server_buttons.append(row)
-	var play: Button = UiKit.button(box, "ENTRAR", Rect2(98, 178, 180, 46), enter, "button_green", 24)
+	var play: Button = UiKit.button(box, tr("ENTRAR"), Rect2(98, 178, 180, 46), enter, "button_green", 24)
 	play.name = "EnterButton"
-	UiKit.label(self, "Frontier Tank: Nova Era %s · modo offline, servidores simulados" % VERSION, Rect2(12, 690, 700, 26), 15, Color("fff4d6"), UiKit.INK)
-	var quit: Button = UiKit.button(self, "SAIR", Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
+	UiKit.label(self, tr("Frontier Tank: Nova Era %s · modo offline, servidores simulados") % VERSION, Rect2(12, 690, 700, 26), 15, Color("fff4d6"), UiKit.INK)
+	var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
 	quit.name = "QuitButton"
+	for i in range(Lang.LOCALES.size()):
+		var code: String = Lang.LOCALES[i]
+		var language: Button = UiKit.button(self, Lang.LABELS[code], Rect2(1000 + i * 138, 12, 130, 36), choose_language.bind(code), "tab_active" if Lang.locale() == code else "tab", 15)
+		language.name = "Lang_" + code
+		language.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	pick(0)
+
+func choose_language(code: String) -> void:
+	# The whole game follows; screens are rebuilt when they open, so the title is rebuilt now.
+	if code == Lang.locale():
+		return
+	Lang.set_locale(code)
+	app.audio.play("ui_click")
+	app.show_title()
 
 func pick(index: int) -> void:
 	chosen = index
@@ -59,7 +72,7 @@ func pick(index: int) -> void:
 
 func enter() -> void:
 	app.audio.play("ui_confirm")
-	app.lobby.post("Sistema", "Bem-vindo ao servidor %s!" % str(SERVERS[chosen].name), "system")
+	app.lobby.post("Sistema", tr("Bem-vindo ao servidor %s!") % tr(str(SERVERS[chosen].name)), "system")
 	app.show_city()
 
 func _unhandled_key_input(event: InputEvent) -> void:

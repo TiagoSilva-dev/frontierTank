@@ -6,6 +6,10 @@ extends RefCounted
 # equipped slot -> uid map; stones and crystals stay as counters in `items`.
 # v4 (0.9) adds the instance maps ({uid, instance, level, quality, mods}), the item level
 # (`ilvl`) of dropped weapons and the Super Verdadeira guarantee counter per instance.
+# v5 (0.10) adds the random bonus attributes of gear (`mods`: {id, tier, value}), a quality
+# for hats, glasses, wings and outfits, `bound` (shop, coupon and mirrored items: never
+# traded) and `mirrored` (Espelho Celeste copies: never changed). Currencies are counters
+# in `items` like the stones. Drops from v4 saves get their bonuses rolled once on load.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -26,10 +30,12 @@ var next_uid: int = 1
 var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 func _init() -> void:
 	if path_override != "":
 		save_path = path_override
+	rng.randomize()
 	ensure_starter()
 
 func load_profile() -> void:
@@ -62,12 +68,21 @@ func load_profile() -> void:
 	equipped.clear()
 	next_uid = maxi(1, int(data.get("next_uid", 1)))
 	var saved_inventory: Variant = data.get("inventory", [])
+	var migrated: bool = false
 	if saved_inventory is Array:
 		for raw: Variant in saved_inventory:
 			if raw is Dictionary and Armory.kind_of(str(raw.get("id", ""))) != "":
-				var inst: Dictionary = {"uid": int(raw.get("uid", next_uid)), "id": str(raw.id), "quality": str(raw.get("quality", "normal")), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": raw.get("compose", {})}
+				var id: String = str(raw.id)
+				var inst: Dictionary = {"uid": int(raw.get("uid", next_uid)), "id": id, "quality": valid_quality(id, str(raw.get("quality", "normal"))), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": raw.get("compose", {}), "mods": Crafting.valid_mods(raw.get("mods", []), id)}
 				if int(raw.get("ilvl", 0)) > 0:
 					inst.ilvl = clampi(int(raw.ilvl), 1, 16)
+				for flag: String in ["bound", "mirrored"]:
+					if bool(raw.get(flag, false)):
+						inst[flag] = true
+				if not raw.has("mods") and inst.has("ilvl") and inst.quality != "normal":
+					# v4 drop: roll the bonuses it would have dropped with.
+					inst.mods = Crafting.roll_mods(inst, rng)
+					migrated = true
 				inventory.append(inst)
 				next_uid = maxi(next_uid, int(inst.uid) + 1)
 	var saved_equipped: Variant = data.get("equipped", {})
@@ -81,6 +96,8 @@ func load_profile() -> void:
 		for raw: Variant in saved_maps:
 			if raw is Dictionary and raw.has("instance"):
 				var item: Dictionary = {"uid": int(raw.get("uid", next_uid)), "instance": str(raw.instance), "level": clampi(int(raw.get("level", 1)), 1, 16), "quality": str(raw.get("quality", "normal")), "mods": raw.get("mods", [])}
+				if bool(raw.get("bound", false)):
+					item.bound = true
 				maps.append(item)
 				next_uid = maxi(next_uid, int(item.uid) + 1)
 	var saved_pity: Variant = data.get("pity", {})
@@ -98,6 +115,8 @@ func load_profile() -> void:
 		var inst: Dictionary = add_instance(Armory.legacy_instance(int(data.weapon)).id)
 		equipped["arma"] = inst.uid
 	ensure_starter()
+	if migrated:
+		save_profile()
 
 func ensure_starter() -> void:
 	# Every account starts with the basic look (t-shirt and shorts) and a Quebra Tijolos.
@@ -114,7 +133,7 @@ func ensure_starter() -> void:
 func save_profile() -> void:
 	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if file != null:
-		file.store_string(JSON.stringify({"version": 4, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}))
+		file.store_string(JSON.stringify({"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}))
 
 static func exp_for_level(value: int) -> int:
 	return 60 * value * (value - 1)
@@ -156,14 +175,20 @@ func record_match(won: bool, exp_gain: int, merit_gain: int) -> void:
 
 # ---------- inventory ----------
 
-func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: int = 0) -> Dictionary:
-	if Armory.kind_of(id) != "weapon":
-		quality = "normal"
-	elif bool(Armory.weapon_def(id).get("super", false)):
-		quality = "super"
-	var inst: Dictionary = {"uid": next_uid, "id": id, "quality": quality, "level": clampi(level, 0, 12), "compose": {}}
+static func valid_quality(id: String, quality: String) -> String:
+	# Super Verdadeira is only for the super weapons; gear that takes bonuses can be
+	# Normal, Excelente or Verdadeira; everything else stays Normal.
+	if Armory.kind_of(id) == "weapon" and bool(Armory.weapon_def(id).get("super", false)):
+		return "super"
+	if Crafting.can_have_mods(id) and quality in ["normal", "excelente", "verdadeira"]:
+		return quality
+	return "normal"
+
+func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: int = 0, mods: Array = []) -> Dictionary:
+	quality = valid_quality(id, quality)
+	var inst: Dictionary = {"uid": next_uid, "id": id, "quality": quality, "level": clampi(level, 0, 12), "compose": {}, "mods": Crafting.valid_mods(mods, id)}
 	if ilvl > 0:
-		# Item level = level of the map it dropped in (limits random bonuses in 0.10).
+		# Item level = level of the map it dropped in: it limits the bonus tiers (0.10).
 		inst.ilvl = clampi(ilvl, 1, 16)
 	next_uid += 1
 	inventory.append(inst)
@@ -198,18 +223,18 @@ func is_equipped(uid: int) -> bool:
 func equip(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty():
-		return "Item não encontrado."
+		return tr("Item não encontrado.")
 	var id: String = str(inst.id)
 	if Armory.kind_of(id) == "cosmetic":
 		var wanted: String = str(Armory.cosmetic_def(id).gender)
 		if wanted != "u" and wanted != gender:
-			return "Esta roupa é do outro gênero."
+			return tr("Esta roupa é do outro gênero.")
 	equipped[Armory.slot_of(id)] = uid
 	return ""
 
 func unequip(slot: String) -> String:
 	if slot == "arma":
-		return "Você precisa ter uma arma equipada."
+		return tr("Você precisa ter uma arma equipada.")
 	equipped.erase(slot)
 	return ""
 
@@ -242,26 +267,28 @@ static func item_price(id: String, quality: String = "normal") -> int:
 func buy(id: String, quality: String = "normal") -> String:
 	var def: Dictionary = Armory.definition(id)
 	if def.is_empty():
-		return "Item desconhecido."
+		return tr("Item desconhecido.")
 	if bool(def.get("super", false)) or quality == "super":
-		return "Super armas só caem do chefe das instâncias."
+		return tr("Super armas só caem do chefe das instâncias.")
 	if quality == "verdadeira":
-		return "Armas Verdadeiras só caem nas instâncias."
+		return tr("Armas Verdadeiras só caem nas instâncias.")
 	var price: int = item_price(id, quality)
 	if coins < price:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= price
-	add_instance(id, quality)
+	# Shop items come without bonuses and are bound (never go to the auction).
+	var bought: Dictionary = add_instance(id, quality)
+	bought.bound = true
 	save_profile()
 	return ""
 
 func buy_stone(id: String, amount: int = 1) -> String:
 	var stone: Dictionary = Armory.stone_def(id)
 	if stone.is_empty():
-		return "Item desconhecido."
+		return tr("Item desconhecido.")
 	var price: int = int(stone.price) * amount
 	if coins < price:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= price
 	add_item(id, amount)
 	save_profile()
@@ -277,7 +304,7 @@ func entry(balance: Dictionary) -> Dictionary:
 	# Battle roster entry for this character.
 	var numbers: Dictionary = stats(balance)
 	var aux: Dictionary = equipped_instance("auxiliar")
-	return {"name": player_name, "level": level(), "gender": gender, "human": true, "tools": tools.duplicate(), "agility": int(numbers.agilidade), "hp": int(numbers.vida), "arma": equipped_instance("arma").duplicate(), "look": look(), "attrs": numbers.extra.duplicate(), "aux": str(aux.get("id", ""))}
+	return {"name": player_name, "level": level(), "gender": gender, "human": true, "tools": tools.duplicate(), "agility": int(numbers.agilidade), "hp": int(numbers.vida), "arma": equipped_instance("arma").duplicate(true), "look": look(), "attrs": numbers.extra.duplicate(), "bonus": numbers.bonus.duplicate(), "aux": str(aux.get("id", ""))}
 
 # ---------- instance maps ----------
 
@@ -327,14 +354,14 @@ func strengthen_cost(inst: Dictionary) -> Dictionary:
 func strengthen(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or not Armory.can_strengthen(str(inst.id)):
-		return "Só armas, roupas e chapéus podem ser fortalecidos."
+		return tr("Só armas, roupas e chapéus podem ser fortalecidos.")
 	var cost: Dictionary = strengthen_cost(inst)
 	if cost.is_empty():
-		return "Este item já está no +12."
+		return tr("Este item já está no +12.")
 	if stone_points() < int(cost.points):
-		return "Pedras insuficientes: precisa de %d pontos de pedra, você tem %d." % [int(cost.points), stone_points()]
+		return tr("Pedras insuficientes: precisa de %d pontos de pedra, você tem %d.") % [int(cost.points), stone_points()]
 	if coins < int(cost.coins):
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= int(cost.coins)
 	# Spend the smallest stones first; a bigger stone breaks into points when needed.
 	var needed: int = int(cost.points)
@@ -360,26 +387,26 @@ func fuse(stone_id: String) -> String:
 	for i in range(stones.size() - 1):
 		if stones[i].id == stone_id:
 			if int(items.get(stone_id, 0)) < int(rules.fusion_count):
-				return "Precisa de %d pedras iguais." % int(rules.fusion_count)
+				return tr("Precisa de %d pedras iguais.") % int(rules.fusion_count)
 			if coins < int(rules.fusion_coins):
-				return "Moedas insuficientes."
+				return tr("Moedas insuficientes.")
 			coins -= int(rules.fusion_coins)
 			items[stone_id] = int(items[stone_id]) - int(rules.fusion_count)
 			add_item(str(stones[i + 1].id))
 			save_profile()
 			return ""
-	return "Esta pedra já é do nível máximo."
+	return tr("Esta pedra já é do nível máximo.")
 
 func transfer(source_uid: int, target_uid: int) -> String:
 	var source: Dictionary = find_instance(source_uid)
 	var target: Dictionary = find_instance(target_uid)
 	if source.is_empty() or target.is_empty() or source_uid == target_uid:
-		return "Escolha dois itens diferentes."
+		return tr("Escolha dois itens diferentes.")
 	if Armory.slot_of(str(source.id)) != Armory.slot_of(str(target.id)):
-		return "A transferência só funciona entre itens do mesmo tipo."
+		return tr("A transferência só funciona entre itens do mesmo tipo.")
 	var cost: int = int(Armory.data().strengthen.transfer_coins)
 	if coins < cost:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= cost
 	var level: int = int(source.level)
 	var composed: Dictionary = source.get("compose", {}).duplicate()
@@ -394,21 +421,67 @@ func compose(uid: int, attr: String) -> String:
 	var rules: Dictionary = Armory.data().strengthen.compose
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or not attr in Armory.ATTRS:
-		return "Escolha um item e um atributo."
+		return tr("Escolha um item e um atributo.")
 	var composed: Dictionary = inst.get("compose", {})
 	var total: int = 0
 	for key: String in composed:
 		total += int(composed[key])
 	if total / int(rules.amount) >= int(rules.max):
-		return "Este item já recebeu %d composições." % int(rules.max)
+		return tr("Este item já recebeu %d composições.") % int(rules.max)
 	if int(items.get(rules.item, 0)) <= 0:
-		return "Você precisa de um Cristal Dourado."
+		return tr("Você precisa de um Cristal Dourado.")
 	if coins < int(rules.coins):
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= int(rules.coins)
 	items[rules.item] = int(items[rules.item]) - 1
 	composed[attr] = int(composed.get(attr, 0)) + int(rules.amount)
 	inst.compose = composed
+	save_profile()
+	return ""
+
+# ---------- moedas (0.10) ----------
+
+func currency_count(id: String) -> int:
+	return int(items.get(id, 0))
+
+func craft(currency: String, uid: int) -> String:
+	# Uses one currency on a piece of gear; the Espelho Celeste adds a bound copy.
+	var inst: Dictionary = find_instance(uid)
+	if not Crafting.is_currency(currency):
+		return tr("Moeda desconhecida.")
+	var error: String = Crafting.check(currency, inst)
+	if error != "":
+		return error
+	if currency_count(currency) <= 0:
+		return tr("Você não tem %s.") % Crafting.currency_name(currency)
+	if currency == "espelho":
+		var copy: Dictionary = inst.duplicate(true)
+		copy.uid = next_uid
+		next_uid += 1
+		copy.mirrored = true
+		copy.bound = true
+		inventory.append(copy)
+	else:
+		error = Crafting.apply(currency, inst, rng)
+		if error != "":
+			return error
+	items[currency] = currency_count(currency) - 1
+	save_profile()
+	return ""
+
+func craft_map(currency: String, uid: int) -> String:
+	var item: Dictionary = find_map(uid)
+	if not Crafting.is_currency(currency):
+		return tr("Moeda desconhecida.")
+	var error: String = Crafting.check_map(currency, item)
+	if error != "":
+		return error
+	if currency_count(currency) <= 0:
+		return tr("Você não tem %s.") % Crafting.currency_name(currency)
+	error = Crafting.apply_map(currency, item, rng)
+	if error != "":
+		return error
+	items[currency] = currency_count(currency) - 1
 	save_profile()
 	return ""
 
@@ -421,10 +494,11 @@ func redeem(code: String) -> String:
 		if entry.code == code:
 			coupon = entry
 	if coupon.is_empty():
-		return "Cupom inválido."
+		return tr("Cupom inválido.")
 	if coupons.has(code) and not bool(coupon.get("repeat", false)):
-		return "Este cupom já foi usado nesta conta."
+		return tr("Este cupom já foi usado nesta conta.")
 	coupons.append(code)
+	var before: int = next_uid
 	if bool(coupon.get("all", false)):
 		for def: Dictionary in Armory.data().weapons:
 			if bool(def.get("super", false)):
@@ -457,6 +531,16 @@ func redeem(code: String) -> String:
 		for instance: Dictionary in InstanceRun.rules().instances:
 			for i in range(map_levels.size()):
 				add_map(InstanceRun.make_map(str(instance.id), int(map_levels[i]), random, 0.0, qualities[i % qualities.size()]))
+	var bundle: Dictionary = coupon.get("currencies", {})
+	for id: String in bundle:
+		add_item(id, int(bundle[id]))
+	# Coupon items are bound: they never go to the auction.
+	for inst in inventory:
+		if int(inst.uid) >= before:
+			inst.bound = true
+	for item in maps:
+		if int(item.uid) >= before:
+			item.bound = true
 	coins += int(coupon.get("coins", 0))
 	save_profile()
-	return str(coupon.desc)
+	return tr(str(coupon.desc))

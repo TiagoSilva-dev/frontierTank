@@ -7,7 +7,7 @@ extends Control
 
 signal closed
 
-const TABS: Array = [["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Cabelos", "cabelo"], ["Auxiliar", "auxiliar"], ["Pedras", "pedras"]]
+const TABS: Array = [["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Cabelos", "cabelo"], ["Auxiliar", "auxiliar"], ["Pedras", "pedras"]]  # i18n
 const PER_PAGE: int = 8
 
 var app: Node
@@ -31,11 +31,11 @@ func build() -> void:
 	move_child(contents, 0)
 	UiKit.dim(contents, 0.75)
 	UiKit.panel(contents, Rect2(40, 24, 1200, 672), "wood")
-	UiKit.title(contents, "CENTRO COMERCIAL", Rect2(40, 30, 1200, 44), 30)
-	UiKit.button(contents, "FECHAR", Rect2(1086, 34, 140, 42), close)
+	UiKit.title(contents, tr("CENTRO COMERCIAL"), Rect2(40, 30, 1200, 44), 30)
+	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	build_preview()
 	for i in range(TABS.size()):
-		UiKit.button(contents, TABS[i][0], Rect2(432 + i * 99, 84, 95, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
+		UiKit.button(contents, tr(TABS[i][0]), Rect2(432 + i * 99, 84, 95, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
 	UiKit.panel(contents, Rect2(430, 126, 794, 554), "paper")
 	var list: Array = items()
 	var pages: int = maxi(1, ceili(list.size() / float(PER_PAGE)))
@@ -54,7 +54,7 @@ func build() -> void:
 
 func build_preview() -> void:
 	UiKit.panel(contents, Rect2(56, 84, 360, 596), "paper")
-	UiKit.label(contents, "PROVADOR", Rect2(56, 90, 360, 30), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("PROVADOR"), Rect2(56, 90, 360, 30), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var look: Dictionary = app.profile.look()
 	if not trying.is_empty():
 		var equipped: Array = app.profile.equipped_list().filter(func(inst: Dictionary) -> bool: return Armory.slot_of(str(inst.id)) != Armory.slot_of(str(trying.id)))
@@ -65,8 +65,8 @@ func build_preview() -> void:
 	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, Color("a86a10"), Color.TRANSPARENT)
-	UiKit.label(contents, "Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias.", Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.button(contents, "CUPOM", Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
+	UiKit.label(contents, tr("Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias."), Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
 
 func items() -> Array:
 	var list: Array = []
@@ -90,31 +90,31 @@ func card(def: Dictionary, rect: Rect2) -> void:
 	var icon: Texture2D = load(str(def.icon)) if tab == "pedras" else Armory.load_icon(inst)
 	var picture: TextureRect = UiKit.art(box, icon, Rect2(44, 8, 100, 92))
 	picture.modulate = Armory.icon_tint(inst)
-	var title: Label = UiKit.label(box, str(def.name), Rect2(4, 100, 180, 44), 15, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	var title: Label = UiKit.label(box, tr(str(def.name)), Rect2(4, 100, 180, 44), 15, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if tab == "arma":
 		if def.get("super", false):
-			UiKit.label(box, "SUPER VERDADEIRA\nSó no baú do chefe", Rect2(4, 146, 180, 60), 13, Color("ffb347"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-			UiKit.label(box, "Você tem" if app.profile.has_item(def.id) else "", Rect2(4, 204, 180, 28), 14, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(box, tr("SUPER VERDADEIRA\nSó no baú do chefe"), Rect2(4, 146, 180, 60), 13, Color("ffb347"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(box, tr("Você tem") if app.profile.has_item(def.id) else "", Rect2(4, 204, 180, 28), 14, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 			return
 		# 0.9: the shop sells Normal and Excelente only; Verdadeira comes from instances.
 		for q in range(2):
 			var quality: String = ["normal", "excelente"][q]
 			var price: int = PlayerProfile.item_price(str(def.id), quality)
-			var label_text: String = "%s  %d" % [["Normal", "Excelente"][q], price]
+			var label_text: String = "%s  %d" % [Armory.quality_label(quality), price]
 			var buy: Button = UiKit.button(box, label_text, Rect2(8, 146 + q * 30, 172, 28), buy_item.bind(str(def.id), quality), ["button", "button_blue"][q], 13)
 			buy.disabled = app.profile.coins < price
-		UiKit.label(box, "Verdadeira: instâncias", Rect2(4, 208, 180, 24), 12, Color("c99bff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Verdadeira: instâncias"), Rect2(4, 208, 180, 24), 12, Color("c99bff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	var price_value: int = int(def.get("price", 0))
-	UiKit.label(box, "%d moedas" % price_value, Rect2(4, 148, 180, 28), 16, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, tr("%d moedas") % price_value, Rect2(4, 148, 180, 28), 16, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	if tab == "pedras":
-		UiKit.label(box, "%d ponto(s) • você tem %d" % [int(def.points), int(app.profile.items.get(def.id, 0))], Rect2(4, 174, 180, 24), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("%d ponto(s) • você tem %d") % [int(def.points), int(app.profile.items.get(def.id, 0))], Rect2(4, 174, 180, 24), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.button(box, "x1", Rect2(8, 202, 80, 30), buy_stone.bind(str(def.id), 1), "button_green", 14)
 		UiKit.button(box, "x10", Rect2(100, 202, 80, 30), buy_stone.bind(str(def.id), 10), "button_green", 14)
 		return
 	var owned: bool = app.profile.has_item(def.id)
-	var buy_button: Button = UiKit.button(box, "COMPRADO" if owned and tab != "auxiliar" else "COMPRAR", Rect2(24, 190, 140, 38), buy_item.bind(str(def.id), "normal"), "button_green", 16)
+	var buy_button: Button = UiKit.button(box, tr("COMPRADO") if owned and tab != "auxiliar" else tr("COMPRAR"), Rect2(24, 190, 140, 38), buy_item.bind(str(def.id), "normal"), "button_green", 16)
 	buy_button.disabled = (owned and tab != "auxiliar") or app.profile.coins < price_value
 
 func try_on(def: Dictionary) -> void:
@@ -125,13 +125,13 @@ func try_on(def: Dictionary) -> void:
 
 func buy_item(id: String, quality: String) -> void:
 	var error: String = app.profile.buy(id, quality)
-	message = error if error != "" else "Comprado! Veja na Mochila."
+	message = error if error != "" else tr("Comprado! Veja na Mochila.")
 	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()
 
 func buy_stone(id: String, amount: int) -> void:
 	var error: String = app.profile.buy_stone(id, amount)
-	message = error if error != "" else "Comprado: %d pedra(s)." % amount
+	message = error if error != "" else tr("Comprado: %d pedra(s).") % amount
 	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()
 

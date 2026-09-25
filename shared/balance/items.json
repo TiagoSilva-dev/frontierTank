@@ -27,6 +27,45 @@
     "transfer_coins": 100,
     "compose": {"item": "golden_crystal", "amount": 10, "max": 5, "coins": 50}
   },
+  "affixes": {
+    "slots": ["arma", "roupa", "chapeu", "oculos", "asas"],
+    "counts": {"normal": [0, 0], "excelente": [1, 2], "verdadeira": [3, 4], "super": [4, 4]},
+    "tiers": [
+      {"name": "F1", "ilvl": 13, "weight": 12},
+      {"name": "F2", "ilvl": 10, "weight": 25},
+      {"name": "F3", "ilvl": 7, "weight": 45},
+      {"name": "F4", "ilvl": 4, "weight": 70},
+      {"name": "F5", "ilvl": 1, "weight": 100}
+    ],
+    "weapon": [
+      {"id": "ataque", "text": "+%d de Ataque", "values": [[53, 70], [39, 52], [26, 38], [16, 25], [8, 15]]},
+      {"id": "dano", "text": "+%d%% de dano", "values": [[14, 16], [11, 13], [8, 10], [5, 7], [2, 4]]},
+      {"id": "critico", "text": "+%d%% de dano crítico", "values": [[38, 50], [28, 37], [19, 27], [11, 18], [5, 10]]},
+      {"id": "pow", "text": "+%d%% de dano do POW", "values": [[31, 40], [23, 30], [16, 22], [10, 15], [5, 9]]},
+      {"id": "pow_inicial", "text": "Começa a batalha com %d de POW", "values": [[41, 50], [31, 40], [21, 30], [11, 20], [5, 10]]},
+      {"id": "poupar", "text": "%d%% de chance de não gastar a habilidade 1–9", "values": [[15, 18], [12, 14], [9, 11], [6, 8], [3, 5]]}
+    ],
+    "armor": [
+      {"id": "defesa", "text": "+%d de Defesa", "values": [[43, 56], [31, 42], [21, 30], [13, 20], [6, 12]]},
+      {"id": "vida", "text": "+%d de vida máxima", "values": [[161, 220], [111, 160], [71, 110], [41, 70], [20, 40]]},
+      {"id": "agilidade", "text": "+%d de Agilidade", "values": [[43, 56], [31, 42], [21, 30], [13, 20], [6, 12]]},
+      {"id": "sorte", "text": "+%d de Sorte", "values": [[43, 56], [31, 42], [21, 30], [13, 20], [6, 12]]},
+      {"id": "energia", "text": "+%d de energia por turno", "values": [[28, 35], [21, 27], [15, 20], [9, 14], [4, 8]]},
+      {"id": "delay", "text": "-%d de Delay por turno", "values": [[49, 60], [37, 48], [26, 36], [16, 25], [8, 15]]},
+      {"id": "vento", "text": "-%d%% de efeito do vento", "values": [[18, 22], [14, 17], [10, 13], [6, 9], [3, 5]]},
+      {"id": "cura", "text": "+%d%% de cura recebida", "values": [[31, 40], [23, 30], [16, 22], [10, 15], [5, 9]]}
+    ],
+    "limits": {"vento": 50, "poupar": 40}
+  },
+  "currencies": [
+    {"id": "brasa", "name": "Brasa", "rarity": "rare", "weight": 40, "min_level": 0, "per_level": 0, "icon": "res://assets/items/currency/brasa.png", "desc": "Normal → Excelente, com 1 bônus."},
+    {"id": "coroa", "name": "Coroa", "rarity": "rare", "weight": 18, "min_level": 1, "per_level": 0, "icon": "res://assets/items/currency/coroa.png", "desc": "Excelente → Verdadeira, com +1 bônus."},
+    {"id": "estrela", "name": "Estrela", "rarity": "epic", "weight": 5, "min_level": 3, "per_level": 0.5, "icon": "res://assets/items/currency/estrela.png", "desc": "Adiciona 1 bônus aleatório (até o limite da qualidade)."},
+    {"id": "tormenta", "name": "Tormenta", "rarity": "epic", "weight": 5, "min_level": 3, "per_level": 0.4, "icon": "res://assets/items/currency/tormenta.png", "desc": "Rerola todos os bônus."},
+    {"id": "solar", "name": "Solar", "rarity": "legendary", "weight": 1, "min_level": 5, "per_level": 0.3, "icon": "res://assets/items/currency/solar.png", "desc": "Rerola só os valores, mantendo quais bônus são."},
+    {"id": "eclipse", "name": "Eclipse", "rarity": "epic", "weight": 6, "min_level": 2, "per_level": 0.5, "icon": "res://assets/items/currency/eclipse.png", "desc": "Remove 1 bônus aleatório."},
+    {"id": "espelho", "name": "Espelho Celeste", "rarity": "legendary", "weight": 0.05, "min_level": 10, "per_level": 0.02, "icon": "res://assets/items/currency/espelho.png", "desc": "Duplica um equipamento. A cópia fica vinculada e não pode ser modificada."}
+  ],
   "auras": [
     {"from": 1, "to": 5, "name": "Aura Verde", "color": "5cff7a"},
     {"from": 6, "to": 8, "name": "Aura Azul", "color": "4aa8ff"},
@@ -123,6 +162,7 @@
     {"code": "TESTARTUDO", "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.", "all": true, "coins": 99999, "stones": 200, "crystals": 50},
     {"code": "AURAS", "desc": "Quatro Quebra Tijolos Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras.", "weapons": [["quebra_tijolos", "verdadeira", 3], ["quebra_tijolos", "verdadeira", 7], ["quebra_tijolos", "verdadeira", 10], ["quebra_tijolos", "verdadeira", 12]]},
     {"code": "PEDRAS", "desc": "50 pedras de cada nível.", "stones": 50},
+    {"code": "MOEDAS", "desc": "30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste.", "currencies": {"brasa": 30, "coroa": 20, "estrela": 10, "tormenta": 10, "solar": 5, "eclipse": 10, "espelho": 1}, "repeat": true},
     {"code": "MAPAS", "desc": "Mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas.", "maps": [1, 5, 10, 16], "repeat": true}
   ]
 }

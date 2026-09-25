@@ -21,7 +21,7 @@ func _ready() -> void:
 		elif icon == "down":
 			action = func() -> void: log_label.get_v_scroll_bar().value += 40
 		UiKit.panel(self, Rect2(4, 6 + i * 38, 30, 32), "slot")
-		UiKit.icon_button(self, PixelIcons.get_icon(icon), Rect2(7, 9 + i * 38, 24, 24), action, ["Travar rolagem", "Canal", "Subir", "Descer"][i])
+		UiKit.icon_button(self, PixelIcons.get_icon(icon), Rect2(7, 9 + i * 38, 24, 24), action, tr(["Travar rolagem", "Canal", "Subir", "Descer"][i]))  # i18n
 	log_label = RichTextLabel.new()
 	log_label.position = Vector2(40, 6)
 	log_label.size = Vector2(390, 150)
@@ -34,24 +34,24 @@ func _ready() -> void:
 	log_label.add_theme_constant_override("outline_size", 3)
 	add_child(log_label)
 	for i in range(3):
-		var name_text: String = ["Atual", "Soc.", "Privado"][i]
-		var button: Button = UiKit.button(self, name_text, Rect2(434, 4 + i * 52, 44, 48), func() -> void: select_tab(name_text), "tab_active" if name_text == tab else "tab", 11)
+		var name_text: String = ["Atual", "Soc.", "Privado"][i]  # i18n
+		var button: Button = UiKit.button(self, tr(name_text), Rect2(434, 4 + i * 52, 44, 48), func() -> void: select_tab(name_text), "tab_active" if name_text == tab else "tab", 11)
 		tab_buttons[name_text] = button
 	UiKit.panel(self, Rect2(0, 162, 500, 34), "dark")
-	UiKit.button(self, "Atual", Rect2(4, 165, 70, 28), Callable(), "tab", 13)
+	UiKit.button(self, tr("Atual"), Rect2(4, 165, 70, 28), Callable(), "tab", 13)
 	input = LineEdit.new()
 	input.position = Vector2(78, 166)
 	input.size = Vector2(300, 26)
-	input.placeholder_text = "Escreva e pressione Enter"
+	input.placeholder_text = tr("Escreva e pressione Enter")
 	input.max_length = 80
 	input.add_theme_font_override("font", UiKit.font(false))
 	input.add_theme_font_size_override("font_size", UiKit.fs(14))
 	input.text_submitted.connect(send)
 	add_child(input)
 	UiKit.button(self, "↵", Rect2(382, 165, 34, 28), func() -> void: send(input.text), "button", 16)
-	UiKit.icon_button(self, PixelIcons.get_icon("male"), Rect2(420, 168, 22, 22), Callable(), "Amigos")
-	UiKit.icon_button(self, PixelIcons.get_icon("chat"), Rect2(446, 168, 22, 22), Callable(), "Mensagens")
-	UiKit.icon_button(self, PixelIcons.get_icon("smile"), Rect2(472, 168, 22, 22), Callable(), "Emoções")
+	UiKit.icon_button(self, PixelIcons.get_icon("male"), Rect2(420, 168, 22, 22), Callable(), tr("Amigos"))
+	UiKit.icon_button(self, PixelIcons.get_icon("chat"), Rect2(446, 168, 22, 22), Callable(), tr("Mensagens"))
+	UiKit.icon_button(self, PixelIcons.get_icon("smile"), Rect2(472, 168, 22, 22), Callable(), tr("Emoções"))
 	if app != null:
 		app.lobby.chat_added.connect(_on_chat)
 	refresh()
@@ -81,11 +81,11 @@ func refresh() -> void:
 		if channel == "system":
 			lines.append("[color=#8cff7a]%s[/color]" % text)
 		elif channel == "alto-falante":
-			lines.append("[color=#6fe8ff][lb]G. alto-falante[rb][lb]%s[rb]: %s[/color]" % [message.author, text])
+			lines.append("[color=#6fe8ff][lb]%s[rb][lb]%s[rb]: %s[/color]" % [tr("G. alto-falante"), message.author, text])
 		else:
-			lines.append("[color=#ffe27a][lb]%s[rb][lb]%s[rb]:[/color] %s" % [channel, message.author, text])
+			lines.append("[color=#ffe27a][lb]%s[rb][lb]%s[rb]:[/color] %s" % [tr(channel), message.author, text])
 	if lines.is_empty():
-		lines.append("[color=#c8b89a]%s[/color]" % ("Você ainda não faz parte de uma sociedade." if tab == "Soc." else "Nenhuma mensagem privada."))
+		lines.append("[color=#c8b89a]%s[/color]" % (tr("Você ainda não faz parte de uma sociedade.") if tab == "Soc." else tr("Nenhuma mensagem privada.")))
 	log_label.text = "\n".join(lines)
 
 func send(text: String) -> void:

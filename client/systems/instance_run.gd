@@ -6,8 +6,10 @@ extends RefCounted
 # room (level 1–16, quality and random threat/reward modifiers, like PoE 2 maps) and
 # from the number of players; without a map it is the free entry (level 1, low reward).
 # Between phases life recovers 30%, POW is kept and the fallen come back with little
-# life. Maps and gold drop as phases are won; the boss chest and the reward cards come
-# at the end. Offline this is local; the server will own every roll later.
+# life. Maps, currencies and gold drop as phases are won; the boss chest and the reward
+# cards come at the end. Dropped weapons and gear (0.10) carry the map level as item
+# level and roll their random bonuses when they drop. Offline this is local; the server
+# will own every roll later.
 
 static var _rules: Dictionary = {}
 
@@ -24,6 +26,7 @@ var phase_index: int = 0
 var carry: Array = []
 var phases_won: int = 0
 var drops: Array[Dictionary] = []
+var currency_drops: Array[Dictionary] = []
 var gold: int = 0
 var chest: Array[Dictionary] = []
 var finished: bool = false
@@ -48,18 +51,18 @@ static func mod_def(id: String) -> Dictionary:
 
 static func map_name(item: Dictionary) -> String:
 	if item.is_empty():
-		return "Entrada livre"
-	return "Mapa: %s — Nível %d" % [instance_def(str(item.instance)).name, int(item.level)]
+		return Lang.t("Entrada livre")
+	return Lang.t("Mapa: %s — Nível %d") % [Lang.t(str(instance_def(str(item.instance)).name)), int(item.level)]
 
 static func quality_label(quality: String) -> String:
-	return {"normal": "Normal", "excelente": "Excelente", "verdadeira": "Verdadeira"}.get(quality, "Normal")
+	return Armory.quality_label(quality if quality in ["excelente", "verdadeira"] else "normal")
 
 static func quality_color(quality: String) -> Color:
 	return Color({"normal": "f4ead6", "excelente": "7ad8ff", "verdadeira": "c99bff"}.get(quality, "f4ead6"))
 
 static func mod_text(mod: Dictionary) -> String:
 	var def: Dictionary = mod_def(str(mod.id))
-	var text: String = str(def.get("text", mod.id))
+	var text: String = Lang.t(str(def.get("text", mod.id)))
 	return text % int(mod.get("value", 0)) if text.contains("%d") else text
 
 static func map_icon(item: Dictionary) -> String:
@@ -148,7 +151,7 @@ func enemy_entry(id: String) -> Dictionary:
 	for entry: Dictionary in balance.enemies:
 		if entry.id == id:
 			def = entry
-	var entry: Dictionary = {"enemy": id, "name": str(def.get("name", id)), "level": effective_level(), "team": 1}
+	var entry: Dictionary = {"enemy": id, "name": Lang.t(str(def.get("name", id))), "level": effective_level(), "team": 1}
 	entry.hp = roundi(float(def.get("hp", 500)) * hp_scale())
 	entry.damage = roundi(float(def.get("damage", 100)) * damage_scale())
 	entry.fury_damage = roundi(float(def.get("fury_damage", def.get("damage", 100))) * damage_scale())
@@ -195,7 +198,7 @@ func phase_config(team: Array) -> Dictionary:
 	var base_turn: float = float(balance.pve.get("turn_seconds", 20))
 	return {
 		"mode": "pve", "map": str(phase.map), "turn_seconds": turn_seconds(base_turn), "players": players, "threats": threats(),
-		"phase": {"index": phase_index, "count": phase_count(), "name": str(phase.name), "objective": str(phase.get("objective", "defeat")), "turns": int(phase.get("turns", 0)), "waves": waves, "level": level, "instance": str(instance.name)},
+		"phase": {"index": phase_index, "count": phase_count(), "name": Lang.t(str(phase.name)), "objective": str(phase.get("objective", "defeat")), "turns": int(phase.get("turns", 0)), "waves": waves, "level": level, "instance": Lang.t(str(instance.name))},
 		"teams": [players_team, first],
 	}
 
@@ -219,10 +222,13 @@ func complete_phase(game: LocalMatch) -> Dictionary:
 	report.maps = roll_phase_maps(phase_index)
 	for item: Dictionary in report.maps:
 		drops.append(item)
+	report.currency = roll_phase_currency(phase_index)
 	if profile != null:
 		profile.coins += int(report.gold)
 		for item: Dictionary in report.maps:
 			profile.add_map(item)
+		for entry: Dictionary in report.currency:
+			profile.add_item(str(entry.currency))
 		profile.save_profile()
 	if has_next_phase():
 		phase_index += 1
@@ -237,6 +243,23 @@ func roll_phase_maps(index: int) -> Array[Dictionary]:
 	for i in range(count):
 		list.append(roll_map())
 	return list
+
+func roll_phase_currency(index: int) -> Array[Dictionary]:
+	# Currencies (0.10) drop from every phase won (the boss always gives one); item
+	# quantity raises the count and the map level decides which ones can drop.
+	var chances: Array = balance.map_items.loot.currency_chance
+	var chance: float = float(chances[mini(index, chances.size() - 1)]) * (1.0 + quantity())
+	var count: int = floori(chance) + (1 if rng.randf() < chance - floorf(chance) else 0)
+	var list: Array[Dictionary] = []
+	for i in range(count):
+		var entry: Dictionary = currency_entry(Crafting.roll_currency(level, rng))
+		list.append(entry)
+		currency_drops.append(entry)
+	return list
+
+static func currency_entry(id: String) -> Dictionary:
+	var def: Dictionary = Crafting.currency_def(id)
+	return {"id": "currency_" + id, "name": Lang.t(str(def.get("name", id))), "currency": id, "amount": 1, "rarity": str(def.get("rarity", "rare")), "icon": str(def.get("icon", ""))}
 
 func drop_level() -> int:
 	if level == 0:
@@ -302,10 +325,13 @@ func finish(victory: bool) -> Dictionary:
 		var boss_maps: Array[Dictionary] = roll_phase_maps(phase_index)
 		for item: Dictionary in boss_maps:
 			drops.append(item)
+		var boss_currency: Array[Dictionary] = roll_phase_currency(phase_index)
 		if profile != null:
 			profile.coins += boss_gold
 			for item: Dictionary in boss_maps:
 				profile.add_map(item)
+			for entry: Dictionary in boss_currency:
+				profile.add_item(str(entry.currency))
 		var picks: int = int(balance.map_items.loot.boss_picks) + int(party("bonus_cards"))
 		if mods.has("boss_card"):
 			picks += 1
@@ -316,7 +342,7 @@ func finish(victory: bool) -> Dictionary:
 		if not super_drop.is_empty():
 			chest.append(super_drop)
 			if profile != null:
-				profile.add_instance(str(super_drop.weapon), "super", 0, effective_level())
+				profile.add_instance(str(super_drop.weapon), "super", 0, effective_level(), super_drop.mods)
 	loot.chest = chest
 	for i in range(8):
 		loot.cards.append(roll_card())
@@ -345,7 +371,8 @@ func roll_super() -> Dictionary:
 	if rng.randf() < 0.5:
 		var supers: Array = Armory.data().weapons.filter(func(def: Dictionary) -> bool: return def.get("super", false))
 		weapon = str(supers[rng.randi() % supers.size()].id)
-	return {"id": "super_" + weapon, "name": Armory.item_name({"id": weapon, "quality": "super"}), "weapon": weapon, "quality": "super", "rarity": "legendary", "icon": Armory.weapon_icon(weapon)}
+	var mods: Array = Crafting.roll_mods({"id": weapon, "quality": "super", "ilvl": effective_level()}, rng, rarity())
+	return {"id": "super_" + weapon, "name": Armory.item_name({"id": weapon, "quality": "super"}), "weapon": weapon, "quality": "super", "ilvl": effective_level(), "mods": mods, "rarity": "legendary", "icon": Armory.weapon_icon(weapon)}
 
 func roll_card() -> Dictionary:
 	var data: Dictionary = balance.map_items.loot
@@ -355,10 +382,12 @@ func roll_card() -> Dictionary:
 		var entry: Dictionary = card.duplicate()
 		if entry.has("coins"):
 			entry.coins = roundi(float(entry.coins) * gold_scale())
-			entry.name = "%d Moedas" % int(entry.coins)
+			entry.name = Lang.t("%d Moedas") % int(entry.coins)
 		entry.weight = float(card.weight) * (1.0 if str(card.rarity) == "common" else boost)
 		pool.append(entry)
 	pool.append({"kind": "weapon", "weight": float(data.weapon_weight) * boost})
+	pool.append({"kind": "gear", "weight": float(data.gear_weight) * boost})
+	pool.append({"kind": "currency", "weight": float(data.currency_weight) * boost})
 	pool.append({"kind": "map", "weight": float(data.map_weight) * (1.0 + mods.get("map_chance", 0) / 100.0)})
 	var total: float = 0.0
 	for entry: Dictionary in pool:
@@ -373,18 +402,40 @@ func roll_card() -> Dictionary:
 	match str(picked.get("kind", "")):
 		"weapon":
 			return weapon_card()
+		"gear":
+			return gear_card()
+		"currency":
+			return currency_entry(Crafting.roll_currency(level, rng))
 		"map":
 			var item: Dictionary = roll_map()
 			return {"id": "map", "name": map_name(item), "map": item, "rarity": "map", "icon": map_icon(item)}
 	return picked
 
-func weapon_card() -> Dictionary:
-	# Instance weapons with a quality roll: Verdadeira gets likelier with the map level.
+func roll_quality() -> String:
+	# Verdadeira gets likelier with the map level and rarity.
 	var data: Dictionary = balance.map_items.loot
-	var weapons: Array = instance.loot.weapons
-	var id: String = str(weapons[rng.randi() % weapons.size()])
 	var true_chance: float = (float(data.true_chance) + float(data.true_per_level) * level) * (1.0 + rarity())
 	var roll: float = rng.randf()
-	var quality: String = "verdadeira" if roll < true_chance else ("excelente" if roll < true_chance + float(data.excellent_chance) else "normal")
-	var inst: Dictionary = {"id": id, "quality": quality}
-	return {"id": "weapon_" + id, "name": Armory.item_name(inst), "weapon": id, "quality": quality, "ilvl": effective_level(), "rarity": {"normal": "rare", "excelente": "epic", "verdadeira": "legendary"}[quality], "icon": Armory.weapon_icon(id)}
+	return "verdadeira" if roll < true_chance else ("excelente" if roll < true_chance + float(data.excellent_chance) else "normal")
+
+const CARD_RARITY: Dictionary = {"normal": "rare", "excelente": "epic", "verdadeira": "legendary"}
+
+func weapon_card() -> Dictionary:
+	# Instance weapons with a quality roll and their random bonuses (0.10).
+	var weapons: Array = instance.loot.weapons
+	var id: String = str(weapons[rng.randi() % weapons.size()])
+	var quality: String = roll_quality()
+	var inst: Dictionary = {"id": id, "quality": quality, "ilvl": effective_level()}
+	inst.mods = Crafting.roll_mods(inst, rng, rarity())
+	return {"id": "weapon_" + id, "name": Armory.item_name(inst), "weapon": id, "quality": quality, "ilvl": effective_level(), "mods": inst.mods, "rarity": CARD_RARITY[quality], "icon": Armory.weapon_icon(id)}
+
+func gear_card() -> Dictionary:
+	# 0.10: hats, glasses, wings and outfits (of the player's gender) also drop, with the
+	# map level as item level, so their bonuses can reach the best tiers.
+	var gender: String = profile.gender if profile != null else ""
+	var pool: Array = Armory.data().cosmetics.filter(func(def: Dictionary) -> bool: return Crafting.can_have_mods(str(def.id)) and (gender == "" or str(def.gender) in ["u", gender]))
+	var id: String = str(pool[rng.randi() % pool.size()].id)
+	var quality: String = roll_quality()
+	var inst: Dictionary = {"id": id, "quality": quality, "ilvl": effective_level()}
+	inst.mods = Crafting.roll_mods(inst, rng, rarity())
+	return {"id": "gear_" + id, "name": Armory.item_name(inst), "gear": id, "quality": quality, "ilvl": effective_level(), "mods": inst.mods, "rarity": CARD_RARITY[quality], "icon": Armory.icon_path(inst)}

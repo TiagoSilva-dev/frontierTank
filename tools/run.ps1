@@ -14,6 +14,10 @@ if ($Test) {
     & $godotBinary --headless --path $projectRoot --script tests/armory_tests.gd
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     & $godotBinary --headless --path $projectRoot --script tests/pow_tests.gd
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    & $godotBinary --headless --path $projectRoot --script tests/craft_tests.gd
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    & $godotBinary --headless --path $projectRoot --script tests/i18n_tests.gd
     exit $LASTEXITCODE
 } elseif ($Editor) {
     & $godotBinary --path $projectRoot --editor

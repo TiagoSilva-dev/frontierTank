@@ -1,5 +1,11 @@
 # Frontier Tank: Nova Era
 
+## Idiomas (roadmap 4.3)
+Português e inglês desde já, com versão própria dos nomes em cada idioma. O português é o idioma-fonte; o inglês fica em `locale/en.po`. Detalhes no `README.md` (seção Idiomas).
+
+## Entrega 0.10 — atributos aleatórios e moedas
+Armas, roupas, chapéus, óculos e asas têm **atributos bônus aleatórios** (Normal 0, Excelente 1–2, Verdadeira 3–4, Super Verdadeira 4) em faixas F1 a F5; as melhores faixas só aparecem em itens de nível alto, e o nível do item é o nível do mapa onde caiu. Sete **moedas** com nomes próprios (Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste) caem nas instâncias e mudam a qualidade e os bônus de itens e mapas na aba **Moedas** do Ferreiro. Usar gasta a moeda: é isso que manterá o valor delas no leilão. Regras e números em `docs/ROADMAP.md` (item 3) e `shared/balance/items.json` (`affixes`, `currencies`).
+
 ## Entregas 0.8 e 0.9 — POW e instâncias
 POW em fases com impacto próprio por arma, arma e projétil maiores só no desenho. Quatro instâncias de 3 fases (lacaios, guardião ou objetivo, chefão com mecânica própria); a dificuldade vem de **mapas** de nível 1 a 16 com atributos aleatórios, no lugar das dificuldades. Regras e números em `docs/ROADMAP.md` (itens 1 e 2) e `shared/balance/combat.json` (`enemies`, `instances`, `map_items`, `party_scaling`).
 

@@ -131,11 +131,11 @@ func start(config: Dictionary) -> void:
 	state = State.WAITING_FOR_TURN
 	var opener: TankFighter = next_fighter()
 	if pve and not phase.is_empty():
-		announce.emit("Fase %d: %s" % [int(phase.get("index", 0)) + 1, str(phase.get("name", ""))], Color("ffd04a"))
+		announce.emit(tr("Fase %d: %s") % [int(phase.get("index", 0)) + 1, str(phase.get("name", ""))], Color("ffd04a"))
 	if opener != null and opener.team == fighters[local_id].team:
-		announce.emit("Processo de busca sucedido! A sua equipe começará o combate!", Color("fff4a0"))
+		announce.emit(tr("Processo de busca sucedido! A sua equipe começará o combate!"), Color("fff4a0"))
 	else:
-		announce.emit("Processo de busca sucedido! A equipe adversária começa.", Color("fff4a0"))
+		announce.emit(tr("Processo de busca sucedido! A equipe adversária começa."), Color("fff4a0"))
 	begin_turn()
 
 func spawn_fighter(entry: Dictionary, index: int, count: int, drop: bool = false) -> TankFighter:
@@ -280,7 +280,7 @@ func begin_turn() -> void:
 	if fighter.frozen > 0:
 		fighter.frozen -= 1
 		skip_turn = true
-		status_message = "%s está congelado e perde a vez!" % fighter.display_name
+		status_message = tr("%s está congelado e perde a vez!") % fighter.display_name
 		announce.emit(status_message, Color("a8e8ff"))
 		state = State.RESOLVING_DAMAGE
 		resolve_time = 0.3
@@ -289,9 +289,9 @@ func begin_turn() -> void:
 		return
 	state = State.PLAYER_AIMING
 	if fighter.player_id == local_id and not auto_play:
-		status_message = "Sua vez! Segure ESPAÇO para definir a força"
+		status_message = tr("Sua vez! Segure ESPAÇO para definir a força")
 	else:
-		status_message = "Vez de %s" % fighter.display_name
+		status_message = tr("Vez de %s") % fighter.display_name
 	if is_ai_controlled(fighter):
 		plan_ai(fighter)
 	turn_started.emit(fighter)
@@ -311,6 +311,9 @@ func finish_turn() -> void:
 		if turn_fly:
 			added += float(balance.fly.delay)
 		added += moved_distance * float(delay_rules.move_per_px) + tools_used * float(delay_rules.tool)
+		if fighter.bonus.has("delay"):
+			# "-Delay" bonus from gear (0.10); a turn always adds some delay.
+			added = maxf(100.0, added - float(fighter.bonus.delay))
 	fighter.delay += added
 	fighter.fly_cooldown = maxi(0, fighter.fly_cooldown - 1)
 	fighter.active = false
@@ -330,7 +333,7 @@ func charge() -> void:
 	power = 0
 	charge_pass = 0
 	move_input = 0
-	status_message = "Solte ESPAÇO para disparar"
+	status_message = tr("Solte ESPAÇO para disparar")
 
 func release_shot(from_ai: bool = false) -> void:
 	if not running or paused or state != State.PLAYER_CHARGING:
@@ -376,7 +379,8 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 	if turn_pow and weapon.has("pow"):
 		var pow_rules: Dictionary = weapon.pow
 		pow_plan = pow_rules
-		scale *= float(pow_rules.get("damage_scale", 1.0))
+		# "+% dano do POW" (0.10) also reaches the POW's fragments, drops and bolts.
+		scale *= float(pow_rules.get("damage_scale", 1.0)) * (1.0 + float(fighter.bonus.get("pow", 0)) / 100.0)
 		radius_scale = float(pow_rules.get("radius_scale", 1.0))
 		extra += int(pow_rules.get("extra_shots", 0))
 		freeze = bool(pow_rules.get("freeze", false))
@@ -387,12 +391,12 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		if heal > 0:
 			for ally in fighters:
 				if ally.team == fighter.team and ally.hp > 0:
-					var recovered: int = mini(heal, ally.max_hp - ally.hp)
+					var recovered: int = mini(healing(ally, heal), ally.max_hp - ally.hp)
 					ally.hp += recovered
 					if recovered > 0:
 						damage_text.emit(ally.center(), "+%d" % recovered, Color("9aff7a"))
 		fighter.pow_gauge = 0
-		announce.emit("%s usou POW: %s!" % [fighter.display_name, pow_rules.name], Color("ffd04a"))
+		announce.emit(tr("%s usou POW: %s!") % [fighter.display_name, tr(str(pow_rules.name))], Color("ffd04a"))
 		special.emit(fighter.center(), str(pow_rules.get("effect", "")))
 	return {"damage": roundi(float(weapon.damage) * scale * (1.0 + bonus)), "base_damage": roundi(float(weapon.damage) * (1.0 + bonus) * (scale / float(pow_plan.get("damage_scale", 1.0)))), "radius": float(weapon.radius) * radius_scale, "base_radius": float(weapon.radius), "balls": balls, "spread": spread, "extra": extra, "fly": false, "freeze": freeze, "pow": pow_plan}
 
@@ -421,14 +425,14 @@ func fire_volley() -> void:
 	fighter.animate_attack()
 	volley_wait = 0
 	state = State.PROJECTILE_FLYING
-	status_message = "Projétil em voo"
+	status_message = tr("Projétil em voo")
 	changed.emit()
 
 func make_projectile(fighter: TankFighter, from: Vector2, velocity: Vector2, damage: int, radius: float, style: Dictionary, sprite_key: String = "") -> TankProjectile:
 	var projectile: TankProjectile = TankProjectile.new()
 	projectile.position = from
 	projectile.velocity = velocity
-	projectile.wind = wind * float(balance.wind_accel) * float(style.get("wind_scale", 1.0))
+	projectile.wind = wind * float(balance.wind_accel) * float(style.get("wind_scale", 1.0)) * wind_factor(fighter)
 	projectile.gravity = float(balance.gravity)
 	projectile.terrain = terrain
 	projectile.fighters = fighters
@@ -482,12 +486,17 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 	var fill: bool = bool(item.get("pow_fill", false))
 	if fill and (fighter.pow_gauge >= float(balance.pow_max) or turn_pow):
 		return false
-	energy -= float(item.energy)
+	var free: float = Armory.bonus_limit(fighter.bonus, "poupar")
+	if free > 0.0 and rng.randf() < free:
+		# Weapon bonus (0.10): a chance that the skill costs no energy.
+		damage_text.emit(fighter.center() + Vector2(0, -26), tr("GRÁTIS!"), Color("9ae8ff"))
+	else:
+		energy -= float(item.energy)
 	turn_items.append(id)
 	if fill:
 		# POW Máx (item 9): the bar fills now, so B can release the special this turn.
 		fighter.pow_gauge = float(balance.pow_max)
-	skill_used.emit(fighter, {"id": id, "name": str(item.name), "icon": str(item.icon), "kind": "multi" if multi else ("powmax" if fill else "power")})
+	skill_used.emit(fighter, {"id": id, "name": tr(str(item.name)), "icon": str(item.icon), "kind": "multi" if multi else ("powmax" if fill else "power")})
 	changed.emit()
 	return true
 
@@ -502,13 +511,13 @@ func use_tool(slot: int) -> bool:
 	if tool.has("heal"):
 		if fighter.hp >= fighter.max_hp:
 			return false
-		var recovered: int = mini(int(tool.heal), fighter.max_hp - fighter.hp)
+		var recovered: int = mini(healing(fighter, int(tool.heal)), fighter.max_hp - fighter.hp)
 		fighter.hp += recovered
 		damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
 	elif tool.has("team_heal"):
 		for ally in fighters:
 			if ally.team == fighter.team and ally.hp > 0 and ally.hp < ally.max_hp:
-				var healed: int = mini(int(tool.team_heal), ally.max_hp - ally.hp)
+				var healed: int = mini(healing(ally, int(tool.team_heal)), ally.max_hp - ally.hp)
 				ally.hp += healed
 				damage_text.emit(ally.center(), "+%d" % healed, Color("9aff7a"))
 	elif tool.has("energy"):
@@ -525,10 +534,10 @@ func use_tool(slot: int) -> bool:
 			return false
 		fighter.fly_cooldown = 0
 		kind = "plane"
-	skill_used.emit(fighter, {"id": str(tool.id), "name": str(tool.name), "icon": str(tool.icon), "kind": kind})
+	skill_used.emit(fighter, {"id": str(tool.id), "name": tr(str(tool.name)), "icon": str(tool.icon), "kind": kind})
 	fighter.tools[slot] = ""
 	tools_used += 1
-	announce.emit("%s usou %s" % [fighter.display_name, tool.name], Color("c8f0ff"))
+	announce.emit(tr("%s usou %s") % [fighter.display_name, tr(str(tool.name))], Color("c8f0ff"))
 	fighter.queue_redraw()
 	changed.emit()
 	return true
@@ -554,8 +563,8 @@ func apply_aux(fighter: TankFighter) -> bool:
 		fighter.shield = float(def.shield)
 	fighter.aux_uses -= 1
 	tools_used += 1
-	skill_used.emit(fighter, {"id": str(def.id), "name": str(def.name), "icon": str(def.icon), "kind": "angel" if def.has("heal_ratio") else "shield"})
-	announce.emit("%s usou %s" % [fighter.display_name, def.name], Color("c8f0ff"))
+	skill_used.emit(fighter, {"id": str(def.id), "name": tr(str(def.name)), "icon": str(def.icon), "kind": "angel" if def.has("heal_ratio") else "shield"})
+	announce.emit(tr("%s usou %s") % [fighter.display_name, tr(str(def.name))], Color("c8f0ff"))
 	fighter.queue_redraw()
 	changed.emit()
 	return true
@@ -573,7 +582,7 @@ func toggle_fly() -> bool:
 	elif fighter.fly_cooldown == 0 and turn_items.is_empty() and not turn_pow and energy >= cost:
 		turn_fly = true
 		energy -= cost
-		skill_used.emit(fighter, {"id": "plane", "name": "Avião de Papel", "icon": "plane", "kind": "plane"})
+		skill_used.emit(fighter, {"id": "plane", "name": tr("Avião de Papel"), "icon": "plane", "kind": "plane"})
 	else:
 		return false
 	changed.emit()
@@ -592,13 +601,13 @@ func activate_pow() -> bool:
 func arm_pow(fighter: TankFighter) -> void:
 	turn_pow = true
 	fighter.set_pow_armed(true)
-	skill_used.emit(fighter, {"id": "pow", "name": str(fighter.weapon.get("pow", {}).get("name", "POW")), "icon": "pow", "kind": "pow"})
+	skill_used.emit(fighter, {"id": "pow", "name": tr(str(fighter.weapon.get("pow", {}).get("name", "POW"))), "icon": "pow", "kind": "pow"})
 
 func pass_turn() -> void:
 	if not can_act():
 		return
 	passed = true
-	status_message = "%s passou a vez" % active().display_name
+	status_message = tr("%s passou a vez") % active().display_name
 	state = State.RESOLVING_DAMAGE
 	resolve_time = 0.5
 	changed.emit()
@@ -609,7 +618,7 @@ func set_auto_play(value: bool) -> void:
 		if value:
 			plan_ai(active())
 		else:
-			status_message = "Sua vez! Segure ESPAÇO para definir a força"
+			status_message = tr("Sua vez! Segure ESPAÇO para definir a força")
 	changed.emit()
 
 # ---------- resolution ----------
@@ -712,7 +721,8 @@ func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: fl
 		damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
 		var critical: bool = false
 		if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
-			damage = roundi(damage * 1.5)
+			# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
+			damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
 			critical = true
 		target.shield = 1.0
 		target.take_damage(damage)
@@ -724,7 +734,7 @@ func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: fl
 			shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
 		if freeze:
 			target.frozen = 1
-		damage_text.emit(target.center(), ("CRÍTICO -%d" if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
+		damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
 		if target.hp > 0 and target.team != shooter.team and kind in ["pull", "bull"]:
 			var away: float = signf(target.position.x - point.x)
 			if away == 0:
@@ -734,7 +744,7 @@ func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: fl
 		if target.hp <= 0:
 			if target.team != shooter.team:
 				shooter.stats.kills += 1
-			announce.emit("%s derrotou %s!" % [shooter.display_name, target.display_name], Color("ff8a6a"))
+			announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
 	return dealt
 
 func shove(target: TankFighter, amount: float) -> void:
@@ -744,10 +754,18 @@ func shove(target: TankFighter, amount: float) -> void:
 	target.settled = false
 	target.update_pose()
 
+func healing(fighter: TankFighter, amount: int) -> int:
+	# "+% cura recebida" (0.10) raises every heal the fighter receives.
+	return roundi(amount * (1.0 + float(fighter.bonus.get("cura", 0)) / 100.0))
+
+func wind_factor(fighter: TankFighter) -> float:
+	# "-% efeito do vento" (0.10), capped at 50%.
+	return 1.0 - Armory.bonus_limit(fighter.bonus, "vento")
+
 func heal_fighter(fighter: TankFighter, amount: int) -> void:
 	if fighter.hp <= 0 or amount <= 0:
 		return
-	var recovered: int = mini(amount, fighter.max_hp - fighter.hp)
+	var recovered: int = mini(healing(fighter, amount), fighter.max_hp - fighter.hp)
 	if recovered > 0:
 		fighter.hp += recovered
 		damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
@@ -758,7 +776,7 @@ func resolve_miss(projectile: TankProjectile) -> void:
 		var shooter: TankFighter = fighters[projectile.owner_id]
 		shooter.hp = 0
 		shooter.hide_body()
-		announce.emit("%s voou para fora do mapa!" % shooter.display_name, Color("ff8a6a"))
+		announce.emit(tr("%s voou para fora do mapa!") % shooter.display_name, Color("ff8a6a"))
 	projectile.queue_free()
 
 func evaluate_winner() -> bool:
@@ -868,7 +886,7 @@ func human_step(delta: float) -> void:
 		state = State.PLAYER_AIMING
 	fighter.update_pose()
 	if remaining <= 0:
-		status_message = "Tempo esgotado"
+		status_message = tr("Tempo esgotado")
 		passed = true
 		state = State.RESOLVING_DAMAGE
 		resolve_time = 0.5
@@ -886,7 +904,7 @@ func plan_ai(fighter: TankFighter) -> void:
 	if fighter.is_monster:
 		plan_monster(fighter)
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
-	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale, balance)
+	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter), balance)
 	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
 	if not fighter.is_monster:
 		spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
@@ -923,7 +941,7 @@ func spawn_wave(entries: Array) -> void:
 		var fighter: TankFighter = spawn_fighter(entry, i, entries.size(), true)
 		# Newcomers wait for the fighters already on the field before acting.
 		fighter.delay = floor_delay + 60.0 + rng.randf_range(0.0, 40.0)
-	announce.emit("Uma nova onda de inimigos chegou!", Color("ff9a5a"))
+	announce.emit(tr("Uma nova onda de inimigos chegou!"), Color("ff9a5a"))
 	effect.emit("wave", Vector2(terrain.world_size.x * 0.7, 0), {"count": entries.size()})
 
 func next_delay_floor() -> float:
@@ -938,17 +956,17 @@ func mechanics(fighter: TankFighter) -> Array:
 
 func plan_monster(fighter: TankFighter) -> void:
 	if not fighter.is_boss and fighter.rank != "guardian":
-		status_message = "%s prepara um ataque" % fighter.display_name
+		status_message = tr("%s prepara um ataque") % fighter.display_name
 		return
 	var enraged: bool = fighter.always_enraged or fighter.hp <= fighter.max_hp / 2
 	if fighter.is_boss:
 		boss_enraged = enraged
 	if enraged and "fury" in mechanics(fighter):
 		fighter.weapon.damage = fighter.fury_damage
-		status_message = "%s prepara %s!" % [fighter.display_name, str(fighter.monster.get("fury_name", "Fúria")).to_upper()]
+		status_message = tr("%s prepara %s!") % [fighter.display_name, tr(str(fighter.monster.get("fury_name", "Fúria"))).to_upper()]  # i18n
 	else:
 		fighter.weapon.damage = fighter.base_damage
-		status_message = "%s está calculando seu ataque…" % fighter.display_name
+		status_message = tr("%s está calculando seu ataque…") % fighter.display_name
 	# Rei das Máscaras: calls more masks every few turns (at most 3 minions alive).
 	if "summon" in mechanics(fighter) and fighter.turns_taken > 0 and fighter.turns_taken % 3 == 0:
 		var minions: int = fighters.filter(func(f: TankFighter) -> bool: return f.team == fighter.team and f.hp > 0 and f.rank == "minion").size()
@@ -958,7 +976,7 @@ func plan_monster(fighter: TankFighter) -> void:
 			entry.x = clampf(fighter.position.x - fighter.facing * rng.randf_range(90, 160), 40, terrain.world_size.x - 40)
 			var minion: TankFighter = spawn_fighter(entry, 0, 1, true)
 			minion.delay = fighter.delay + 50.0
-			announce.emit("%s invoca %s!" % [fighter.display_name, minion.display_name], Color("ff8a4a"))
+			announce.emit(tr("%s invoca %s!") % [fighter.display_name, minion.display_name], Color("ff8a4a"))
 			effect.emit("summon", minion.position, {})
 
 func monster_freezes(fighter: TankFighter) -> bool:
@@ -980,7 +998,7 @@ func after_pve_turn(fighter: TankFighter) -> void:
 		fighter.position = Vector2(x, maxf(-200.0, terrain.surface_y(x) - 260.0))
 		fighter.settled = false
 		effect.emit("warp", old + Vector2(0, -fighter.monster_height * 0.5), {"to": fighter.position})
-		announce.emit("%s voa para outra posição!" % fighter.display_name, Color("a8e8ff"))
+		announce.emit(tr("%s voa para outra posição!") % fighter.display_name, Color("a8e8ff"))
 
 func keyboard_axis(negative: Key, positive: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

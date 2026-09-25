@@ -9,9 +9,9 @@ const PATH: String = "res://shared/balance/items.json"
 # Old saves, bots and tests pick weapons by index; indexes map onto the classic arsenal.
 const LEGACY_ORDER: Array[String] = ["quebra_tijolos", "fogo_intenso", "canhao_arco_iris", "vento_de_deus", "cesto_newton", "kit_medico", "eletrodomestico", "trovao", "desentupidor"]
 const EQUIP_SLOTS: Array[String] = ["arma", "auxiliar", "roupa", "chapeu", "oculos", "cabelo", "asas"]
-const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas"}
+const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas"}  # i18n
 const ATTRS: Array[String] = ["ataque", "defesa", "agilidade", "sorte"]
-const ATTR_NAMES: Dictionary = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}
+const ATTR_NAMES: Dictionary = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}  # i18n
 
 static var _data: Dictionary = {}
 
@@ -37,6 +37,16 @@ static func weapon_def(id: String) -> Dictionary:
 static func quality_def(id: String) -> Dictionary:
 	var found: Dictionary = _find("qualities", id)
 	return found if not found.is_empty() else data().qualities[0]
+
+# Display names in the current language (Lang): slots, attributes and qualities.
+static func slot_name(slot: String) -> String:
+	return Lang.t(str(SLOT_NAMES.get(slot, slot)))
+
+static func attr_name(key: String) -> String:
+	return Lang.t(str(ATTR_NAMES.get(key, key)))
+
+static func quality_label(id: String) -> String:
+	return Lang.t(str(quality_def(id).label))
 
 static func aux_def(id: String) -> Dictionary:
 	return _find("auxiliary", id)
@@ -106,20 +116,22 @@ static func aura_color(level: int) -> Color:
 static func item_name(inst: Dictionary, with_level: bool = true) -> String:
 	var id: String = str(inst.get("id", ""))
 	var def: Dictionary = definition(id)
-	var text: String = str(def.get("name", id))
+	var text: String = Lang.t(str(def.get("name", id)))
 	if kind_of(id) == "weapon":
 		match str(inst.get("quality", "normal")):
 			"excelente":
-				text += " Excelente"
+				text = Lang.t("%s Excelente") % text
 			"verdadeira":
-				text = "Verdadeiro " + text
+				text = Lang.t("Verdadeiro %s") % text
 	var level: int = int(inst.get("level", 0))
 	if with_level and level > 0:
 		text += " +%d" % level
 	return text
 
 static func quality_color(inst: Dictionary) -> Color:
-	if kind_of(str(inst.get("id", ""))) != "weapon":
+	# 0.10: gear (hats, glasses, wings, outfits) has qualities too, set by the Brasa and
+	# the Coroa; only weapons scale their damage and attributes with it.
+	if kind_of(str(inst.get("id", ""))) == "":
 		return Color("f4ead6")
 	return Color(str(quality_def(str(inst.get("quality", "normal"))).color))
 
@@ -192,7 +204,9 @@ static func build_weapon(inst: Dictionary) -> Dictionary:
 	var level: int = clampi(int(inst.get("level", 0)), 0, int(data().strengthen.max))
 	var weapon: Dictionary = def.duplicate(true)
 	var bonus: float = float(data().strengthen.damage_bonus[level])
-	weapon.damage = roundi(float(def.damage) * float(quality.damage) * (1.0 + bonus))
+	# The "+% dano" bonus (0.10) multiplies on top; strengthening never changes bonuses.
+	var extra: float = float(Crafting.item_bonus(inst).get("dano", 0)) / 100.0
+	weapon.damage = roundi(float(def.damage) * float(quality.damage) * (1.0 + bonus) * (1.0 + extra))
 	weapon.base_name = def.name
 	weapon.name = item_name(inst)
 	weapon.level = level
@@ -223,6 +237,11 @@ static func item_attrs(inst: Dictionary) -> Dictionary:
 	for key: String in composed:
 		if result.has(key):
 			result[key] += int(composed[key])
+	# Flat bonus attributes (0.10) are added after strengthening, which only scales the base.
+	var mods: Dictionary = Crafting.item_bonus(inst)
+	for key: String in mods:
+		if result.has(key):
+			result[key] += int(mods[key])
 	if slot_of(id) in ["roupa", "chapeu"]:
 		result.defesa += int(inst.get("level", 0)) * int(data().strengthen.defense_per_level)
 	return result
@@ -232,10 +251,17 @@ static func character_stats(level: int, equipped: Array, balance: Dictionary) ->
 	var extra: Dictionary = {"ataque": 0, "defesa": 0, "agilidade": 0, "sorte": 0}
 	var bonus_hp: int = 0
 	var weapon_inst: Dictionary = {}
+	# Battle bonuses from the random attributes (0.10): % damage, critical and POW
+	# damage, starting POW, skills that may cost nothing, life, energy, delay, wind, heal.
+	var bonus: Dictionary = {}
 	for inst: Dictionary in equipped:
 		var attrs: Dictionary = item_attrs(inst)
 		for key: String in attrs:
 			extra[key] += int(attrs[key])
+		var mods: Dictionary = Crafting.item_bonus(inst)
+		for key: String in mods:
+			if not extra.has(key):
+				bonus[key] = int(bonus.get(key, 0)) + int(mods[key])
 		if slot_of(str(inst.id)) in ["roupa", "chapeu"]:
 			bonus_hp += int(inst.get("level", 0)) * int(data().strengthen.hp_per_level)
 		if slot_of(str(inst.id)) == "arma":
@@ -249,11 +275,17 @@ static func character_stats(level: int, equipped: Array, balance: Dictionary) ->
 		"sorte": 100 + level * 6 + int(extra.sorte),
 		"dano": int(weapon.damage),
 		"protecao": int(extra.defesa),
-		"vida": int(balance.base_hp) + level * int(balance.hp_per_level) + bonus_hp,
-		"energia": int(balance.energy) + agility / 30,
+		"vida": int(balance.base_hp) + level * int(balance.hp_per_level) + bonus_hp + int(bonus.get("vida", 0)),
+		"energia": int(balance.energy) + agility / 30 + int(bonus.get("energia", 0)),
 		"extra": extra,
+		"bonus": bonus,
 		"weapon": weapon,
 	}
+
+static func bonus_limit(bonus: Dictionary, key: String) -> float:
+	# Summed bonuses with a cap (wind resistance, free skills) as a 0–1 fraction.
+	var cap: float = float(Crafting.rules().get("limits", {}).get(key, 100))
+	return minf(cap, float(bonus.get(key, 0))) / 100.0
 
 static func attack_scale(extra: Dictionary) -> float:
 	return 1.0 + float(extra.get("ataque", 0)) / 1000.0
