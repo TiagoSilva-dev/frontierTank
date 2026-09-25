@@ -185,7 +185,9 @@ func enter(id: String) -> void:
 			smith.closed.connect(app.show_city)
 			add_child(smith)
 		"auction":
-			UiKit.notice(self, tr("LEILÃO"), tr("O leilão depende do servidor online e ainda não está disponível."))
+			var auction: AuctionScreen = app.open_auction(self)
+			if auction != null:
+				auction.closed.connect(app.show_city)
 		"mall":
 			var shop: ShopScreen = ShopScreen.new()
 			shop.app = app

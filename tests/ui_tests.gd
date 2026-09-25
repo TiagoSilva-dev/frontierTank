@@ -68,6 +68,18 @@ func run_tests() -> void:
 	shop_in_city.close()
 	await process_frame
 	city = app.screen
+	# Leilão and Correio (0.12) need the online server: offline they only explain it.
+	city.enter("auction")
+	await process_frame
+	var auction_notice: Node = city.find_child("Modal", true, false)
+	check(auction_notice != null and city.get_children().filter(func(n: Node) -> bool: return n is AuctionScreen).is_empty(), "offline, the Leilão explains it needs the server")
+	auction_notice.queue_free()
+	app.shortcut("mail")
+	await process_frame
+	var mail_notice: Node = app.ui.find_child("Modal", true, false)
+	check(mail_notice != null and not app.ui.get_children().any(func(n: Node) -> bool: return n is MailScreen), "offline, the Correio explains it needs the server")
+	mail_notice.queue_free()
+	await process_frame
 	# Salão de Jogos
 	city.enter("hall")
 	await process_frame

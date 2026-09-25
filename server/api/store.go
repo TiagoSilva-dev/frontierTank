@@ -160,9 +160,19 @@ func (s *Store) TouchLogin(ctx context.Context, id int64) error {
 	return err
 }
 
+// DeleteAccount erases the account (LGPD/GDPR). Its items on sale go with it; the sales
+// it took part in stay in the price history without the name.
 func (s *Store) DeleteAccount(ctx context.Context, id int64) error {
-	_, err := s.pool.Exec(ctx, `DELETE FROM accounts WHERE id = $1`, id)
-	return err
+	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, `DELETE FROM auction_listings WHERE seller_id = $1 AND status = 'active'`, id); err != nil {
+			return err
+		}
+		if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
+			return err
+		}
+		_, err := tx.Exec(ctx, `DELETE FROM accounts WHERE id = $1`, id)
+		return err
+	})
 }
 
 func (s *Store) CreateSession(ctx context.Context, accountID int64, tokenHash []byte, expires time.Time) error {
@@ -185,11 +195,19 @@ func (s *Store) DeleteSession(ctx context.Context, tokenHash []byte) error {
 }
 
 func (s *Store) PurgeExpired(ctx context.Context) error {
-	if _, err := s.pool.Exec(ctx, `DELETE FROM sessions WHERE expires_at < now()`); err != nil {
-		return err
+	for _, sql := range []string{
+		`DELETE FROM sessions WHERE expires_at < now()`,
+		`DELETE FROM presence WHERE expires_at < now()`,
+		// Auction op ids only matter while a game server may retry (seconds).
+		`DELETE FROM auction_ops WHERE created_at < now() - interval '2 days'`,
+		// Received mail is kept a while for support; the audit log keeps the rest.
+		`DELETE FROM mail WHERE claimed_at < now() - interval '30 days'`,
+	} {
+		if _, err := s.pool.Exec(ctx, sql); err != nil {
+			return err
+		}
 	}
-	_, err := s.pool.Exec(ctx, `DELETE FROM presence WHERE expires_at < now()`)
-	return err
+	return nil
 }
 
 func (s *Store) Profile(ctx context.Context, accountID int64) (Profile, error) {
@@ -204,12 +222,22 @@ func (s *Store) Profile(ctx context.Context, accountID int64) (Profile, error) {
 // SaveProfile writes a profile if the stored version is still `expected` (0 = the
 // profile does not exist yet) and returns the new version.
 func (s *Store) SaveProfile(ctx context.Context, accountID int64, name *string, data json.RawMessage, expected int64) (int64, error) {
+	return saveProfile(ctx, s.pool, accountID, name, data, expected)
+}
+
+// queryer is the pool or a transaction: the auction writes the profile inside its own
+// transaction (auction_store.go).
+type queryer interface {
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
+
+func saveProfile(ctx context.Context, q queryer, accountID int64, name *string, data json.RawMessage, expected int64) (int64, error) {
 	var version int64
 	var err error
 	if expected == 0 {
-		err = s.pool.QueryRow(ctx, `INSERT INTO profiles (account_id, name, data, version) VALUES ($1, $2, $3, 1) ON CONFLICT (account_id) DO NOTHING RETURNING version`, accountID, name, data).Scan(&version)
+		err = q.QueryRow(ctx, `INSERT INTO profiles (account_id, name, data, version) VALUES ($1, $2, $3, 1) ON CONFLICT (account_id) DO NOTHING RETURNING version`, accountID, name, data).Scan(&version)
 	} else {
-		err = s.pool.QueryRow(ctx, `UPDATE profiles SET name = $2, data = $3, version = version + 1, updated_at = now() WHERE account_id = $1 AND version = $4 RETURNING version`, accountID, name, data, expected).Scan(&version)
+		err = q.QueryRow(ctx, `UPDATE profiles SET name = $2, data = $3, version = version + 1, updated_at = now() WHERE account_id = $1 AND version = $4 RETURNING version`, accountID, name, data, expected).Scan(&version)
 	}
 	if isUnique(err) {
 		return 0, ErrNameTaken

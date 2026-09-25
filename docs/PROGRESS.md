@@ -1,6 +1,13 @@
 # Progresso
 
-## Atual — 0.11: backend e jogo online
+## Atual — 0.12: Leilão e Correio
+- **Leilão** (prédio da cidade, online): busca com filtros (tipo, qualidade, nível do item ou do mapa, fortalecimento, bônus, preço máximo em Solares e Estrelas, ordem), detalhes do anúncio com os bônus, o vendedor, o tempo que falta e as vendas recentes de itens parecidos, e compra imediata. Aba **Vender** com preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h, a taxa em ouro, a comissão de 5% e quanto chega no Correio. Aba **Meus anúncios** (até 10 à venda; cancelar devolve o item).
+- **Correio**: vendas e itens que voltam (cancelados ou vencidos), com RECEBER e RECEBER TUDO; o ícone CORREIO mostra quantas cartas esperam.
+- **Custódia e transações** na API em Go e no PostgreSQL: o item fica guardado no banco enquanto está à venda; anunciar, comprar e receber gravam o perfil na mesma transação. Operações com id único (repetir não duplica), dois compradores ao mesmo tempo resolvidos pelo banco, vencimento automático, histórico de preços e auditoria de tudo.
+- **Vinculados**: a arma inicial e as Super Verdadeiras equipadas passam a ser vinculadas (como os itens da Loja, dos cupons e as cópias do Espelho Celeste).
+- **Testes**: `auction_tests.gd` (62), o Leilão no `net_e2e_tests.gd` (108 no total), `auction_test.go` na API e `auction_stack_check.gd` contra a API e o PostgreSQL de verdade.
+
+## 0.11: backend e jogo online
 - **API em Go + PostgreSQL** (`server/api/`): contas com senha PBKDF2, sessões por token, perfis com versão (nenhuma gravação sobrescreve outra), nomes de personagem únicos, auditoria de toda operação da economia, lista de servidores de jogo, presença (uma conta num servidor por vez) e exclusão da conta pela LGPD. Porta interna separada para os servidores de jogo.
 - **Servidor de jogo** (`server/game/`): o próprio projeto Godot sem tela. Canal com jogadores online e chat (filtro de palavrões e limite de mensagens), salas reais, busca de sala rival com rivais de IA de reserva, batalhas PvP e instâncias em grupo, cartas sorteadas e entregues pelo servidor, e as regras da economia com o mesmo código do jogo (`PlayerProfile.apply_op`, `Rewards`, `InstanceRun`). Desliga com calma (salva todos) no `docker stop`.
 - **Batalha em lockstep**: a mesma `LocalMatch` no servidor e em cada jogador, com intenções carimbadas por tick; força e ângulo exatos; checksum a cada segundo. Consertado no caminho: o mapa aleatório era sorteado antes de aplicar a semente da partida.
@@ -72,8 +79,8 @@ Fundação Godot e combate local: física, vento, destruição, queda, turnos, v
 Uma conta corresponde a um personagem. Sem lista de personagens nem troca. No futuro banco, `characters.account_id` terá restrição UNIQUE; criação de conta e personagem será transacional.
 
 ## Próxima entrega
-Lista completa e decisões em aberto em `ROADMAP.md`: backend (contas, grupos reais, autoridade do servidor) e o leilão (0.11).
+Lista completa e decisões em aberto em `ROADMAP.md`. Backend (0.11) e Leilão (0.12) prontos; o próximo passo é o lançamento (item 4): testes fechados na web, página da Steam e acesso antecipado.
 
-1. Slots de rosto e olhos e mais roupas no PixelLab; mais mapas seguindo a receita de `PIXELLAB_0_6.md`.
-2. PET, Leilão e missões.
-3. Backend Go com protocolo versionado, autenticação e salas reais substituindo `LobbyDirectory`; PostgreSQL como autoridade de progresso e economia.
+1. Troca de moedas (Estrela ↔ Solar) e lances no leilão.
+2. Slots de rosto e olhos e mais roupas no PixelLab; mais mapas seguindo a receita de `PIXELLAB_0_6.md`.
+3. PET e missões.

@@ -25,6 +25,12 @@ var connected_at: float = 0.0
 var last_seen: float = 0.0
 # Reward cards after a battle: {"cards", "picks", "revealed"}; never sent before a pick.
 var result: Dictionary = {}
+# Leilão (0.12): an auction or mail operation is writing this profile through the API
+# (one at a time; other profile changes wait). `discard`: the API may or may not have
+# done it, so this copy is dropped unsaved and the next login reads the stored one.
+var busy: bool = false
+var discard: bool = false
+var last_search: float = 0.0
 
 func is_open() -> bool:
 	return peer != null and peer.get_ready_state() == WebSocketPeer.STATE_OPEN

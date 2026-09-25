@@ -29,6 +29,8 @@ var offline_profile: PlayerProfile
 # The next phase of an online instance, kept while the transition screen counts down.
 var pending_start: Dictionary = {}
 var waiting_phase: bool = false
+# Letters waiting in the Correio (Leilão 0.12), told by the server.
+var mail_count: int = 0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -467,9 +469,47 @@ func shortcut(id: String) -> void:
 			ui.add_child(smith)
 		"coupon":
 			CouponDialog.open(ui, self)
-		"pet", "mail", "mission":
-			var names: Dictionary = {"pet": "PET", "mail": "CORREIO", "mission": "MISSÃO"}  # i18n
+		"mail":
+			open_mail()
+		"pet", "mission":
+			var names: Dictionary = {"pet": "PET", "mission": "MISSÃO"}  # i18n
 			UiKit.notice(ui, tr(names[id]), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
+
+# ---------- Leilão e Correio (0.12) ----------
+
+# Both live on the game server (the items are in custody in the database): offline they
+# only explain how to get there.
+func open_auction(parent: Node = null) -> AuctionScreen:
+	var host: Node = parent if parent != null else ui
+	if not online:
+		UiKit.notice(host, tr("LEILÃO"), tr("O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."))
+		return null
+	var auction: AuctionScreen = AuctionScreen.new()
+	auction.app = self
+	host.add_child(auction)
+	return auction
+
+func open_mail(parent: Node = null) -> MailScreen:
+	var host: Node = parent if parent != null else ui
+	if not online:
+		UiKit.notice(host, tr("CORREIO"), tr("O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."))
+		return null
+	var mail: MailScreen = MailScreen.new()
+	mail.app = self
+	host.add_child(mail)
+	return mail
+
+# A request of the Leilão or the Correio: the profile in the answer replaces ours, and
+# errors come back as texts in the game language.
+func trade(kind: String, data: Dictionary = {}) -> Dictionary:
+	if not online:
+		return {"ok": false, "error": tr("O Leilão só funciona online.")}
+	var reply: Dictionary = await net.request(kind, data, 40.0)
+	if reply.get("profile") is Dictionary:
+		apply_profile(reply.profile)
+	if not reply.ok:
+		reply.error = server_text(reply.get("error", ""))
+	return reply
 
 func quit_game() -> void:
 	audio.stop_all()
@@ -524,6 +564,7 @@ func go_online(welcome: Dictionary) -> void:
 	room = welcome.get("room", {})
 	pending_start = {}
 	waiting_phase = false
+	mail_count = 0
 	# Back in a room that is waiting: open it (a battle under way reopens by itself).
 	if not room.is_empty() and str(room.get("state", "")) == "waiting":
 		show_room()
@@ -540,6 +581,11 @@ func go_offline(reason: String = "") -> void:
 	run = null
 	pending_start = {}
 	waiting_phase = false
+	mail_count = 0
+	# The Leilão and the Correio only work online.
+	for node: Node in ui.get_children():
+		if node is AuctionScreen or node is MailScreen:
+			node.queue_free()
 	if was_online:
 		lobby.queue_free()
 		lobby = LobbyDirectory.new()
@@ -573,6 +619,8 @@ func on_net_event(message: Dictionary) -> void:
 				UiKit.notice(ui, tr("SALA"), tr("Você foi removido da sala."))
 		"match_start":
 			on_match_start(message)
+		"mail":
+			mail_count = maxi(0, int(message.get("count", 0)))
 		"ticks", "phase_end", "match_end", "cards":
 			if message.get("profile") is Dictionary:
 				apply_profile(message.profile)

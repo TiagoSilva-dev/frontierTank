@@ -12,6 +12,8 @@ extends RefCounted
 # for hats, glasses, wings and outfits, `bound` (shop, coupon and mirrored items: never
 # traded) and `mirrored` (Espelho Celeste copies: never changed). Currencies are counters
 # in `items` like the stones. Drops from v4 saves get their bonuses rolled once on load.
+# 0.12 (Leilão): the starter weapon and equipped Super Verdadeiras are bound; items and
+# maps bought or returned by the auction arrive through `receive_instance`/`receive_map`.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -79,14 +81,9 @@ func load_data(data: Dictionary) -> bool:
 	var migrated: bool = false
 	if saved_inventory is Array:
 		for raw: Variant in saved_inventory:
-			if raw is Dictionary and Armory.kind_of(str(raw.get("id", ""))) != "":
-				var id: String = str(raw.id)
-				var inst: Dictionary = {"uid": int(raw.get("uid", next_uid)), "id": id, "quality": valid_quality(id, str(raw.get("quality", "normal"))), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": raw.get("compose", {}), "mods": Crafting.valid_mods(raw.get("mods", []), id)}
-				if int(raw.get("ilvl", 0)) > 0:
-					inst.ilvl = clampi(int(raw.ilvl), 1, 16)
-				for flag: String in ["bound", "mirrored"]:
-					if bool(raw.get(flag, false)):
-						inst[flag] = true
+			var inst: Dictionary = clean_instance(raw)
+			if not inst.is_empty():
+				inst.uid = int(raw.get("uid", next_uid))
 				if not raw.has("mods") and inst.has("ilvl") and inst.quality != "normal":
 					# v4 drop: roll the bonuses it would have dropped with.
 					inst.mods = Crafting.roll_mods(inst, rng)
@@ -96,16 +93,19 @@ func load_data(data: Dictionary) -> bool:
 	var saved_equipped: Variant = data.get("equipped", {})
 	if saved_equipped is Dictionary:
 		for slot: String in saved_equipped:
-			if find_instance(int(saved_equipped[slot])).size() > 0:
+			var worn: Dictionary = find_instance(int(saved_equipped[slot]))
+			if worn.size() > 0:
 				equipped[slot] = int(saved_equipped[slot])
+				if worn.quality == "super":
+					# 0.12: Super Verdadeiras bind when equipped (saves from before too).
+					worn.bound = true
 	maps.clear()
 	var saved_maps: Variant = data.get("maps", [])
 	if saved_maps is Array:
 		for raw: Variant in saved_maps:
-			if raw is Dictionary and raw.has("instance"):
-				var item: Dictionary = {"uid": int(raw.get("uid", next_uid)), "instance": str(raw.instance), "level": clampi(int(raw.get("level", 1)), 1, 16), "quality": str(raw.get("quality", "normal")), "mods": raw.get("mods", [])}
-				if bool(raw.get("bound", false)):
-					item.bound = true
+			var item: Dictionary = clean_map(raw)
+			if not item.is_empty():
+				item.uid = int(raw.get("uid", next_uid))
 				maps.append(item)
 				next_uid = maxi(next_uid, int(item.uid) + 1)
 	var saved_pity: Variant = data.get("pity", {})
@@ -135,6 +135,8 @@ func ensure_starter() -> void:
 				break
 		if weapon.is_empty():
 			weapon = add_instance("quebra_tijolos")
+			# Free for every account: never goes to the auction.
+			weapon.bound = true
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
@@ -211,6 +213,45 @@ func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: 
 	inventory.append(inst)
 	return inst
 
+# A piece of gear read from outside the running game (the save, or the mail of the
+# auction): only known items, with valid quality, level, composition and bonuses. {}
+# when it is not an item. The caller gives it a uid.
+static func clean_instance(raw: Variant) -> Dictionary:
+	if not raw is Dictionary or Armory.kind_of(str(raw.get("id", ""))) == "":
+		return {}
+	var id: String = str(raw.id)
+	var compose: Dictionary = {}
+	var saved_compose: Variant = raw.get("compose", {})
+	if saved_compose is Dictionary:
+		for key: Variant in saved_compose:
+			if str(key) in Armory.ATTRS:
+				compose[str(key)] = maxi(0, int(saved_compose[key]))
+	var inst: Dictionary = {"uid": 0, "id": id, "quality": valid_quality(id, str(raw.get("quality", "normal"))), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": compose, "mods": Crafting.valid_mods(raw.get("mods", []), id)}
+	if int(raw.get("ilvl", 0)) > 0:
+		inst.ilvl = clampi(int(raw.ilvl), 1, 16)
+	for flag: String in ["bound", "mirrored"]:
+		if bool(raw.get(flag, false)):
+			inst[flag] = true
+	return inst
+
+# An instance map read from outside (save or mail): known instance and modifiers.
+static func clean_map(raw: Variant) -> Dictionary:
+	if not raw is Dictionary or not raw.has("instance"):
+		return {}
+	var instance: String = str(raw.instance)
+	if str(InstanceRun.instance_def(instance).id) != instance:
+		return {}
+	var quality: String = str(raw.get("quality", "normal"))
+	var item: Dictionary = {"uid": 0, "instance": instance, "level": clampi(int(raw.get("level", 1)), 1, 16), "quality": quality if quality in ["normal", "excelente", "verdadeira"] else "normal", "mods": []}
+	var saved_mods: Variant = raw.get("mods", [])
+	if saved_mods is Array:
+		for mod: Variant in saved_mods:
+			if mod is Dictionary and not InstanceRun.mod_def(str(mod.get("id", ""))).is_empty():
+				item.mods.append({"id": str(mod.id), "value": int(mod.get("value", 1))})
+	if bool(raw.get("bound", false)):
+		item.bound = true
+	return item
+
 func find_instance(uid: int) -> Dictionary:
 	for inst in inventory:
 		if int(inst.uid) == uid:
@@ -247,6 +288,9 @@ func equip(uid: int) -> String:
 		if wanted != "u" and wanted != gender:
 			return tr("Esta roupa é do outro gênero.")
 	equipped[Armory.slot_of(id)] = uid
+	if inst.quality == "super":
+		# 0.12: a Super Verdadeira binds when equipped; unequipped it can still be sold.
+		inst.bound = true
 	return ""
 
 func unequip(slot: String) -> String:
@@ -505,6 +549,23 @@ func craft_map(currency: String, uid: int) -> String:
 	items[currency] = currency_count(currency) - 1
 	save_profile()
 	return ""
+
+# ---------- leilão (0.12) ----------
+
+# An item or a map that came by mail (bought, or back from a listing): cleaned like a
+# save and given a new uid. {} when it is not valid.
+func receive_instance(raw: Variant) -> Dictionary:
+	var inst: Dictionary = clean_instance(raw)
+	if inst.is_empty():
+		return {}
+	inst.uid = next_uid
+	next_uid += 1
+	inventory.append(inst)
+	return inst
+
+func receive_map(raw: Variant) -> Dictionary:
+	var item: Dictionary = clean_map(raw)
+	return {} if item.is_empty() else add_map(item)
 
 # ---------- cupons ----------
 

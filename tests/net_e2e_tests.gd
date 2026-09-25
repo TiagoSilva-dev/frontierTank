@@ -4,7 +4,8 @@ extends SceneTree
 # each a full copy of the game, in one process over real WebSockets. Logins, the
 # character, profile operations checked by the server, chat, rooms, matchmaking, a PvP
 # battle in lockstep played to the end, a player dropping and coming back mid-battle,
-# the reward cards dealt by the server and an instance with a group.
+# the reward cards dealt by the server, an instance with a group and the Leilão (0.12):
+# listing, searching, buying, the Correio, cancelling and the screens.
 # Physics runs at 480 ticks per second so battles take a fraction of the time.
 
 const PORT: int = 7391
@@ -68,6 +69,7 @@ func run_tests() -> void:
 	await pvp_tests(alice, bob)
 	await drop_tests(alice, bob)
 	await pve_tests(alice, bob)
+	await auction_tests(alice, bob)
 	await takeover_tests(alice)
 	print("NET E2E RESULT: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -229,6 +231,110 @@ func pve_tests(alice: Node, bob: Node) -> void:
 	bob.screen.forfeit()
 	check(host_count == 1 and await wait_until(func() -> bool: return server.hosts.is_empty(), 5), "when everyone leaves, the battle is closed")
 	check(alice.screen_name == "hall" and bob.screen_name == "hall", "leaving goes back to the Salão")
+
+# How many copies of an item exist, in both profiles and on sale (never more than one).
+func copies(alice: Node, bob: Node, id: String, ilvl: int) -> int:
+	var count: int = 0
+	for app: Node in [alice, bob]:
+		count += server_profile(app).inventory.filter(func(inst: Dictionary) -> bool: return inst.id == id and int(inst.get("ilvl", 0)) == ilvl).size()
+	count += server.api.memory_listings.filter(func(l: Dictionary) -> bool: return l.status == "active" and l.item_id == id and int(l.item_level) == ilvl).size()
+	return count
+
+func auction_tests(alice: Node, bob: Node) -> void:
+	alice.show_city()
+	bob.show_city()
+	# A weapon and a map that dropped for Alice (as the instance would give them).
+	var seller: PlayerProfile = server_profile(alice)
+	var drop: Dictionary = seller.add_instance("trovao", "verdadeira", 2, 12)
+	drop.mods = Crafting.roll_mods(drop, seller.rng)
+	var map: Dictionary = seller.add_map(InstanceRun.make_map("templo_sol", 6, seller.rng, 0.0, "excelente"))
+	seller.coins += 500
+	seller.save_profile()
+	server.accounts[alice.my_account()].send({"t": "profile", "profile": seller.to_data()})
+	check(await wait_until(func() -> bool: return not alice.profile.find_instance(int(drop.uid)).is_empty(), 5), "the drop reaches the player")
+	var coins: int = alice.profile.coins
+	var reply: Dictionary = await alice.trade("auction_list", {"kind": "item", "uid": int(drop.uid), "solar": 3, "estrela": 2, "hours": 24})
+	check(reply.ok, "a dropped weapon is listed")
+	check(alice.profile.find_instance(int(drop.uid)).is_empty() and seller.find_instance(int(drop.uid)).is_empty(), "the listed item leaves the Mochila")
+	check(alice.profile.coins == coins - Auction.fee_for(24), "the listing fee is paid in gold")
+	var stored: Dictionary = server.api.memory_profiles[alice.my_account()]
+	check(not (stored.data.inventory as Array).any(func(inst: Dictionary) -> bool: return int(inst.uid) == int(drop.uid)), "the stored profile loses the item with the listing (custody)")
+	check(copies(alice, bob, "trovao", 12) == 1, "the item exists once: on sale")
+	reply = await alice.trade("auction_list", {"kind": "item", "uid": int(alice.profile.equipped.arma), "solar": 1, "estrela": 0, "hours": 12})
+	check(not reply.ok and str(reply.error) != "", "an equipped or bound item is refused")
+	reply = await alice.trade("auction_list", {"kind": "map", "uid": int(map.uid), "solar": 0, "estrela": 4, "hours": 12})
+	check(reply.ok and alice.profile.find_map(int(map.uid)).is_empty(), "a map is listed")
+	var map_listing: int = int(reply.listing.id)
+	# Bob looks for it.
+	reply = await bob.trade("auction_search", {"filter": {"slot": "arma", "quality": "verdadeira", "min_level": 10}})
+	check(reply.ok and reply.listings.size() == 1 and str(reply.listings[0].seller_name) == "Alice", "the other player finds it with filters")
+	var listing: Dictionary = reply.listings[0] if reply.ok and not reply.listings.is_empty() else {}
+	await wait_until(func() -> bool: return false, 0.35)
+	reply = await bob.trade("auction_search", {"filter": {"slot": "mapa", "max_estrela": 3}})
+	check(reply.ok and reply.listings.is_empty(), "a price limit filters")
+	reply = await bob.trade("auction_buy", {"id": int(listing.get("id", -1)), "solar": 3, "estrela": 2})
+	check(not reply.ok, "nobody buys without the currencies")
+	await bob.do_op("redeem", ["MOEDAS"])
+	var solar: int = bob.profile.currency_count("solar")
+	var estrela: int = bob.profile.currency_count("estrela")
+	reply = await bob.trade("auction_buy", {"id": int(listing.get("id", -1)), "solar": 1, "estrela": 2})
+	check(not reply.ok and str(reply.error) == tr("O preço deste anúncio mudou. Atualize a busca."), "the price must be the listed one")
+	check(bob.profile.currency_count("solar") == solar, "a refused purchase costs nothing")
+	reply = await bob.trade("auction_buy", {"id": int(listing.get("id", -1)), "solar": 3, "estrela": 2})
+	check(reply.ok and bool(reply.get("received", false)), "the purchase goes through")
+	var bought: Array = bob.profile.inventory.filter(func(inst: Dictionary) -> bool: return inst.id == "trovao" and int(inst.get("ilvl", 0)) == 12)
+	check(bought.size() == 1 and int(bought[0].level) == 2 and (bought[0].mods as Array).size() == (drop.mods as Array).size(), "the item arrives in the buyer's Mochila as it was sold")
+	check(bob.profile.currency_count("solar") == solar - 3 and bob.profile.currency_count("estrela") == estrela - 2, "the price leaves the buyer")
+	check(copies(alice, bob, "trovao", 12) == 1, "still one copy after the sale")
+	check(await wait_until(func() -> bool: return alice.mail_count == 1, 5), "the seller is told a letter arrived")
+	# Alice gets paid through the Correio (3 Solares and 2 Estrelas: 5% is less than 1).
+	var alice_solar: int = alice.profile.currency_count("solar")
+	var alice_estrela: int = alice.profile.currency_count("estrela")
+	reply = await alice.trade("mail_list")
+	check(reply.ok and reply.mail.size() == 1 and str(reply.mail[0].kind) == "sale", "the sale waits in the Correio")
+	reply = await alice.trade("mail_claim", {"ids": []})
+	check(reply.ok and alice.profile.currency_count("solar") == alice_solar + 3 and alice.profile.currency_count("estrela") == alice_estrela + 2, "receiving the letter pays the seller")
+	check(await wait_until(func() -> bool: return alice.mail_count == 0, 5), "the Correio is empty again")
+	reply = await alice.trade("auction_cancel", {"id": map_listing})
+	check(reply.ok and alice.profile.maps.any(func(item: Dictionary) -> bool: return item.instance == "templo_sol" and int(item.level) == 6), "cancelling brings the map back")
+	# Bob sells it on; he cannot buy his own listing.
+	var resale: int = int(bought[0].uid) if not bought.is_empty() else -1
+	reply = await bob.trade("auction_list", {"kind": "item", "uid": resale, "solar": 1, "estrela": 0, "hours": 12})
+	check(reply.ok, "a bought item can be sold again")
+	var resale_id: int = int(reply.listing.id) if reply.ok else -1
+	reply = await bob.trade("auction_buy", {"id": resale_id, "solar": 1, "estrela": 0})
+	check(not reply.ok, "nobody buys their own listing")
+	reply = await bob.trade("auction_mine")
+	check(reply.ok and reply.active.size() == 1 and int(reply.max) == Auction.max_listings(), "the seller sees the listing")
+	# The screens: Alice buys it back through the Leilão.
+	var auction: AuctionScreen = alice.open_auction()
+	check(auction != null, "the Leilão opens online")
+	check(await wait_until(func() -> bool: return auction.searched and not auction.loading, 5), "the Leilão searches when it opens")
+	check(await wait_until(func() -> bool: return auction.find_child("Listing_%d" % resale_id, true, false) != null, 5), "the listing is on the screen")
+	auction.pick(auction.results.find(auction.results.filter(func(l: Dictionary) -> bool: return int(l.id) == resale_id).front()))
+	check(await wait_until(func() -> bool: return not auction.selected.is_empty() and int(auction.selected.id) == resale_id, 5), "a listing is chosen")
+	var buy_button: Button = auction.find_child("BuyButton", true, false)
+	check(buy_button != null and not buy_button.disabled, "it can be bought")
+	auction.confirm_buy()
+	var confirm: Button = auction.find_child("ConfirmButton", true, false)
+	check(confirm != null, "buying asks to confirm")
+	confirm.pressed.emit()
+	check(await wait_until(func() -> bool: return alice.profile.inventory.any(func(inst: Dictionary) -> bool: return inst.id == "trovao" and int(inst.get("ilvl", 0)) == 12), 5), "bought through the screen")
+	check(copies(alice, bob, "trovao", 12) == 1, "one copy after the second sale")
+	auction.select_tab("sell")
+	check(await wait_until(func() -> bool: return auction.find_child("ListButton", true, false) != null, 5), "the Vender tab shows a tradeable item")
+	auction.select_tab("mine")
+	check(await wait_until(func() -> bool: return not auction.loading and auction.mine_active.is_empty() and not auction.mine_closed.is_empty(), 5), "Meus anúncios shows the closed listings")
+	auction.close()
+	var mail: MailScreen = bob.open_mail()
+	check(await wait_until(func() -> bool: return not mail.loading and mail.letters.size() == 1, 5), "the Correio screen lists the seller's letter")
+	(mail.find_child("ClaimAll", true, false) as Button).pressed.emit()
+	check(await wait_until(func() -> bool: return not mail.loading and mail.letters.is_empty() and bob.profile.currency_count("solar") == solar - 3 + 1, 5), "RECEBER TUDO pays")
+	mail.close()
+	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving and not s.busy), 5)
+	for app: Node in [alice, bob]:
+		check(JSON.stringify(app.profile.to_data()) == JSON.stringify(server_profile(app).to_data()), "%s's copy matches the server's after trading" % server_profile(app).player_name)
+		check(JSON.stringify(ApiClient.copy(server.api.memory_profiles[app.my_account()].data)) == JSON.stringify(ApiClient.copy(server_profile(app).to_data())), "%s's stored profile matches" % server_profile(app).player_name)
 
 func takeover_tests(alice: Node) -> void:
 	# The same account logs in somewhere else: the new connection wins.

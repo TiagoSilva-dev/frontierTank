@@ -1,4 +1,4 @@
-# Frontier Tank: Nova Era — 0.11 (online: contas, servidor de jogo e partidas em rede)
+# Frontier Tank: Nova Era — 0.12 (Leilão e Correio online)
 
 Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou importe **project.godot** no Godot 4.7 e pressione F5. Em outro computador, configure `GODOT_BIN` com o caminho do executável Godot.
 
@@ -13,10 +13,19 @@ Réplica em pixel art do fluxo clássico do DDTank. Joga **online** (conta, serv
 - **Instância em grupo**: até 4 jogadores, com a escala por grupo valendo e loot pessoal (cada um com seus drops, baú e cartas).
 - **Queda de conexão**: a IA joga por quem caiu e, ao entrar de novo, a batalha é reaberta onde estava; as recompensas não se perdem.
 
+## Leilão e Correio (0.12)
+O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/screens/auction.png`, `auction_sell.png`, `auction_en.png`):
+- **Comprar**: busca com filtros de tipo (armas, roupas, chapéus, óculos, asas ou mapas), qualidade, nível do item ou do mapa, fortalecimento, bônus, preço máximo em Solares e em Estrelas, e ordem (mais recentes, menor preço, maior nível). O anúncio mostra os bônus (ou as ameaças e recompensas do mapa), o vendedor, quanto tempo falta e as **vendas recentes** de itens parecidos. **COMPRAR** é compra imediata (lances ficam para depois) e o item vai direto para a Mochila.
+- **Vender**: equipamentos que caíram nas instâncias e mapas, sem vínculo e sem estar equipados. Preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h. Anunciar custa uma **taxa em moedas de ouro** (30, 50 ou 80, pela duração) e a venda paga uma **comissão de 5%** de cada moeda (arredondada para baixo); a tela mostra quanto chega.
+- **Meus anúncios**: até 10 à venda ao mesmo tempo, com **CANCELAR** (o item volta; a taxa não), e os últimos encerrados (vendidos, cancelados ou vencidos).
+- **Correio** (barra de baixo, com o número de cartas; `mail.png`): chegam os Solares e Estrelas das vendas e os itens de anúncios cancelados ou vencidos. **RECEBER** ou **RECEBER TUDO**.
+- **Vinculados** não vão ao leilão: itens da Loja, de cupons, cópias do Espelho Celeste, a arma inicial e as Super Verdadeiras depois de equipadas (sem equipar, dá para vender).
+- **Custódia no servidor**: ao anunciar, o item sai da Mochila e fica no PostgreSQL; a venda, o pagamento e o item mudam de dono numa transação só, junto com o perfil de quem compra ou recebe. Nada é duplicado nem se perde, mesmo com dois compradores ao mesmo tempo ou a conexão caindo. Tudo fica no registro de auditoria.
+
 | Tela | O que tem |
 |---|---|
 | **Entrada** (`docs/screens/title.png`, `title_en.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, lista dos servidores online e o **Modo offline**, conta e senha (**CRIAR CONTA** / **ENTRAR**, ou Enter) e o idioma do jogo (**Português** ou **English**) no canto. |
-| **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro** e **Centro Comercial** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
+| **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro**, **Centro Comercial** e, online, **Leilão** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
 | **Mochila** (`bag.png`) | Informações Pessoais como no DDTank: slots Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta do personagem, que veste tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros. Ataque, Agilidade, Defesa, Sorte, Dano, Proteção, Vida e Força física. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**; equipar, remover e vender. |
 | **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Composição** com Cristal Dourado, **Fusão** de 4 pedras iguais, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
 | **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); roupas, chapéus, óculos, asas, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
@@ -24,6 +33,8 @@ Réplica em pixel art do fluxo clássico do DDTank. Joga **online** (conta, serv
 | **Sala** (`room.png`, `pve.png`, online: `room_online.png`) | 4 vagas com cada jogador vestido (roupa, chapéu, asas e auras), VS, modos, mapa, tempo do turno, ferramentas Z/X/C, Convide, Local e Início. Na Instância, **Local** escolhe uma das 4 instâncias e o **espaço de mapa** recebe um mapa da mochila (nível, qualidade e atributos) ou fica na entrada livre. |
 | **Partida** (`battle.png`, `pve_battle.png`) | Personagens deitados, com a arma nas costas, asas, chapéu e óculos; como no DDTank, as auras não aparecem em batalha. Habilidades **1–9** iguais às do DDTank: +2, x3, +1, POW 50%, 40%, 30%, 20%, 10% e POW máx (enche a barra de POW). Cada arma tem projétil, rastro e especial (POW) próprios. Tudo da 0.4 continua: Delay, vento, Z/X/C, POW, avião, Confiar, terreno destrutível. Slot **V** para o item auxiliar. |
 | **Som** | Música épica em loop para a entrada/cidade/salas, outra para as batalhas e outra para a Instância. Cada arma tem som de disparo e de impacto próprios; explosões em três tamanhos, POW, habilidades, ferramentas, contagem final do turno, "sua vez", vitória e derrota. **M** liga/desliga a música em qualquer tela; a pausa da partida liga/desliga música e efeitos. |
+| **Leilão** (`auction.png`, `auction_sell.png`) | Online: abas Comprar (filtros, detalhes, vendas recentes e compra imediata), Vender (preço, duração, taxa e o que chega no Correio) e Meus anúncios. Botão do Correio com as cartas esperando. |
+| **Correio** (`mail.png`) | Online: vendas do Leilão e itens que voltam; RECEBER e RECEBER TUDO. O ícone CORREIO da barra mostra quantas cartas esperam. |
 | **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |
 
 ## Armas (como no DDTank)
@@ -79,11 +90,11 @@ Cada bônus tem faixas **F1** (melhor) a **F5**. O **nível do item** é o níve
 | **Coroa** (Crown) | Excelente → Verdadeira, com +1 bônus | mapas de nível 1+; um pouco no PvP |
 | **Estrela** (Star) | Acrescenta 1 bônus (até o limite da qualidade) | nível 3+ |
 | **Tormenta** (Storm) | Rerola todos os bônus | nível 3+ |
-| **Solar** | Rerola só os valores, mantendo quais bônus são | nível 5+ (moeda principal do futuro leilão) |
+| **Solar** | Rerola só os valores, mantendo quais bônus são | nível 5+ (moeda principal do leilão) |
 | **Eclipse** | Remove 1 bônus | nível 2+ |
 | **Espelho Celeste** (Sky Mirror) | Duplica um equipamento; a cópia fica vinculada e não pode ser modificada | nível 10+, muito rara |
 
-Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não poderão ir ao leilão.
+Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não vão ao leilão.
 
 ## Idiomas (português e inglês)
 O jogo inteiro está em **português e inglês** (`title_en.png`, `city_en.png`, `bag_en.png`): telas, mensagens da partida, chat simulado, nomes de armas, itens, moedas, inimigos, instâncias, mapas e atributos. O idioma é escolhido na tela de entrada e fica salvo; na primeira vez, segue o idioma do sistema (português para quem usa o sistema em português, inglês para os demais). Os nomes em inglês têm versão própria (Quebra Tijolos → *Brickbreaker*, Instância → *Dungeon*, Brasa → *Ember*, Espelho Celeste → *Sky Mirror*), não tradução literal.
@@ -104,7 +115,7 @@ Os outros cupons valem uma vez por conta.
 ← → andar (gasta energia) · ↑ ↓ ângulo · segurar/soltar **Espaço** força · **1–9** habilidades · **Z X C** ferramentas · **B** POW · **F** avião · **V** item auxiliar · **P** passar · **Q** virar · **Esc** pausa · **M** música · botão direito arrasta a câmera · clique no minimapa move a câmera.
 
 ## Verificação
-Execute: `powershell -File tools/run.ps1 -Test` — 382 verificações (combate 54, instâncias e mapas 66, interface 75, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43, atributos aleatórios e moedas 64, idiomas 24).
+Execute: `powershell -File tools/run.ps1 -Test` — 446 verificações (combate 54, instâncias e mapas 66, interface 77, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43, atributos aleatórios e moedas 64, idiomas 24, leilão 62), mais as de rede: 58 de lockstep e operações e 108 com um servidor e dois jogadores de verdade (inclui o Leilão e o Correio). O leilão contra a API em Go e o PostgreSQL: `server/README.md`, seção Testes.
 
 Capturas: `godot --path . -- --screen=<title|city|hall|room|pve|battle|pve_battle|result|cards|bag|shop|smith> --out=arquivo.png` (`--lang=en` captura em inglês; `--profile=user://outro.json` evita mexer no seu save; `--demo=1` resgata o TESTARTUDO e o MOEDAS e veste um conjunto de vitrine com bônus; em `smith`, `--tab=Moedas` abre a aba de moedas e `--craft=map` mostra os mapas; em `bag`, `--tab=Atributos` abre os atributos; `--zoom=2` aproxima a câmera da partida; `--map=<id>` escolhe o mapa da partida; em `pve` e `pve_battle`, `--instance=<id>`, `--level=<1..16>` coloca um mapa daquele nível e `--phase=<1..3>` começa na fase pedida).
 
@@ -118,4 +129,4 @@ Toda a arte é do PixelLab: a entrada e o logotipo, a cidade e os prédios, os f
 Todo o áudio é original e gerado por código (`tools/synth.py`, um pequeno sintetizador em numpy): os efeitos por `tools/make_sfx.py` e as três músicas por `tools/make_music.py` (orquestra sintetizada: metais, cordas, coro, harpa, tímpanos e taikos, com reverb de sala). Arquivos em `assets/audio/sfx` e `assets/audio/music` (Ogg Vorbis, cerca de 6 MB no total). Para trocar por outra música, basta substituir `lobby.ogg`, `battle.ogg` ou `instance.ogg`. Detalhes em [docs/AUDIO_0_7.md](docs/AUDIO_0_7.md).
 
 ## Limites
-Não há servidor: salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat. Leilão, Namoro, PET (e a Casa dos Mascotes), Correio e Missão mostram aviso de "ainda não disponível". Moedas e itens ficam em `user://profile.json` e não valem como economia online. Rosto e olhos ainda não são slots separados. Os ícones das sete moedas da 0.10 são provisórios, desenhados por `tools/currency_icons.py`, até a arte PixelLab (`docs/PIXELLAB_0_10.md`).
+No modo offline, salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat; moedas e itens ficam em `user://profile.json` e não valem como economia online; Leilão e Correio só funcionam online. Namoro, PET (e a Casa dos Mascotes) e Missão mostram aviso de "ainda não disponível". O leilão ainda não tem lances nem troca direta de moedas (Estrela ↔ Solar). Rosto e olhos ainda não são slots separados. Os ícones das sete moedas da 0.10 são provisórios, desenhados por `tools/currency_icons.py`, até a arte PixelLab (`docs/PIXELLAB_0_10.md`).
