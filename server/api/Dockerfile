@@ -1,4 +1,4 @@
-# Frontier Tank API (Go): contas, sessões, perfis, auditoria e lista de servidores.
+# Frontier Tank API (Go): contas, sessões, perfis, auditoria, lista de servidores e o Leilão.
 FROM golang:1.25-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum ./

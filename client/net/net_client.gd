@@ -10,7 +10,7 @@ signal event(message: Dictionary)
 signal closed(reason: String)
 
 const PROTOCOL: int = 1
-const GAME_VERSION: String = "0.11"
+const GAME_VERSION: String = "0.12"
 const PING_SECONDS: float = 5.0
 
 var socket: WebSocketPeer

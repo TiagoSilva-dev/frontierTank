@@ -66,6 +66,7 @@
     {"id": "eclipse", "name": "Eclipse", "rarity": "epic", "weight": 6, "min_level": 2, "per_level": 0.5, "icon": "res://assets/items/currency/eclipse.png", "desc": "Remove 1 bônus aleatório."},
     {"id": "espelho", "name": "Espelho Celeste", "rarity": "legendary", "weight": 0.05, "min_level": 10, "per_level": 0.02, "icon": "res://assets/items/currency/espelho.png", "desc": "Duplica um equipamento. A cópia fica vinculada e não pode ser modificada."}
   ],
+  "auction": {"currencies": ["solar", "estrela"], "hours": [12, 24, 48], "fee_coins": [30, 50, 80], "commission": 0.05, "max_listings": 10, "max_price": 999, "per_page": 8},
   "auras": [
     {"from": 1, "to": 5, "name": "Aura Verde", "color": "5cff7a"},
     {"from": 6, "to": 8, "name": "Aura Azul", "color": "4aa8ff"},

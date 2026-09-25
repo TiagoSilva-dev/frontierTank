@@ -190,6 +190,14 @@ static func label(parent: Node, text: String, rect: Rect2, font_size: int = 16, 
 	parent.add_child(node)
 	return node
 
+# A label that cuts a long text with "…" instead of growing past its box.
+static func clipped(parent: Node, text: String, rect: Rect2, font_size: int = 16, color: Color = CREAM, outline: Color = Color.TRANSPARENT, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var node: Label = label(parent, text, rect, font_size, color, outline, align)
+	node.clip_text = true
+	node.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	node.size = rect.size
+	return node
+
 static func wrap(node: Label, box: Vector2) -> Label:
 	# Word wrap inside `box`. The label already grew to fit its text on one line and
 	# keeps that width until the next layout pass, so the size is applied deferred.

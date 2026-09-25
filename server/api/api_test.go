@@ -88,6 +88,7 @@ type harness struct {
 	public   *httptest.Server
 	internal *httptest.Server
 	key      string
+	store    *Store
 }
 
 func newHarness(t *testing.T) *harness {
@@ -100,7 +101,7 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
+	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +113,7 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := &harness{t: t, public: httptest.NewServer(api.publicRoutes()), internal: httptest.NewServer(api.internalRoutes()), key: cfg.InternalKey}
+	h := &harness{t: t, public: httptest.NewServer(api.publicRoutes()), internal: httptest.NewServer(api.internalRoutes()), key: cfg.InternalKey, store: store}
 	t.Cleanup(func() {
 		h.public.Close()
 		h.internal.Close()

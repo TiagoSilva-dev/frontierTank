@@ -6,7 +6,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 |---|------|----------------------|---------|
 | 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 — **feito** |
 | 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo); grupos online na 0.11 — **feito** |
-| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) |
+| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) — **feito** |
 | — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito** |
 
@@ -22,7 +22,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 - **As dificuldades Normal, Difícil, Heroico e Pesadelo saem.** Entra o sistema de mapas do PoE 2: mapas são itens que caem nas instâncias, e o nível do mapa define a dificuldade e a recompensa.
 
 ## Dependência: servidor
-**Feito na 0.11** (detalhes em `ARCHITECTURE.md`, seção Online, e em `server/README.md`). Uma mudança em relação à sugestão abaixo: as regras da economia (compra, Ferreiro, moedas, cupons, drops, cartas) rodam no **servidor de jogo em Godot**, com o mesmo GDScript do jogo, e não em Go. Assim não existe uma segunda cópia das regras para manter igual; o Go ficou com contas, sessões, o perfil gravado no PostgreSQL (com versão contra gravações concorrentes), nomes únicos, auditoria, lista de servidores e presença. O leilão (0.12) entra no Go, com a custódia em transação no PostgreSQL.
+**Feito na 0.11** (detalhes em `ARCHITECTURE.md`, seção Online, e em `server/README.md`). Uma mudança em relação à sugestão abaixo: as regras da economia (compra, Ferreiro, moedas, cupons, drops, cartas) rodam no **servidor de jogo em Godot**, com o mesmo GDScript do jogo, e não em Go. Assim não existe uma segunda cópia das regras para manter igual; o Go ficou com contas, sessões, o perfil gravado no PostgreSQL (com versão contra gravações concorrentes), nomes únicos, auditoria, lista de servidores e presença. O leilão (0.12) entrou no Go, com a custódia em transação no PostgreSQL; as regras de o que pode ser vendido, taxa e comissão ficam no servidor de jogo (`Auction`).
 
 Texto original:
 O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o progresso fica salvo só no computador (`ARCHITECTURE.md`, seção Rede). Grupos de jogadores reais, o leilão e qualquer economia que valha dinheiro precisam de um backend com autoridade sobre dano, drops, rolagens e moedas. Como vamos monetizar e ter troca entre jogadores, isso é obrigatório antes do lançamento: com o save local, qualquer um edita o arquivo e cria Solares.
@@ -131,7 +131,7 @@ Cada chefe novo precisa de arte PixelLab (pose, repouso e ataque). Temos um limi
   - +X% chance de Super Verdadeira
 - As moedas do item 3 funcionam também nos mapas: Brasa e Coroa sobem a qualidade, Estrela acrescenta um atributo, Tormenta rerola tudo. **Os mapas são o principal gasto de moedas**, e isso é o que mantém o valor delas.
 
-**Feito na 0.9:** mapas com nível, qualidade e atributos (`combat.json` → `map_items`, `InstanceRun`), consumidos ao entrar, espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS` para teste. **Feito na 0.10:** Solar e moedas raras nos mapas altos e as moedas usadas nos mapas (aba Moedas do Ferreiro). **Falta:** negociar no leilão (item 3.3).
+**Feito na 0.9:** mapas com nível, qualidade e atributos (`combat.json` → `map_items`, `InstanceRun`), consumidos ao entrar, espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS` para teste. **Feito na 0.10:** Solar e moedas raras nos mapas altos e as moedas usadas nos mapas (aba Moedas do Ferreiro). **Feito na 0.12:** mapas negociados no leilão (item 3.3).
 
 **Depois (opcional):** um "Atlas", com árvore de pontos ganhos ao completar mapas, para personalizar os drops (como no PoE 2).
 
@@ -230,13 +230,27 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - Estrela e Tormenta precisam de item Excelente ou melhor; Brasa só em Normal e Coroa só em Excelente, como no PoE.
 
 ### 3.3 Leilão (0.12, em cima do backend da 0.11)
-- [ ] Prédio do Leilão na cidade, com busca e filtros (tipo, qualidade, nível do item, fortalecimento, bônus, nível do mapa e faixa de preço).
-- [ ] Anunciar com preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h e compra imediata. Lances podem vir depois.
-- [ ] **Custódia no servidor**: ao anunciar, o item sai do inventário e fica com o servidor; na venda, as moedas vão para o vendedor pelo correio do jogo. Tudo em transação no PostgreSQL, para não haver duplicação.
-- [ ] **Saídas de moedas**: taxa para anunciar (em ouro) e comissão sobre a venda (por exemplo 5%), para controlar a inflação.
-- [ ] **Vinculados** (não vão ao leilão): itens de cupom, de missão e da Loja. Proposta para as Super Verdadeiras: vinculam ao equipar (dá para vender enquanto ninguém equipou).
-- [ ] Limite de anúncios por jogador, histórico de preços e registro de todas as transações para investigar fraudes.
+- [x] Prédio do Leilão na cidade, com busca e filtros (tipo, qualidade, nível do item, fortalecimento, bônus, nível do mapa e faixa de preço).
+- [x] Anunciar com preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h e compra imediata. Lances podem vir depois.
+- [x] **Custódia no servidor**: ao anunciar, o item sai do inventário e fica com o servidor; na venda, as moedas vão para o vendedor pelo correio do jogo. Tudo em transação no PostgreSQL, para não haver duplicação.
+- [x] **Saídas de moedas**: taxa para anunciar (em ouro) e comissão sobre a venda (por exemplo 5%), para controlar a inflação.
+- [x] **Vinculados** (não vão ao leilão): itens de cupom, de missão e da Loja. Proposta para as Super Verdadeiras: vinculam ao equipar (dá para vender enquanto ninguém equipou).
+- [x] Limite de anúncios por jogador, histórico de preços e registro de todas as transações para investigar fraudes.
 - [ ] **Troca de moedas** (Estrela ↔ Solar com cotação do mercado) numa segunda etapa.
+
+**Feito na 0.12 (25/09/2026)** (detalhes em `ARCHITECTURE.md`, seção Leilão e Correio):
+- **API em Go** (`server/api/auction_*.go`, migração `002_auction.sql`): anúncios em custódia, correio do jogo, busca com filtros e páginas, histórico de preços, "meus anúncios", vencimento a cada minuto (o item volta pelo correio) e as operações com id único, que o servidor de jogo pode repetir sem efeito duplicado. Anunciar, comprar e receber o correio gravam o perfil do jogador **na mesma transação** (com a versão do perfil), então o item nunca existe em dois lugares. Dois compradores ao mesmo tempo: um leva, o outro recebe "não está mais à venda". Excluir a conta tira os anúncios dela do leilão e o nome do histórico.
+- **Servidor de jogo** (`server/game/game_server.gd`, `api_client.gd`): as regras (`client/systems/auction.gd`, `Auction`) e uma operação do leilão por vez por jogador. Se a API não confirmar (queda), a operação é repetida com o mesmo id; se continuar sem resposta, o jogador é desconectado sem gravar e o próximo login lê o perfil do banco (nada duplica nem some). A compra e o cancelamento já recebem o item do correio na hora. Quem vendeu e está no mesmo servidor é avisado na hora; o número de cartas chega no login.
+- **Cliente**: `AuctionScreen` (Comprar, Vender, Meus anúncios) e `MailScreen` (Correio), com confirmação antes de comprar, anunciar e cancelar; contador no ícone CORREIO. Offline, os dois explicam que precisam do servidor.
+- **Testes**: `tests/auction_tests.gd` (62), o Leilão no `tests/net_e2e_tests.gd` (dois jogadores de verdade), `server/api/auction_test.go` (PostgreSQL) e `tests/auction_stack_check.gd` (servidor de jogo contra a API e o PostgreSQL).
+
+**Decidido provisoriamente na 0.12** (números em `items.json` → `auction`):
+- **O que vai ao leilão**: equipamentos que caíram nas instâncias (têm nível do item: armas, roupas, chapéus, óculos e asas) e mapas, desde que não vinculados nem equipados. Não vão: Loja, cupons, cópias do Espelho Celeste, a arma inicial de toda conta (agora vinculada) e as Super Verdadeiras depois de equipadas (saves antigos: a que estiver equipada vincula ao carregar). Moedas, pedras e cristais ficam fora até a troca de moedas.
+- **Taxa para anunciar**: 30, 50 ou 80 moedas de ouro para 12, 24 ou 48 h; não volta ao cancelar.
+- **Comissão**: 5% de cada moeda do preço, arredondada para baixo (preços pequenos não pagam; 20 Estrelas pagam 1). Fica decidida no anúncio, que mostra quanto o vendedor vai receber.
+- **Limites**: 10 anúncios ao mesmo tempo por jogador (mais anúncios são uma das conveniências do item 4.2) e até 999 de cada moeda por anúncio.
+- A compra é imediata e o item vai para a Mochila; o que o vendedor recebe (ou o item que volta) chega pelo **Correio**, que também guarda o que não pôde ser entregue na hora.
+- O histórico de preços mostra as últimas vendas do mesmo item e qualidade (ou mapas da mesma instância e qualidade) com nível até 2 acima ou abaixo.
 
 
 ---
@@ -300,5 +314,5 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 2. **0.9 — Instâncias e mapas** (item 2, **feito**): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **0.11 — Backend** (**feito**): contas, grupos reais, partida com autoridade do servidor (lockstep), e drops, rolagens e moedas no servidor. Docker com PostgreSQL, API e servidor de jogo.
-5. **0.12 — Leilão** (item 3.3) em cima do backend.
+5. **0.12 — Leilão** (item 3.3, **feito**): anúncios em custódia no PostgreSQL, compra imediata, Correio, taxa e comissão, histórico de preços. Falta a troca de moedas.
 6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam.

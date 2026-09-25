@@ -1,6 +1,7 @@
-// Frontier Tank API: accounts, sessions, profile storage, audit log, game server list
-// and presence. Game logic (battles, crafting, loot) runs in the headless Godot game
-// server, which is the only client of the internal API.
+// Frontier Tank API: accounts, sessions, profile storage, audit log, game server list,
+// presence and the Leilão (items in custody and the game mail). Game logic (battles,
+// crafting, loot, what can be sold) runs in the headless Godot game server, which is the
+// only client of the internal API.
 package main
 
 import (
@@ -52,15 +53,24 @@ func main() {
 		}(server)
 	}
 	go func() {
-		ticker := time.NewTicker(10 * time.Minute)
-		defer ticker.Stop()
+		purge := time.NewTicker(10 * time.Minute)
+		defer purge.Stop()
+		// Leilão: listings whose time is over go back to the seller's mail.
+		expire := time.NewTicker(time.Minute)
+		defer expire.Stop()
 		for {
 			select {
 			case <-ctx.Done():
 				return
-			case <-ticker.C:
+			case <-purge.C:
 				if err := store.PurgeExpired(ctx); err != nil {
 					logger.Warn("purge", "err", err)
+				}
+			case <-expire.C:
+				if count, err := store.ExpireListings(ctx); err != nil {
+					logger.Warn("expire listings", "err", err)
+				} else if count > 0 {
+					logger.Info("listings expired", "count", count)
 				}
 			}
 		}

@@ -19,6 +19,8 @@ if ($Test) {
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     & $godotBinary --headless --path $projectRoot --script tests/i18n_tests.gd
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    & $godotBinary --headless --path $projectRoot --script tests/auction_tests.gd
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     & $godotBinary --headless --path $projectRoot --script tests/net_tests.gd
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     & $godotBinary --headless --path $projectRoot --script tests/net_e2e_tests.gd

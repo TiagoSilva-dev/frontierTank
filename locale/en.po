@@ -62,143 +62,159 @@ msgstr "Soldier"
 msgid "Veterano"
 msgstr "Veteran"
 
-#: client/net/auth_client.gd:100
+#: client/net/auth_client.gd:101
 msgid "Sua conta entrou em outro lugar."
 msgstr "Your account logged in somewhere else."
 
-#: client/net/auth_client.gd:102
+#: client/net/auth_client.gd:103
 msgid "O servidor está cheio. Tente outro servidor."
 msgstr "The server is full. Try another server."
 
-#: client/net/auth_client.gd:104
+#: client/net/auth_client.gd:105
 msgid "O servidor está reiniciando. Entre de novo em instantes."
 msgstr "The server is restarting. Log in again in a moment."
 
-#: client/net/auth_client.gd:106
+#: client/net/auth_client.gd:107
 msgid "Seu perfil mudou em outro lugar. Entre de novo."
 msgstr "Your profile changed somewhere else. Log in again."
 
-#: client/net/auth_client.gd:108
+#: client/net/auth_client.gd:109
 msgid "O servidor não respondeu a tempo."
 msgstr "The server did not answer in time."
 
-#: client/net/auth_client.gd:110
+#: client/net/auth_client.gd:111
 msgid "A conexão com o servidor caiu."
 msgstr "The connection to the server was lost."
 
-#: client/net/auth_client.gd:111
+#: client/net/auth_client.gd:112
 msgid "Erro do servidor: %s"
 msgstr "Server error: %s"
 
-#: client/net/auth_client.gd:80
+#: client/net/auth_client.gd:81
 msgid "Não foi possível conectar ao servidor. Verifique a internet e tente de novo."
 msgstr "Could not reach the server. Check your connection and try again."
 
-#: client/net/auth_client.gd:82
+#: client/net/auth_client.gd:83
 msgid "Conta: use de 3 a 16 letras, números ou _."
 msgstr "Account: use 3 to 16 letters, digits or _."
 
-#: client/net/auth_client.gd:84
+#: client/net/auth_client.gd:85
 msgid "A senha precisa ter de 8 a 128 caracteres."
 msgstr "The password needs 8 to 128 characters."
 
-#: client/net/auth_client.gd:86
+#: client/net/auth_client.gd:87
 msgid "Esta conta já existe. Escolha outro nome de conta."
 msgstr "This account already exists. Choose another account name."
 
-#: client/net/auth_client.gd:88
+#: client/net/auth_client.gd:89
 msgid "Conta ou senha incorreta."
 msgstr "Wrong account or password."
 
-#: client/net/auth_client.gd:90
+#: client/net/auth_client.gd:91
 msgid "Muitas tentativas. Aguarde um minuto."
 msgstr "Too many attempts. Wait a minute."
 
-#: client/net/auth_client.gd:92
+#: client/net/auth_client.gd:93
 msgid "Esta conta está suspensa."
 msgstr "This account is suspended."
 
-#: client/net/auth_client.gd:94
+#: client/net/auth_client.gd:95
 msgid "Sua sessão expirou. Entre de novo."
 msgstr "Your session expired. Log in again."
 
-#: client/net/auth_client.gd:96
+#: client/net/auth_client.gd:97
 msgid "Sua versão do jogo é diferente da do servidor. Atualize o jogo."
 msgstr "Your game version differs from the server's. Update the game."
 
-#: client/net/auth_client.gd:98
+#: client/net/auth_client.gd:99
 msgid "Esta conta já está conectada em outro servidor."
 msgstr "This account is already connected to another server."
 
-#: client/scripts/main.gd:240 client/systems/lobby.gd:11 server/game/game_server.gd:498
+#: client/scripts/main.gd:242 client/systems/lobby.gd:11 server/game/game_server.gd:532
 msgid "Guerra de equipes, diversão sem limite"
 msgstr "Team war, endless fun"
 
-#: client/scripts/main.gd:246 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
+#: client/scripts/main.gd:248 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
 msgid "Expedição: %s"
 msgstr "Expedition: %s"
 
-#: client/scripts/main.gd:256 client/scripts/main.gd:267 client/scripts/main.gd:326 client/scripts/main.gd:573
+#: client/scripts/main.gd:258 client/scripts/main.gd:269 client/scripts/main.gd:328 client/scripts/main.gd:617
 msgid "SALA"
 msgstr "ROOM"
 
-#: client/scripts/main.gd:448 client/ui/bottom_bar.gd:17
+#: client/scripts/main.gd:450 client/ui/bottom_bar.gd:22
 msgid "AJUDA"
 msgstr "HELP"
 
-#: client/scripts/main.gd:448
+#: client/scripts/main.gd:450
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
 
-#: client/scripts/main.gd:451
+#: client/scripts/main.gd:453
 msgid "Deseja fechar o Frontier Tank?"
 msgstr "Close Frontier Tank?"
 
-#: client/scripts/main.gd:451 client/scripts/main.gd:453 client/ui/bottom_bar.gd:18 client/ui/title_screen.gd:64
+#: client/scripts/main.gd:453 client/scripts/main.gd:455 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:64
 msgid "SAIR"
 msgstr "EXIT"
 
-#: client/scripts/main.gd:454
+#: client/scripts/main.gd:456
 msgid "FICAR"
 msgstr "STAY"
 
-#: client/scripts/main.gd:471 client/ui/bottom_bar.gd:13
-msgid "CORREIO"
-msgstr "MAIL"
-
-#: client/scripts/main.gd:471 client/ui/bottom_bar.gd:13
+#: client/scripts/main.gd:477 client/ui/bottom_bar.gd:17
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/scripts/main.gd:471 client/ui/bottom_bar.gd:13 client/ui/city_screen.gd:197
+#: client/scripts/main.gd:477 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
 msgid "PET"
 msgstr "PET"
 
-#: client/scripts/main.gd:472
+#: client/scripts/main.gd:478
 msgid "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."
 msgstr "This system is not available in this offline version yet.\nBattle tools can be bought inside the room."
 
-#: client/scripts/main.gd:523
+#: client/scripts/main.gd:487 client/ui/auction_screen.gd:71
+msgid "LEILÃO"
+msgstr "AUCTION HOUSE"
+
+#: client/scripts/main.gd:487
+msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
+msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
+
+#: client/scripts/main.gd:497 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+msgid "CORREIO"
+msgstr "MAIL"
+
+#: client/scripts/main.gd:497
+msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
+msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
+
+#: client/scripts/main.gd:508
+msgid "O Leilão só funciona online."
+msgstr "The Auction House only works online."
+
+#: client/scripts/main.gd:565
 msgid "Bem-vindo ao servidor %s!"
 msgstr "Welcome to server %s!"
 
-#: client/scripts/main.gd:550
+#: client/scripts/main.gd:594
 msgid "CONEXÃO"
 msgstr "CONNECTION"
 
-#: client/scripts/main.gd:560
+#: client/scripts/main.gd:604
 msgid "AVISO"
 msgstr "NOTICE"
 
-#: client/scripts/main.gd:573
+#: client/scripts/main.gd:617
 msgid "Você foi removido da sala."
 msgstr "You were removed from the room."
 
-#: client/scripts/main.gd:621
+#: client/scripts/main.gd:667
 msgid "Música desligada"
 msgstr "Music off"
 
-#: client/scripts/main.gd:621
+#: client/scripts/main.gd:667
 msgid "Música ligada"
 msgstr "Music on"
 
@@ -206,7 +222,7 @@ msgstr "Music on"
 msgid "Arma"
 msgstr "Weapon"
 
-#: client/systems/armory.gd:12 client/ui/shop_screen.gd:10
+#: client/systems/armory.gd:12 client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:10
 msgid "Asas"
 msgstr "Wings"
 
@@ -226,7 +242,7 @@ msgstr "Hat"
 msgid "Roupa"
 msgstr "Outfit"
 
-#: client/systems/armory.gd:12 client/ui/shop_screen.gd:10
+#: client/systems/armory.gd:12 client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:10
 msgid "Óculos"
 msgstr "Glasses"
 
@@ -253,6 +269,142 @@ msgstr "Defense"
 #: client/systems/armory.gd:14 client/ui/character_screen.gd:128
 msgid "Sorte"
 msgstr "Luck"
+
+#: client/systems/auction.gd:199
+msgid "%d Solar"
+msgstr "%d Solar"
+
+#: client/systems/auction.gd:199
+msgid "%d Solares"
+msgstr "%d Solars"
+
+#: client/systems/auction.gd:201
+msgid "%d Estrela"
+msgstr "%d Star"
+
+#: client/systems/auction.gd:201
+msgid "%d Estrelas"
+msgstr "%d Stars"
+
+#: client/systems/auction.gd:222
+msgid "encerrado"
+msgstr "ended"
+
+#: client/systems/auction.gd:224 client/ui/auction_screen.gd:530
+msgid "%d h"
+msgstr "%d h"
+
+#: client/systems/auction.gd:225
+msgid "%d min"
+msgstr "%d min"
+
+#: client/systems/auction.gd:229
+msgid "há %d min"
+msgstr "%d min ago"
+
+#: client/systems/auction.gd:231
+msgid "há %d h"
+msgstr "%d h ago"
+
+#: client/systems/auction.gd:232
+msgid "há %d dias"
+msgstr "%d days ago"
+
+#: client/systems/auction.gd:240
+msgid "item"
+msgstr "item"
+
+#: client/systems/auction.gd:241
+msgid "Vendido no leilão: %s"
+msgstr "Sold at the Auction House: %s"
+
+#: client/systems/auction.gd:243
+msgid "Comprado no leilão: %s"
+msgstr "Bought at the Auction House: %s"
+
+#: client/systems/auction.gd:246
+msgid "Anúncio cancelado: %s"
+msgstr "Listing cancelled: %s"
+
+#: client/systems/auction.gd:246
+msgid "Anúncio vencido: %s"
+msgstr "Listing expired: %s"
+
+#: client/systems/auction.gd:247
+msgid "Correio"
+msgstr "Mail"
+
+#: client/systems/auction.gd:258 client/ui/shop_screen.gd:110
+msgid "%d moedas"
+msgstr "%d gold"
+
+#: client/systems/auction.gd:263
+msgid "comissão %s"
+msgstr "commission %s"
+
+#: client/systems/auction.gd:268 server/game/game_server.gd:973
+msgid "Este anúncio não está mais à venda."
+msgstr "This listing is no longer for sale."
+
+#: client/systems/auction.gd:269
+msgid "O preço deste anúncio mudou. Atualize a busca."
+msgstr "The price of this listing changed. Search again."
+
+#: client/systems/auction.gd:270
+msgid "Você não pode comprar o seu próprio anúncio."
+msgstr "You cannot buy your own listing."
+
+#: client/systems/auction.gd:271
+msgid "Este anúncio não é seu."
+msgstr "This listing is not yours."
+
+#: client/systems/auction.gd:272
+msgid "Você chegou ao limite de anúncios ao mesmo tempo."
+msgstr "You have reached the limit of listings at the same time."
+
+#: client/systems/auction.gd:273
+msgid "Esta carta já foi recebida."
+msgstr "This letter was already received."
+
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:284 client/systems/profile.gd:649
+msgid "Item não encontrado."
+msgstr "Item not found."
+
+#: client/systems/auction.gd:54
+msgid "Tire o item antes de anunciar."
+msgstr "Unequip the item before listing it."
+
+#: client/systems/auction.gd:56
+msgid "Itens vinculados não vão ao leilão."
+msgstr "Bound items cannot be sold at the Auction House."
+
+#: client/systems/auction.gd:58
+msgid "Só equipamentos que caíram nas instâncias vão ao leilão."
+msgstr "Only gear that dropped in dungeons can be sold at the Auction House."
+
+#: client/systems/auction.gd:63
+msgid "Mapa não encontrado."
+msgstr "Map not found."
+
+#: client/systems/auction.gd:65
+msgid "Mapas vinculados não vão ao leilão."
+msgstr "Bound maps cannot be sold at the Auction House."
+
+#: client/systems/auction.gd:70
+msgid "Defina o preço em Solares e/ou Estrelas."
+msgstr "Set the price in Solars and/or Stars."
+
+#: client/systems/auction.gd:72
+msgid "O preço máximo é %d de cada moeda."
+msgstr "The highest price is %d of each currency."
+
+#: client/systems/auction.gd:88
+msgid "Escolha a duração do anúncio."
+msgstr "Choose how long the listing lasts."
+
+#: client/systems/auction.gd:90
+msgid "A taxa do anúncio é de %d moedas."
+msgstr "The listing fee is %d gold."
 
 #: client/systems/crafting.gd:152
 msgid "Escolha um item."
@@ -290,7 +442,7 @@ msgstr "Storms need an Excellent or better item."
 msgid "Este item não tem bônus."
 msgstr "This item has no bonuses."
 
-#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:472 client/systems/profile.gd:496
+#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:516 client/systems/profile.gd:540
 msgid "Moeda desconhecida."
 msgstr "Unknown currency."
 
@@ -526,109 +678,433 @@ msgstr "%s defeated %s!"
 msgid "%s voou para fora do mapa!"
 msgstr "%s flew off the map!"
 
-#: client/systems/profile.gd:243 client/systems/profile.gd:588 client/systems/profile.gd:630 client/systems/profile.gd:636
-msgid "Item não encontrado."
-msgstr "Item not found."
-
-#: client/systems/profile.gd:248
+#: client/systems/profile.gd:289
 msgid "Esta roupa é do outro gênero."
 msgstr "This outfit is for the other gender."
 
-#: client/systems/profile.gd:254
+#: client/systems/profile.gd:298
 msgid "Você precisa ter uma arma equipada."
 msgstr "You must keep a weapon equipped."
 
-#: client/systems/profile.gd:287 client/systems/profile.gd:293 client/systems/profile.gd:296 client/systems/profile.gd:309
+#: client/systems/profile.gd:331 client/systems/profile.gd:337 client/systems/profile.gd:340 client/systems/profile.gd:353
 msgid "Item desconhecido."
 msgstr "Unknown item."
 
-#: client/systems/profile.gd:289
+#: client/systems/profile.gd:333
 msgid "Super armas só caem do chefe das instâncias."
 msgstr "Super weapons only drop from dungeon bosses."
 
-#: client/systems/profile.gd:291
+#: client/systems/profile.gd:335
 msgid "Armas Verdadeiras só caem nas instâncias."
 msgstr "True weapons only drop in dungeons."
 
-#: client/systems/profile.gd:298 client/systems/profile.gd:312 client/systems/profile.gd:385 client/systems/profile.gd:413
+#: client/systems/profile.gd:342 client/systems/profile.gd:356 client/systems/profile.gd:429 client/systems/profile.gd:457
 msgid "Moedas insuficientes."
 msgstr "Not enough gold."
 
-#: client/systems/profile.gd:378
+#: client/systems/profile.gd:422
 msgid "Só armas, roupas e chapéus podem ser fortalecidos."
 msgstr "Only weapons, outfits and hats can be strengthened."
 
-#: client/systems/profile.gd:381
+#: client/systems/profile.gd:425
 msgid "Este item já está no +12."
 msgstr "This item is already +12."
 
-#: client/systems/profile.gd:383
+#: client/systems/profile.gd:427
 msgid "Pedras insuficientes: precisa de %d pontos de pedra, você tem %d."
 msgstr "Not enough stones: you need %d stone points and have %d."
 
-#: client/systems/profile.gd:411
+#: client/systems/profile.gd:455
 msgid "Precisa de %d pedras iguais."
 msgstr "You need %d matching stones."
 
-#: client/systems/profile.gd:419
+#: client/systems/profile.gd:463
 msgid "Esta pedra já é do nível máximo."
 msgstr "This stone is already the highest level."
 
-#: client/systems/profile.gd:425
+#: client/systems/profile.gd:469
 msgid "Escolha dois itens diferentes."
 msgstr "Choose two different items."
 
-#: client/systems/profile.gd:427
+#: client/systems/profile.gd:471
 msgid "A transferência só funciona entre itens do mesmo tipo."
 msgstr "Transfer only works between items of the same kind."
 
-#: client/systems/profile.gd:445
+#: client/systems/profile.gd:489
 msgid "Escolha um item e um atributo."
 msgstr "Choose an item and an attribute."
 
-#: client/systems/profile.gd:451
+#: client/systems/profile.gd:495
 msgid "Este item já recebeu %d composições."
 msgstr "This item has already been composed %d times."
 
-#: client/systems/profile.gd:453
+#: client/systems/profile.gd:497
 msgid "Você precisa de um Cristal Dourado."
 msgstr "You need a Golden Crystal."
 
-#: client/systems/profile.gd:477 client/systems/profile.gd:501 client/ui/smith_screen.gd:361
+#: client/systems/profile.gd:521 client/systems/profile.gd:545 client/ui/smith_screen.gd:361
 msgid "Você não tem %s."
 msgstr "You have no %s."
 
-#: client/systems/profile.gd:518 client/systems/profile.gd:662
+#: client/systems/profile.gd:579 client/systems/profile.gd:723
 msgid "Cupom inválido."
 msgstr "Invalid coupon."
 
-#: client/systems/profile.gd:520 client/systems/profile.gd:664
+#: client/systems/profile.gd:581 client/systems/profile.gd:725
 msgid "Este cupom já foi usado nesta conta."
 msgstr "This coupon was already used on this account."
 
-#: client/systems/profile.gd:579 client/ui/room_screen.gd:323
+#: client/systems/profile.gd:640 client/ui/room_screen.gd:323
 msgid "%s custa %d moedas."
 msgstr "%s costs %d gold."
 
-#: client/systems/profile.gd:581
+#: client/systems/profile.gd:642
 msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
 msgstr "Your 3 slots (Z, X, C) are full. Click a tool to return it."
 
-#: client/systems/profile.gd:638 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
+#: client/systems/profile.gd:699 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
 msgid "+%d moedas"
 msgstr "+%d gold"
 
-#: client/systems/profile.gd:674
+#: client/systems/profile.gd:735
 msgid "O personagem já foi criado."
 msgstr "The character was already created."
 
-#: client/systems/profile.gd:676
+#: client/systems/profile.gd:737
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr "Invalid name: use 2 to 14 letters or digits."
 
-#: client/systems/profile.gd:683 server/game/game_server.gd:395
+#: client/systems/profile.gd:744 server/game/game_server.gd:421
 msgid "Operação desconhecida."
 msgstr "Unknown operation."
+
+#: client/ui/auction_screen.gd:17
+msgid "Comprar"
+msgstr "Buy"
+
+#: client/ui/auction_screen.gd:17
+msgid "Meus anúncios"
+msgstr "My listings"
+
+#: client/ui/auction_screen.gd:17
+msgid "Vender"
+msgstr "Sell"
+
+#: client/ui/auction_screen.gd:175
+msgid "%d atributos"
+msgstr "%d modifiers"
+
+#: client/ui/auction_screen.gd:175
+msgid "1 atributo"
+msgstr "1 modifier"
+
+#: client/ui/auction_screen.gd:176 client/ui/result_screen.gd:316
+msgid "%d bônus"
+msgstr "%d bonuses"
+
+#: client/ui/auction_screen.gd:176
+msgid "1 bônus"
+msgstr "1 bonus"
+
+#: client/ui/auction_screen.gd:177 client/ui/character_screen.gd:284 client/ui/smith_screen.gd:313
+msgid "Nível do item %d"
+msgstr "Item level %d"
+
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:16 client/ui/shop_screen.gd:10
+msgid "Armas"
+msgstr "Weapons"
+
+#: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:10
+msgid "Chapéus"
+msgstr "Hats"
+
+#: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:466 client/ui/character_screen.gd:16 client/ui/smith_screen.gd:245
+msgid "Mapas"
+msgstr "Maps"
+
+#: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:10
+msgid "Roupas"
+msgstr "Outfits"
+
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:16
+msgid "Todos"
+msgstr "All"
+
+#: client/ui/auction_screen.gd:19 shared/balance/items.json:qualities[1].label
+msgid "Excelente"
+msgstr "Excellent"
+
+#: client/ui/auction_screen.gd:19 shared/balance/items.json:qualities[0].label
+msgid "Normal"
+msgstr "Normal"
+
+#: client/ui/auction_screen.gd:19 shared/balance/items.json:qualities[3].label
+msgid "Super Verdadeira"
+msgstr "Super True"
+
+#: client/ui/auction_screen.gd:19
+msgid "Todas"
+msgstr "All"
+
+#: client/ui/auction_screen.gd:19 shared/balance/items.json:qualities[2].label
+msgid "Verdadeira"
+msgstr "True"
+
+#: client/ui/auction_screen.gd:199
+msgid "Qualquer"
+msgstr "Any"
+
+#: client/ui/auction_screen.gd:20
+msgid "Maior nível"
+msgstr "Highest level"
+
+#: client/ui/auction_screen.gd:20
+msgid "Mais recentes"
+msgstr "Newest"
+
+#: client/ui/auction_screen.gd:20
+msgid "Menor preço"
+msgstr "Lowest price"
+
+#: client/ui/auction_screen.gd:221
+msgid "BUSCA"
+msgstr "SEARCH"
+
+#: client/ui/auction_screen.gd:223
+msgid "Tipo"
+msgstr "Type"
+
+#: client/ui/auction_screen.gd:227
+msgid "Qualidade"
+msgstr "Quality"
+
+#: client/ui/auction_screen.gd:231
+msgid "Nível do mapa mín."
+msgstr "Min. map level"
+
+#: client/ui/auction_screen.gd:231
+msgid "Nível mín."
+msgstr "Min. level"
+
+#: client/ui/auction_screen.gd:233
+msgid "Fortal. mín."
+msgstr "Min. strengthen"
+
+#: client/ui/auction_screen.gd:238
+msgid "Bônus"
+msgstr "Bonus"
+
+#: client/ui/auction_screen.gd:241
+msgid "Preço máximo (0 = qualquer)"
+msgstr "Max. price (0 = any)"
+
+#: client/ui/auction_screen.gd:247
+msgid "Ordenar por"
+msgstr "Sort by"
+
+#: client/ui/auction_screen.gd:250
+msgid "BUSCAR"
+msgstr "SEARCH"
+
+#: client/ui/auction_screen.gd:252
+msgid "LIMPAR"
+msgstr "CLEAR"
+
+#: client/ui/auction_screen.gd:258
+msgid "%d anúncios"
+msgstr "%d listings"
+
+#: client/ui/auction_screen.gd:258 client/ui/auction_screen.gd:649 client/ui/mail_screen.gd:43
+msgid "Carregando..."
+msgstr "Loading..."
+
+#: client/ui/auction_screen.gd:264
+msgid "Nenhum item à venda com estes filtros."
+msgstr "Nothing for sale with these filters."
+
+#: client/ui/auction_screen.gd:282
+msgid "Seu anúncio"
+msgstr "Your listing"
+
+#: client/ui/auction_screen.gd:293
+msgid "Escolha um anúncio para ver os detalhes."
+msgstr "Choose a listing to see its details."
+
+#: client/ui/auction_screen.gd:300
+msgid "Vendedor: %s"
+msgstr "Seller: %s"
+
+#: client/ui/auction_screen.gd:301
+msgid "Termina em %s"
+msgstr "Ends in %s"
+
+#: client/ui/auction_screen.gd:312
+msgid "Sem atributos."
+msgstr "No modifiers."
+
+#: client/ui/auction_screen.gd:312 client/ui/smith_screen.gd:326
+msgid "Sem bônus."
+msgstr "No bonuses."
+
+#: client/ui/auction_screen.gd:314 client/ui/auction_screen.gd:551
+msgid "Vendas recentes de itens parecidos"
+msgstr "Recent sales of similar items"
+
+#: client/ui/auction_screen.gd:316 client/ui/auction_screen.gd:555
+msgid "Nenhuma venda ainda."
+msgstr "No sales yet."
+
+#: client/ui/auction_screen.gd:322 client/ui/auction_screen.gd:521
+msgid "Preço"
+msgstr "Price"
+
+#: client/ui/auction_screen.gd:325 client/ui/auction_screen.gd:412 client/ui/auction_screen.gd:415 client/ui/shop_screen.gd:117
+msgid "COMPRAR"
+msgstr "BUY"
+
+#: client/ui/auction_screen.gd:334
+msgid "Este anúncio é seu."
+msgstr "This listing is yours."
+
+#: client/ui/auction_screen.gd:336 server/game/game_server.gd:975
+msgid "Você não tem Solares e Estrelas suficientes."
+msgstr "You do not have enough Solars and Stars."
+
+#: client/ui/auction_screen.gd:411
+msgid "Comprar %s por %s?\nO item vai direto para a sua Mochila."
+msgstr "Buy %s for %s?\nThe item goes straight to your Bag."
+
+#: client/ui/auction_screen.gd:418 client/ui/auction_screen.gd:621 client/ui/auction_screen.gd:702 client/ui/character_screen.gd:49
+msgid "VOLTAR"
+msgstr "BACK"
+
+#: client/ui/auction_screen.gd:429
+msgid "Comprado! %s está na sua Mochila."
+msgstr "Bought! %s is in your Bag."
+
+#: client/ui/auction_screen.gd:429
+msgid "Comprado! O item está no seu Correio."
+msgstr "Bought! The item is in your Mail."
+
+#: client/ui/auction_screen.gd:466 client/ui/smith_screen.gd:245
+msgid "Equipamentos"
+msgstr "Gear"
+
+#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:283
+msgid "Nenhum equipamento que aceite bônus."
+msgstr "No gear that takes bonuses."
+
+#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:283
+msgid "Nenhum mapa na mochila."
+msgstr "No maps in the bag."
+
+#: client/ui/auction_screen.gd:502
+msgid "Só vão ao leilão itens que caíram nas instâncias e mapas, sem vínculo."
+msgstr "Only unbound gear that dropped in dungeons, and maps, can be sold."
+
+#: client/ui/auction_screen.gd:508 client/ui/smith_screen.gd:303 client/ui/smith_screen.gd:357
+msgid "Escolha um equipamento ou um mapa."
+msgstr "Choose a piece of gear or a map."
+
+#: client/ui/auction_screen.gd:526
+msgid "Duração"
+msgstr "Duration"
+
+#: client/ui/auction_screen.gd:532
+msgid "Taxa: %d moedas"
+msgstr "Fee: %d gold"
+
+#: client/ui/auction_screen.gd:538
+msgid "Taxa do anúncio: %d moedas (não volta se cancelar)"
+msgstr "Listing fee: %d gold (not refunded if you cancel)"
+
+#: client/ui/auction_screen.gd:539
+msgid "Comissão de %d%% na venda: %s"
+msgstr "%d%% commission on the sale: %s"
+
+#: client/ui/auction_screen.gd:539
+msgid "nada neste preço"
+msgstr "nothing at this price"
+
+#: client/ui/auction_screen.gd:540
+msgid "Você recebe no Correio: %s"
+msgstr "You receive by Mail: %s"
+
+#: client/ui/auction_screen.gd:545 client/ui/auction_screen.gd:615 client/ui/auction_screen.gd:618
+msgid "ANUNCIAR"
+msgstr "LIST"
+
+#: client/ui/auction_screen.gd:614
+msgid "Anunciar %s por %s durante %d h?\nA taxa de %d moedas é paga agora."
+msgstr "List %s for %s for %d h?\nThe %d gold fee is paid now."
+
+#: client/ui/auction_screen.gd:634
+msgid "%s foi anunciado por %s."
+msgstr "%s was listed for %s."
+
+#: client/ui/auction_screen.gd:646
+msgid "À venda (%d/%d)"
+msgstr "For sale (%d/%d)"
+
+#: client/ui/auction_screen.gd:647
+msgid "Encerrados"
+msgstr "Closed"
+
+#: client/ui/auction_screen.gd:656 client/ui/auction_screen.gd:696 client/ui/hall_screen.gd:233
+msgid "CANCELAR"
+msgstr "CANCEL"
+
+#: client/ui/auction_screen.gd:659
+msgid "Nada à venda. Anuncie na aba Vender."
+msgstr "Nothing for sale. List items in the Sell tab."
+
+#: client/ui/auction_screen.gd:660
+msgid "Cancelado"
+msgstr "Cancelled"
+
+#: client/ui/auction_screen.gd:660
+msgid "Vencido"
+msgstr "Expired"
+
+#: client/ui/auction_screen.gd:660
+msgid "Vendido"
+msgstr "Sold"
+
+#: client/ui/auction_screen.gd:668
+msgid "Nenhum anúncio encerrado."
+msgstr "No closed listings."
+
+#: client/ui/auction_screen.gd:669
+msgid "Vendas e itens que voltam chegam pelo Correio."
+msgstr "Sales and returned items arrive by Mail."
+
+#: client/ui/auction_screen.gd:696
+msgid "Tirar %s do leilão?\nO item volta para a Mochila; a taxa do anúncio não volta."
+msgstr "Take %s off the Auction House?\nThe item goes back to your Bag; the listing fee is not refunded."
+
+#: client/ui/auction_screen.gd:699
+msgid "TIRAR"
+msgstr "REMOVE"
+
+#: client/ui/auction_screen.gd:709
+msgid "%s voltou para a sua Mochila."
+msgstr "%s is back in your Bag."
+
+#: client/ui/auction_screen.gd:709
+msgid "O item está no seu Correio."
+msgstr "The item is in your Mail."
+
+#: client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34 client/ui/mail_screen.gd:41 client/ui/room_screen.gd:213
+msgid "FECHAR"
+msgstr "CLOSE"
+
+#: client/ui/auction_screen.gd:73
+msgid "CORREIO (%d)"
+msgstr "MAIL (%d)"
+
+#: client/ui/auction_screen.gd:80
+msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
+msgstr "Prices in Solars and Stars  •  %d%% commission on sales"
 
 #: client/ui/battle_hud.gd:105
 msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
@@ -810,19 +1286,19 @@ msgstr "STAGE CLEARED!"
 msgid "Sincronizando a batalha…"
 msgstr "Syncing the battle…"
 
-#: client/ui/bottom_bar.gd:13 client/ui/character_screen.gd:48 client/ui/character_screen.gd:342 client/ui/city_screen.gd:138
+#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:48 client/ui/character_screen.gd:342 client/ui/city_screen.gd:138
 msgid "MOCHILA"
 msgstr "BAG"
 
-#: client/ui/bottom_bar.gd:13
+#: client/ui/bottom_bar.gd:17
 msgid "SHOP"
 msgstr "SHOP"
 
-#: client/ui/bottom_bar.gd:17
+#: client/ui/bottom_bar.gd:22
 msgid "Ajuda"
 msgstr "Help"
 
-#: client/ui/bottom_bar.gd:18
+#: client/ui/bottom_bar.gd:23
 msgid "Sair"
 msgstr "Exit"
 
@@ -898,21 +1374,9 @@ msgstr "HP %d  •  Stamina %d per turn"
 msgid "Avião de papel: %d de energia, recarga %d turnos"
 msgstr "Paper plane: %d energy, %d-turn cooldown"
 
-#: client/ui/character_screen.gd:16 client/ui/shop_screen.gd:10
-msgid "Armas"
-msgstr "Weapons"
-
-#: client/ui/character_screen.gd:16 client/ui/smith_screen.gd:245
-msgid "Mapas"
-msgstr "Maps"
-
 #: client/ui/character_screen.gd:16
 msgid "Materiais"
 msgstr "Materials"
-
-#: client/ui/character_screen.gd:16
-msgid "Todos"
-msgstr "All"
 
 #: client/ui/character_screen.gd:16
 msgid "Visual"
@@ -962,10 +1426,6 @@ msgstr " (female)"
 msgid " (masculino)"
 msgstr " (male)"
 
-#: client/ui/character_screen.gd:284 client/ui/smith_screen.gd:313
-msgid "Nível do item %d"
-msgstr "Item level %d"
-
 #: client/ui/character_screen.gd:286 client/ui/smith_screen.gd:315
 msgid "Espelhado"
 msgstr "Mirrored"
@@ -1001,10 +1461,6 @@ msgstr "\nWorth %d strengthening point(s) at the Blacksmith."
 #: client/ui/character_screen.gd:326
 msgid "\nFerramenta de batalha (Z/X/C)."
 msgstr "\nBattle tool (Z/X/C)."
-
-#: client/ui/character_screen.gd:49
-msgid "VOLTAR"
-msgstr "BACK"
 
 #: client/ui/character_screen.gd:50 client/ui/smith_screen.gd:43
 msgid "FERREIRO"
@@ -1170,23 +1626,15 @@ msgstr "Chapel"
 msgid "Namoro: encontre seu par"
 msgstr "Chapel: find your match"
 
-#: client/ui/city_screen.gd:188
-msgid "LEILÃO"
-msgstr "AUCTION HOUSE"
-
-#: client/ui/city_screen.gd:188
-msgid "O leilão depende do servidor online e ainda não está disponível."
-msgstr "The auction house needs the online server and is not available yet."
-
-#: client/ui/city_screen.gd:195
+#: client/ui/city_screen.gd:197
 msgid "Casamento e equipamentos de casal ainda não estão disponíveis."
 msgstr "Marriage and couple gear are not available yet."
 
-#: client/ui/city_screen.gd:195
+#: client/ui/city_screen.gd:197
 msgid "NAMORO"
 msgstr "CHAPEL"
 
-#: client/ui/city_screen.gd:197
+#: client/ui/city_screen.gd:199
 msgid "A Casa dos Mascotes ainda não está disponível nesta versão offline."
 msgstr "The Pet House is not available in this offline version yet."
 
@@ -1198,35 +1646,35 @@ msgstr "Pet House"
 msgid "Casa dos Mascotes: em breve"
 msgstr "Pet House: coming soon"
 
-#: client/ui/city_screen.gd:285
+#: client/ui/city_screen.gd:287
 msgid "CRIE SEU PERSONAGEM"
 msgstr "CREATE YOUR CHARACTER"
 
-#: client/ui/city_screen.gd:286
+#: client/ui/city_screen.gd:288
 msgid "Uma conta, um personagem. Escolha a aparência e o nome."
 msgstr "One account, one character. Choose the look and the name."
 
-#: client/ui/city_screen.gd:292
+#: client/ui/city_screen.gd:294
 msgid "Feminino"
 msgstr "Female"
 
-#: client/ui/city_screen.gd:292
+#: client/ui/city_screen.gd:294
 msgid "Masculino"
 msgstr "Male"
 
-#: client/ui/city_screen.gd:293
+#: client/ui/city_screen.gd:295
 msgid "Nome:"
 msgstr "Name:"
 
-#: client/ui/city_screen.gd:302
+#: client/ui/city_screen.gd:304
 msgid "CRIAR PERSONAGEM"
 msgstr "CREATE CHARACTER"
 
-#: client/ui/city_screen.gd:314 client/ui/city_screen.gd:318
+#: client/ui/city_screen.gd:316 client/ui/city_screen.gd:320
 msgid "NOME"
 msgstr "NAME"
 
-#: client/ui/city_screen.gd:314
+#: client/ui/city_screen.gd:316
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr "The name needs at least 3 letters."
 
@@ -1250,129 +1698,121 @@ msgstr "Coupon redeemed! "
 msgid "RESGATAR"
 msgstr "REDEEM"
 
-#: client/ui/coupon_dialog.gd:34 client/ui/room_screen.gd:213 client/ui/shop_screen.gd:35 client/ui/smith_screen.gd:44
-msgid "FECHAR"
-msgstr "CLOSE"
-
 #: client/ui/coupon_dialog.gd:8
 msgid "RESGATAR CUPOM"
 msgstr "REDEEM COUPON"
 
-#: client/ui/hall_screen.gd:101
+#: client/ui/hall_screen.gd:103
 msgid "Sala %d — %s"
 msgstr "Room %d — %s"
 
-#: client/ui/hall_screen.gd:102
+#: client/ui/hall_screen.gd:104
 msgid "Desafio"
 msgstr "Battle"
 
-#: client/ui/hall_screen.gd:103
+#: client/ui/hall_screen.gd:105
 msgid "das Lutas"
 msgstr "Challenge"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:112
 msgid "Aberta"
 msgstr "Open"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:112
 msgid "Cheia"
 msgstr "Full"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:112
 msgid "Em jogo"
 msgstr "Playing"
 
-#: client/ui/hall_screen.gd:114
+#: client/ui/hall_screen.gd:116
 msgid "Mapa\nAleatório"
 msgstr "Random\nArena"
 
-#: client/ui/hall_screen.gd:121
+#: client/ui/hall_screen.gd:123
 msgid "A sala %d está em batalha. Escolha outra sala ou aguarde."
 msgstr "Room %d is in a battle. Choose another room or wait."
 
-#: client/ui/hall_screen.gd:121
+#: client/ui/hall_screen.gd:123
 msgid "SALA EM JOGO"
 msgstr "ROOM IN BATTLE"
 
-#: client/ui/hall_screen.gd:123
+#: client/ui/hall_screen.gd:125
 msgid "A sala %d está cheia."
 msgstr "Room %d is full."
 
-#: client/ui/hall_screen.gd:123 client/ui/room_screen.gd:357
+#: client/ui/hall_screen.gd:125 client/ui/room_screen.gd:357
 msgid "SALA CHEIA"
 msgstr "ROOM FULL"
 
-#: client/ui/hall_screen.gd:130
+#: client/ui/hall_screen.gd:132
 msgid "Informações do usuário"
 msgstr "Player info"
 
-#: client/ui/hall_screen.gd:134
+#: client/ui/hall_screen.gd:136
 msgid "Ranking"
 msgstr "Ranking"
 
-#: client/ui/hall_screen.gd:136
+#: client/ui/hall_screen.gd:138
 msgid "Méritos"
 msgstr "Merits"
 
-#: client/ui/hall_screen.gd:150
+#: client/ui/hall_screen.gd:152
 msgid "Conquista: %d vitória(s)"
 msgstr "Achievement: %d win(s)"
 
-#: client/ui/hall_screen.gd:155
+#: client/ui/hall_screen.gd:157
 msgid "Nível"
 msgstr "Level"
 
-#: client/ui/hall_screen.gd:156
+#: client/ui/hall_screen.gd:158
 msgid "Sexo"
 msgstr "Gender"
 
-#: client/ui/hall_screen.gd:185
+#: client/ui/hall_screen.gd:192
 msgid "Clique em \"Jogar\" para começar o combate"
 msgstr "Click \"Play\" to start fighting"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Buscar"
 msgstr "Find"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Criar uma sala com a sua equipe"
 msgstr "Create a room with your team"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Entrar na primeira sala disponível"
 msgstr "Join the first open room"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Entrar numa sala pelo número"
 msgstr "Join a room by its number"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Equipe"
 msgstr "Team"
 
-#: client/ui/hall_screen.gd:186
+#: client/ui/hall_screen.gd:193
 msgid "Jogar"
 msgstr "Play"
 
-#: client/ui/hall_screen.gd:207 client/ui/hall_screen.gd:221
+#: client/ui/hall_screen.gd:214 client/ui/hall_screen.gd:228
 msgid "BUSCAR SALA"
 msgstr "FIND ROOM"
 
-#: client/ui/hall_screen.gd:207
+#: client/ui/hall_screen.gd:214
 msgid "Digite o número da sala:"
 msgstr "Type the room number:"
 
-#: client/ui/hall_screen.gd:221
+#: client/ui/hall_screen.gd:228
 msgid "Sala %s não encontrada neste canal."
 msgstr "Room %s was not found on this channel."
 
-#: client/ui/hall_screen.gd:225 client/ui/title_screen.gd:61
+#: client/ui/hall_screen.gd:232 client/ui/title_screen.gd:61
 msgid "ENTRAR"
 msgstr "ENTER"
-
-#: client/ui/hall_screen.gd:226
-msgid "CANCELAR"
-msgstr "CANCEL"
 
 #: client/ui/hall_screen.gd:25
 msgid "Salão de jogos"
@@ -1410,9 +1850,33 @@ msgstr "◀ Previous"
 msgid "Próximo ▶"
 msgstr "Next ▶"
 
-#: client/ui/hall_screen.gd:94
+#: client/ui/hall_screen.gd:96
 msgid "Página %d/%d  •  %d salas aguardando  •  %d em jogo"
 msgstr "Page %d/%d  •  %d rooms waiting  •  %d playing"
+
+#: client/ui/mail_screen.gd:110
+msgid "Recebido! Veja na Mochila."
+msgstr "Received! Check your Bag."
+
+#: client/ui/mail_screen.gd:43
+msgid "%d cartas esperando"
+msgstr "%d letters waiting"
+
+#: client/ui/mail_screen.gd:43
+msgid "1 carta esperando"
+msgstr "1 letter waiting"
+
+#: client/ui/mail_screen.gd:53
+msgid "Nenhuma carta. As vendas e compras do Leilão chegam aqui."
+msgstr "No letters. Auction House sales and purchases arrive here."
+
+#: client/ui/mail_screen.gd:57
+msgid "RECEBER TUDO"
+msgstr "RECEIVE ALL"
+
+#: client/ui/mail_screen.gd:80
+msgid "RECEBER"
+msgstr "RECEIVE"
 
 #: client/ui/phase_transition.gd:28
 msgid "FASE %d CONCLUÍDA!"
@@ -1505,10 +1969,6 @@ msgstr "Boss chest: %d cards (map, rarity and party add more)."
 #: client/ui/result_screen.gd:287
 msgid "Recompensas adicionadas à sua mochila."
 msgstr "Rewards added to your bag."
-
-#: client/ui/result_screen.gd:316
-msgid "%d bônus"
-msgstr "%d bonuses"
 
 #: client/ui/result_screen.gd:54
 msgid "Resultado"
@@ -1786,7 +2246,7 @@ msgstr "INVITE"
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr "Only the room host can invite players."
 
-#: client/ui/room_screen.gd:357 server/game/game_server.gd:638
+#: client/ui/room_screen.gd:357 server/game/game_server.gd:672
 msgid "Não há vagas livres na sua equipe."
 msgstr "There are no free slots in your team."
 
@@ -1847,24 +2307,12 @@ msgid "Cabelos"
 msgstr "Hair"
 
 #: client/ui/shop_screen.gd:10
-msgid "Chapéus"
-msgstr "Hats"
-
-#: client/ui/shop_screen.gd:10
 msgid "Pedras"
 msgstr "Stones"
-
-#: client/ui/shop_screen.gd:10
-msgid "Roupas"
-msgstr "Outfits"
 
 #: client/ui/shop_screen.gd:107
 msgid "Verdadeira: instâncias"
 msgstr "True: dungeons"
-
-#: client/ui/shop_screen.gd:110
-msgid "%d moedas"
-msgstr "%d gold"
 
 #: client/ui/shop_screen.gd:112
 msgid "%d ponto(s) • você tem %d"
@@ -1873,10 +2321,6 @@ msgstr "%d point(s) • you have %d"
 #: client/ui/shop_screen.gd:117
 msgid "COMPRADO"
 msgstr "OWNED"
-
-#: client/ui/shop_screen.gd:117
-msgid "COMPRAR"
-msgstr "BUY"
 
 #: client/ui/shop_screen.gd:128
 msgid "Comprado! Veja na Mochila."
@@ -1998,33 +2442,13 @@ msgstr "Target"
 msgid "TRANSFERIR"
 msgstr "TRANSFER"
 
-#: client/ui/smith_screen.gd:245
-msgid "Equipamentos"
-msgstr "Gear"
-
-#: client/ui/smith_screen.gd:283
-msgid "Nenhum equipamento que aceite bônus."
-msgstr "No gear that takes bonuses."
-
-#: client/ui/smith_screen.gd:283
-msgid "Nenhum mapa na mochila."
-msgstr "No maps in the bag."
-
 #: client/ui/smith_screen.gd:287
 msgid "%d mapas"
 msgstr "%d maps"
 
-#: client/ui/smith_screen.gd:303 client/ui/smith_screen.gd:357
-msgid "Escolha um equipamento ou um mapa."
-msgstr "Choose a piece of gear or a map."
-
 #: client/ui/smith_screen.gd:313
 msgid "%d/%d bônus"
 msgstr "%d/%d bonuses"
-
-#: client/ui/smith_screen.gd:326
-msgid "Sem bônus."
-msgstr "No bonuses."
 
 #: client/ui/smith_screen.gd:326
 msgid "Sem bônus. Use uma Brasa para torná-lo Excelente."
@@ -2114,7 +2538,7 @@ msgstr "your password"
 msgid "Lembrar"
 msgstr "Remember"
 
-#: client/ui/title_screen.gd:131
+#: client/ui/title_screen.gd:135
 msgid "CRIAR CONTA"
 msgstr "CREATE ACCOUNT"
 
@@ -2126,35 +2550,35 @@ msgstr "Offline mode"
 msgid "Sozinho"
 msgstr "Solo"
 
-#: client/ui/title_screen.gd:158
+#: client/ui/title_screen.gd:162
 msgid "%d online"
 msgstr "%d online"
 
-#: client/ui/title_screen.gd:158
+#: client/ui/title_screen.gd:162
 msgid "Cheio"
 msgstr "Full"
 
-#: client/ui/title_screen.gd:166
+#: client/ui/title_screen.gd:170
 msgid "Servidores online indisponíveis agora. Você pode jogar no modo offline."
 msgstr "Online servers are unavailable right now. You can play in offline mode."
 
-#: client/ui/title_screen.gd:202
+#: client/ui/title_screen.gd:206
 msgid "Bem-vindo ao modo offline!"
 msgstr "Welcome to offline mode!"
 
-#: client/ui/title_screen.gd:220
+#: client/ui/title_screen.gd:224
 msgid "Digite a conta e a senha."
 msgstr "Type your account and password."
 
-#: client/ui/title_screen.gd:223
+#: client/ui/title_screen.gd:227
 msgid "Criando a conta…"
 msgstr "Creating the account…"
 
-#: client/ui/title_screen.gd:223
+#: client/ui/title_screen.gd:227
 msgid "Entrando…"
 msgstr "Logging in…"
 
-#: client/ui/title_screen.gd:228
+#: client/ui/title_screen.gd:232
 msgid "Conectando a %s…"
 msgstr "Connecting to %s…"
 
@@ -2170,71 +2594,83 @@ msgstr "Frontier Tank: Nova Era %s"
 msgid "Buscando servidores…"
 msgstr "Looking for servers…"
 
-#: client/ui/ui_kit.gd:356
+#: client/ui/ui_kit.gd:364
 msgid "OK"
 msgstr "OK"
 
-#: server/game/game_server.gd:373 server/game/game_server.gd:405
+#: server/game/game_server.gd:399 server/game/game_server.gd:439
 msgid "Este nome já está em uso. Escolha outro."
 msgstr "This name is taken. Choose another."
 
-#: server/game/game_server.gd:402
-msgid "Servidor indisponível. Tente de novo."
-msgstr "Server unavailable. Try again."
-
-#: server/game/game_server.gd:430
-msgid "Calma! Aguarde um pouco para falar de novo."
-msgstr "Easy! Wait a little before talking again."
-
-#: server/game/game_server.gd:491 server/game/game_server.gd:514
+#: server/game/game_server.gd:426 server/game/game_server.gd:525 server/game/game_server.gd:548 server/game/game_server.gd:875
 msgid "Você está numa batalha."
 msgstr "You are in a battle."
 
-#: server/game/game_server.gd:516
+#: server/game/game_server.gd:429 server/game/game_server.gd:689 server/game/game_server.gd:879
+msgid "Aguarde a operação anterior terminar."
+msgstr "Wait for the previous operation to finish."
+
+#: server/game/game_server.gd:436
+msgid "Servidor indisponível. Tente de novo."
+msgstr "Server unavailable. Try again."
+
+#: server/game/game_server.gd:464
+msgid "Calma! Aguarde um pouco para falar de novo."
+msgstr "Easy! Wait a little before talking again."
+
+#: server/game/game_server.gd:550
 msgid "Sala não encontrada neste canal."
 msgstr "Room not found on this channel."
 
-#: server/game/game_server.gd:518
+#: server/game/game_server.gd:552
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr "The room is in battle. Pick another room or wait."
 
-#: server/game/game_server.gd:520
+#: server/game/game_server.gd:554
 msgid "A sala está cheia."
 msgstr "The room is full."
 
-#: server/game/game_server.gd:531
+#: server/game/game_server.gd:565
 msgid "%s entrou na sala."
 msgstr "%s joined the room."
 
-#: server/game/game_server.gd:547
+#: server/game/game_server.gd:581
 msgid "%s saiu da sala."
 msgstr "%s left the room."
 
-#: server/game/game_server.gd:566
+#: server/game/game_server.gd:600
 msgid "Somente o dono da sala pode fazer isso."
 msgstr "Only the room owner can do that."
 
-#: server/game/game_server.gd:569
+#: server/game/game_server.gd:603
 msgid "A sala está em batalha."
 msgstr "The room is in battle."
 
-#: server/game/game_server.gd:607
+#: server/game/game_server.gd:641
 msgid "Você não está numa sala."
 msgstr "You are not in a room."
 
-#: server/game/game_server.gd:621
+#: server/game/game_server.gd:655
 msgid "Jogador não encontrado."
 msgstr "Player not found."
 
-#: server/game/game_server.gd:650
+#: server/game/game_server.gd:684
 msgid "Todos os jogadores precisam estar preparados."
 msgstr "Every player must be ready."
 
-#: server/game/game_server.gd:788
+#: server/game/game_server.gd:826
 msgid "Carta indisponível."
 msgstr "Card unavailable."
 
-#: server/game/match_host.gd:198
+#: server/game/game_server.gd:877
+msgid "Crie o seu personagem primeiro."
+msgstr "Create your character first."
+
+#: server/game/game_server.gd:927
+msgid "Aguarde um instante para buscar de novo."
+msgstr "Wait a moment before searching again."
+
+#: server/game/match_host.gd:200
 msgid "Parabéns! [%s] ganhou [%s] através de Instância."
 msgstr "Congratulations! [%s] won [%s] in an Instance."
 
@@ -2945,22 +3381,6 @@ msgstr "Copies a piece of gear. The copy is bound and cannot be changed."
 #: shared/balance/items.json:currencies[6].name
 msgid "Espelho Celeste"
 msgstr "Sky Mirror"
-
-#: shared/balance/items.json:qualities[0].label
-msgid "Normal"
-msgstr "Normal"
-
-#: shared/balance/items.json:qualities[1].label
-msgid "Excelente"
-msgstr "Excellent"
-
-#: shared/balance/items.json:qualities[2].label
-msgid "Verdadeira"
-msgstr "True"
-
-#: shared/balance/items.json:qualities[3].label
-msgid "Super Verdadeira"
-msgstr "Super True"
 
 #: shared/balance/items.json:weapons[0].name
 msgid "Quebra Tijolos"

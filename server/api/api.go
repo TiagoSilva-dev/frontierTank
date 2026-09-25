@@ -80,6 +80,7 @@ func (a *API) internalRoutes() http.Handler {
 	mux.HandleFunc("POST /internal/heartbeat", a.heartbeat)
 	mux.HandleFunc("POST /internal/presence/claim", a.claimPresence)
 	mux.HandleFunc("POST /internal/presence/release", a.releasePresence)
+	a.auctionRoutes(mux)
 	return a.internalOnly(limitBody(mux, 8<<20))
 }
 
