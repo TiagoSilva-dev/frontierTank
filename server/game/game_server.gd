@@ -22,6 +22,14 @@ const AUDIT_SECONDS: float = 5.0
 const LOBBY_SECONDS: float = 0.5
 const MAX_MESSAGE: int = 16384
 const CHAT_KEEP: int = 50
+# Chat reports (launch checklist): the lines kept to find a reported message and its
+# context, how many reports a player may make, and the automatic mute after reports from
+# several players (the team reviews every report later, tools/moderate.py).
+const CHAT_LOG_KEEP: int = 500
+const REPORT_REASONS: Array[String] = ["ofensa", "odio", "spam", "golpe", "dados", "nome", "outro"]
+const REPORT_WINDOW: float = 600.0
+const REPORTS_PER_WINDOW: int = 5
+const MUTE_SECONDS: float = 600.0
 # Words hidden in the public chat (roadmap 4.3: moderated chat).
 const BLOCKED_WORDS: Array[String] = ["porra", "caralho", "merda", "puta", "fdp", "vsf", "buceta", "arrombado", "fuck", "shit", "bitch", "cunt", "asshole", "nigger", "faggot"]
 
@@ -45,6 +53,14 @@ var hosts: Dictionary = {}
 var next_peer: int = 1
 var next_match: int = 1
 var chat_history: Array = []
+# Players' lines with who wrote them ({id, account, author, text, at, reported_by}).
+var chat_log: Array = []
+var next_chat_id: int = 1
+var report_times: Dictionary = {}
+var reporters_of: Dictionary = {}
+var muted_until: Dictionary = {}
+# Different players reporting the same one within REPORT_WINDOW that mute them.
+var mute_reporters: int = 3
 var speaker: Dictionary = {}
 var audit_queue: Array = []
 var lobby_dirty: bool = true
@@ -73,6 +89,7 @@ func configure(args: Dictionary) -> void:
 	capacity = int(setting(args, "capacity", "FT_CAPACITY", "500"))
 	test_coupons = setting(args, "test-coupons", "FT_TEST_COUPONS", "0") == "1"
 	bot_fill_seconds = float(setting(args, "bot-fill", "FT_BOT_FILL", "20"))
+	mute_reporters = maxi(1, int(setting(args, "report-mute", "FT_REPORT_MUTE", "3")))
 	stop_file = setting(args, "stop-file", "FT_STOP_FILE", "")
 	api = ApiClient.new()
 	api.base_url = setting(args, "api", "FT_API", "memory").trim_suffix("/")
@@ -273,6 +290,8 @@ func handle(session: PlayerSession, text: String) -> void:
 			mail_claim(session, message)
 		"account_delete":
 			account_delete(session, message)
+		"chat_report":
+			chat_report(session, message)
 
 # ---------- login ----------
 
@@ -461,20 +480,92 @@ func chat(session: PlayerSession, message: Dictionary) -> void:
 	if text == "" or not session.profile.created:
 		return
 	var moment: float = now()
+	if float(muted_until.get(session.account_id, 0.0)) > moment:
+		var minutes: int = ceili((float(muted_until[session.account_id]) - moment) / 60.0)
+		session.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."), "args": [minutes], "channel": "system"}})
+		return
 	session.chat_times = session.chat_times.filter(func(at: float) -> bool: return moment - at < 10.0)
 	if session.chat_times.size() >= 5 or (not session.chat_times.is_empty() and moment - session.chat_times.back() < 0.8):
 		session.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("Calma! Aguarde um pouco para falar de novo."), "channel": "system"}})
 		return
 	session.chat_times.append(moment)
 	text = filter_text(text)
-	var entry: Dictionary = {"author": session.profile.player_name, "text": text, "channel": "Atual"}
+	# The id lets players report the line; the account says who wrote it.
+	var entry: Dictionary = {"id": next_chat_id, "account": session.account_id, "author": session.profile.player_name, "text": text, "channel": "Atual"}
+	next_chat_id += 1
 	chat_history.append(entry)
 	if chat_history.size() > CHAT_KEEP:
 		chat_history.remove_at(0)
+	chat_log.append({"id": entry.id, "account": session.account_id, "author": entry.author, "text": text, "at": int(moment), "reported_by": []})
+	if chat_log.size() > CHAT_LOG_KEEP:
+		chat_log.remove_at(0)
 	for other: PlayerSession in accounts.values():
 		if not other.lingering:
 			other.send({"t": "chat", "message": entry})
 	audit(session, "chat", {"text": text})
+
+# A player reports a line of the chat. The report goes to the API with the lines around
+# it; reports from several players in a short time mute the author for a while.
+func chat_report(session: PlayerSession, message: Dictionary) -> void:
+	var id: int = number(message, "id")
+	var reason: String = str(message.get("reason", ""))
+	if not session.profile.created:
+		reply(session, message, {"error": Lang.t("Crie o seu personagem primeiro.")})
+		return
+	if not reason in REPORT_REASONS:
+		reply(session, message, {"error": Lang.t("Escolha o motivo da denúncia.")})
+		return
+	var index: int = -1
+	for i in range(chat_log.size() - 1, -1, -1):
+		if int(chat_log[i].id) == id:
+			index = i
+			break
+	if index < 0:
+		reply(session, message, {"error": Lang.t("Esta mensagem é antiga demais para ser denunciada.")})
+		return
+	var line: Dictionary = chat_log[index]
+	if int(line.account) == session.account_id:
+		reply(session, message, {"error": Lang.t("Você não pode denunciar a sua própria mensagem.")})
+		return
+	if (line.reported_by as Array).has(session.account_id):
+		reply(session, message, {"error": Lang.t("Você já denunciou esta mensagem.")})
+		return
+	var moment: float = now()
+	var times: Array = (report_times.get(session.account_id, []) as Array).filter(func(at: float) -> bool: return moment - at < REPORT_WINDOW)
+	if times.size() >= REPORTS_PER_WINDOW:
+		reply(session, message, {"error": Lang.t("Você já fez muitas denúncias. Aguarde alguns minutos.")})
+		return
+	times.append(moment)
+	report_times[session.account_id] = times
+	line.reported_by.append(session.account_id)
+	var context: Array = []
+	for other: Dictionary in chat_log.slice(maxi(0, index - 6), index + 4):
+		context.append({"author": other.author, "text": other.text, "at": other.at, "reported": int(other.id) == id})
+	var target: int = int(line.account)
+	var reporters: Dictionary = {}
+	for reporter: int in reporters_of.get(target, {}):
+		if moment - float(reporters_of[target][reporter]) < REPORT_WINDOW:
+			reporters[reporter] = reporters_of[target][reporter]
+	reporters[session.account_id] = moment
+	reporters_of[target] = reporters
+	var mute: bool = reporters.size() >= mute_reporters and float(muted_until.get(target, 0.0)) <= moment
+	if mute:
+		muted_until[target] = moment + MUTE_SECONDS
+		var muted: PlayerSession = accounts.get(target)
+		if muted != null:
+			muted.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."), "args": [ceili(MUTE_SECONDS / 60.0)], "channel": "system"}})
+			audit(muted, "chat.muted", {"reports": reporters.size(), "seconds": MUTE_SECONDS})
+	var note: String = filter_text(str(message.get("note", "")).strip_edges().substr(0, 200))
+	var result: Dictionary = await api.report({"server_id": server_id, "reporter_id": session.account_id, "reporter_name": session.profile.player_name, "reported_id": target, "reported_name": str(line.author), "reason": reason, "note": note, "message": str(line.text), "context": context, "auto_muted": mute})
+	if result.has("error"):
+		# Not stored: the player can try again.
+		line.reported_by.erase(session.account_id)
+		times.erase(moment)
+		reply(session, message, {"error": Lang.t("Não foi possível enviar a denúncia agora. Tente de novo.")})
+		return
+	audit(session, "chat.report", {"message": id, "reported": target, "reason": reason, "report": result.get("id", 0)})
+	reply(session, message)
+	log_line("chat report %s by %d against %d%s" % [str(result.get("id", "")), session.account_id, target, " (muted)" if mute else ""])
 
 func filter_text(text: String) -> String:
 	for found: RegExMatch in chat_filter.search_all(text):
@@ -1166,7 +1257,13 @@ func heartbeat() -> void:
 	var online: Array = []
 	for account: int in accounts:
 		online.append(account)
-	await api.heartbeat({"id": server_id, "name": server_name, "url": public_url, "online": accounts.size(), "capacity": capacity}, online)
+	var banned: Array = await api.heartbeat({"id": server_id, "name": server_name, "url": public_url, "online": accounts.size(), "capacity": capacity}, online)
+	for account: int in banned:
+		# Suspended by the team (a chat report): out now, and refused at the next login.
+		var session: PlayerSession = accounts.get(account)
+		if session != null and session.is_open():
+			log_line("account %d banned, disconnecting" % account)
+			fail(session, "banned")
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST and listening:

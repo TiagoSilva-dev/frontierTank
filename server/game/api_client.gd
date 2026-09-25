@@ -135,11 +135,31 @@ func delete_account(account: int, password: String) -> Dictionary:
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/accounts/%d/delete" % account, {"password": password})
 	return {} if int(reply.status) == 204 else {"error": error_code(reply)}
 
-func heartbeat(info: Dictionary, players: Array) -> bool:
+# A chat report (launch checklist) for the team to review. {"id"} or {"error"}
+var memory_reports: Array[Dictionary] = []
+
+func report(entry: Dictionary) -> Dictionary:
 	if is_memory():
-		return true
+		var stored: Dictionary = copy(entry)
+		stored.id = memory_reports.size() + 1
+		stored.status = "open"
+		memory_reports.append(stored)
+		return {"id": stored.id}
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/reports", entry)
+	if int(reply.status) != 201 or not reply.body is Dictionary:
+		return {"error": error_code(reply)}
+	return {"id": int(reply.body.id)}
+
+# Announces the server and its players; returns the players banned meanwhile.
+var memory_banned: Dictionary = {}
+
+func heartbeat(info: Dictionary, players: Array) -> Array:
+	if is_memory():
+		return players.filter(func(account: int) -> bool: return memory_banned.has(account))
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/heartbeat", {"server": info, "players": players})
-	return int(reply.status) == 204
+	if int(reply.status) != 200 or not reply.body is Dictionary:
+		return []
+	return (reply.body.get("banned", []) as Array).map(func(id: Variant) -> int: return int(id))
 
 func audit(entries: Array) -> bool:
 	if is_memory() or entries.is_empty():

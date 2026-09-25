@@ -68,6 +68,11 @@ A lógica do jogo usa ~2 ms dos 16,7 ms de um quadro a 60 FPS dentro do navegado
 - **O que a exclusão apaga**: conta, personagem, itens, sessões, Correio, anúncios ativos, as mensagens de chat e o nome do personagem no registro de atividades; o resto do registro fica sem a conta até o prazo.
 - **Prazos** (variáveis da API): registro de atividades 365 dias, chat 90 dias e **registros de acesso** (IP, data e hora do cadastro e dos logins) 6 meses, como exige o Marco Civil da Internet (art. 15).
 
+## Denúncia no chat
+- **Online**, o nome de outro jogador no chat é um link: abre **DENUNCIAR MENSAGEM** (`--screen=report`) com o motivo (ofensa, ódio, spam, golpe ou venda por dinheiro, dados pessoais, nome ofensivo, outro), detalhes opcionais e **Ocultar as mensagens deste jogador para mim**.
+- O servidor de jogo guarda quem escreveu cada linha (as últimas 500), confere a denúncia (não dá para denunciar a própria linha nem a mesma linha duas vezes; 5 denúncias a cada 10 minutos) e manda à API a mensagem com as linhas em volta. Denúncias de **3 jogadores diferentes** em 10 minutos silenciam o autor por 10 minutos (`REPORT_MUTE`).
+- A equipe analisa com `tools/moderate.py` (lista com o contexto e o histórico, decide descartar, avisar ou suspender). A suspensão desconecta o jogador em até 10 s. Detalhes em `server/README.md`.
+
 ## Armas
 Nove armas clássicas em três qualidades, **Normal**, **Excelente** e **Verdadeira**: Tijolaço, Braseiro, Prisma, Cata-Vento, Pomar, Tônico, Bota-Fora, Para-Raios e Sugador. E três **Super Verdadeiras**, que só caem na Instância: Super Minotauro, Super Cupido e Super Lança de Jade (nomes da revisão de identidade de 25/09/2026; as ids internas e os saves não mudaram). Os especiais: tijolo que se parte, rajada tripla de fogo, raio prismático do céu, shuriken gigante que ignora o vento, chuva de frutas, cura em área, geladeira que cai do céu, três raios, ventosas que puxam, touro espectral que empurra, bumerangue que volta e cura, e chuva de lanças.
 

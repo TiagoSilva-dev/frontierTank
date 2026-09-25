@@ -242,6 +242,9 @@ func open_named(target: String) -> void:
 		"help":
 			show_city()
 			open_help()
+		"report":
+			show_city()
+			ReportDialog.open(ui, self, {"id": 1, "account": 2, "author": "Tiroteio", "text": tr("bora sala 4x4!!")})
 		_:
 			show_city()
 

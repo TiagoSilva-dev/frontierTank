@@ -142,107 +142,111 @@ msgstr "Your account and your data have been deleted."
 msgid "Erro do servidor: %s"
 msgstr "Server error: %s"
 
-#: client/scripts/main.gd:289 client/systems/lobby.gd:11 server/game/game_server.gd:534
+#: client/scripts/main.gd:247 client/systems/lobby.gd:20
+msgid "bora sala 4x4!!"
+msgstr "4v4 room, let's go!!"
+
+#: client/scripts/main.gd:292 client/systems/lobby.gd:11 server/game/game_server.gd:625
 msgid "Guerra de equipes, diversão sem limite"
 msgstr "Team war, endless fun"
 
-#: client/scripts/main.gd:295 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
+#: client/scripts/main.gd:298 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
 msgid "Expedição: %s"
 msgstr "Expedition: %s"
 
-#: client/scripts/main.gd:305 client/scripts/main.gd:316 client/scripts/main.gd:375 client/scripts/main.gd:693
+#: client/scripts/main.gd:308 client/scripts/main.gd:319 client/scripts/main.gd:378 client/scripts/main.gd:696
 msgid "SALA"
 msgstr "ROOM"
 
-#: client/scripts/main.gd:500
+#: client/scripts/main.gd:503
 msgid "Deseja fechar o Frontier Tank?"
 msgstr "Close Frontier Tank?"
 
-#: client/scripts/main.gd:500 client/scripts/main.gd:502 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:66
+#: client/scripts/main.gd:503 client/scripts/main.gd:505 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:66
 msgid "SAIR"
 msgstr "EXIT"
 
-#: client/scripts/main.gd:500
+#: client/scripts/main.gd:503
 msgid "Voltar à tela de entrada?"
 msgstr "Go back to the title screen?"
 
-#: client/scripts/main.gd:503
+#: client/scripts/main.gd:506
 msgid "FICAR"
 msgstr "STAY"
 
-#: client/scripts/main.gd:522 client/ui/bottom_bar.gd:17
+#: client/scripts/main.gd:525 client/ui/bottom_bar.gd:17
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/scripts/main.gd:522 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
+#: client/scripts/main.gd:525 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
 msgid "PET"
 msgstr "PET"
 
-#: client/scripts/main.gd:523
+#: client/scripts/main.gd:526
 msgid "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."
 msgstr "This system is not available in this offline version yet.\nBattle tools can be bought inside the room."
 
-#: client/scripts/main.gd:527 client/ui/bottom_bar.gd:22
+#: client/scripts/main.gd:530 client/ui/bottom_bar.gd:22
 msgid "AJUDA"
 msgstr "HELP"
 
-#: client/scripts/main.gd:527
+#: client/scripts/main.gd:530
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
 
-#: client/scripts/main.gd:533 client/ui/title_screen.gd:71
+#: client/scripts/main.gd:536 client/ui/title_screen.gd:71
 msgid "Privacidade"
 msgstr "Privacy"
 
-#: client/scripts/main.gd:535 client/ui/title_screen.gd:119
+#: client/scripts/main.gd:538 client/ui/title_screen.gd:119
 msgid "Minha conta"
 msgstr "My account"
 
-#: client/scripts/main.gd:539 client/ui/account_screen.gd:74 client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34
+#: client/scripts/main.gd:542 client/ui/account_screen.gd:74 client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34
 msgid "FECHAR"
 msgstr "CLOSE"
 
-#: client/scripts/main.gd:552 client/ui/auction_screen.gd:71
+#: client/scripts/main.gd:555 client/ui/auction_screen.gd:71
 msgid "LEILÃO"
 msgstr "AUCTION HOUSE"
 
-#: client/scripts/main.gd:552
+#: client/scripts/main.gd:555
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:562 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+#: client/scripts/main.gd:565 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
 msgid "CORREIO"
 msgstr "MAIL"
 
-#: client/scripts/main.gd:562
+#: client/scripts/main.gd:565
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:573
+#: client/scripts/main.gd:576
 msgid "O Leilão só funciona online."
 msgstr "The Auction House only works online."
 
-#: client/scripts/main.gd:637
+#: client/scripts/main.gd:640
 msgid "Bem-vindo ao servidor %s!"
 msgstr "Welcome to server %s!"
 
-#: client/scripts/main.gd:670
+#: client/scripts/main.gd:673
 msgid "CONEXÃO"
 msgstr "CONNECTION"
 
-#: client/scripts/main.gd:680
+#: client/scripts/main.gd:683
 msgid "AVISO"
 msgstr "NOTICE"
 
-#: client/scripts/main.gd:693
+#: client/scripts/main.gd:696
 msgid "Você foi removido da sala."
 msgstr "You were removed from the room."
 
-#: client/scripts/main.gd:744
+#: client/scripts/main.gd:747
 msgid "Música desligada"
 msgstr "Music off"
 
-#: client/scripts/main.gd:744
+#: client/scripts/main.gd:747
 msgid "Música ligada"
 msgstr "Music on"
 
@@ -370,7 +374,7 @@ msgstr "%d gold"
 msgid "comissão %s"
 msgstr "commission %s"
 
-#: client/systems/auction.gd:268 server/game/game_server.gd:975
+#: client/systems/auction.gd:268 server/game/game_server.gd:1066
 msgid "Este anúncio não está mais à venda."
 msgstr "This listing is no longer for sale."
 
@@ -586,10 +590,6 @@ msgstr "tip: 65 power with a tailwind goes far"
 msgid "V> Poção de Energia 12 moedas"
 msgstr "WTS Energy Potion 12 gold"
 
-#: client/systems/lobby.gd:20
-msgid "bora sala 4x4!!"
-msgstr "4v4 room, let's go!!"
-
 #: client/systems/lobby.gd:21
 msgid "GG pessoal, boa partida"
 msgstr "GG everyone, good match"
@@ -614,7 +614,7 @@ msgstr "[%s] reached level %d! What a beast!"
 msgid "Evento: dobro de mérito no Salão de Jogos neste fim de semana!"
 msgstr "Event: double merit in the Game Hall this weekend!"
 
-#: client/systems/lobby.gd:54
+#: client/systems/lobby.gd:56
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr "Offline mode: rooms, players and messages on this channel are simulated by AI."
 
@@ -830,7 +830,7 @@ msgstr "The character was already created."
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr "Invalid name: use 2 to 14 letters or digits."
 
-#: client/systems/profile.gd:744 server/game/game_server.gd:423
+#: client/systems/profile.gd:744 server/game/game_server.gd:442
 msgid "Operação desconhecida."
 msgstr "Unknown operation."
 
@@ -866,7 +866,7 @@ msgstr "DELETE FOREVER"
 msgid "CANCELAR"
 msgstr "CANCEL"
 
-#: client/ui/account_screen.gd:136 server/game/game_server.gd:1121
+#: client/ui/account_screen.gd:136 server/game/game_server.gd:1212
 msgid "Digite a sua senha."
 msgstr "Type your password."
 
@@ -1110,7 +1110,7 @@ msgstr "BUY"
 msgid "Este anúncio é seu."
 msgstr "This listing is yours."
 
-#: client/ui/auction_screen.gd:336 server/game/game_server.gd:977
+#: client/ui/auction_screen.gd:336 server/game/game_server.gd:1068
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr "You do not have enough Solars and Stars."
 
@@ -1646,59 +1646,59 @@ msgstr "Strengthening Stone I"
 msgid "EXP"
 msgstr "EXP"
 
-#: client/ui/chat_box.gd:24 client/ui/city_screen.gd:103
+#: client/ui/chat_box.gd:26 client/ui/city_screen.gd:103
 msgid "Canal"
 msgstr "Channel"
 
-#: client/ui/chat_box.gd:24
+#: client/ui/chat_box.gd:26
 msgid "Descer"
 msgstr "Down"
 
-#: client/ui/chat_box.gd:24
+#: client/ui/chat_box.gd:26
 msgid "Subir"
 msgstr "Up"
 
-#: client/ui/chat_box.gd:24
+#: client/ui/chat_box.gd:26
 msgid "Travar rolagem"
 msgstr "Lock scrolling"
 
-#: client/ui/chat_box.gd:37 client/ui/chat_box.gd:41
+#: client/ui/chat_box.gd:41 client/ui/chat_box.gd:45
 msgid "Atual"
 msgstr "Current"
 
-#: client/ui/chat_box.gd:37
+#: client/ui/chat_box.gd:41
 msgid "Privado"
 msgstr "Private"
 
-#: client/ui/chat_box.gd:37
+#: client/ui/chat_box.gd:41
 msgid "Soc."
 msgstr "Guild"
 
-#: client/ui/chat_box.gd:45
+#: client/ui/chat_box.gd:49
 msgid "Escreva e pressione Enter"
 msgstr "Type and press Enter"
 
-#: client/ui/chat_box.gd:52
+#: client/ui/chat_box.gd:56
 msgid "Amigos"
 msgstr "Friends"
 
-#: client/ui/chat_box.gd:53
+#: client/ui/chat_box.gd:57
 msgid "Mensagens"
 msgstr "Messages"
 
-#: client/ui/chat_box.gd:54
+#: client/ui/chat_box.gd:58
 msgid "Emoções"
 msgstr "Emotes"
 
-#: client/ui/chat_box.gd:84
+#: client/ui/chat_box.gd:93
 msgid "G. alto-falante"
 msgstr "Megaphone"
 
-#: client/ui/chat_box.gd:88
+#: client/ui/chat_box.gd:97
 msgid "Nenhuma mensagem privada."
 msgstr "No private messages."
 
-#: client/ui/chat_box.gd:88
+#: client/ui/chat_box.gd:97
 msgid "Você ainda não faz parte de uma sociedade."
 msgstr "You are not in a guild yet."
 
@@ -2106,6 +2106,66 @@ msgstr "CONTINUE ▶"
 msgid "POW!"
 msgstr "POW!"
 
+#: client/ui/report_dialog.gd:10
+msgid "Discurso de ódio ou discriminação"
+msgstr "Hate speech or discrimination"
+
+#: client/ui/report_dialog.gd:11
+msgid "Spam ou propaganda"
+msgstr "Spam or advertising"
+
+#: client/ui/report_dialog.gd:12
+msgid "Golpe ou venda por dinheiro"
+msgstr "Scam or real-money trading"
+
+#: client/ui/report_dialog.gd:13
+msgid "Expõe dados pessoais"
+msgstr "Shares personal data"
+
+#: client/ui/report_dialog.gd:14
+msgid "Nome de personagem ofensivo"
+msgstr "Offensive character name"
+
+#: client/ui/report_dialog.gd:15
+msgid "Outro motivo"
+msgstr "Other reason"
+
+#: client/ui/report_dialog.gd:40
+msgid "DENUNCIAR MENSAGEM"
+msgstr "REPORT MESSAGE"
+
+#: client/ui/report_dialog.gd:44
+msgid "Mensagem de %s:"
+msgstr "Message from %s:"
+
+#: client/ui/report_dialog.gd:49
+msgid "Motivo"
+msgstr "Reason"
+
+#: client/ui/report_dialog.gd:57
+msgid "Detalhes (opcional)"
+msgstr "Details (optional)"
+
+#: client/ui/report_dialog.gd:60
+msgid "Ocultar as mensagens deste jogador para mim"
+msgstr "Hide this player's messages for me"
+
+#: client/ui/report_dialog.gd:64
+msgid "ENVIAR DENÚNCIA"
+msgstr "SEND REPORT"
+
+#: client/ui/report_dialog.gd:85
+msgid "Enviando…"
+msgstr "Sending…"
+
+#: client/ui/report_dialog.gd:9
+msgid "Ofensa, ameaça ou assédio"
+msgstr "Insults, threats or harassment"
+
+#: client/ui/report_dialog.gd:98
+msgid "Denúncia enviada. Obrigado!"
+msgstr "Report sent. Thank you!"
+
 #: client/ui/result_screen.gd:101
 msgid "Baú do chefe, moedas e mapas das fases (já na Mochila)"
 msgstr "Boss chest, currency and stage maps (already in the Bag)"
@@ -2422,7 +2482,7 @@ msgstr "INVITE"
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr "Only the room host can invite players."
 
-#: client/ui/room_screen.gd:357 server/game/game_server.gd:674
+#: client/ui/room_screen.gd:357 server/game/game_server.gd:765
 msgid "Não há vagas livres na sua equipe."
 msgstr "There are no free slots in your team."
 
@@ -2766,93 +2826,121 @@ msgstr "Looking for servers…"
 msgid "OK"
 msgstr "OK"
 
-#: server/game/game_server.gd:1115
+#: server/game/game_server.gd:1020
+msgid "Aguarde um instante para buscar de novo."
+msgstr "Wait a moment before searching again."
+
+#: server/game/game_server.gd:1206
 msgid "Saia da batalha antes de excluir a conta."
 msgstr "Leave the battle before deleting your account."
 
-#: server/game/game_server.gd:1126
+#: server/game/game_server.gd:1217
 msgid "Muitas tentativas. Aguarde alguns minutos."
 msgstr "Too many attempts. Wait a few minutes."
 
-#: server/game/game_server.gd:1134
+#: server/game/game_server.gd:1225
 msgid "Não foi possível excluir a conta agora. Tente de novo."
 msgstr "The account could not be deleted now. Try again."
 
-#: server/game/game_server.gd:1134
+#: server/game/game_server.gd:1225
 msgid "Senha incorreta."
 msgstr "Wrong password."
 
-#: server/game/game_server.gd:401 server/game/game_server.gd:441
+#: server/game/game_server.gd:420 server/game/game_server.gd:460
 msgid "Este nome já está em uso. Escolha outro."
 msgstr "This name is taken. Choose another."
 
-#: server/game/game_server.gd:428 server/game/game_server.gd:527 server/game/game_server.gd:550 server/game/game_server.gd:877
+#: server/game/game_server.gd:447 server/game/game_server.gd:618 server/game/game_server.gd:641 server/game/game_server.gd:968
 msgid "Você está numa batalha."
 msgstr "You are in a battle."
 
-#: server/game/game_server.gd:431 server/game/game_server.gd:691 server/game/game_server.gd:881 server/game/game_server.gd:1118
+#: server/game/game_server.gd:450 server/game/game_server.gd:782 server/game/game_server.gd:972 server/game/game_server.gd:1209
 msgid "Aguarde a operação anterior terminar."
 msgstr "Wait for the previous operation to finish."
 
-#: server/game/game_server.gd:438
+#: server/game/game_server.gd:457
 msgid "Servidor indisponível. Tente de novo."
 msgstr "Server unavailable. Try again."
 
-#: server/game/game_server.gd:466
+#: server/game/game_server.gd:485 server/game/game_server.gd:556
+msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
+msgstr "You are muted in the chat because of reports from other players (%d min). The team will review them."
+
+#: server/game/game_server.gd:489
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr "Easy! Wait a little before talking again."
 
-#: server/game/game_server.gd:552
-msgid "Sala não encontrada neste canal."
-msgstr "Room not found on this channel."
-
-#: server/game/game_server.gd:554
-msgid "A sala está em batalha. Escolha outra sala ou aguarde."
-msgstr "The room is in battle. Pick another room or wait."
-
-#: server/game/game_server.gd:556
-msgid "A sala está cheia."
-msgstr "The room is full."
-
-#: server/game/game_server.gd:567
-msgid "%s entrou na sala."
-msgstr "%s joined the room."
-
-#: server/game/game_server.gd:583
-msgid "%s saiu da sala."
-msgstr "%s left the room."
-
-#: server/game/game_server.gd:602
-msgid "Somente o dono da sala pode fazer isso."
-msgstr "Only the room owner can do that."
-
-#: server/game/game_server.gd:605
-msgid "A sala está em batalha."
-msgstr "The room is in battle."
-
-#: server/game/game_server.gd:643
-msgid "Você não está numa sala."
-msgstr "You are not in a room."
-
-#: server/game/game_server.gd:657
-msgid "Jogador não encontrado."
-msgstr "Player not found."
-
-#: server/game/game_server.gd:686
-msgid "Todos os jogadores precisam estar preparados."
-msgstr "Every player must be ready."
-
-#: server/game/game_server.gd:828
-msgid "Carta indisponível."
-msgstr "Card unavailable."
-
-#: server/game/game_server.gd:879
+#: server/game/game_server.gd:513 server/game/game_server.gd:970
 msgid "Crie o seu personagem primeiro."
 msgstr "Create your character first."
 
-#: server/game/game_server.gd:929
-msgid "Aguarde um instante para buscar de novo."
-msgstr "Wait a moment before searching again."
+#: server/game/game_server.gd:516
+msgid "Escolha o motivo da denúncia."
+msgstr "Choose the reason for the report."
+
+#: server/game/game_server.gd:524
+msgid "Esta mensagem é antiga demais para ser denunciada."
+msgstr "This message is too old to be reported."
+
+#: server/game/game_server.gd:528
+msgid "Você não pode denunciar a sua própria mensagem."
+msgstr "You cannot report your own message."
+
+#: server/game/game_server.gd:531
+msgid "Você já denunciou esta mensagem."
+msgstr "You already reported this message."
+
+#: server/game/game_server.gd:536
+msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
+msgstr "You have made too many reports. Wait a few minutes."
+
+#: server/game/game_server.gd:564
+msgid "Não foi possível enviar a denúncia agora. Tente de novo."
+msgstr "The report could not be sent now. Try again."
+
+#: server/game/game_server.gd:643
+msgid "Sala não encontrada neste canal."
+msgstr "Room not found on this channel."
+
+#: server/game/game_server.gd:645
+msgid "A sala está em batalha. Escolha outra sala ou aguarde."
+msgstr "The room is in battle. Pick another room or wait."
+
+#: server/game/game_server.gd:647
+msgid "A sala está cheia."
+msgstr "The room is full."
+
+#: server/game/game_server.gd:658
+msgid "%s entrou na sala."
+msgstr "%s joined the room."
+
+#: server/game/game_server.gd:674
+msgid "%s saiu da sala."
+msgstr "%s left the room."
+
+#: server/game/game_server.gd:693
+msgid "Somente o dono da sala pode fazer isso."
+msgstr "Only the room owner can do that."
+
+#: server/game/game_server.gd:696
+msgid "A sala está em batalha."
+msgstr "The room is in battle."
+
+#: server/game/game_server.gd:734
+msgid "Você não está numa sala."
+msgstr "You are not in a room."
+
+#: server/game/game_server.gd:748
+msgid "Jogador não encontrado."
+msgstr "Player not found."
+
+#: server/game/game_server.gd:777
+msgid "Todos os jogadores precisam estar preparados."
+msgstr "Every player must be ready."
+
+#: server/game/game_server.gd:919
+msgid "Carta indisponível."
+msgstr "Card unavailable."
 
 #: server/game/match_host.gd:200
 msgid "Parabéns! [%s] ganhou [%s] através de Instância."

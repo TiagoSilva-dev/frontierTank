@@ -57,7 +57,7 @@ func loadConfig() (Config, error) {
 		TrustProxy:       env("TRUST_PROXY", "") == "1",
 		AuthPerMinute:    envInt("AUTH_PER_MINUTE", 20),
 		LegalVersion:     env("LEGAL_VERSION", "2026-09-25"),
-		Retention:        Retention{AuditDays: envInt("AUDIT_RETENTION_DAYS", 365), ChatDays: envInt("CHAT_RETENTION_DAYS", 90), AccessDays: envInt("ACCESS_LOG_DAYS", 183)},
+		Retention:        Retention{AuditDays: envInt("AUDIT_RETENTION_DAYS", 365), ChatDays: envInt("CHAT_RETENTION_DAYS", 90), AccessDays: envInt("ACCESS_LOG_DAYS", 183), ReportDays: envInt("REPORT_RETENTION_DAYS", 180)},
 	}
 	if len(cfg.InternalKey) < 16 {
 		return cfg, errors.New("INTERNAL_KEY must have at least 16 characters")

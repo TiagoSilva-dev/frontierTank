@@ -104,7 +104,7 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS access_log, auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
+	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS chat_reports, access_log, auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
 	if err != nil {
 		t.Fatal(err)
 	}

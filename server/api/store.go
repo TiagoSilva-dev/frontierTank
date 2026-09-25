@@ -174,6 +174,11 @@ func (s *Store) DeleteAccount(ctx context.Context, id int64) error {
 		if _, err := tx.Exec(ctx, `DELETE FROM audit_log WHERE account_id = $1 AND kind IN ('chat', 'op.create')`, id); err != nil {
 			return err
 		}
+		// Reports this player made lose the name; reports about them stay (moderation
+		// evidence) until reviewed and the retention period ends.
+		if _, err := tx.Exec(ctx, `UPDATE chat_reports SET reporter_name = '' WHERE reporter_id = $1`, id); err != nil {
+			return err
+		}
 		if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
 			return err
 		}
@@ -277,9 +282,11 @@ func (s *Store) AddAudit(ctx context.Context, serverID string, entries []AuditEn
 	return s.pool.SendBatch(ctx, batch).Close()
 }
 
-// Heartbeat records a game server and renews the presence of its players.
-func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int64) error {
-	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
+// Heartbeat records a game server, renews the presence of its players and says which
+// of them are banned.
+func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int64) ([]int64, error) {
+	banned := []int64{}
+	err := pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
 		_, err := tx.Exec(ctx, `INSERT INTO game_servers (id, name, url, online, capacity, updated_at) VALUES ($1, $2, $3, $4, $5, now())
 			ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, url = EXCLUDED.url, online = EXCLUDED.online, capacity = EXCLUDED.capacity, updated_at = now()`,
 			server.ID, server.Name, server.URL, server.Online, server.Capacity)
@@ -287,8 +294,20 @@ func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int6
 			return err
 		}
 		_, err = tx.Exec(ctx, `UPDATE presence SET expires_at = now() + interval '90 seconds' WHERE server_id = $1 AND account_id = ANY($2)`, server.ID, players)
+		if err != nil {
+			return err
+		}
+		rows, err := tx.Query(ctx, `SELECT id FROM accounts WHERE banned AND id = ANY($1)`, players)
+		if err != nil {
+			return err
+		}
+		banned, err = pgx.CollectRows(rows, pgx.RowTo[int64])
 		return err
 	})
+	if banned == nil {
+		banned = []int64{}
+	}
+	return banned, err
 }
 
 func (s *Store) Servers(ctx context.Context, maxAge time.Duration) ([]GameServer, error) {

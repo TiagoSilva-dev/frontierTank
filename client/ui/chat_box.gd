@@ -2,6 +2,8 @@ class_name ChatBox
 extends Control
 
 # Channel chat in the classic bottom-left layout: side controls, vertical tabs, input.
+# Online, another player's name is a link: it opens the report dialog (launch
+# checklist), which can also hide that player's lines.
 
 var app: Node
 var log_label: RichTextLabel
@@ -32,6 +34,8 @@ func _ready() -> void:
 	log_label.add_theme_color_override("default_color", Color.WHITE)
 	log_label.add_theme_color_override("font_outline_color", Color("140a04"))
 	log_label.add_theme_constant_override("outline_size", 3)
+	log_label.meta_underlined = false
+	log_label.meta_clicked.connect(on_meta)
 	add_child(log_label)
 	for i in range(3):
 		var name_text: String = ["Atual", "Soc.", "Privado"][i]  # i18n
@@ -77,16 +81,31 @@ func refresh() -> void:
 			continue
 		if tab == "Privado" and channel != "Privado":
 			continue
+		if app.lobby.ignored.has(int(message.get("account", 0))):
+			continue
 		var text: String = str(message.text).replace("[", "(").replace("]", ")")
+		var author: String = str(message.get("author", "")).replace("[", "(").replace("]", ")")
+		if reportable(message):
+			author = "[url=%d]%s[/url]" % [int(message.id), author]
 		if channel == "system":
 			lines.append("[color=#8cff7a]%s[/color]" % text)
 		elif channel == "alto-falante":
 			lines.append("[color=#6fe8ff][lb]%s[rb][lb]%s[rb]: %s[/color]" % [tr("G. alto-falante"), message.author, text])
 		else:
-			lines.append("[color=#ffe27a][lb]%s[rb][lb]%s[rb]:[/color] %s" % [tr(channel), message.author, text])
+			lines.append("[color=#ffe27a][lb]%s[rb][lb]%s[rb]:[/color] %s" % [tr(channel), author, text])
 	if lines.is_empty():
 		lines.append("[color=#c8b89a]%s[/color]" % (tr("Você ainda não faz parte de uma sociedade.") if tab == "Soc." else tr("Nenhuma mensagem privada.")))
 	log_label.text = "\n".join(lines)
+
+# Online lines of other players can be reported.
+func reportable(message: Dictionary) -> bool:
+	return app != null and app.online and message.has("id") and int(message.get("account", 0)) != app.my_account()
+
+func on_meta(meta: Variant) -> void:
+	for message: Dictionary in app.lobby.history:
+		if message.has("id") and str(message.id) == str(meta) and reportable(message):
+			ReportDialog.open(app.ui, app, message)
+			return
 
 func send(text: String) -> void:
 	text = text.strip_edges()

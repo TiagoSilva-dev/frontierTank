@@ -187,6 +187,8 @@ type Retention struct {
 	AuditDays  int
 	ChatDays   int
 	AccessDays int
+	// Chat reports, counted from the review (open reports stay until reviewed).
+	ReportDays int
 }
 
 func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
@@ -199,6 +201,9 @@ func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
 		if _, err := s.pool.Exec(ctx, `DELETE FROM audit_log WHERE created_at < now() - make_interval(days => $1)`, keep.AuditDays); err != nil {
 			return err
 		}
+	}
+	if err := s.PurgeReports(ctx, keep.ReportDays); err != nil {
+		return err
 	}
 	if keep.AccessDays > 0 {
 		if _, err := s.pool.Exec(ctx, `DELETE FROM access_log WHERE created_at < now() - make_interval(days => $1)`, keep.AccessDays); err != nil {

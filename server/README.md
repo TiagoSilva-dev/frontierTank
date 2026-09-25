@@ -30,6 +30,8 @@ Variáveis do `.env`:
 | `BOT_FILL_SECONDS` | Quanto tempo uma sala procura outra sala antes de completar com rivais de IA. |
 | `ALLOW_ORIGIN` | Origem liberada no CORS para a versão web. |
 | `LEGAL_VERSION` | Versão dos Termos de Uso e da Política de Privacidade (`legal/*.md`, igual a `Legal.VERSION` no jogo). Mudar faz todos aceitarem de novo antes de jogar online. |
+| `REPORT_MUTE` | Quantos jogadores diferentes denunciando alguém em 10 minutos o silenciam no chat por 10 minutos (3). |
+| `REPORT_RETENTION_DAYS` | Por quanto tempo uma denúncia analisada fica guardada (180). |
 | `AUDIT_RETENTION_DAYS`, `CHAT_RETENTION_DAYS`, `ACCESS_LOG_DAYS` | Prazos da Política de Privacidade: registro de atividades (365), chat dentro dele (90) e registros de acesso do Marco Civil (183, isto é, 6 meses). |
 
 ## Jogar
@@ -57,6 +59,7 @@ Parâmetros (ou as variáveis de ambiente `FT_*` equivalentes): `--port` (7350),
 - Um servidor de jogo aguenta várias batalhas ao mesmo tempo (cada uma é uma cópia da partida no mesmo processo). Para mais jogadores, suba mais serviços `game` com `FT_ID`, `FT_NAME` e portas diferentes; todos aparecem na lista e a presença impede a mesma conta em dois servidores.
 - Faça backup do PostgreSQL (`pg_dump`) com frequência.
 - **Privacidade**: a API guarda a versão dos textos aceita (`accounts.terms_version`), os registros de acesso (`access_log`: IP, data e hora do cadastro e dos logins, 6 meses pelo Marco Civil) e apaga o registro de atividades pelos prazos acima. Rotas: `GET /v1/legal`, `POST /v1/me/terms`, `GET /v1/me/export` (cópia dos dados), `DELETE /v1/me` e, para o servidor de jogo, `POST /internal/accounts/{id}/delete`. Antes de abrir ao público, preencha `legal/controller.json` e faça a revisão jurídica dos textos.
+- **Denúncias no chat**: ficam em `chat_reports`, com a mensagem, as linhas em volta, o motivo e se o servidor silenciou o jogador. A equipe analisa pela porta interna, na própria máquina ou por um túnel SSH (`ssh -L 8081:localhost:8081 ...`): `python tools/moderate.py --key <INTERNAL_KEY> list` mostra as abertas e `python tools/moderate.py --key <INTERNAL_KEY> review <id> dismissed|warned|banned --reviewer <nome>` decide. **banned** suspende a conta (o login e os servidores de jogo recusam) e o servidor de jogo desconecta o jogador em até 10 s (no próximo heartbeat).
 - `audit_log` guarda compras, craft, cupons, cartas, partidas e chat, para investigar fraudes e reclamações. O Leilão grava `auction.list`, `auction.buy`, `auction.sold`, `auction.cancel`, `auction.expire` e `mail.claim` na mesma transação da operação.
 - Leilão: os itens à venda ficam em `auction_listings` e o que espera entrega em `mail`. Um anúncio vencido volta ao correio do vendedor em até um minuto. Para ver o que um jogador tem à venda: `SELECT id, item_id, price_solar, price_estrela, status FROM auction_listings WHERE seller_id = <conta>;`.
 

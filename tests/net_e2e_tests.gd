@@ -58,7 +58,7 @@ func run_tests() -> void:
 	Engine.physics_ticks_per_second = 480
 	Engine.max_physics_steps_per_frame = 64
 	server = GameServer.new()
-	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": "memory", "bot-fill": "2", "test-coupons": "1", "id": "t1", "name": "Teste"})
+	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": "memory", "bot-fill": "2", "test-coupons": "1", "id": "t1", "name": "Teste", "report-mute": "1"})
 	root.add_child(server)
 	await process_frame
 	check(server.listening, "the game server listens")
@@ -131,6 +131,48 @@ func chat_tests(alice: Node, bob: Node) -> void:
 	await wait_until(func() -> bool: return false, 0.5)
 	var spam: int = bob.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text).begins_with("spam")).size()
 	check(spam < 8, "chat flooding is limited")
+	await report_tests(alice, bob)
+
+# Launch checklist: reporting a chat line. The server keeps who wrote each line, sends
+# the report with its context and mutes the author after reports from `report-mute`
+# players (1 in this test, 3 by default).
+func report_tests(alice: Node, bob: Node) -> void:
+	await wait_until(func() -> bool: return false, 1.0)
+	alice.lobby.post("Alice", "linha denunciada", "Atual")
+	check(await wait_until(func() -> bool: return bob.lobby.history.any(func(entry: Dictionary) -> bool: return str(entry.text) == "linha denunciada"), 5), "the line reaches the other player")
+	var line: Dictionary = bob.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text) == "linha denunciada").back()
+	check(line.has("id") and int(line.account) == alice.my_account(), "online lines carry their id and author")
+	var chat: ChatBox = bob.screen.find_children("*", "ChatBox", true, false).front() if not bob.screen.find_children("*", "ChatBox", true, false).is_empty() else null
+	check(chat != null and chat.log_label.text.contains("[url=%d]Alice[/url]" % int(line.id)), "another player's name is a report link")
+	var own: Dictionary = alice.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text) == "linha denunciada").back()
+	check(not (alice.screen.find_children("*", "ChatBox", true, false).front() as ChatBox).reportable(own), "your own lines are not reportable")
+	check(not (await alice.net.request("chat_report", {"id": int(line.id), "reason": "ofensa"})).ok, "the server refuses reporting your own line")
+	check(not (await bob.net.request("chat_report", {"id": int(line.id), "reason": "inventado"})).ok, "a report needs a known reason")
+	check(not (await bob.net.request("chat_report", {"id": 999999, "reason": "ofensa"})).ok, "an unknown line cannot be reported")
+	chat.on_meta(str(line.id))
+	await process_frame
+	var dialog: ReportDialog = null
+	for node in bob.ui.get_children():
+		if node is ReportDialog:
+			dialog = node
+	check(dialog != null and dialog.find_child("Send", true, false).disabled, "the name opens the report dialog; sending needs a reason")
+	dialog.pick("ofensa")
+	dialog.note.text = "xingou, porra"
+	dialog.hide_box.button_pressed = true
+	await dialog.send()
+	check(not is_instance_valid(dialog) or dialog.is_queued_for_deletion(), "the report is sent and the dialog closes")
+	var reports: Array = server.api.memory_reports
+	check(reports.size() == 1 and int(reports[0].reported_id) == alice.my_account() and int(reports[0].reporter_id) == bob.my_account() and str(reports[0].message) == "linha denunciada", "the API gets the reported line, who reported and who wrote it")
+	check((reports[0].context as Array).any(func(entry: Dictionary) -> bool: return bool(entry.reported)) and (reports[0].context as Array).size() > 1, "the report carries the lines around it")
+	check(str(reports[0].note) == "xingou, *****", "the note goes through the word filter")
+	check(bob.lobby.ignored.has(alice.my_account()) and not chat.log_label.text.contains("linha denunciada"), "the reporter hid the author's lines")
+	check(not (await bob.net.request("chat_report", {"id": int(line.id), "reason": "spam"})).ok, "the same line is reported once per player")
+	check(bool(reports[0].auto_muted) and server.muted_until.has(alice.my_account()), "reports from enough players mute the author")
+	var before: int = alice.lobby.history.size()
+	alice.lobby.post("Alice", "ainda posso falar?", "Atual")
+	check(await wait_until(func() -> bool: return alice.lobby.history.slice(before).any(func(entry: Dictionary) -> bool: return str(entry.channel) == "system" and str(entry.text).contains("silenciad")), 5), "a muted player is told and their line is not sent")
+	server.muted_until.clear()
+	bob.lobby.ignored.clear()
 
 func pvp_tests(alice: Node, bob: Node) -> void:
 	bob.show_hall()
@@ -370,4 +412,9 @@ func privacy_tests(bob: Node) -> void:
 	check(not is_instance_valid(screen) or not screen.is_inside_tree(), "the account panel closes with the connection")
 	check(bob.auth.token == "", "the session is forgotten on this computer")
 	check(await login(bob, "bob") == "" and bob.my_account() != old_id and not bob.profile.created, "the same name starts a brand new account")
+	# A ban decided by the team (a reviewed chat report) reaches the game server with
+	# the next heartbeat: the player is disconnected.
+	server.api.memory_banned[bob.my_account()] = true
+	await server.heartbeat()
+	check(await wait_until(func() -> bool: return not bob.online and bob.screen_name == "title", 5), "a banned player is disconnected at the next heartbeat")
 	bob.net.disconnect_now()

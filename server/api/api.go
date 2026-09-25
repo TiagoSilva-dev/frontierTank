@@ -83,6 +83,7 @@ func (a *API) internalRoutes() http.Handler {
 	mux.HandleFunc("POST /internal/presence/release", a.releasePresence)
 	a.auctionRoutes(mux)
 	a.privacyInternalRoutes(mux)
+	a.reportRoutes(mux)
 	return a.internalOnly(limitBody(mux, 8<<20))
 }
 
@@ -565,11 +566,14 @@ func (a *API) heartbeat(w http.ResponseWriter, r *http.Request) {
 	if body.Players == nil {
 		body.Players = []int64{}
 	}
-	if err := a.store.Heartbeat(r.Context(), body.Server, body.Players); err != nil {
+	banned, err := a.store.Heartbeat(r.Context(), body.Server, body.Players)
+	if err != nil {
 		a.fail(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	// Players suspended meanwhile (a chat report reviewed as "banned"): the game server
+	// disconnects them.
+	writeJSON(w, http.StatusOK, map[string]any{"banned": banned})
 }
 
 type presenceBody struct {
