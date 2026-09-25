@@ -1,6 +1,7 @@
 extends Node2D
 
-# Screen flow, as in DDTank: Cidade → Salão de Jogos → Sala → Partida → Resultado → Cartas → Sala.
+# Screen flow, as in DDTank: Entrada (servidor) → Cidade → Salão de Jogos → Sala → Partida →
+# Resultado → Cartas → Sala.
 
 var balance: Dictionary
 var profile: PlayerProfile
@@ -40,7 +41,7 @@ func _ready() -> void:
 		profile.created = true
 	if args.has("demo"):
 		demo_loadout(str(args.demo))
-	open_named(str(args.get("screen", "city")))
+	open_named(str(args.get("screen", "title")))
 
 func demo_loadout(kind: String) -> void:
 	# Capture helper (--demo=1): everything unlocked and a showcase set equipped.
@@ -81,6 +82,7 @@ func open_named(target: String) -> void:
 			start_battle()
 		"battle", "result", "cards":
 			create_room("pvp")
+			room.map = str(args.get("map", ""))
 			invite_bot()
 			start_battle()
 			if target == "battle":
@@ -114,6 +116,8 @@ func open_named(target: String) -> void:
 		"smith":
 			show_city()
 			shortcut("smith")
+		"title":
+			show_title()
 		_:
 			show_city()
 
@@ -125,6 +129,14 @@ func switch_to(node: Control, name_value: String) -> void:
 	screen_name = name_value
 	node.set("app", self)
 	ui.add_child(node)
+	# Title, city, hall and rooms share the lobby theme; battles pick their own.
+	if name_value == "battle":
+		audio.play_music("instance" if room.get("mode", "pvp") == "pve" else "battle")
+	else:
+		audio.play_music("lobby")
+
+func show_title() -> void:
+	switch_to(TitleScreen.new(), "title")
 
 func show_city() -> void:
 	switch_to(CityScreen.new(), "city")
@@ -243,17 +255,17 @@ func refresh_room() -> void:
 		screen.call_deferred("rebuild")
 
 func shortcut(id: String) -> void:
-	audio.tone(520, 0.08)
+	audio.play("ui_click")
 	match id:
 		"bag":
 			open_bag()
 		"help":
-			UiKit.notice(ui, "AJUDA", "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você")
+			UiKit.notice(ui, "AJUDA", "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música")
 		"exit":
 			if screen_name == "city":
 				var dialog: Control = UiKit.modal(ui, "SAIR", "Deseja fechar o Frontier Tank?")
 				var rect: Rect2 = dialog.get_meta("rect")
-				UiKit.button(dialog, "SAIR", Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), func() -> void: get_tree().quit())
+				UiKit.button(dialog, "SAIR", Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), quit_game)
 				UiKit.button(dialog, "FICAR", Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)
 			elif screen_name == "room":
 				show_hall()
@@ -273,6 +285,24 @@ func shortcut(id: String) -> void:
 		"pet", "mail", "mission":
 			var names: Dictionary = {"pet": "PET", "mail": "CORREIO", "mission": "MISSÃO"}
 			UiKit.notice(ui, names[id], "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala.")
+
+func quit_game() -> void:
+	audio.stop_all()
+	get_tree().quit()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	# M switches the music on any screen (text fields keep their own keys).
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_M:
+		audio.set_music_on(not audio.music_on)
+		toast("Música ligada" if audio.music_on else "Música desligada")
+
+func toast(text: String) -> void:
+	var note: Label = UiKit.label(ui, text, Rect2(490, 96, 300, 36), 18, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	note.add_theme_constant_override("outline_size", 8)
+	var tween: Tween = note.create_tween()
+	tween.tween_interval(1.0)
+	tween.tween_property(note, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(note.queue_free)
 
 func _process(_delta: float) -> void:
 	if capture_frames > 0:

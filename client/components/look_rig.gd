@@ -78,7 +78,8 @@ func make_layer(parent: Node2D, path: String) -> Sprite2D:
 		return null
 	var sprite: Sprite2D = Sprite2D.new()
 	sprite.texture = load(path)
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	sprite.material = UiKit.smooth_material()
 	parent.add_child(sprite)
 	return sprite
 
@@ -100,12 +101,11 @@ func _exit_tree() -> void:
 		back.queue_free()
 
 func style(body: Sprite2D, clip: String = "") -> void:
-	# Hair dye + clothes glow on one body sprite (each clip gets its own material).
+	# Hair dye, clothes glow and crisp scaling on one body sprite (each clip gets its
+	# own material).
 	var dye: String = str(look.get("hair", ""))
 	var hair: Array = anchors.get("hair", [])
-	if (dye == "" or hair.is_empty()) and glow_color.a <= 0.0:
-		body.material = null
-		return
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var material: ShaderMaterial = ShaderMaterial.new()
 	material.shader = LOOK_SHADER
 	var colors: PackedVector3Array = PackedVector3Array()

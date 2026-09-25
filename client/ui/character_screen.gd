@@ -293,7 +293,7 @@ func equip_selected() -> void:
 		UiKit.notice(self, "MOCHILA", message)
 		return
 	app.profile.save_profile()
-	app.audio.tone(480, 0.14)
+	app.audio.play("ui_click")
 	build()
 
 func sell_selected() -> void:
@@ -302,7 +302,7 @@ func sell_selected() -> void:
 	var value: int = app.profile.sell(selected.substr(4).to_int())
 	if value > 0:
 		app.profile.save_profile()
-		app.audio.tone(700, 0.1)
+		app.audio.play("ui_coin")
 		selected = ""
 		build()
 

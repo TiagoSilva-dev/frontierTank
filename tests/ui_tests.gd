@@ -22,8 +22,20 @@ func run_tests() -> void:
 	root.add_child(scene)
 	await process_frame
 	var app: Node = scene
-	# Tela inicial
-	check(app.screen_name == "city" and app.screen is CityScreen, "city is the initial screen")
+	# Tela de entrada (servidor) e depois a cidade
+	check(app.screen_name == "title" and app.screen is TitleScreen, "the game opens on the title screen")
+	var title: TitleScreen = app.screen
+	check(title.has_node("Logo") and title.find_child("EnterButton", true, false) != null, "title screen shows the logo and ENTRAR")
+	check(app.audio.music_track == "lobby", "the title screen plays the lobby theme")
+	var weapon_sounds: bool = true
+	for weapon: Dictionary in Armory.data().weapons:
+		weapon_sounds = weapon_sounds and app.audio.has_sound("fire_" + str(weapon.id)) and app.audio.has_sound("impact_" + str(weapon.id))
+	check(weapon_sounds, "every weapon has its own firing and impact sound")
+	check(app.audio.stream(GameAudio.MUSIC_DIR + "battle.ogg") != null and app.audio.stream(GameAudio.MUSIC_DIR + "instance.ogg") != null, "battle and instance music exist")
+	title.pick(2)
+	title.enter()
+	await process_frame
+	check(app.screen_name == "city" and app.screen is CityScreen, "ENTRAR opens the city")
 	var city: CityScreen = app.screen
 	check(is_instance_valid(city.creation), "first launch asks for the single character")
 	city.name_input.text = "Tiago"
@@ -105,6 +117,20 @@ func run_tests() -> void:
 	check(game.map.id == "patio_templo" and is_equal_approx(game.turn_seconds, 15.0), "room settings reach the battle")
 	check(game.local().tools[0] == "energy", "bought tools are carried into battle")
 	check(battle.hud.item_buttons.size() == 9 and battle.hud.tool_buttons.size() == 3, "HUD shows skills 1–9 and tools Z/X/C")
+	check(app.audio.music_track == "battle", "PvP battles play the battle theme")
+	game.energy = 240
+	game.apply_item(game.local(), "dmg10")
+	game.arm_pow(game.local())
+	await process_frame
+	check(battle.effects.get_children().any(func(node: Node) -> bool: return node is SkillFx and node.fighter == game.local()), "a used skill pops over the fighter's head")
+	check(is_instance_valid(battle.pow_auras.get(game.local_id)), "armed POW wraps the fighter in a burning aura")
+	var probe: TankProjectile = game.make_projectile(game.local(), game.local().muzzle(), Vector2(10, -200), 1, 4.0, {})
+	await process_frame
+	await process_frame
+	check(battle.trails.has_path(game.local_id), "a fired shot draws its dashed flight line")
+	game.projectiles.erase(probe)
+	probe.queue_free()
+	game.turn_pow = false
 	for i in range(5):
 		await process_frame
 	check(battle.camera.position.distance_to(battle.focus_point()) < 2000, "camera follows the action")
@@ -119,6 +145,7 @@ func run_tests() -> void:
 	battle.show_results()
 	await process_frame
 	check(is_instance_valid(battle.results), "results screen appears")
+	check(app.audio.music_track == "lobby", "the lobby theme returns on the results screen")
 	battle.results.show_cards()
 	await process_frame
 	check(battle.results.cards.size() == 8 and battle.results.picks_left == 2, "winner chooses 2 of 8 cards")
@@ -182,8 +209,10 @@ func run_tests() -> void:
 	await process_frame
 	game = app.screen.game
 	check(game.pve and game.fighters[-1].is_boss and game.map.id == "templo_sol", "Instância starts the boss battle")
+	check(app.audio.music_track == "instance", "the Instância plays its own theme")
 	app.screen.toggle_pause()
 	check(game.paused, "battle can be paused")
+	check(app.screen.hud.pause_box.find_child("MusicToggle", true, false) != null and app.screen.hud.pause_box.find_child("SfxToggle", true, false) != null, "pause menu switches music and effects")
 	app.screen.forfeit()
 	await process_frame
 	check(not game.running and not app.last_summary.won, "forfeit counts as defeat")
@@ -193,6 +222,8 @@ func run_tests() -> void:
 	check(app.screen is CityScreen, "back to the city")
 	scene.queue_free()
 	await process_frame
+	# Let the audio server drop the stopped playbacks before quitting.
+	await create_timer(0.3).timeout
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
 	print("UI RESULT: %d checks, %d failures" % [checks, errors])
 	quit(1 if errors else 0)

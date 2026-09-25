@@ -231,7 +231,7 @@ func select_tab(value: String) -> void:
 
 func report(error: String, success: String) -> void:
 	message = error if error != "" else success
-	app.audio.tone(200 if error != "" else 880, 0.2)
+	app.audio.play("ui_error" if error != "" else "ui_forge")
 	build()
 
 func do_strengthen() -> void:

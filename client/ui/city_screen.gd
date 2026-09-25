@@ -14,16 +14,18 @@ const BUILDINGS: Array[Dictionary] = [
 	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},
 	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par"},
 ]
-# Layout for the PixelLab city: empty plaza + one transparent sprite per building,
-# placed like the classic hub, with the Salão de Jogos on the central plaza where the
-# fountain used to be. "fx" lists the animated details drawn over each building.
+# Layout for the PixelLab city: a 640x360 painting shown at exactly 2x with the
+# Salão on the central plaza and six paved lots around it, one 1x sprite per building.
+# "rect" is the sprite, "hot" the clickable body, "label" the name's centre and "fx"
+# the sprite pixels where the animated details (smoke, forge, portal...) sit.
 const CITY_LAYOUT: Array[Dictionary] = [
-	{"id": "hall", "name": "Salão de Jogos", "rect": [500, 146, 279, 266], "label": [640, 312], "tip": "Salão de Jogos! Clique para entrar"},
-	{"id": "smith", "name": "Ferreiro", "rect": [162, 86, 189, 194], "label": [256, 110], "tip": "Ferreiro: fortaleça suas armas"},
-	{"id": "instance", "name": "Instância", "rect": [201, 292, 198, 218], "label": [300, 320], "tip": "Instância: enfrente o Rei Hélio"},
-	{"id": "auction", "name": "Leilão", "rect": [917, 140, 166, 190], "label": [1000, 165], "tip": "Leilão: compre e venda itens"},
-	{"id": "dating", "name": "Namoro", "rect": [915, 333, 190, 187], "label": [1010, 360], "tip": "Namoro: encontre seu par"},
-	{"id": "mall", "name": "Centro Comercial", "rect": [544, 476, 192, 174], "label": [640, 500], "tip": "Centro Comercial: roupas e armas"},
+	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},
+	{"id": "smith", "name": "Ferreiro", "rect": [235, 65, 192, 192], "hot": [243, 88, 175, 148], "label": [330, 92], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},
+	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: enfrente o Rei Hélio", "fx": {"portal": [89, 110]}},
+	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},
+	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},
+	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},
+	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},
 ]
 
 var app: Node
@@ -52,6 +54,7 @@ func _ready() -> void:
 		sea.shader = load("res://client/shaders/city_sea.gdshader")
 		sea.set_shader_parameter("texels", backdrop.texture.get_size())
 		backdrop.material = sea
+		backdrop.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	glow = Control.new()
 	glow.size = size
 	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -64,6 +67,7 @@ func _ready() -> void:
 		if ResourceLoader.exists(sprite_path):
 			var sprite: TextureRect = UiKit.art(self, sprite_path, Rect2(r[0], r[1], r[2], r[3]))
 			sprite.name = "Sprite_" + str(building.id)
+		r = building.get("hot", r)
 		var hotspot: Button = Button.new()
 		hotspot.flat = true
 		hotspot.focus_mode = Control.FOCUS_NONE
@@ -122,7 +126,7 @@ func build_player_card() -> void:
 	UiKit.panel(card, Rect2(8, 8, 70, 70), "slot_light")
 	var portrait: Panel = UiKit.panel(card, Rect2(12, 12, 62, 62), Color(0, 0, 0, 0))
 	portrait.clip_contents = true
-	AvatarView.create(portrait, app.profile.look(), Rect2(-34, -4, 130, 190))
+	AvatarView.create(portrait, app.profile.look(), Rect2(-34, -50, 130, 190))
 	UiKit.label(card, app.profile.player_name, Rect2(86, 6, 166, 26), 17, Color.WHITE, UiKit.INK)
 	UiKit.level_badge(card, app.profile.level(), Rect2(86, 34, 34, 22))
 	UiKit.label(card, TankFighter.rank_for(app.profile.level()), Rect2(126, 32, 126, 26), 13, Color("9aff7a"), UiKit.INK)
@@ -158,7 +162,7 @@ func leave_hover(index: int) -> void:
 func draw_glow() -> void:
 	if hovered < 0:
 		return
-	var r: Array = buildings[hovered].rect
+	var r: Array = buildings[hovered].get("hot", buildings[hovered].rect)
 	var rect: Rect2 = Rect2(r[0], r[1], r[2], r[3])
 	var pulse: float = 0.5 + 0.5 * sin(time * 5.0)
 	for i in range(4):
@@ -169,7 +173,7 @@ func draw_glow() -> void:
 func enter(id: String) -> void:
 	if is_instance_valid(creation):
 		return
-	app.audio.tone(620, 0.1)
+	app.audio.play("ui_click")
 	match id:
 		"hall":
 			app.show_hall()
@@ -190,6 +194,8 @@ func enter(id: String) -> void:
 			add_child(shop)
 		"dating":
 			UiKit.notice(self, "NAMORO", "Casamento e equipamentos de casal ainda não estão disponíveis.")
+		"pet":
+			UiKit.notice(self, "PET", "A Casa dos Mascotes ainda não está disponível nesta versão offline.")
 
 func _process(delta: float) -> void:
 	time += delta
@@ -204,62 +210,62 @@ func _process(delta: float) -> void:
 	if is_instance_valid(fx):
 		fx.queue_redraw()
 
-func building_rect(id: String) -> Rect2:
-	for building: Dictionary in buildings:
-		if building.id == id:
-			var r: Array = building.rect
-			return Rect2(r[0], r[1], r[2], r[3])
-	return Rect2()
+func fx_point(building: Dictionary, key: String) -> Vector2:
+	var r: Array = building.rect
+	var at: Array = building.fx[key]
+	return Vector2(r[0] + at[0], r[1] + at[1])
 
 func draw_fx() -> void:
-	# Little living details on each building (the painting itself is static).
+	# Little living details on each building (the paintings themselves are static).
 	if buildings != CITY_LAYOUT:
 		return
-	var hall: Rect2 = building_rect("hall")
-	for i in range(4):
-		# Banners waving on top of the colosseum.
-		var base: Vector2 = hall.position + Vector2(hall.size.x * (0.18 + i * 0.21), hall.size.y * 0.1)
-		var wave: float = sin(time * 4.0 + i) * 4.0
-		fx.draw_line(base, base + Vector2(0, -26), Color("5a3a1a"), 2)
-		var cloth: PackedVector2Array = PackedVector2Array([base + Vector2(1, -26), base + Vector2(20 + wave, -21 + wave * 0.3), base + Vector2(1, -15)])
-		fx.draw_colored_polygon(cloth, Color("e0302a") if i % 2 == 0 else Color("ffd04a"))
-	for i in range(8):
-		# Embers rising from the arena.
-		var phase: float = fposmod(time * 0.5 + i * 0.13, 1.0)
-		var p: Vector2 = hall.position + Vector2(hall.size.x * (0.3 + 0.4 * fposmod(i * 0.37, 1.0)) + sin(time * 2.0 + i) * 6.0, hall.size.y * 0.25 - phase * 70.0)
-		fx.draw_rect(Rect2(p, Vector2(3, 3)), Color(1.0, 0.7, 0.2, 1.0 - phase))
-	var smith: Rect2 = building_rect("smith")
-	var chimney: Vector2 = smith.position + Vector2(smith.size.x * 0.16, smith.size.y * 0.3)
-	for i in range(5):
-		# Smoke puffs from the forge chimney.
-		var phase: float = fposmod(time * 0.35 + i * 0.2, 1.0)
-		var puff: Vector2 = chimney + Vector2(sin(time + i) * 5.0 + phase * 18.0, -phase * 70.0)
-		fx.draw_circle(puff, 5.0 + phase * 9.0, Color(0.85, 0.85, 0.88, 0.55 * (1.0 - phase)))
-	var forge: float = 0.35 + 0.25 * sin(time * 9.0) + 0.1 * sin(time * 23.0)
-	fx.draw_circle(smith.position + Vector2(smith.size.x * 0.63, smith.size.y * 0.66), 12.0, Color(1.0, 0.55, 0.15, forge * 0.5))
-	var dating: Rect2 = building_rect("dating")
-	for i in range(4):
-		# Hearts floating from the chapel.
-		var phase: float = fposmod(time * 0.3 + i * 0.25, 1.0)
-		var heart: Vector2 = dating.position + Vector2(dating.size.x * (0.35 + 0.1 * i) + sin(time * 2.0 + i * 2.0) * 8.0, dating.size.y * 0.3 - phase * 60.0)
-		draw_heart(heart, 5.0, Color(1.0, 0.45, 0.7, 1.0 - phase))
-	var instance: Rect2 = building_rect("instance")
-	var portal: float = 0.3 + 0.2 * sin(time * 3.0)
-	fx.draw_circle(instance.position + Vector2(instance.size.x * 0.33, instance.size.y * 0.66), 16.0, Color(0.3, 1.0, 0.85, portal))
-	for i in range(6):
-		var phase: float = fposmod(time * 0.4 + i * 0.17, 1.0)
-		var spark: Vector2 = instance.position + Vector2(instance.size.x * (0.2 + 0.12 * i), instance.size.y * 0.75 - phase * 90.0)
-		fx.draw_rect(Rect2(spark, Vector2(2, 2)), Color(0.5, 1.0, 0.9, 1.0 - phase))
-	for id: String in ["mall", "auction"]:
-		var shop: Rect2 = building_rect(id)
-		for i in range(5):
-			# Twinkles on the shop fronts.
-			var blink: float = sin(time * 3.0 + i * 1.9 + shop.position.x)
-			if blink > 0.6:
-				var star: Vector2 = shop.position + Vector2(shop.size.x * fposmod(i * 0.29 + 0.15, 0.8), shop.size.y * (0.2 + 0.12 * i))
-				var r: float = 3.0 * blink
-				fx.draw_line(star - Vector2(r, 0), star + Vector2(r, 0), Color(1, 1, 0.8), 1.0)
-				fx.draw_line(star - Vector2(0, r), star + Vector2(0, r), Color(1, 1, 0.8), 1.0)
+	for building: Dictionary in buildings:
+		var effects: Dictionary = building.get("fx", {})
+		if effects.has("embers"):
+			var arena: Vector2 = fx_point(building, "embers")
+			for i in range(10):
+				# Sparks rising from the arena floor.
+				var phase: float = fposmod(time * 0.45 + i * 0.1, 1.0)
+				var p: Vector2 = arena + Vector2(fposmod(i * 37.0, 90.0) - 45.0 + sin(time * 2.0 + i) * 6.0, -phase * 90.0)
+				fx.draw_rect(Rect2(p.round(), Vector2(2, 2)), Color(1.0, 0.75 - phase * 0.4, 0.25, 1.0 - phase))
+		if effects.has("smoke"):
+			var chimney: Vector2 = fx_point(building, "smoke")
+			for i in range(6):
+				# Smoke puffs from the forge chimney, drifting with the breeze.
+				var phase: float = fposmod(time * 0.32 + i / 6.0, 1.0)
+				var puff: Vector2 = chimney + Vector2(sin(time + i) * 4.0 + phase * 26.0, -phase * 80.0)
+				fx.draw_circle(puff, 4.0 + phase * 11.0, Color(0.86, 0.86, 0.9, 0.6 * (1.0 - phase)))
+				fx.draw_circle(puff + Vector2(-2, -2), 2.0 + phase * 6.0, Color(1, 1, 1, 0.35 * (1.0 - phase)))
+		if effects.has("forge"):
+			var heat: float = 0.35 + 0.25 * sin(time * 9.0) + 0.1 * sin(time * 23.0)
+			fx.draw_circle(fx_point(building, "forge"), 14.0, Color(1.0, 0.55, 0.15, heat * 0.45))
+		if effects.has("portal"):
+			var gate: Vector2 = fx_point(building, "portal")
+			var pulse: float = 0.25 + 0.15 * sin(time * 3.0)
+			fx.draw_circle(gate, 22.0, Color(0.3, 0.9, 1.0, pulse))
+			for i in range(8):
+				# Motes spiralling out of the portal.
+				var phase: float = fposmod(time * 0.5 + i * 0.125, 1.0)
+				var spin: float = time * 2.0 + i * TAU / 8.0
+				var spark: Vector2 = gate + Vector2(cos(spin), sin(spin)) * (8.0 + phase * 26.0) + Vector2(0, -phase * 30.0)
+				fx.draw_rect(Rect2(spark.round(), Vector2(2, 2)), Color(0.6, 1.0, 1.0, 1.0 - phase))
+		if effects.has("hearts"):
+			var bell: Vector2 = fx_point(building, "hearts")
+			for i in range(4):
+				# Hearts floating from the chapel.
+				var phase: float = fposmod(time * 0.3 + i * 0.25, 1.0)
+				var heart: Vector2 = bell + Vector2((i - 1.5) * 14.0 + sin(time * 2.0 + i * 2.0) * 8.0, -phase * 60.0)
+				draw_heart(heart, 5.0, Color(1.0, 0.45, 0.7, 1.0 - phase))
+		if effects.has("twinkle"):
+			var shop: Rect2 = Rect2(Vector2(building.hot[0], building.hot[1]), Vector2(building.hot[2], building.hot[3]))
+			for i in range(5):
+				# Twinkles on the shop fronts.
+				var blink: float = sin(time * 3.0 + i * 1.9 + shop.position.x)
+				if blink > 0.6:
+					var star: Vector2 = (shop.position + Vector2(shop.size.x * (0.15 + fposmod(i * 0.29, 0.7)), shop.size.y * (0.25 + 0.12 * i))).round()
+					var r: float = 3.0 * blink
+					fx.draw_line(star - Vector2(r, 0), star + Vector2(r, 0), Color(1, 1, 0.8), 2.0)
+					fx.draw_line(star - Vector2(0, r), star + Vector2(0, r), Color(1, 1, 0.8), 2.0)
 	for gull: Vector3 in gulls:
 		var flap: float = sin(time * 8.0 + gull.y) * 3.0
 		var at: Vector2 = Vector2(gull.x, gull.y + sin(time + gull.z) * 4.0)

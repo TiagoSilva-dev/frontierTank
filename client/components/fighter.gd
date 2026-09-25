@@ -338,6 +338,13 @@ func take_damage(amount: int) -> void:
 	if hp <= 0:
 		hide_body()
 
+func glow(color: Color) -> void:
+	# A consumed skill lights the fighter up in its colour for a moment.
+	if hp <= 0 or not is_instance_valid(visual):
+		return
+	visual.modulate = Color(1.0 + color.r * 0.9, 1.0 + color.g * 0.9, 1.0 + color.b * 0.9)
+	create_tween().tween_property(visual, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_SINE)
+
 func hide_body() -> void:
 	if is_instance_valid(visual):
 		visual.hide()

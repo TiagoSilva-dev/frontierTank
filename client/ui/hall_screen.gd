@@ -122,7 +122,7 @@ func try_join(room: Dictionary) -> void:
 	elif room.members.size() >= int(room.capacity):
 		UiKit.notice(self, "SALA CHEIA", "A sala %d está cheia." % int(room.id))
 	else:
-		app.audio.tone(620, 0.1)
+		app.audio.play("ui_click")
 		app.join_room(room)
 
 func build_user_info() -> void:
@@ -193,7 +193,7 @@ func build_actions() -> void:
 		icon.size = Vector2(104, 74)
 
 func create_team() -> void:
-	app.audio.tone(620, 0.1)
+	app.audio.play("ui_click")
 	app.create_room("pvp")
 	app.show_room()
 

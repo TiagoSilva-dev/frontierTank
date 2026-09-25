@@ -16,9 +16,19 @@ if ($Test) {
 } elseif ($Editor) {
     & $godotBinary --path $projectRoot --editor
 } else {
-    if (-not (Test-Path -LiteralPath (Join-Path $projectRoot '.godot\global_script_class_cache.cfg'))) {
+    # Import again whenever art, audio or scripts are newer than the last import, so new
+    # assets (like the 0.7 sounds and music) load without opening the editor.
+    $stamp = Join-Path $projectRoot '.godot\import_stamp'
+    $needImport = -not (Test-Path -LiteralPath (Join-Path $projectRoot '.godot\global_script_class_cache.cfg')) -or -not (Test-Path -LiteralPath $stamp)
+    if (-not $needImport) {
+        $since = (Get-Item -LiteralPath $stamp).LastWriteTime
+        $newer = Get-ChildItem -LiteralPath (Join-Path $projectRoot 'assets'), (Join-Path $projectRoot 'client') -Recurse -File | Where-Object { $_.LastWriteTime -gt $since } | Select-Object -First 1
+        $needImport = $null -ne $newer
+    }
+    if ($needImport) {
         & $godotBinary --headless --path $projectRoot --editor --import --quit
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        New-Item -ItemType File -Force -Path $stamp | Out-Null
     }
     & $godotBinary --path $projectRoot
 }

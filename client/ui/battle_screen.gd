@@ -2,7 +2,17 @@ class_name BattleScreen
 extends Control
 
 # Partida: the battlefield renders in a SubViewport with a following camera; the
-# HUD, minimap and results sit on top in screen space.
+# HUD, minimap and results sit on top in screen space. Also the battle's sound: each
+# weapon's firing and impact, POW, skills being consumed, countdown and stingers.
+
+const SKILL_SOUNDS: Dictionary = {
+	"multi": "skill_multi", "power": "skill_power", "powmax": "skill_powmax", "heal": "tool_heal", "energy": "tool_energy",
+	"shield": "tool_shield", "plane": "fire_plane", "angel": "aux_angel", "pow": "pow_activate",
+}
+const EFFECT_SOUNDS: Dictionary = {
+	"lightning": "special_lightning", "beam": "special_beam", "bull": "special_bull", "heal": "special_heal",
+	"hearts": "special_hearts", "tornado": "special_tornado",
+}
 
 var app: Node
 var config: Dictionary = {}
@@ -13,6 +23,7 @@ var world: Node2D
 var camera: Camera2D
 var backdrop: Node2D
 var background: Texture2D
+var ambience: Ambience
 var effects: Node2D
 var manual_focus: Vector2 = Vector2.ZERO
 var manual_time: float = 0.0
@@ -21,7 +32,13 @@ var dragging: bool = false
 var end_timer: float = -1.0
 var results: ResultScreen
 var summary: Dictionary = {}
-var explosion: Texture2D = preload("res://assets/effects/explosao.png")
+var trails: ShotTrails
+var pow_auras: Dictionary = {}
+var skill_queue: Dictionary = {}
+var alive: Dictionary = {}
+var last_tick: int = -1
+var kick: float = 0.0
+var kick_factor: float = 1.0
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -43,6 +60,15 @@ func _ready() -> void:
 	sky.add_child(backdrop)
 	world = Node2D.new()
 	viewport.add_child(world)
+	# Dashed flight lines sit behind the ground, fighters and projectiles.
+	trails = ShotTrails.new()
+	world.add_child(trails)
+	# Weather in front of the battlefield (snow, embers, dust), under the HUD.
+	var weather: CanvasLayer = CanvasLayer.new()
+	weather.layer = 1
+	viewport.add_child(weather)
+	ambience = Ambience.new()
+	weather.add_child(ambience)
 	game = LocalMatch.new()
 	world.add_child(game)
 	effects = Node2D.new()
@@ -54,7 +80,9 @@ func _ready() -> void:
 	game.damage_text.connect(show_damage)
 	game.special.connect(show_special)
 	game.effect.connect(show_effect)
-	game.shot_fired.connect(func(_projectile: TankProjectile) -> void: app.audio.tone(190, 0.22))
+	# Deferred: secondary projectiles get their stage right after they are created.
+	game.shot_fired.connect(func(projectile: TankProjectile) -> void: on_shot.call_deferred(projectile))
+	game.skill_used.connect(on_skill)
 	game.turn_started.connect(on_turn)
 	game.finished.connect(on_finished)
 	hud = BattleHUD.new()
@@ -64,6 +92,7 @@ func _ready() -> void:
 	game.announce.connect(hud.log_line)
 	game.start(config)
 	background = load(str(game.map.bg))
+	ambience.setup(str(game.map.get("ambience", "")), camera)
 	var world_size: Vector2 = game.terrain.world_size
 	camera.limit_left = 0
 	camera.limit_right = int(world_size.x)
@@ -72,6 +101,9 @@ func _ready() -> void:
 	camera.position = focus_point()
 	camera.reset_smoothing()
 	hud.build()
+	for fighter in game.fighters:
+		alive[fighter.player_id] = fighter.hp > 0
+	app.audio.play("battle_start", -2.0)
 
 func focus_point() -> Vector2:
 	if manual_time > 0:
@@ -92,6 +124,13 @@ func _process(delta: float) -> void:
 		return
 	for animation in get_tree().get_nodes_in_group("pixel_animations"):
 		animation.frozen = game.paused
+	update_sound()
+	# POW punch: a quick zoom-in that eases back (kept on top of any external zoom).
+	camera.zoom /= kick_factor
+	kick = maxf(0.0, kick - delta)
+	var u: float = 1.0 - kick / 0.5
+	kick_factor = 1.0 + 0.09 * minf(1.0, u * 8.0) * (1.0 - u) if kick > 0.0 else 1.0
+	camera.zoom *= kick_factor
 	manual_time = maxf(0.0, manual_time - delta)
 	var target: Vector2 = focus_point()
 	var speed: float = 9.0 if game.state == LocalMatch.State.PROJECTILE_FLYING else 5.0
@@ -118,43 +157,137 @@ func draw_backdrop() -> void:
 	if background == null:
 		return
 	var world_size: Vector2 = game.terrain.world_size
-	# Cover the screen with the painting and drift it slightly with the camera.
-	var cover: Vector2 = Vector2(1280, 720) * 1.18
+	# The painting is scaled by a whole number (2x for the 680x380 maps) so its pixels
+	# stay square; the spare margin drifts with the camera in whole art pixels.
+	var art: Vector2 = background.get_size()
+	var k: float = maxf(ceilf(1280.0 / art.x), ceilf(720.0 / art.y))
+	var cover: Vector2 = art * k
 	var progress: Vector2 = Vector2(
 		clampf((camera.position.x - 640) / maxf(1, world_size.x - 1280), 0, 1),
 		clampf((camera.position.y + 260 - 360) / maxf(1, world_size.y + 260 - 720), 0, 1))
-	var offset: Vector2 = -(cover - Vector2(1280, 720)) * progress
+	var offset: Vector2 = (-(cover - Vector2(1280, 720)) * progress / k).round() * k
 	backdrop.draw_texture_rect(background, Rect2(offset, cover), false)
-	backdrop.draw_rect(Rect2(0, 0, 1280, 720), Color(0.05, 0.08, 0.16, 0.12))
+	# Push the painting back so the ground and fighters read first ("dim" per map).
+	backdrop.draw_rect(Rect2(0, 0, 1280, 720), Color(0.05, 0.08, 0.16, float(game.map.get("dim", 0.12))))
+
+func update_sound() -> void:
+	# Charge hum (quieter for others), countdown ticks and fighters going down.
+	var charging: bool = game.running and not game.paused and game.state == LocalMatch.State.PLAYER_CHARGING
+	var local_turn: bool = game.active_id == game.local_id and not game.auto_play
+	app.audio.set_charge(charging, game.power, -4.0 if local_turn else -11.0)
+	if game.can_act() and game.remaining < 3.5 and game.remaining > 0.0:
+		var second: int = ceili(game.remaining)
+		if second != last_tick:
+			last_tick = second
+			app.audio.play("tick", 0.0, 1.0 + (3 - second) * 0.08)
+	else:
+		last_tick = -1
+	for fighter in game.fighters:
+		if bool(alive.get(fighter.player_id, true)) and fighter.hp <= 0:
+			app.audio.play("fighter_down", -2.0, 1.0, 300)
+		alive[fighter.player_id] = fighter.hp > 0
+
+func fire_sound(shooter: TankFighter, projectile: TankProjectile) -> String:
+	if projectile.fly:
+		return "fire_plane"
+	if shooter.is_boss:
+		return "fire_boss"
+	var sound: String = "fire_" + str(shooter.weapon.get("id", ""))
+	return sound if app.audio.has_sound(sound) else "fire_quebra_tijolos"
+
+func on_shot(projectile: TankProjectile) -> void:
+	if not is_instance_valid(projectile) or not is_instance_valid(game):
+		return
+	match projectile.stage:
+		"drop":
+			app.audio.play("drop_whistle", -3.0, 1.0, 250)
+			return
+		"fragment":
+			app.audio.play("split_pop", -2.0, 1.0, 120)
+			return
+		"return":
+			app.audio.play("boomerang_return")
+			return
+	var shooter: TankFighter = game.fighters[projectile.owner_id]
+	var mine: bool = shooter.player_id == game.local_id
+	var color: Color = Color.WHITE if mine else (Color("a8e0ff") if shooter.team == game.local().team else Color("ffb4a0"))
+	trails.track(projectile, shooter.player_id, game.round_number, mine, color)
+	# One sound per volley (three balls fire together), each weapon its own.
+	app.audio.play(fire_sound(shooter, projectile), 0.0, randf_range(0.96, 1.04), 90)
+	clear_pow_aura(shooter)
+
+func on_skill(fighter: TankFighter, info: Dictionary) -> void:
+	# Items used together (bots pick a whole combo at once) are consumed one after another.
+	var now: float = Time.get_ticks_msec() / 1000.0
+	var start: float = maxf(now, float(skill_queue.get(fighter.player_id, 0.0)))
+	skill_queue[fighter.player_id] = start + 0.32
+	if start - now <= 0.01:
+		spawn_skill(fighter, info)
+	else:
+		get_tree().create_timer(start - now).timeout.connect(spawn_skill.bind(fighter, info))
+	if str(info.get("kind", "")) == "pow":
+		show_pow_aura(fighter)
+
+func spawn_skill(fighter: TankFighter, info: Dictionary) -> void:
+	if not is_instance_valid(fighter) or not is_instance_valid(effects) or fighter.hp <= 0:
+		return
+	var fx: SkillFx = SkillFx.new()
+	fx.fighter = fighter
+	var icon: String = str(info.get("icon", ""))
+	fx.icon = load(icon) if icon.begins_with("res://") and ResourceLoader.exists(icon) else PixelIcons.get_icon(icon)
+	fx.title = str(info.get("name", ""))
+	var kind: String = str(info.get("kind", "power"))
+	fx.color = SkillFx.color_for(kind)
+	# Icons still showing push the new one aside.
+	var busy: int = effects.get_children().filter(func(node: Node) -> bool: return node is SkillFx and node.fighter == fighter).size()
+	fx.offset_x = [0.0, 88.0, -88.0, 176.0, -176.0][busy % 5]
+	effects.add_child(fx)
+	app.audio.play(str(SKILL_SOUNDS.get(kind, "skill_power")), -2.0, 1.0, 60)
+
+func show_pow_aura(fighter: TankFighter) -> void:
+	clear_pow_aura(fighter)
+	var aura: PowFx = PowFx.new()
+	aura.mode = "aura"
+	aura.fighter = fighter
+	aura.tint = Color(str(fighter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.5)
+	fighter.add_child(aura)
+	pow_auras[fighter.player_id] = aura
+
+func clear_pow_aura(fighter: TankFighter) -> void:
+	var aura: Variant = pow_auras.get(fighter.player_id)
+	if aura != null and is_instance_valid(aura):
+		aura.queue_free()
+	pow_auras.erase(fighter.player_id)
 
 func show_blast(point: Vector2, radius: float) -> void:
-	app.audio.tone(80, 0.45, true)
+	var size_name: String = "explosion_small" if radius < 44.0 else ("explosion_medium" if radius < 70.0 else "explosion_big")
+	app.audio.play(size_name, 0.0, randf_range(0.94, 1.05), 60)
+	app.audio.play("impact_" + str(game.active().weapon.get("id", "")), -2.0, 1.0, 90)
 	shake = 0.35
-	var sprite: Sprite2D = Sprite2D.new()
-	sprite.texture = explosion
-	sprite.position = point
-	sprite.scale = Vector2.ONE * radius / 45.0
-	effects.add_child(sprite)
-	var tween: Tween = create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(sprite, "scale", sprite.scale * 1.65, 0.4)
-	tween.tween_property(sprite, "modulate:a", 0.0, 0.45)
-	tween.chain().tween_callback(sprite.queue_free)
+	var blast: ImpactFx = ImpactFx.new()
+	blast.radius = radius
+	blast.debris = game.terrain.last_debris.duplicate()
+	blast.position = point
+	effects.add_child(blast)
 
 func show_special(point: Vector2, path: String) -> void:
-	app.audio.tone(880, 0.3)
-	hud.flash("POW!", Color("ffd04a"))
+	# The POW shot: burst of light at the fighter, "POW!" banner, zoom punch and shake.
+	var shooter: TankFighter = game.active()
+	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
+	app.audio.play("pow_fire")
+	hud.pow_banner(str(shooter.weapon.get("pow", {}).get("name", "")), tint)
 	if path == "" or not ResourceLoader.exists(path):
-		return
-	var sprite: Sprite2D = Sprite2D.new()
-	sprite.texture = load(path)
-	sprite.position = point
-	sprite.scale = Vector2.ONE * 1.5
-	effects.add_child(sprite)
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(sprite, "scale", Vector2.ONE * 3.0, 0.7)
-	tween.tween_property(sprite, "modulate:a", 0.0, 0.8)
-	tween.chain().tween_callback(sprite.queue_free)
+		# Default power-up burst behind the fighter who fired the POW.
+		path = "res://assets/expansion/effects/celestial_pow.png"
+	var burst: PowFx = PowFx.new()
+	burst.mode = "burst"
+	burst.tint = tint
+	burst.sprite_path = path
+	burst.position = point
+	effects.add_child(burst)
+	clear_pow_aura(shooter)
+	shake = 0.45
+	kick = 0.5
 
 func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	# Weapon POW visuals; each draws itself on a throwaway node and fades out.
@@ -164,19 +297,17 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	node.position = point
 	node.top = camera.position.y - 420.0
 	effects.add_child(node)
+	# Dom de Anjo heals through the same effect but has its own angelic chord.
+	app.audio.play("aux_angel" if data.get("aux", false) else str(EFFECT_SOUNDS.get(kind, "")), 0.0, 1.0, 120)
 	match kind:
 		"lightning":
-			app.audio.tone(1200, 0.25, true)
 			shake = 0.5
-		"beam":
-			app.audio.tone(980, 0.4)
 		"bull":
-			app.audio.tone(120, 0.5, true)
 			shake = 0.7
-		"heal", "hearts":
-			app.audio.tone(1040, 0.2)
 
 func show_damage(point: Vector2, text: String, color: Color) -> void:
+	if text.begins_with("CRÍTICO"):
+		app.audio.play("critical", -1.0, 1.0, 150)
 	var label: Label = Label.new()
 	label.text = text
 	label.position = point + Vector2(-30, -50)
@@ -193,14 +324,21 @@ func show_damage(point: Vector2, text: String, color: Color) -> void:
 
 func on_turn(fighter: TankFighter) -> void:
 	manual_time = 0
-	if fighter.player_id == game.local_id and not game.auto_play:
-		app.audio.tone(720, 0.12)
+	# An armed POW that was never fired (PASS, time out) is gone with the turn.
+	for id in pow_auras.keys():
+		clear_pow_aura(game.fighters[id])
+	if game.skip_turn:
+		app.audio.play("special_freeze")
+	elif fighter.player_id == game.local_id and not game.auto_play:
+		app.audio.play("your_turn", -3.0)
 		hud.flash("SUA VEZ!", Color("9aff7a"))
 
 func on_finished(winner: int) -> void:
 	summary = app.battle_finished(game)
 	hud.show_outcome(winner == game.local().team, winner < 0)
-	app.audio.tone(660 if summary.won else 220, 0.75)
+	app.audio.set_charge(false, 0.0)
+	app.audio.play_music("", 0.8)
+	app.audio.play("victory" if summary.won else "defeat")
 	end_timer = 2.6
 
 func show_results() -> void:
@@ -210,6 +348,7 @@ func show_results() -> void:
 	if is_instance_valid(results):
 		return
 	hud.hide()
+	app.audio.play_music("lobby", 2.5)
 	results = ResultScreen.new()
 	results.app = app
 	results.summary = summary
@@ -219,6 +358,10 @@ func show_results() -> void:
 func show_cards() -> void:
 	show_results()
 	results.show_cards()
+
+func _exit_tree() -> void:
+	if app != null and is_instance_valid(app.audio):
+		app.audio.set_charge(false, 0.0)
 
 func toggle_pause() -> void:
 	if not game.running:

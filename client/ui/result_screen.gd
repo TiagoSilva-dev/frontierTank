@@ -225,7 +225,7 @@ func pick(index: int) -> void:
 	picks_left -= 1
 	grant(rewards[index])
 	flip(index, true)
-	app.audio.tone(980, 0.18)
+	app.audio.play("ui_card")
 	if picks_left == 0:
 		card_time = -1
 		if is_instance_valid(timer_label):

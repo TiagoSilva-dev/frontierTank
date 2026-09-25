@@ -62,11 +62,15 @@ func run_tests() -> void:
 	make_turn(game, me)
 	check(game.active_id == 0 and game.can_act(), "lowest delay fighter plays and can act")
 	check(game.energy == me.max_energy and me.max_energy >= 240, "turn starts with full energy (240 + agility)")
-	# Items 1–8
+	# Items 1–8 (each use is announced so the screen can show it being consumed)
+	var used: Array[Dictionary] = []
+	game.skill_used.connect(func(fighter: TankFighter, info: Dictionary) -> void: used.append(info.merged({"who": fighter.player_id})))
 	var before: float = game.energy
 	check(game.use_item("dmg50") and game.energy == before - 80, "+50% costs 80 energy")
+	check(used.size() == 1 and used[0].kind == "power" and used[0].who == 0 and ResourceLoader.exists(str(used[0].icon)), "using a skill emits skill_used with its icon")
 	check(game.use_item("plus1"), "+1 attack accepted")
 	check(not game.use_item("plus2") and not game.use_item("triple"), "only one multi-shot item per turn")
+	check(used.size() == 2 and used[1].kind == "multi", "refused items are not shown as consumed")
 	check(game.use_item("dmg20") and not game.use_item("dmg30"), "energy limits item combos")
 	var plan: Dictionary = game.compose_plan(me)
 	check(plan.extra == 1 and plan.damage == roundi(260 * 0.9 * 1.7), "+1 and damage bonuses stack additively")
@@ -99,7 +103,9 @@ func run_tests() -> void:
 	settle(game)
 	make_turn(game, me)
 	me.pow_gauge = 100
+	used.clear()
 	check(game.activate_pow(), "full POW bar can be activated")
+	check(used.size() == 1 and used[0].kind == "pow" and used[0].icon == "pow", "arming POW is shown like a skill")
 	game.power = 55
 	game.state = LocalMatch.State.PLAYER_CHARGING
 	game.release_shot()
@@ -125,6 +131,7 @@ func run_tests() -> void:
 		check(game.use_tool(0) and me.hp == 600 and me.tools[0] == "", "life potion heals 300 and is consumed")
 		check(game.use_tool(1) and me.shield < 1.0, "shield tool arms damage reduction")
 		check(game.use_tool(2) and me.pow_gauge == 100, "POW flask fills the bar")
+		check(used.slice(-3).map(func(info: Dictionary) -> String: return info.kind) == ["heal", "shield", "powmax"], "tools are shown being consumed")
 		check(not game.use_tool(0), "consumed tool cannot be reused")
 		var hp_before: int = me.hp
 		# Small blasts: prone fighters sit low, a big crater would drop them off the map.
@@ -159,6 +166,9 @@ func run_tests() -> void:
 	rival.frozen = 1
 	make_turn(game, rival)
 	check(game.skip_turn and rival.frozen == 0, "frozen fighter loses the turn")
+	# DDTank dashed flight line: dashes measured along the path, gaps between them
+	var dashes: PackedVector2Array = ShotTrails.dash_segments(PackedVector2Array([Vector2.ZERO, Vector2(60, 0), Vector2(100, 0)]))
+	check(dashes.size() % 2 == 0 and dashes.size() >= 10 and is_equal_approx(dashes[0].distance_to(dashes[1]), ShotTrails.DASH) and dashes[2].x - dashes[1].x > 0.0, "shot line is drawn as dashes along the whole path")
 	# Tunneling
 	var bullet: TankProjectile = TankProjectile.new()
 	bullet.terrain = game.terrain

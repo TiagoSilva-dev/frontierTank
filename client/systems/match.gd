@@ -14,6 +14,11 @@ signal announce(text: String, color: Color)
 signal special(point: Vector2, texture_path: String)
 # Weapon POW visuals: beam, lightning, heal, bull, hearts, tornado, fridge.
 signal effect(kind: String, point: Vector2, data: Dictionary)
+# A skill 1–9, tool, auxiliary item, the paper plane or POW was used. The screen shows
+# the fighter consuming it (icon over the head), as in DDTank. Info: id, name, kind
+# (multi, power, powmax, heal, energy, shield, plane, angel, pow) and icon (a res://
+# path or a PixelIcons name).
+signal skill_used(fighter: TankFighter, info: Dictionary)
 
 enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED }
 
@@ -419,6 +424,7 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 	if fill:
 		# POW Máx (item 9): the bar fills now, so B can release the special this turn.
 		fighter.pow_gauge = float(balance.pow_max)
+	skill_used.emit(fighter, {"id": id, "name": str(item.name), "icon": str(item.icon), "kind": "multi" if multi else ("powmax" if fill else "power")})
 	changed.emit()
 	return true
 
@@ -429,6 +435,7 @@ func use_tool(slot: int) -> bool:
 	if slot < 0 or slot >= fighter.tools.size() or fighter.tools[slot] == "":
 		return false
 	var tool: Dictionary = tool_def(fighter.tools[slot])
+	var kind: String = "heal"
 	if tool.has("heal"):
 		if fighter.hp >= fighter.max_hp:
 			return false
@@ -443,14 +450,19 @@ func use_tool(slot: int) -> bool:
 				damage_text.emit(ally.center(), "+%d" % healed, Color("9aff7a"))
 	elif tool.has("energy"):
 		energy += float(tool.energy)
+		kind = "energy"
 	elif tool.has("pow"):
 		fighter.pow_gauge = float(balance.pow_max)
+		kind = "powmax"
 	elif tool.has("shield"):
 		fighter.shield = float(tool.shield)
+		kind = "shield"
 	elif tool.has("fly_reset"):
 		if fighter.fly_cooldown == 0:
 			return false
 		fighter.fly_cooldown = 0
+		kind = "plane"
+	skill_used.emit(fighter, {"id": str(tool.id), "name": str(tool.name), "icon": str(tool.icon), "kind": kind})
 	fighter.tools[slot] = ""
 	tools_used += 1
 	announce.emit("%s usou %s" % [fighter.display_name, tool.name], Color("c8f0ff"))
@@ -472,13 +484,14 @@ func apply_aux(fighter: TankFighter) -> bool:
 		if fighter.hp >= fighter.max_hp:
 			return false
 		heal_fighter(fighter, roundi(fighter.max_hp * float(def.heal_ratio)))
-		effect.emit("heal", fighter.center(), {"radius": 60.0})
+		effect.emit("heal", fighter.center(), {"radius": 60.0, "aux": true})
 	elif def.has("shield"):
 		if fighter.shield < 1.0:
 			return false
 		fighter.shield = float(def.shield)
 	fighter.aux_uses -= 1
 	tools_used += 1
+	skill_used.emit(fighter, {"id": str(def.id), "name": str(def.name), "icon": str(def.icon), "kind": "angel" if def.has("heal_ratio") else "shield"})
 	announce.emit("%s usou %s" % [fighter.display_name, def.name], Color("c8f0ff"))
 	fighter.queue_redraw()
 	changed.emit()
@@ -495,6 +508,7 @@ func toggle_fly() -> bool:
 	elif fighter.fly_cooldown == 0 and turn_items.is_empty() and not turn_pow and energy >= cost:
 		turn_fly = true
 		energy -= cost
+		skill_used.emit(fighter, {"id": "plane", "name": "Avião de Papel", "icon": "plane", "kind": "plane"})
 	else:
 		return false
 	changed.emit()
@@ -506,9 +520,13 @@ func activate_pow() -> bool:
 	var fighter: TankFighter = active()
 	if turn_pow or turn_fly or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items:
 		return false
-	turn_pow = true
+	arm_pow(fighter)
 	changed.emit()
 	return true
+
+func arm_pow(fighter: TankFighter) -> void:
+	turn_pow = true
+	skill_used.emit(fighter, {"id": "pow", "name": str(fighter.weapon.get("pow", {}).get("name", "POW")), "icon": "pow", "kind": "pow"})
 
 func pass_turn() -> void:
 	if not can_act():
@@ -796,7 +814,7 @@ func plan_ai(fighter: TankFighter) -> void:
 		for id: String in combos[rng.randi() % combos.size()]:
 			apply_item(fighter, id)
 	if not fighter.is_boss and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
-		turn_pow = true
+		arm_pow(fighter)
 
 func ai_step(delta: float) -> void:
 	var fighter: TankFighter = active()

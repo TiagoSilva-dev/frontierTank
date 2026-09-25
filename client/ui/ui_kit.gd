@@ -42,6 +42,7 @@ const FRAMES: Dictionary = {
 
 static var _font: FontVariation
 static var _styles: Dictionary = {}
+static var _smooth: ShaderMaterial
 
 # Pixel Operator Bold (CC0) replaced Jersey 10 for legibility: it is drawn on a 16px
 # grid, so sizes below 16 are raised to 16 and the rest stay close to the request.
@@ -235,12 +236,22 @@ static func icon_button(parent: Node, texture: Texture2D, rect: Rect2, action: C
 	parent.add_child(node)
 	return node
 
+static func smooth_material() -> ShaderMaterial:
+	# Even, square art pixels at fractional scales (client/shaders/pixel_smooth.gdshader).
+	if _smooth == null:
+		_smooth = ShaderMaterial.new()
+		_smooth.shader = load("res://client/shaders/pixel_smooth.gdshader")
+	return _smooth
+
 static func art(parent: Node, source: Variant, rect: Rect2, keep_aspect: bool = true) -> TextureRect:
+	# Pixel art at any size: callers that swap in their own material should set the
+	# filter back to nearest.
 	var node: TextureRect = TextureRect.new()
 	node.texture = load(source) if source is String else source
 	node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if keep_aspect else TextureRect.STRETCH_SCALE
-	node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	node.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	node.material = smooth_material()
 	node.position = rect.position
 	node.size = rect.size
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE

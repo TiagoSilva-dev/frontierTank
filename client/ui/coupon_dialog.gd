@@ -25,7 +25,7 @@ static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Con
 		var ok: bool = not message.begins_with("Cupom inválido") and not message.begins_with("Este cupom")
 		result.text = ("Cupom resgatado! " if ok else "") + message
 		result.add_theme_color_override("font_color", Color("2f7a1f") if ok else Color("b8321c"))
-		app.audio.tone(820 if ok else 200, 0.15)
+		app.audio.play("ui_confirm" if ok else "ui_error")
 		if ok and on_done.is_valid():
 			on_done.call()
 	field.text_submitted.connect(func(_text: String) -> void: redeem.call())

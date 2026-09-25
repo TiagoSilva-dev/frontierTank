@@ -130,7 +130,7 @@ func build_center(room: Dictionary) -> void:
 	for entry: Dictionary in app.balance.maps:
 		if entry.id == room.map:
 			map_name = str(entry.name)
-			UiKit.art(map_box, str(entry.bg), Rect2(8, 8, 96, 64), false)
+			UiKit.art(map_box, map_thumb(entry), Rect2(8, 8, 96, 64)).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	if map_name == "Mapa Aleatório":
 		UiKit.art(map_box, PixelIcons.get_icon("star"), Rect2(20, 12, 56, 56))
 	UiKit.label(map_box, map_name, Rect2(108, 6, 160, 44), 17, Color("c0602f"), Color("fff0d0"), HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -223,7 +223,7 @@ func buy_tool(id: String) -> void:
 		return
 	app.profile.coins -= int(tool.price)
 	app.profile.save_profile()
-	app.audio.tone(760, 0.08)
+	app.audio.play("ui_coin")
 	sync_player()
 	rebuild()
 
@@ -248,7 +248,7 @@ func invite() -> void:
 		return
 	if app.room.mode == "pve" or app.room.members.size() < int(app.room.capacity):
 		if app.invite_bot():
-			app.audio.tone(700, 0.08)
+			app.audio.play("ui_confirm")
 			rebuild()
 			return
 	UiKit.notice(self, "SALA CHEIA", "Não há vagas livres na sua equipe.")
@@ -271,10 +271,15 @@ func choose_map() -> void:
 		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 30 + (i % 3) * 216, rect.position.y + 60 + (i / 3) * 130, 204, 120), pick_map.bind(str(entry.id), dialog), "card_hover" if app.room.map == entry.id else "card")
 		cell.name = "Map_" + (str(entry.id) if entry.id != "" else "random")
 		if str(entry.bg) != "":
-			UiKit.art(cell, str(entry.bg), Rect2(10, 8, 184, 78), false)
+			UiKit.art(cell, map_thumb(entry), Rect2(10, 8, 184, 78), false)
 		else:
 			UiKit.art(cell, PixelIcons.get_icon("star"), Rect2(62, 8, 80, 78))
 		UiKit.label(cell, str(entry.name), Rect2(0, 88, 204, 28), 15, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+
+func map_thumb(entry: Dictionary) -> String:
+	# Backdrop + painted ground, rendered by tools/map_thumbs.py.
+	var path: String = "res://assets/maps/thumbs/%s.png" % entry.id
+	return path if ResourceLoader.exists(path) else str(entry.bg)
 
 func cycle_time() -> void:
 	if not app.is_owner():
@@ -296,7 +301,7 @@ func press_start() -> void:
 		rebuild()
 
 func begin_search() -> void:
-	app.audio.tone(540, 0.2)
+	app.audio.play("ui_confirm")
 	searching = Control.new()
 	searching.size = size
 	add_child(searching)

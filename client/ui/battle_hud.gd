@@ -198,6 +198,14 @@ func flash(text: String, color: Color) -> void:
 	tween.tween_interval(0.7)
 	tween.tween_property(banner, "modulate:a", 0.0, 0.4)
 
+func pow_banner(title: String, tint: Color) -> void:
+	var banner_node: PowBanner = PowBanner.new()
+	banner_node.title = title
+	banner_node.tint = tint
+	add_child(banner_node)
+	if is_instance_valid(pause_box):
+		move_child(pause_box, -1)
+
 func toggle_trust() -> void:
 	game.set_auto_play(not game.auto_play)
 
@@ -215,8 +223,23 @@ func set_paused(value: bool) -> void:
 		pause_box.queue_free()
 	if not value:
 		return
-	pause_box = UiKit.modal(self, "BATALHA PAUSADA", "Partida local contra IA. Desistir conta como derrota.")
+	pause_box = UiKit.modal(self, "BATALHA PAUSADA", "Partida local contra IA. Desistir conta como derrota.", Vector2(520, 300))
 	var rect: Rect2 = pause_box.get_meta("rect")
+	var audio: GameAudio = screen.app.audio
+	var music: Button = UiKit.button(pause_box, "", Rect2(rect.position.x + 60, rect.end.y - 124, 180, 40), Callable(), "button_blue", 15)
+	var sfx: Button = UiKit.button(pause_box, "", Rect2(rect.end.x - 240, rect.end.y - 124, 180, 40), Callable(), "button_blue", 15)
+	music.name = "MusicToggle"
+	sfx.name = "SfxToggle"
+	var label_audio: Callable = func() -> void:
+		music.text = "Música: %s" % ("LIGADA" if audio.music_on else "DESLIGADA")
+		sfx.text = "Efeitos: %s" % ("LIGADOS" if audio.enabled else "DESLIGADOS")
+	label_audio.call()
+	music.pressed.connect(func() -> void:
+		audio.set_music_on(not audio.music_on)
+		label_audio.call())
+	sfx.pressed.connect(func() -> void:
+		audio.set_sfx_on(not audio.enabled)
+		label_audio.call())
 	UiKit.button(pause_box, "CONTINUAR", Rect2(rect.position.x + 60, rect.end.y - 64, 180, 44), screen.toggle_pause, "button_green")
 	UiKit.button(pause_box, "DESISTIR", Rect2(rect.end.x - 240, rect.end.y - 64, 180, 44), screen.forfeit)
 

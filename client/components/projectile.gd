@@ -2,8 +2,9 @@ class_name TankProjectile
 extends Node2D
 
 # One shot in flight. Each weapon gives it its own sprite (brick, apple, shuriken,
-# plunger, TV...), a spin or nose-first flight and a trail style; POW specials hang
-# extra behaviour on `special` that LocalMatch runs on impact.
+# plunger, TV...), a spin or nose-first flight and a trail style drawn over a soft
+# glowing streak; POW specials hang extra behaviour on `special` that LocalMatch runs
+# on impact, and glow gold while they fly. The dashed flight line is ShotTrails.
 
 signal impacted(projectile: TankProjectile, point: Vector2)
 signal missed(projectile: TankProjectile)
@@ -51,6 +52,17 @@ var special: Dictionary = {}
 var base_damage: int = 100
 var base_radius: float = 40.0
 var ignores_fighters_until: float = 0.25
+var glow: Node2D
+
+func _ready() -> void:
+	# Additive streak under the sprite and the weapon's own trail.
+	glow = Node2D.new()
+	glow.show_behind_parent = true
+	var additive: CanvasItemMaterial = CanvasItemMaterial.new()
+	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	glow.material = additive
+	glow.draw.connect(draw_glow)
+	add_child(glow)
 
 func apply_style(style: Dictionary, sprite_path: String) -> void:
 	if sprite_path != "" and ResourceLoader.exists(sprite_path):
@@ -81,13 +93,15 @@ func advance(delta: float) -> void:
 			impacted.emit(self, position)
 			return
 	trail.append(position)
-	if trail.size() > 24:
+	if trail.size() > 36:
 		trail.remove_at(0)
 	var world: Vector2 = terrain.world_size
 	if position.x < -200 or position.x > world.x + 200 or position.y > world.y + 60 or age > 14.0:
 		live = false
 		missed.emit(self)
 	queue_redraw()
+	if is_instance_valid(glow):
+		glow.queue_redraw()
 
 func _draw() -> void:
 	draw_trail()
@@ -104,6 +118,30 @@ func _draw() -> void:
 	var size: Vector2 = aspect * sprite_size
 	draw_texture_rect(texture, Rect2(-size / 2, size), false)
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+
+func draw_glow() -> void:
+	var colors: Array = TRAILS[trail_kind]
+	var base: Color = tint if trail_kind == "plain" else Color(str(colors[mini(1, colors.size() - 1)]))
+	var powered: bool = not special.is_empty() and stage == "main"
+	var count: int = trail.size()
+	if count >= 3:
+		var points: PackedVector2Array = PackedVector2Array()
+		var outer: PackedColorArray = PackedColorArray()
+		var inner: PackedColorArray = PackedColorArray()
+		for i in range(count):
+			var fade: float = float(i + 1) / count
+			points.append(trail[i] - position)
+			outer.append(Color(base.r, base.g, base.b, 0.24 * fade * fade))
+			inner.append(Color(1, 1, 1, 0.4 * fade * fade * fade))
+		points.append(Vector2.ZERO)
+		outer.append(Color(base.r, base.g, base.b, 0.24))
+		inner.append(Color(1, 1, 1, 0.4))
+		glow.draw_polyline_colors(points, outer, sprite_size * (0.95 if powered else 0.6))
+		glow.draw_polyline_colors(points, inner, maxf(2.0, sprite_size * 0.2))
+	if powered:
+		var pulse: float = 0.5 + 0.5 * sin(age * 18.0)
+		glow.draw_circle(Vector2.ZERO, sprite_size * (0.95 + 0.2 * pulse), Color(1.0, 0.75, 0.25, 0.28))
+		glow.draw_circle(Vector2.ZERO, sprite_size * 0.62, Color(1.0, 0.95, 0.7, 0.32))
 
 func draw_trail() -> void:
 	var colors: Array = TRAILS[trail_kind]

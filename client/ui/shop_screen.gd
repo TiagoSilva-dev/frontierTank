@@ -124,13 +124,13 @@ func try_on(def: Dictionary) -> void:
 func buy_item(id: String, quality: String) -> void:
 	var error: String = app.profile.buy(id, quality)
 	message = error if error != "" else "Comprado! Veja na Mochila."
-	app.audio.tone(880 if error == "" else 200, 0.15)
+	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()
 
 func buy_stone(id: String, amount: int) -> void:
 	var error: String = app.profile.buy_stone(id, amount)
 	message = error if error != "" else "Comprado: %d pedra(s)." % amount
-	app.audio.tone(880 if error == "" else 200, 0.15)
+	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()
 
 func select_tab(value: String) -> void:

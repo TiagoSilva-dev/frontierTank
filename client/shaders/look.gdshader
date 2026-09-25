@@ -1,7 +1,10 @@
 shader_type canvas_item;
 
 // Character look: hair dye (palette swap inside the head area) and the clothes aura
-// glow drawn around the sprite silhouette.
+// glow drawn around the sprite silhouette. The body is sampled "crisp": every art
+// pixel keeps the same size at fractional scales (2.25x in menus, 0.76x lying in
+// battle) and only seams are blended, from four dyed texels (the node itself uses
+// nearest filtering so each lookup is one exact texel).
 
 uniform int hair_count = 0;
 uniform vec3 hair[16];
@@ -23,9 +26,8 @@ void vertex() {
 	tint = COLOR;
 }
 
-void fragment() {
-	vec4 color = texture(TEXTURE, UV);
-	if (dye.a > 0.0 && color.a > 0.5 && UV.x >= head_rect.x && UV.y >= head_rect.y && UV.x <= head_rect.z && UV.y <= head_rect.w) {
+vec4 dyed(vec4 color, vec2 uv) {
+	if (dye.a > 0.0 && color.a > 0.5 && uv.x >= head_rect.x && uv.y >= head_rect.y && uv.x <= head_rect.z && uv.y <= head_rect.w) {
 		for (int i = 0; i < hair_count; i++) {
 			vec3 d = abs(color.rgb - hair[i]);
 			if (max(d.r, max(d.g, d.b)) < 0.012) {
@@ -37,6 +39,25 @@ void fragment() {
 			}
 		}
 	}
+	// Premultiplied, so blending with transparent neighbours leaves no dark fringe.
+	return vec4(color.rgb * color.a, color.a);
+}
+
+void fragment() {
+	vec2 size = 1.0 / TEXTURE_PIXEL_SIZE;
+	vec2 texel = UV * size;
+	vec2 seam = floor(texel + 0.5);
+	vec2 span = max(fwidth(texel), vec2(1e-4));
+	vec2 p = seam + clamp((texel - seam) / span, -0.5, 0.5) - 0.5;
+	vec2 base = floor(p);
+	vec2 f = p - base;
+	vec2 uv00 = (base + 0.5) / size;
+	vec2 step_x = vec2(TEXTURE_PIXEL_SIZE.x, 0.0);
+	vec2 step_y = vec2(0.0, TEXTURE_PIXEL_SIZE.y);
+	vec4 top = mix(dyed(texture(TEXTURE, uv00), uv00), dyed(texture(TEXTURE, uv00 + step_x), uv00 + step_x), f.x);
+	vec4 low = mix(dyed(texture(TEXTURE, uv00 + step_y), uv00 + step_y), dyed(texture(TEXTURE, uv00 + step_x + step_y), uv00 + step_x + step_y), f.x);
+	vec4 color = mix(top, low, f.y);
+	color.rgb = color.a > 0.0 ? color.rgb / color.a : vec3(0.0);
 	if (glow.a > 0.0) {
 		float pulse = 0.72 + 0.28 * sin(TIME * 3.0 + UV.y * 14.0);
 		vec3 bright = mix(glow.rgb, vec3(1.0), 0.55);

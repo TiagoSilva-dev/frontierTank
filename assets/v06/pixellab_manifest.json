@@ -1,0 +1,441 @@
+{
+ "version": "0.6",
+ "provider": "PixelLab MCP",
+ "date": "2026-09-24",
+ "note": "Melhoria de qualidade: tela de entrada, cidade (Pro 640x360 exibida em 2x), prédios Pro Flash em 1x, fundos 680x380 em 2x, terreno pintado (tools/terrain_pieces.py), armas 96x96, explosão animada e cartas 128x192. Custo: 217 gerações (restam 379 até 2026-10-24).",
+ "images": [
+  {
+   "name": "title_bg",
+   "job_id": "5d4655a4-276c-4b47-a040-88f2dd367bae",
+   "tool": "create_image_pixen 640x360",
+   "download": "https://api.pixellab.ai/mcp/images/5d4655a4-276c-4b47-a040-88f2dd367bae/download",
+   "target": "assets/title/title_bg.png"
+  },
+  {
+   "name": "logo",
+   "job_id": "def9516f-20f5-4d8e-a1da-220dbda7dd88",
+   "tool": "create_image_pro_flash 256x144",
+   "download": "https://api.pixellab.ai/mcp/images/def9516f-20f5-4d8e-a1da-220dbda7dd88/download",
+   "target": "assets/title/logo.png"
+  },
+  {
+   "name": "city_bg",
+   "job_id": "0dacc2e3-fccd-43fa-8c3a-48f99a85f9e3",
+   "tool": "create_image_pro 640x360 (referência: city_inpaint 09b827a0)",
+   "download": "https://api.pixellab.ai/mcp/images/0dacc2e3-fccd-43fa-8c3a-48f99a85f9e3/download",
+   "target": "assets/city/city_bg.png"
+  },
+  {
+   "name": "hall",
+   "job_id": "cb3741ee-46f8-4f55-8c45-5c994c4cdaff",
+   "tool": "create_image_pro_flash 256x256",
+   "download": "https://api.pixellab.ai/mcp/images/cb3741ee-46f8-4f55-8c45-5c994c4cdaff/download",
+   "target": "assets/city/buildings/hall.png"
+  },
+  {
+   "name": "smith",
+   "job_id": "df59e343-ce11-473c-9be3-77430a3ae707",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/df59e343-ce11-473c-9be3-77430a3ae707/download",
+   "target": "assets/city/buildings/smith.png"
+  },
+  {
+   "name": "instance",
+   "job_id": "bf66700a-cd94-4add-b6eb-29fec0ec9f08",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/bf66700a-cd94-4add-b6eb-29fec0ec9f08/download",
+   "target": "assets/city/buildings/instance.png"
+  },
+  {
+   "name": "auction",
+   "job_id": "3187eed9-4782-41f1-882b-f8933b072b81",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/3187eed9-4782-41f1-882b-f8933b072b81/download",
+   "target": "assets/city/buildings/auction.png"
+  },
+  {
+   "name": "dating",
+   "job_id": "6a08a97f-b212-4461-b27c-6089e5f16e4f",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/6a08a97f-b212-4461-b27c-6089e5f16e4f/download",
+   "target": "assets/city/buildings/dating.png"
+  },
+  {
+   "name": "mall",
+   "job_id": "ff6cae77-bfa5-4c82-972f-c8d7af27c093",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/ff6cae77-bfa5-4c82-972f-c8d7af27c093/download",
+   "target": "assets/city/buildings/mall.png"
+  },
+  {
+   "name": "pet",
+   "job_id": "df920b94-f993-4761-9fad-18715f8960f1",
+   "tool": "create_image_pro_flash 192x192",
+   "download": "https://api.pixellab.ai/mcp/images/df920b94-f993-4761-9fad-18715f8960f1/download",
+   "target": "assets/city/buildings/pet.png"
+  },
+  {
+   "name": "bg_ilha_celeste",
+   "job_id": "dbd693e6-427f-4076-9aea-97e505d037a9",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/dbd693e6-427f-4076-9aea-97e505d037a9/download",
+   "target": "assets/maps/bg/ilha_celeste.png",
+   "note": "faixa escura do céu no topo recolorida para azul"
+  },
+  {
+   "name": "bg_patio_templo",
+   "job_id": "ffcbbcbc-6e79-4aea-ac6b-1a16c874af48",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/ffcbbcbc-6e79-4aea-ac6b-1a16c874af48/download",
+   "target": "assets/maps/bg/patio_templo.png"
+  },
+  {
+   "name": "bg_camara_guardiao",
+   "job_id": "e1619f4b-3ac2-4df4-aa42-40ab449d2b33",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/e1619f4b-3ac2-4df4-aa42-40ab449d2b33/download",
+   "target": "assets/maps/bg/camara_guardiao.png"
+  },
+  {
+   "name": "bg_trono_mascaras",
+   "job_id": "eafc439f-63aa-4a31-bed8-0220fab65d27",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/eafc439f-63aa-4a31-bed8-0220fab65d27/download",
+   "target": "assets/maps/bg/trono_mascaras.png"
+  },
+  {
+   "name": "bg_templo_sol",
+   "job_id": "e74a2fa5-ab99-4126-9537-dd0055c9b5bb",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/e74a2fa5-ab99-4126-9537-dd0055c9b5bb/download",
+   "target": "assets/maps/bg/templo_sol.png"
+  },
+  {
+   "name": "terrain_celeste_a",
+   "job_id": "8161935a-f115-48ae-a583-c7c65444ddb6",
+   "tool": "create_image_pixen 360x128",
+   "download": "https://api.pixellab.ai/mcp/images/8161935a-f115-48ae-a583-c7c65444ddb6/download",
+   "target": "assets/maps/terrain/celeste_a.png"
+  },
+  {
+   "name": "terrain_celeste_b",
+   "job_id": "560ad998-48eb-43e2-809e-7fbce0012664",
+   "tool": "create_image_pixen 140x76",
+   "download": "https://api.pixellab.ai/mcp/images/560ad998-48eb-43e2-809e-7fbce0012664/download",
+   "target": "assets/maps/terrain/celeste_b.png"
+  },
+  {
+   "name": "terrain_celeste_c",
+   "job_id": "3bc12658-194d-441d-9269-b94a89b71ca9",
+   "tool": "create_image_pixen 360x136",
+   "download": "https://api.pixellab.ai/mcp/images/3bc12658-194d-441d-9269-b94a89b71ca9/download",
+   "target": "assets/maps/terrain/celeste_c.png"
+  },
+  {
+   "name": "terrain_patio_a",
+   "job_id": "943c7915-d4af-422c-ae23-552a75a50a92",
+   "tool": "create_image_pixen 300x112",
+   "download": "https://api.pixellab.ai/mcp/images/943c7915-d4af-422c-ae23-552a75a50a92/download",
+   "target": "assets/maps/terrain/patio_a.png"
+  },
+  {
+   "name": "terrain_patio_b",
+   "job_id": "5061db27-48f2-4220-949f-5b07c201e5a5",
+   "tool": "create_image_pixen 360x140",
+   "download": "https://api.pixellab.ai/mcp/images/5061db27-48f2-4220-949f-5b07c201e5a5/download",
+   "target": "assets/maps/terrain/patio_b.png"
+  },
+  {
+   "name": "terrain_frost_a",
+   "job_id": "4543bbeb-f1ea-4d3f-8ad5-9b3c40554355",
+   "tool": "create_image_pixen 432x160",
+   "download": "https://api.pixellab.ai/mcp/images/4543bbeb-f1ea-4d3f-8ad5-9b3c40554355/download",
+   "target": "assets/maps/terrain/frost_a.png",
+   "note": "veio com xadrez cinza no fundo; removido com --key"
+  },
+  {
+   "name": "terrain_frost_b",
+   "job_id": "80300523-553c-4b17-b1dc-3564229d18dd",
+   "tool": "create_image_pixen 432x160",
+   "download": "https://api.pixellab.ai/mcp/images/80300523-553c-4b17-b1dc-3564229d18dd/download",
+   "target": "assets/maps/terrain/frost_b.png",
+   "note": "veio com fundo preto; removido com --key"
+  },
+  {
+   "name": "terrain_throne_a",
+   "job_id": "0e6643a5-64ea-413d-b568-6dfa9670c1c3",
+   "tool": "create_image_pixen 280x120",
+   "download": "https://api.pixellab.ai/mcp/images/0e6643a5-64ea-413d-b568-6dfa9670c1c3/download",
+   "target": "assets/maps/terrain/throne_a.png"
+  },
+  {
+   "name": "terrain_throne_b",
+   "job_id": "9f8acf77-e898-4439-b3c5-5c9b9bf1d560",
+   "tool": "create_image_pixen 332x132",
+   "download": "https://api.pixellab.ai/mcp/images/9f8acf77-e898-4439-b3c5-5c9b9bf1d560/download",
+   "target": "assets/maps/terrain/throne_b.png"
+  },
+  {
+   "name": "terrain_temple_a",
+   "job_id": "792a198e-e942-4bb0-ab05-14d1fafd3dd5",
+   "tool": "create_image_pixen 400x120",
+   "download": "https://api.pixellab.ai/mcp/images/792a198e-e942-4bb0-ab05-14d1fafd3dd5/download",
+   "target": "assets/maps/terrain/temple_a.png"
+  },
+  {
+   "name": "explosion_peak",
+   "job_id": "786bff39-4c15-42cd-b143-a523eeffc138",
+   "tool": "create_image_pixen 128x128",
+   "download": "https://api.pixellab.ai/mcp/images/786bff39-4c15-42cd-b143-a523eeffc138/download",
+   "target": "assets/effects/explosion/frame_03.png"
+  },
+  {
+   "name": "explosion_anim",
+   "job_id": "fd33b188-f25e-482d-b91d-973e5a25e6eb",
+   "tool": "animate_image 8 quadros (download?index=0..8)",
+   "download": "https://api.pixellab.ai/mcp/images/fd33b188-f25e-482d-b91d-973e5a25e6eb/download",
+   "target": "assets/effects/explosion/frame_*.png",
+   "note": "quadros 7,5,2 invertidos para o crescimento; 0..8 para o fim"
+  },
+  {
+   "name": "card_back",
+   "job_id": "b1dc6484-8115-4875-bb3e-294fb86f3563",
+   "tool": "create_image_pro_flash 128x192",
+   "download": "https://api.pixellab.ai/mcp/images/b1dc6484-8115-4875-bb3e-294fb86f3563/download",
+   "target": "assets/expansion/rewards/reward_card_back.png"
+  },
+  {
+   "name": "card_common",
+   "job_id": "3aa6fe69-417d-4db6-9e99-fb4f5587ac7e",
+   "tool": "create_image_pro_flash 128x192",
+   "download": "https://api.pixellab.ai/mcp/images/3aa6fe69-417d-4db6-9e99-fb4f5587ac7e/download",
+   "target": "assets/expansion/rewards/reward_card_common.png"
+  },
+  {
+   "name": "card_rare",
+   "job_id": "ad8e2830-5a57-448f-835a-39e3a4f35389",
+   "tool": "create_image_pro_flash 128x192",
+   "download": "https://api.pixellab.ai/mcp/images/ad8e2830-5a57-448f-835a-39e3a4f35389/download",
+   "target": "assets/expansion/rewards/reward_card_rare.png"
+  },
+  {
+   "name": "card_epic",
+   "job_id": "f54fa26c-646d-4a8f-80e3-eb7adc729d45",
+   "tool": "create_image_pro_flash 128x192",
+   "download": "https://api.pixellab.ai/mcp/images/f54fa26c-646d-4a8f-80e3-eb7adc729d45/download",
+   "target": "assets/expansion/rewards/reward_card_epic.png"
+  },
+  {
+   "name": "card_legendary",
+   "job_id": "8f6cb1c6-6257-4054-a0f0-33f254556c1e",
+   "tool": "create_image_pro_flash 128x192",
+   "download": "https://api.pixellab.ai/mcp/images/8f6cb1c6-6257-4054-a0f0-33f254556c1e/download",
+   "target": "assets/expansion/rewards/reward_card_legendary.png"
+  },
+  {
+   "name": "w_quebra_tijolos",
+   "job_id": "9ca01485-b6d7-42b7-a047-72f73e15f736",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/9ca01485-b6d7-42b7-a047-72f73e15f736/download",
+   "target": "assets/weapons/quebra_tijolos/tier0.png"
+  },
+  {
+   "name": "w_fogo_intenso",
+   "job_id": "4e96f401-350f-4a19-aa02-634bfb56a426",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/4e96f401-350f-4a19-aa02-634bfb56a426/download",
+   "target": "assets/weapons/fogo_intenso/tier0.png"
+  },
+  {
+   "name": "w_canhao_arco_iris",
+   "job_id": "ca5fd0d8-1371-412a-a7c5-ac22f9cdeff3",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/ca5fd0d8-1371-412a-a7c5-ac22f9cdeff3/download",
+   "target": "assets/weapons/canhao_arco_iris/tier0.png"
+  },
+  {
+   "name": "w_vento_de_deus",
+   "job_id": "cb93440c-d247-4ab7-96c6-b45e01e35e0f",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/cb93440c-d247-4ab7-96c6-b45e01e35e0f/download",
+   "target": "assets/weapons/vento_de_deus/tier0.png"
+  },
+  {
+   "name": "w_cesto_newton",
+   "job_id": "507d2ac7-206b-4ae3-b6c0-f1b66c651f41",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/507d2ac7-206b-4ae3-b6c0-f1b66c651f41/download",
+   "target": "assets/weapons/cesto_newton/tier0.png"
+  },
+  {
+   "name": "w_kit_medico",
+   "job_id": "f85ac445-6ed8-42fc-b990-c422b842e245",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/f85ac445-6ed8-42fc-b990-c422b842e245/download",
+   "target": "assets/weapons/kit_medico/tier0.png"
+  },
+  {
+   "name": "w_eletrodomestico",
+   "job_id": "0b43cbbf-1473-4942-8e39-a3d98cb26d93",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/0b43cbbf-1473-4942-8e39-a3d98cb26d93/download",
+   "target": "assets/weapons/eletrodomestico/tier0.png"
+  },
+  {
+   "name": "w_trovao",
+   "job_id": "f8530335-4dd9-4127-81ec-3f8e2f262b0a",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/f8530335-4dd9-4127-81ec-3f8e2f262b0a/download",
+   "target": "assets/weapons/trovao/tier0.png"
+  },
+  {
+   "name": "w_desentupidor",
+   "job_id": "21a8bd2a-8018-492f-aec0-4f9917957bcf",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/21a8bd2a-8018-492f-aec0-4f9917957bcf/download",
+   "target": "assets/weapons/desentupidor/tier0.png"
+  },
+  {
+   "name": "w_cabeca_de_boi",
+   "job_id": "5ccda2c5-af47-4311-9a49-2c9618c57d00",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/5ccda2c5-af47-4311-9a49-2c9618c57d00/download",
+   "target": "assets/weapons/cabeca_de_boi/tier0.png"
+  },
+  {
+   "name": "w_bumerangue_amor",
+   "job_id": "d8e79b64-b9b1-4f57-9867-644ceafbccdb",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/d8e79b64-b9b1-4f57-9867-644ceafbccdb/download",
+   "target": "assets/weapons/bumerangue_amor/tier0.png"
+  },
+  {
+   "name": "w_lanca_antiga",
+   "job_id": "a017e17e-3410-446d-b6d8-91b8d040a1dc",
+   "tool": "create_image_pro_flash 96x96, style_image = tier0 da 0.5",
+   "download": "https://api.pixellab.ai/mcp/images/a017e17e-3410-446d-b6d8-91b8d040a1dc/download",
+   "target": "assets/weapons/lanca_antiga/tier0.png"
+  }
+ ],
+ "discarded": [
+  {
+   "name": "city_test",
+   "job_id": "adbf630a-f40e-4ae1-b87b-dad1694dc4b6",
+   "tool": "create_image_pixen 640x360",
+   "download": "https://api.pixellab.ai/mcp/images/adbf630a-f40e-4ae1-b87b-dad1694dc4b6/download",
+   "target": "-",
+   "note": "duas ilhas e casas desenhadas"
+  },
+  {
+   "name": "cityA",
+   "job_id": "9714bec5-c84f-4cf0-a891-790e996a0a06",
+   "tool": "create_image_pixen 640x360",
+   "download": "https://api.pixellab.ai/mcp/images/9714bec5-c84f-4cf0-a891-790e996a0a06/download",
+   "target": "-",
+   "note": "praça fora do centro, casas desenhadas"
+  },
+  {
+   "name": "cityB",
+   "job_id": "f5b9401a-1d68-44ca-82b8-8ff0a0f3c18e",
+   "tool": "create_image_pixen 640x360",
+   "download": "https://api.pixellab.ai/mcp/images/f5b9401a-1d68-44ca-82b8-8ff0a0f3c18e/download",
+   "target": "-",
+   "note": "sem mar e com casas"
+  },
+  {
+   "name": "sky_test",
+   "job_id": "431e5b88-2c22-43ef-9eda-7a5ec19b245a",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/431e5b88-2c22-43ef-9eda-7a5ec19b245a/download",
+   "target": "-",
+   "note": "tanque e personagens no primeiro plano"
+  },
+  {
+   "name": "sky2",
+   "job_id": "94e6dd60-b0cf-4eec-9b3c-16090f274eb3",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/94e6dd60-b0cf-4eec-9b3c-16090f274eb3/download",
+   "target": "-",
+   "note": "tanque no primeiro plano"
+  },
+  {
+   "name": "sky3",
+   "job_id": "92f15c72-8e62-47d0-8d72-433c5e677e75",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/92f15c72-8e62-47d0-8d72-433c5e677e75/download",
+   "target": "-",
+   "note": "virou um mapa de plataformas"
+  },
+  {
+   "name": "sky4",
+   "job_id": "faf2de27-a933-4524-a489-393e5c65c8e9",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/faf2de27-a933-4524-a489-393e5c65c8e9/download",
+   "target": "-",
+   "note": "escuro, blocos soltos"
+  },
+  {
+   "name": "sky6",
+   "job_id": "3e356141-fd73-420c-b640-004ce1ab0f15",
+   "tool": "create_image_pixen 680x380",
+   "download": "https://api.pixellab.ai/mcp/images/3e356141-fd73-420c-b640-004ce1ab0f15/download",
+   "target": "-",
+   "note": "tanques no cenário"
+  },
+  {
+   "name": "title1",
+   "job_id": "b1a80330-902b-403d-9548-5478a2c95fdf",
+   "tool": "create_image_pixen 640x360",
+   "download": "https://api.pixellab.ai/mcp/images/b1a80330-902b-403d-9548-5478a2c95fdf/download",
+   "target": "-",
+   "note": "texto ilegível desenhado"
+  },
+  {
+   "name": "island_test",
+   "job_id": "48e1fa08-57c4-473a-a693-b44006955fa7",
+   "tool": "create_image_pixen 360x160",
+   "download": "https://api.pixellab.ai/mcp/images/48e1fa08-57c4-473a-a693-b44006955fa7/download",
+   "target": "-",
+   "note": "ilha estreita"
+  },
+  {
+   "name": "frost_thin",
+   "job_id": "ce676c0d-b36b-4b6d-8e20-e6d8f022bf9c",
+   "tool": "create_image_pixen 432x140",
+   "download": "https://api.pixellab.ai/mcp/images/ce676c0d-b36b-4b6d-8e20-e6d8f022bf9c/download",
+   "target": "-",
+   "note": "fina demais"
+  },
+  {
+   "name": "temple_holes",
+   "job_id": "3d97cc8c-c160-4ba2-8072-545f66b7bef1",
+   "tool": "create_image_pixen 400x112",
+   "download": "https://api.pixellab.ai/mcp/images/3d97cc8c-c160-4ba2-8072-545f66b7bef1/download",
+   "target": "-",
+   "note": "tijolos vazados (só contorno)"
+  },
+  {
+   "name": "temple_holes2",
+   "job_id": "cff2df55-6968-4c3a-a686-94be008007d4",
+   "tool": "create_image_pixen 400x120",
+   "download": "https://api.pixellab.ai/mcp/images/cff2df55-6968-4c3a-a686-94be008007d4/download",
+   "target": "-",
+   "note": "tijolos vazados (só contorno)"
+  },
+  {
+   "name": "terrain_patio_c",
+   "job_id": "82aed3e8-148d-41a5-9ddc-6c83a6950b31",
+   "tool": "create_image_pixen 300x120",
+   "download": "https://api.pixellab.ai/mcp/images/82aed3e8-148d-41a5-9ddc-6c83a6950b31/download",
+   "target": "-",
+   "note": "bom, mas não coube nos mapas"
+  }
+ ],
+ "procedural": [
+  "assets/maps/terrain/*.png (tools/terrain_pieces.py: alfa binário, sem pedrinhas soltas, buracos preenchidos, recorte)",
+  "assets/maps/thumbs/*.png (tools/map_thumbs.py)",
+  "assets/weapons/*/tier1-3.png (tools/weapon_tiers.py)",
+  "clima, estilhaços, fumaça, clarão e onda de choque (client/components/ambience.gd, impact_fx.gd)",
+  "brilho do logotipo (client/shaders/logo_shine.gdshader)"
+ ]
+}
