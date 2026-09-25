@@ -10,6 +10,13 @@ var rank_title: String = "Recruta"
 var level: int = 1
 var gender: String = "m"
 var human: bool = false
+# "Confiar": the AI plays this fighter. `left`: the player quit (online), the AI plays
+# on until the end.
+var auto_play: bool = false
+var left: bool = false
+# Online: the angle the local player is aiming at, drawn before the simulation (a little
+# behind, lockstep) catches up. Only the drawing uses it.
+var shown_angle: float = NAN
 # PvE enemies (0.9): lacaio, guardião, chefe or totem (an objective that never acts).
 var is_monster: bool = false
 var rank: String = ""
@@ -299,6 +306,12 @@ func acts() -> bool:
 func effective_angle() -> float:
 	return angle + tilt * facing
 
+func drawn_angle() -> float:
+	return angle if is_nan(shown_angle) else shown_angle
+
+func drawn_effective_angle() -> float:
+	return drawn_angle() + tilt * facing
+
 func update_pose() -> void:
 	if body == null:
 		return
@@ -451,7 +464,7 @@ func _draw() -> void:
 		var start: float = -deg_to_rad(lo) if facing > 0 else PI + deg_to_rad(lo)
 		var finish: float = -deg_to_rad(hi) if facing > 0 else PI + deg_to_rad(hi)
 		draw_arc(origin, 46, minf(start, finish), maxf(start, finish), 24, Color(0.95, 0.15, 0.1, 0.8), 3)
-		var aim: float = -deg_to_rad(effective_angle()) if facing > 0 else PI + deg_to_rad(effective_angle())
+		var aim: float = -deg_to_rad(drawn_effective_angle()) if facing > 0 else PI + deg_to_rad(drawn_effective_angle())
 		for i in range(2, 12):
 			if i % 2 == 0:
 				draw_line(origin + Vector2.from_angle(aim) * (i * 6), origin + Vector2.from_angle(aim) * (i * 6 + 5), Color("ffe95a"), 2)

@@ -3,7 +3,9 @@
 
 Portuguese is the source language: every visible text is its own key (gettext style).
 Keys come from
-  * tr("...") and Lang.t("...") calls in client/**/*.gd (the literal must be the whole
+  * tr("...") and Lang.t("...") calls in client/**/*.gd and server/game/*.gd (the
+    game server sends these texts as keys and the players translate them; the literal
+    must be the whole
     argument; format it after the call: tr("%d moedas") % coins),
   * every string literal on a line that ends with "# i18n" (constant tables),
   * the "name", "desc", "text", "label", "attack" and "fury_name" fields of
@@ -77,7 +79,7 @@ def collect():
         if ref not in found[text]:
             found[text].append(ref)
 
-    for path in sorted(glob.glob(os.path.join(ROOT, "client", "**", "*.gd"), recursive=True)):
+    for path in sorted(glob.glob(os.path.join(ROOT, "client", "**", "*.gd"), recursive=True) + glob.glob(os.path.join(ROOT, "server", "game", "*.gd"))):
         rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
         for number, line in enumerate(open(path, encoding="utf-8"), 1):
             cut = code_comment_start(line)

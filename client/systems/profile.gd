@@ -1,7 +1,9 @@
 class_name PlayerProfile
 extends RefCounted
 
-# Single local character. This file is never an authority for an online economy.
+# Single character. Offline it is saved in user://; online (backend 0.11) the game server
+# keeps the authoritative copy and runs every change through `apply_op` with these same
+# rules, while the client's copy is only a mirror of what the server sends.
 # v3 keeps an inventory of item instances ({uid, id, quality, level, compose}) and the
 # equipped slot -> uid map; stones and crystals stay as counters in `items`.
 # v4 (0.9) adds the instance maps ({uid, instance, level, quality, mods}), the item level
@@ -31,6 +33,8 @@ var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var remote: bool = false
+var on_save: Callable = Callable()
 
 func _init() -> void:
 	if path_override != "":
@@ -42,8 +46,12 @@ func load_profile() -> void:
 	if not FileAccess.file_exists(save_path):
 		return
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(save_path))
-	if not data is Dictionary:
-		return
+	if data is Dictionary and load_data(data):
+		save_profile()
+
+# Reads a save (the local file, or the copy the online server keeps in PostgreSQL).
+# Returns true when v4 drops were migrated, so the caller saves again.
+func load_data(data: Dictionary) -> bool:
 	player_name = str(data.get("name", "Explorador")).strip_edges().substr(0, 14)
 	if player_name == "":
 		player_name = "Explorador"
@@ -115,8 +123,7 @@ func load_profile() -> void:
 		var inst: Dictionary = add_instance(Armory.legacy_instance(int(data.weapon)).id)
 		equipped["arma"] = inst.uid
 	ensure_starter()
-	if migrated:
-		save_profile()
+	return migrated
 
 func ensure_starter() -> void:
 	# Every account starts with the basic look (t-shirt and shorts) and a Quebra Tijolos.
@@ -130,10 +137,20 @@ func ensure_starter() -> void:
 			weapon = add_instance("quebra_tijolos")
 		equipped["arma"] = weapon.uid
 
+func to_data() -> Dictionary:
+	return {"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}
+
 func save_profile() -> void:
+	# Online: the server's copy is persisted through `on_save`; the client's copy is a
+	# mirror of the server (`remote`) and never overwrites the offline save.
+	if on_save.is_valid():
+		on_save.call()
+		return
+	if remote:
+		return
 	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if file != null:
-		file.store_string(JSON.stringify({"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}))
+		file.store_string(JSON.stringify(to_data()))
 
 static func exp_for_level(value: int) -> int:
 	return 60 * value * (value - 1)
@@ -272,7 +289,11 @@ func buy(id: String, quality: String = "normal") -> String:
 		return tr("Super armas só caem do chefe das instâncias.")
 	if quality == "verdadeira":
 		return tr("Armas Verdadeiras só caem nas instâncias.")
+	if not quality in ["normal", "excelente"]:
+		return tr("Item desconhecido.")
 	var price: int = item_price(id, quality)
+	if price <= 0:
+		return tr("Item desconhecido.")
 	if coins < price:
 		return tr("Moedas insuficientes.")
 	coins -= price
@@ -284,7 +305,7 @@ func buy(id: String, quality: String = "normal") -> String:
 
 func buy_stone(id: String, amount: int = 1) -> String:
 	var stone: Dictionary = Armory.stone_def(id)
-	if stone.is_empty():
+	if stone.is_empty() or amount < 1 or amount > 99:
 		return tr("Item desconhecido.")
 	var price: int = int(stone.price) * amount
 	if coins < price:
@@ -544,3 +565,122 @@ func redeem(code: String) -> String:
 	coins += int(coupon.get("coins", 0))
 	save_profile()
 	return tr(str(coupon.desc))
+
+# ---------- ferramentas da sala ----------
+
+func buy_tool(id: String, balance: Dictionary) -> String:
+	var tool: Dictionary = {}
+	for entry: Dictionary in balance.get("tools", []):
+		if entry.id == id:
+			tool = entry
+	if tool.is_empty():
+		return tr("Item desconhecido.")
+	if coins < int(tool.price):
+		return tr("%s custa %d moedas.") % [tr(str(tool.name)), int(tool.price)]
+	if not add_tool(id):
+		return tr("Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la.")
+	coins -= int(tool.price)
+	save_profile()
+	return ""
+
+func sell_tool(slot: int, balance: Dictionary) -> String:
+	if slot < 0 or slot >= tools.size() or tools[slot] == "":
+		return tr("Item não encontrado.")
+	for entry: Dictionary in balance.get("tools", []):
+		if entry.id == tools[slot]:
+			coins += int(entry.price)
+	tools[slot] = ""
+	save_profile()
+	return ""
+
+# ---------- operações (online) ----------
+
+# Everything a player can change in the profile goes through here. Offline the client
+# calls it directly; online the server calls it for the player and sends the new profile
+# back. Arguments come from the network, so their types are checked.
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "fuse", "transfer", "compose", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create"]
+
+static func arg_int(args: Array, index: int) -> int:
+	if index >= args.size() or not (args[index] is int or args[index] is float):
+		return -1
+	return int(clampf(float(args[index]), -1.0, 1.0e12))
+
+static func arg_str(args: Array, index: int) -> String:
+	if index >= args.size() or not args[index] is String:
+		return ""
+	return (args[index] as String).substr(0, 64)
+
+static func valid_name(value: String) -> bool:
+	# 2–14 letters (accents allowed), digits, spaces, "_", "-" and "." (same rule as the API).
+	if value.length() < 2 or value.length() > 14 or value.strip_edges() != value:
+		return false
+	var pattern: RegEx = RegEx.create_from_string("^[\\p{L}\\p{N} _.-]+$")
+	return pattern.search(value) != null
+
+# Result: {"error": "" or the reason, "message": text for the player}. `balance` is
+# combat.json (tools); `test_coupons` lets the test coupons work (always offline).
+func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool = true) -> Dictionary:
+	var error: String = ""
+	var message: String = ""
+	match op:
+		"toggle_equip":
+			var uid: int = arg_int(args, 0)
+			var inst: Dictionary = find_instance(uid)
+			if inst.is_empty():
+				error = tr("Item não encontrado.")
+			else:
+				error = unequip(Armory.slot_of(str(inst.id))) if is_equipped(uid) else equip(uid)
+		"sell":
+			var value: int = sell(arg_int(args, 0))
+			if value <= 0:
+				error = tr("Item não encontrado.")
+			else:
+				message = tr("+%d moedas") % value
+		"buy":
+			error = buy(arg_str(args, 0), arg_str(args, 1) if arg_str(args, 1) != "" else "normal")
+		"buy_stone":
+			error = buy_stone(arg_str(args, 0), arg_int(args, 1))
+		"strengthen":
+			error = strengthen(arg_int(args, 0))
+		"fuse":
+			error = fuse(arg_str(args, 0))
+		"transfer":
+			error = transfer(arg_int(args, 0), arg_int(args, 1))
+		"compose":
+			error = compose(arg_int(args, 0), arg_str(args, 1))
+		"craft":
+			error = craft(arg_str(args, 0), arg_int(args, 1))
+		"craft_map":
+			error = craft_map(arg_str(args, 0), arg_int(args, 1))
+		"redeem":
+			var code: String = arg_str(args, 0).strip_edges().to_upper()
+			var coupon: Dictionary = {}
+			for entry: Dictionary in Armory.data().coupons:
+				if entry.code == code:
+					coupon = entry
+			if coupon.is_empty() or (bool(coupon.get("test", false)) and not test_coupons):
+				error = tr("Cupom inválido.")
+			elif coupons.has(code) and not bool(coupon.get("repeat", false)):
+				error = tr("Este cupom já foi usado nesta conta.")
+			else:
+				message = redeem(code)
+		"buy_tool":
+			error = buy_tool(arg_str(args, 0), balance)
+		"sell_tool":
+			error = sell_tool(arg_int(args, 0), balance)
+		"create":
+			var chosen: String = arg_str(args, 0).strip_edges()
+			if created:
+				error = tr("O personagem já foi criado.")
+			elif not valid_name(chosen):
+				error = tr("Nome inválido: use de 2 a 14 letras ou números.")
+			else:
+				player_name = chosen
+				gender = "f" if arg_str(args, 1) == "f" else "m"
+				created = true
+				save_profile()
+		_:
+			error = tr("Operação desconhecida.")
+	if error == "" and op in ["toggle_equip", "sell"]:
+		save_profile()
+	return {"error": error, "message": message}

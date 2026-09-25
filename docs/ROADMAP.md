@@ -5,8 +5,9 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | # | Item | Precisa de servidor? | Entrega |
 |---|------|----------------------|---------|
 | 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 — **feito** |
-| 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo) |
-| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito** (offline); 0.11 (leilão) |
+| 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo); grupos online na 0.11 — **feito** |
+| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) |
+| — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito** |
 
 ## Decisões tomadas (25/09/2026)
@@ -21,6 +22,9 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 - **As dificuldades Normal, Difícil, Heroico e Pesadelo saem.** Entra o sistema de mapas do PoE 2: mapas são itens que caem nas instâncias, e o nível do mapa define a dificuldade e a recompensa.
 
 ## Dependência: servidor
+**Feito na 0.11** (detalhes em `ARCHITECTURE.md`, seção Online, e em `server/README.md`). Uma mudança em relação à sugestão abaixo: as regras da economia (compra, Ferreiro, moedas, cupons, drops, cartas) rodam no **servidor de jogo em Godot**, com o mesmo GDScript do jogo, e não em Go. Assim não existe uma segunda cópia das regras para manter igual; o Go ficou com contas, sessões, o perfil gravado no PostgreSQL (com versão contra gravações concorrentes), nomes únicos, auditoria, lista de servidores e presença. O leilão (0.12) entra no Go, com a custódia em transação no PostgreSQL.
+
+Texto original:
 O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o progresso fica salvo só no computador (`ARCHITECTURE.md`, seção Rede). Grupos de jogadores reais, o leilão e qualquer economia que valha dinheiro precisam de um backend com autoridade sobre dano, drops, rolagens e moedas. Como vamos monetizar e ter troca entre jogadores, isso é obrigatório antes do lançamento: com o save local, qualquer um edita o arquivo e cria Solares.
 
 - Até o backend, as versões 0.9 e 0.10 rodam offline e solo para desenvolver e testar. Na migração, drops, rolagens e craft passam para o servidor e o save local vira só cache.
@@ -225,7 +229,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - O Espelho Celeste só duplica equipamentos (não mapas). As outras seis funcionam nos mapas.
 - Estrela e Tormenta precisam de item Excelente ou melhor; Brasa só em Normal e Coroa só em Excelente, como no PoE.
 
-### 3.3 Leilão (precisa do servidor)
+### 3.3 Leilão (0.12, em cima do backend da 0.11)
 - [ ] Prédio do Leilão na cidade, com busca e filtros (tipo, qualidade, nível do item, fortalecimento, bônus, nível do mapa e faixa de preço).
 - [ ] Anunciar com preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h e compra imediata. Lances podem vir depois.
 - [ ] **Custódia no servidor**: ao anunciar, o item sai do inventário e fica com o servidor; na venda, as moedas vão para o vendedor pelo correio do jogo. Tudo em transação no PostgreSQL, para não haver duplicação.
@@ -276,11 +280,11 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 **Decidido provisoriamente:** o nome da marca continua *Frontier Tank: Nova Era* nos dois idiomas (é o que está no logotipo). Os nomes em inglês já evitam os do DDTank; em português a revisão de nomes do checklist abaixo continua pendente.
 - [ ] **Servidor**: uma região no começo (Estados Unidos, com latência razoável para Brasil e Europa) e mais regiões se o público crescer. O turno de 20 s tolera bem a latência.
 - [ ] **Pagamentos**: a Steam cuida de moedas locais e impostos na versão Steam. Na web, Stripe cobre o exterior e o Mercado Pago cobre PIX.
-- [ ] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas.
-- [ ] Chat moderado: filtro de palavrões e denúncia, já que o jogo terá chat público e jogadores de vários países.
+- [ ] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas. *(0.11: a API já apaga a conta e todos os dados — `DELETE /v1/me` com a senha; falta o botão no jogo, o consentimento e a política.)*
+- [ ] Chat moderado: filtro de palavrões e denúncia, já que o jogo terá chat público e jogadores de vários países. *(0.11: filtro de palavrões e limite de mensagens no servidor, e tudo fica no registro de auditoria; falta a denúncia.)*
 
 ### Checklist de preparação
-- [ ] **Backend** (ver "Dependência: servidor").
+- [x] **Backend** (ver "Dependência: servidor"): 0.11.
 - [ ] Export web de teste (sem threads, sem cabeçalhos COOP/COEP) e medir o FPS na batalha.
 - [ ] **Revisão de nomes e identidade antes de publicar**: armas, itens e textos com o mesmo nome do DDTank (Quebra Tijolos, Canhão Arco-Íris, Cesto de Frutas de Newton…) e qualquer menção a "DDTank" no material público. A mecânica pode ser parecida, mas nomes e marcas iguais são um risco numa loja comercial.
 - [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês.
@@ -295,6 +299,6 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo (**feito**) e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto (**feito** junto com a 0.10).
 2. **0.9 — Instâncias e mapas** (item 2, **feito**): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
-4. **Backend**: contas, grupos reais, partida com autoridade do servidor, e drops, rolagens e moedas no servidor.
-5. **0.11 — Leilão** (item 3.3) em cima do backend.
+4. **0.11 — Backend** (**feito**): contas, grupos reais, partida com autoridade do servidor (lockstep), e drops, rolagens e moedas no servidor. Docker com PostgreSQL, API e servidor de jogo.
+5. **0.12 — Leilão** (item 3.3) em cima do backend.
 6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam.

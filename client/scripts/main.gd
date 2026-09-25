@@ -2,6 +2,12 @@ extends Node2D
 
 # Screen flow, as in DDTank: Entrada (servidor) → Cidade → Salão de Jogos → Sala → Partida →
 # Resultado → Cartas → Sala.
+#
+# Online (backend 0.11) the title screen logs in on the API and connects to a game server;
+# from then on the profile is a mirror of the server's copy (every change goes through
+# `do_op`), the channel and rooms are real, and battles run in lockstep with the server.
+# "Modo offline" keeps everything local, as before. With --server this same project is
+# the game server instead (server/game/game_server.gd).
 
 var balance: Dictionary
 var profile: PlayerProfile
@@ -16,10 +22,23 @@ var run: InstanceRun
 var last_summary: Dictionary = {}
 var args: Dictionary = {}
 var capture_frames: int = -1
+var net: NetClient
+var auth: AuthClient
+var online: bool = false
+var offline_profile: PlayerProfile
+# The next phase of an online instance, kept while the transition screen counts down.
+var pending_start: Dictionary = {}
+var waiting_phase: bool = false
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	args = parse_args()
+	if args.has("server"):
+		# The online game server: no screens, only the network (server/game).
+		var server: GameServer = GameServer.new()
+		server.configure(args)
+		add_child(server)
+		return
 	# Language (roadmap 4.3): saved choice or the system language; --lang=en for captures.
 	Lang.setup(str(args.get("lang", "")))
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
@@ -27,6 +46,15 @@ func _ready() -> void:
 	if args.has("profile"):
 		profile.save_path = str(args.profile)
 	profile.load_profile()
+	offline_profile = profile
+	net = NetClient.new()
+	net.event.connect(on_net_event)
+	net.closed.connect(go_offline)
+	add_child(net)
+	auth = AuthClient.new()
+	if args.has("api"):
+		auth.base_url = str(args.api)
+	add_child(auth)
 	audio = GameAudio.new()
 	add_child(audio)
 	lobby = LobbyDirectory.new()
@@ -77,6 +105,8 @@ func parse_args() -> Dictionary:
 		if arg.begins_with("--") and arg.contains("="):
 			var parts: PackedStringArray = arg.substr(2).split("=", true, 1)
 			result[parts[0]] = parts[1]
+		elif arg.begins_with("--"):
+			result[arg.substr(2)] = "1"
 	return result
 
 func open_named(target: String) -> void:
@@ -176,7 +206,7 @@ func switch_to(node: Control, name_value: String) -> void:
 	ui.add_child(node)
 	# Title, city, hall and rooms share the lobby theme; battles pick their own.
 	if name_value == "battle":
-		audio.play_music("instance" if room.get("mode", "pvp") == "pve" else "battle")
+		audio.play_music("instance" if str(node.get("config").get("mode", room.get("mode", "pvp"))) == "pve" else "battle")
 	else:
 		audio.play_music("lobby")
 
@@ -184,11 +214,21 @@ func show_title() -> void:
 	switch_to(TitleScreen.new(), "title")
 
 func show_city() -> void:
+	if online:
+		leave_room_quietly()
+		net.send_kind("lobby", {"on": false})
 	switch_to(CityScreen.new(), "city")
 
 func show_hall() -> void:
-	room = {}
+	leave_room_quietly()
 	switch_to(HallScreen.new(), "hall")
+	if online:
+		net.send_kind("lobby", {"on": true})
+
+func leave_room_quietly() -> void:
+	if online and not room.is_empty():
+		net.send_kind("room_leave")
+	room = {}
 
 func show_room() -> void:
 	switch_to(RoomScreen.new(), "room")
@@ -205,9 +245,30 @@ func create_room(mode: String) -> void:
 		room.turn_seconds = int(balance.pve.get("turn_seconds", 20))
 		room.title = tr("Expedição: %s") % tr(str(InstanceRun.instance_def(room.instance).name))
 
+# Creates a room and opens it (online the server makes it).
+func open_room(mode: String) -> void:
+	if not online:
+		create_room(mode)
+		show_room()
+		return
+	var reply: Dictionary = await net.request("room_create", {"mode": mode})
+	if not reply.ok:
+		UiKit.notice(ui, tr("SALA"), server_text(reply.error))
+		return
+	room = reply.room
+	show_room()
+
 func join_room(source: Dictionary) -> bool:
 	if source.is_empty() or source.playing or source.members.size() >= int(source.capacity):
 		return false
+	if online:
+		var reply: Dictionary = await net.request("room_join", {"id": int(source.id)})
+		if not reply.ok:
+			UiKit.notice(ui, tr("SALA"), server_text(reply.error))
+			return false
+		room = reply.room
+		show_room()
+		return true
 	room = source.duplicate(true)
 	room.members.append(player_entry())
 	room.owner = 0
@@ -219,16 +280,59 @@ func join_room(source: Dictionary) -> bool:
 func invite_bot() -> bool:
 	if room.is_empty() or room.members.size() >= int(room.capacity):
 		return false
+	if online:
+		var reply: Dictionary = await net.request("room_bot")
+		return reply.ok
 	var names: Array = room.members.map(func(m: Dictionary) -> String: return m.name)
 	room.members.append(lobby.bot_near(profile.level(), names))
 	return true
 
 func kick(index: int) -> void:
+	if online:
+		net.send_kind("room_kick", {"index": index})
+		return
 	if index > 0 and index < room.members.size() and not room.members[index].get("human", false):
 		room.members.remove_at(index)
 
 func is_owner() -> bool:
-	return not room.is_empty() and bool(room.members[int(room.owner)].get("human", false))
+	if room.is_empty():
+		return false
+	if online:
+		return int(room.members[int(room.owner)].get("account", -1)) == my_account()
+	return bool(room.members[int(room.owner)].get("human", false))
+
+# The test coupons (TESTARTUDO...) work offline, and online only on test servers.
+func test_coupons() -> bool:
+	return not online or bool(net.welcome().get("test_coupons", false))
+
+func my_account() -> int:
+	return int(net.account.get("id", -1)) if online else -1
+
+# Whether a room member is this player (offline: the only human).
+func is_me(member: Dictionary) -> bool:
+	if online:
+		return int(member.get("account", -2)) == my_account()
+	return bool(member.get("human", false))
+
+# Changes the room settings (map, turn time, instance, map item).
+func room_set(changes: Dictionary) -> void:
+	if not online:
+		room.merge(changes, true)
+		return
+	var reply: Dictionary = await net.request("room_set", changes)
+	if reply.ok:
+		room = reply.room
+	elif is_instance_valid(screen):
+		UiKit.notice(ui, tr("SALA"), server_text(reply.error))
+
+func leave_room() -> void:
+	show_hall()
+
+# The map item in the room's map slot (online the server tells, it is the owner's).
+func room_map_item() -> Dictionary:
+	if online:
+		return room.get("map_item", {})
+	return profile.find_map(int(room.get("map_uid", -1)))
 
 func team_entries() -> Array:
 	var team: Array = []
@@ -270,42 +374,21 @@ func start_instance() -> void:
 	start_phase()
 
 func start_phase() -> void:
+	if online:
+		# The server starts the next phase; its message may already be here.
+		if pending_start.is_empty():
+			waiting_phase = true
+		else:
+			var message: Dictionary = pending_start
+			pending_start = {}
+			start_online_battle(message)
+		return
 	var battle: BattleScreen = BattleScreen.new()
 	battle.config = run.phase_config(run.members)
 	switch_to(battle, "battle")
 
 func battle_finished(game: LocalMatch) -> Dictionary:
-	var me: TankFighter = game.local()
-	var won: bool = game.winner_team == me.team
-	var rules: Dictionary = balance.rewards
-	var kill_exp: int = int(me.stats.kills) * int(rules.exp_per_kill)
-	var hurt_exp: int = roundi(float(me.stats.damage) * float(rules.exp_per_damage))
-	var result_exp: int = int(rules.win_exp if won else rules.loss_exp)
-	var bonus_exp: int = 0
-	var loot: Dictionary = {}
-	if game.pve and run != null:
-		# Instance end (boss down or party wiped): XP scales with the map level and
-		# party, the chest is opened and the reward cards rolled.
-		if won:
-			bonus_exp = roundi(float(balance.pve.exp) * run.xp_scale())
-		kill_exp = roundi(kill_exp * run.xp_scale())
-		hurt_exp = roundi(hurt_exp * run.xp_scale())
-		loot = run.finish(won)
-	var merit: int = int(rules.merit_win if won else rules.merit_loss) + int(me.stats.kills) * int(rules.merit_per_kill)
-	var level_before: int = profile.level()
-	profile.tools = ["", "", ""]
-	for i in range(mini(3, me.tools.size())):
-		profile.tools[i] = me.tools[i]
-	profile.record_match(won, kill_exp + hurt_exp + result_exp + bonus_exp, merit)
-	var roster: Array = []
-	for fighter in game.fighters:
-		if fighter.team == me.team:
-			var fighter_exp: int = int(rules.win_exp if won else rules.loss_exp) + roundi(float(fighter.stats.damage) * float(rules.exp_per_damage)) + int(fighter.stats.kills) * int(rules.exp_per_kill)
-			roster.append({"name": fighter.display_name, "exp": fighter_exp, "merit": int(rules.merit_win if won else rules.merit_loss) + int(fighter.stats.kills) * int(rules.merit_per_kill)})
-	last_summary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
-	if game.pve and run != null:
-		last_summary.loot = loot
-		last_summary.instance = {"name": tr(str(run.instance.name)), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
+	last_summary = Rewards.settle(game, game.local(), balance, profile, run)
 	return last_summary
 
 func phase_cleared(game: LocalMatch) -> Dictionary:
@@ -323,6 +406,12 @@ func return_to_room() -> void:
 		show_hall()
 		return
 	run = null
+	if online:
+		if room.has("members"):
+			show_room()
+		else:
+			show_hall()
+		return
 	for i in range(room.members.size()):
 		if room.members[i].get("human", false):
 			room.members[i] = player_entry()
@@ -384,7 +473,146 @@ func shortcut(id: String) -> void:
 
 func quit_game() -> void:
 	audio.stop_all()
+	net.disconnect_now()
 	get_tree().quit()
+
+# ---------- profile changes ----------
+
+# Every change the player makes to the profile: offline it happens here, online the
+# server applies it and sends the new profile back. {"error": "", "message": ""}
+func do_op(op: String, op_args: Array = []) -> Dictionary:
+	if not online:
+		return profile.apply_op(op, op_args, balance)
+	var reply: Dictionary = await net.request("op", {"op": op, "args": op_args})
+	if reply.get("profile") is Dictionary:
+		apply_profile(reply.profile)
+	if not reply.ok:
+		return {"error": server_text(reply.get("error", "")), "message": ""}
+	return {"error": "", "message": tr(str(reply.get("message", "")))}
+
+# Texts from the server are Portuguese keys (or error codes): shown in the game language.
+func server_text(value: Variant) -> String:
+	var text: String = str(value)
+	if text in ["timeout", "offline"]:
+		return AuthClient.message_for(text)
+	return tr(text)
+
+func apply_profile(data: Dictionary) -> void:
+	profile.load_data(data)
+	if lobby is OnlineLobby:
+		lobby.my_name = profile.player_name
+
+# ---------- online (backend 0.11) ----------
+
+func go_online(welcome: Dictionary) -> void:
+	online = true
+	profile = PlayerProfile.new()
+	profile.remote = true
+	profile.load_data(welcome.profile)
+	lobby.queue_free()
+	var channel: OnlineLobby = OnlineLobby.new()
+	channel.net = net
+	channel.my_name = profile.player_name
+	lobby = channel
+	add_child(lobby)
+	for entry: Variant in welcome.get("chat", []):
+		if entry is Dictionary:
+			channel.add(entry)
+	if welcome.get("speaker") is Dictionary and not welcome.speaker.is_empty():
+		channel.speaker = OnlineLobby.text_of(welcome.speaker)
+	channel.post("Sistema", tr("Bem-vindo ao servidor %s!") % str(welcome.server.name), "system")
+	room = welcome.get("room", {})
+	pending_start = {}
+	waiting_phase = false
+	# Back in a room that is waiting: open it (a battle under way reopens by itself).
+	if not room.is_empty() and str(room.get("state", "")) == "waiting":
+		show_room()
+	else:
+		switch_to(CityScreen.new(), "city")
+	net.release_held()
+
+func go_offline(reason: String = "") -> void:
+	var was_online: bool = online
+	online = false
+	net.disconnect_now()
+	profile = offline_profile
+	room = {}
+	run = null
+	pending_start = {}
+	waiting_phase = false
+	if was_online:
+		lobby.queue_free()
+		lobby = LobbyDirectory.new()
+		lobby.player_level = profile.level()
+		add_child(lobby)
+	show_title()
+	if reason != "":
+		UiKit.notice(ui, tr("CONEXÃO"), AuthClient.message_for(reason))
+
+func on_net_event(message: Dictionary) -> void:
+	match str(message.get("t", "")):
+		"chat", "lobby":
+			if lobby is OnlineLobby:
+				lobby.receive(message)
+		"profile":
+			apply_profile(message.profile)
+			if message.has("notice"):
+				UiKit.notice(ui, tr("AVISO"), tr(str(message.notice)))
+			if screen_name == "city" and not profile.created and is_instance_valid(screen):
+				show_city()
+		"room":
+			room = message.room
+			if screen_name == "room" and is_instance_valid(screen):
+				screen.call_deferred("rebuild")
+		"room_left":
+			room = {}
+			if screen_name == "room":
+				switch_to(HallScreen.new(), "hall")
+				net.send_kind("lobby", {"on": true})
+			if str(message.get("reason", "")) == "kicked":
+				UiKit.notice(ui, tr("SALA"), tr("Você foi removido da sala."))
+		"match_start":
+			on_match_start(message)
+		"ticks", "phase_end", "match_end", "cards":
+			if message.get("profile") is Dictionary:
+				apply_profile(message.profile)
+			if screen_name == "battle" and is_instance_valid(screen):
+				screen.on_net(message)
+
+func on_match_start(message: Dictionary) -> void:
+	var busy: bool = screen_name == "battle" and is_instance_valid(screen) and screen.online and screen.in_phase_break()
+	if busy and not waiting_phase and not message.has("history"):
+		pending_start = message
+		return
+	waiting_phase = false
+	pending_start = {}
+	start_online_battle(message)
+
+func start_online_battle(message: Dictionary) -> void:
+	var config: Dictionary = localize(message.config)
+	var battle: BattleScreen = BattleScreen.new()
+	battle.config = config
+	battle.online = true
+	battle.match_id = int(message.get("m", 0))
+	battle.resume = message
+	switch_to(battle, "battle")
+
+# Names in a battle sent by the server are Portuguese keys: show them in the game language.
+func localize(config: Dictionary) -> Dictionary:
+	var copy: Dictionary = config.duplicate(true)
+	var phase: Dictionary = copy.get("phase", {})
+	for key: String in ["name", "instance"]:
+		if phase.has(key):
+			phase[key] = tr(str(phase[key]))
+	var groups: Array = copy.get("teams", []).duplicate()
+	groups.append_array(phase.get("waves", []))
+	for group: Variant in groups:
+		for entry: Variant in group:
+			if entry is Dictionary and entry.has("enemy"):
+				entry.name = tr(str(entry.name))
+				if entry.get("summon") is Dictionary:
+					entry.summon.name = tr(str(entry.summon.name))
+	return copy
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	# M switches the music on any screen (text fields keep their own keys).

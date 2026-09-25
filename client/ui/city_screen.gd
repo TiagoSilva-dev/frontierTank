@@ -178,8 +178,7 @@ func enter(id: String) -> void:
 		"hall":
 			app.show_hall()
 		"instance":
-			app.create_room("pve")
-			app.show_room()
+			app.open_room("pve")
 		"smith":
 			var smith: SmithScreen = SmithScreen.new()
 			smith.app = app
@@ -314,8 +313,8 @@ func confirm_creation() -> void:
 	if chosen.length() < 3:
 		UiKit.notice(self, tr("NOME"), tr("O nome precisa ter pelo menos 3 letras."))
 		return
-	app.profile.player_name = chosen
-	app.profile.gender = chosen_gender
-	app.profile.created = true
-	app.profile.save_profile()
+	var outcome: Dictionary = await app.do_op("create", [chosen, chosen_gender])
+	if outcome.error != "":
+		UiKit.notice(self, tr("NOME"), outcome.error)
+		return
 	app.show_city()

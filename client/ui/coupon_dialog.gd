@@ -17,13 +17,14 @@ static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Con
 	field.add_theme_font_override("font", UiKit.font())
 	field.add_theme_font_size_override("font_size", UiKit.fs(22))
 	root.add_child(field)
-	var result: Label = UiKit.label(root, Lang.t("Para testes: TESTARTUDO libera todas as armas e cosméticos; AURAS mostra as quatro auras."), Rect2(rect.position.x + 40, rect.position.y + 142, 480, 104), 14, Color("6a4a2a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var hint: String = Lang.t("Para testes: TESTARTUDO libera todas as armas e cosméticos; AURAS mostra as quatro auras.") if app.test_coupons() else ""
+	var result: Label = UiKit.label(root, hint, Rect2(rect.position.x + 40, rect.position.y + 142, 480, 104), 14, Color("6a4a2a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	result.name = "CouponResult"
 	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var redeem: Callable = func() -> void:
-		var message: String = app.profile.redeem(field.text)
-		var ok: bool = message != Lang.t("Cupom inválido.") and message != Lang.t("Este cupom já foi usado nesta conta.")
-		result.text = (Lang.t("Cupom resgatado! ") if ok else "") + message
+		var outcome: Dictionary = await app.do_op("redeem", [field.text])
+		var ok: bool = outcome.error == ""
+		result.text = Lang.t("Cupom resgatado! ") + outcome.message if ok else outcome.error
 		result.add_theme_color_override("font_color", Color("2f7a1f") if ok else Color("b8321c"))
 		app.audio.play("ui_confirm" if ok else "ui_error")
 		if ok and on_done.is_valid():

@@ -159,10 +159,10 @@
     {"id": "cabelo_preto", "slot": "cabelo", "gender": "u", "name": "Cabelo Preto", "dye": "3a3448", "price": 150, "attrs": {"sorte": 5}}
   ],
   "coupons": [
-    {"code": "TESTARTUDO", "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.", "all": true, "coins": 99999, "stones": 200, "crystals": 50},
-    {"code": "AURAS", "desc": "Quatro Quebra Tijolos Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras.", "weapons": [["quebra_tijolos", "verdadeira", 3], ["quebra_tijolos", "verdadeira", 7], ["quebra_tijolos", "verdadeira", 10], ["quebra_tijolos", "verdadeira", 12]]},
-    {"code": "PEDRAS", "desc": "50 pedras de cada nível.", "stones": 50},
-    {"code": "MOEDAS", "desc": "30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste.", "currencies": {"brasa": 30, "coroa": 20, "estrela": 10, "tormenta": 10, "solar": 5, "eclipse": 10, "espelho": 1}, "repeat": true},
-    {"code": "MAPAS", "desc": "Mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas.", "maps": [1, 5, 10, 16], "repeat": true}
+    {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.", "all": true, "coins": 99999, "stones": 200, "crystals": 50},
+    {"code": "AURAS", "test": true, "desc": "Quatro Quebra Tijolos Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras.", "weapons": [["quebra_tijolos", "verdadeira", 3], ["quebra_tijolos", "verdadeira", 7], ["quebra_tijolos", "verdadeira", 10], ["quebra_tijolos", "verdadeira", 12]]},
+    {"code": "PEDRAS", "test": true, "desc": "50 pedras de cada nível.", "stones": 50},
+    {"code": "MOEDAS", "test": true, "desc": "30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste.", "currencies": {"brasa": 30, "coroa": 20, "estrela": 10, "tormenta": 10, "solar": 5, "eclipse": 10, "espelho": 1}, "repeat": true},
+    {"code": "MAPAS", "test": true, "desc": "Mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas.", "maps": [1, 5, 10, 16], "repeat": true}
   ]
 }

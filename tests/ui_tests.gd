@@ -35,7 +35,7 @@ func run_tests() -> void:
 		weapon_sounds = weapon_sounds and app.audio.has_sound("fire_" + str(weapon.id)) and app.audio.has_sound("impact_" + str(weapon.id))
 	check(weapon_sounds, "every weapon has its own firing and impact sound")
 	check(app.audio.stream(GameAudio.MUSIC_DIR + "battle.ogg") != null and app.audio.stream(GameAudio.MUSIC_DIR + "instance.ogg") != null, "battle and instance music exist")
-	title.pick(2)
+	title.pick(title.servers.size() - 1)
 	title.enter()
 	await process_frame
 	check(app.screen_name == "city" and app.screen is CityScreen, "ENTRAR opens the city")

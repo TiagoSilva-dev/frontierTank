@@ -5,6 +5,8 @@ extends Control
 # (0.9) it also shows the run (map level, phases, maps found, the boss chest) and the
 # cards come from InstanceRun: more picks from the boss chest, instance weapons with a
 # quality roll and map cards.
+# Online (backend 0.11) the server deals the 8 cards and keeps them hidden: a pick asks
+# the server, which grants the card and says what it was; the others are shown after.
 
 var app: Node
 var game: LocalMatch
@@ -212,8 +214,13 @@ func show_cards() -> void:
 	hint_label = UiKit.label(stage, hint, Rect2(240, 92, 800, 26), 15, Color("fff0d0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	# PvP cards (0.10) include a little currency: Brasa and Coroa.
 	var pool: Array = app.balance.rewards.cards + app.balance.rewards.get("pvp_cards", [])
+	var dice: RandomNumberGenerator = RandomNumberGenerator.new()
+	dice.randomize()
 	for i in range(8):
-		rewards.append(loot.cards[i] if not loot.is_empty() else roll(pool))
+		if app.online:
+			rewards.append({})
+		else:
+			rewards.append(loot.cards[i] if not loot.is_empty() else Rewards.roll(pool, dice))
 		revealed.append(false)
 		var card: Control = Control.new()
 		card.name = "Card_%d" % i
@@ -234,29 +241,41 @@ func show_cards() -> void:
 	continue_button.disabled = true
 	card_time = 10.0
 
-func roll(pool: Array) -> Dictionary:
-	var total: float = 0.0
-	for entry: Dictionary in pool:
-		total += float(entry.weight)
-	var ticket: float = randf() * total
-	for entry: Dictionary in pool:
-		ticket -= float(entry.weight)
-		if ticket <= 0:
-			return entry
-	return pool[0]
-
 func pick(index: int) -> void:
 	if picks_left <= 0 or revealed[index]:
 		return
 	picks_left -= 1
-	grant(rewards[index])
+	if app.online:
+		revealed[index] = true
+		var reply: Dictionary = await app.net.request("card", {"i": index})
+		if reply.get("profile") is Dictionary:
+			app.apply_profile(reply.profile)
+		if not reply.ok or not is_instance_valid(stage):
+			return
+		rewards[index] = reply.reward
+		revealed[index] = false
+		flip(index, true)
+		app.audio.play("ui_card")
+		return
+	Rewards.grant(app.profile, rewards[index])
 	flip(index, true)
 	app.audio.play("ui_card")
 	if picks_left == 0:
 		card_time = -1
 		if is_instance_valid(timer_label):
 			timer_label.text = ""
-		get_tree().create_timer(0.9).timeout.connect(reveal_rest)
+		if not app.online:
+			get_tree().create_timer(0.9).timeout.connect(reveal_rest)
+
+# Online: after the last pick the server shows every card.
+func reveal_online(message: Dictionary) -> void:
+	var dealt: Array = message.get("cards", [])
+	for i in range(mini(dealt.size(), rewards.size())):
+		if rewards[i].is_empty():
+			rewards[i] = dealt[i]
+	if cards.is_empty():
+		return
+	get_tree().create_timer(0.9).timeout.connect(reveal_rest)
 
 func reveal_rest() -> void:
 	if not is_instance_valid(stage):
@@ -309,20 +328,4 @@ func show_front(index: int, mine: bool) -> void:
 	get_tree().create_timer(0.6).timeout.connect(effect.queue_free)
 
 func grant(reward: Dictionary) -> void:
-	var profile: PlayerProfile = app.profile
-	if reward.has("coins"):
-		profile.coins += int(reward.coins)
-	elif reward.has("item"):
-		profile.add_item(str(reward.item))
-	elif reward.has("tool"):
-		if not profile.add_tool(str(reward.tool)):
-			profile.coins += 30
-	elif reward.has("currency"):
-		profile.add_item(str(reward.currency), int(reward.get("amount", 1)))
-	elif reward.has("weapon"):
-		profile.add_instance(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
-	elif reward.has("gear"):
-		profile.add_instance(str(reward.gear), str(reward.get("quality", "normal")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
-	elif reward.has("map"):
-		profile.add_map(reward.map)
-	profile.save_profile()
+	Rewards.grant(app.profile, reward)

@@ -1,18 +1,27 @@
-# Frontier Tank: Nova Era — 0.10 (atributos aleatórios, moedas, craft e inglês)
+# Frontier Tank: Nova Era — 0.11 (online: contas, servidor de jogo e partidas em rede)
 
 Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou importe **project.godot** no Godot 4.7 e pressione F5. Em outro computador, configure `GODOT_BIN` com o caminho do executável Godot.
 
-Réplica em pixel art do fluxo clássico do DDTank, contra bots (modo offline):
+Réplica em pixel art do fluxo clássico do DDTank. Joga **online** (conta, servidor de jogo, salas, chat e batalhas com outros jogadores) ou no **modo offline** contra bots.
+
+## Online (0.11)
+- **Subir os servidores**: `cd server && cp .env.example .env && docker compose up --build -d` (PostgreSQL, API em Go e o servidor de jogo, que é este projeto rodando sem tela). Passo a passo, variáveis e produção em `server/README.md`.
+- **Entrar**: a tela de entrada lista os servidores no ar; crie a conta (CRIAR CONTA) ou entre (ENTRAR). "Modo offline" continua lá.
+- **Tudo decidido no servidor**: compras, Ferreiro, moedas, cupons, drops, EXP e cartas passam pelas regras do jogo no servidor; o perfil fica no PostgreSQL e cada operação vai para um registro de auditoria.
+- **Batalhas em lockstep**: o servidor e cada jogador rodam a mesma partida a partir da mesma semente e só os comandos cruzam a rede. Mira e força saem exatamente como o jogador soltou.
+- **Salão e salas de verdade**: jogadores online, chat com filtro, salas que outros jogadores veem e entram. **Início** procura uma sala rival do mesmo tamanho; sem ninguém, rivais de IA completam depois de alguns segundos.
+- **Instância em grupo**: até 4 jogadores, com a escala por grupo valendo e loot pessoal (cada um com seus drops, baú e cartas).
+- **Queda de conexão**: a IA joga por quem caiu e, ao entrar de novo, a batalha é reaberta onde estava; as recompensas não se perdem.
 
 | Tela | O que tem |
 |---|---|
-| **Entrada** (`docs/screens/title.png`, `title_en.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, escolha de servidor (simulada), **ENTRAR** (ou Enter) e o idioma do jogo (**Português** ou **English**) no canto. |
+| **Entrada** (`docs/screens/title.png`, `title_en.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, lista dos servidores online e o **Modo offline**, conta e senha (**CRIAR CONTA** / **ENTRAR**, ou Enter) e o idioma do jogo (**Português** ou **English**) no canto. |
 | **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro** e **Centro Comercial** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
 | **Mochila** (`bag.png`) | Informações Pessoais como no DDTank: slots Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta do personagem, que veste tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros. Ataque, Agilidade, Defesa, Sorte, Dano, Proteção, Vida e Força física. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**; equipar, remover e vender. |
 | **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Composição** com Cristal Dourado, **Fusão** de 4 pedras iguais, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
 | **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); roupas, chapéus, óculos, asas, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
-| **Salão de Jogos** (`hall.png`) | Lista de salas, filtro, informações do usuário com o personagem equipado, lista de jogadores, **Equipe**, **Buscar** e **Jogar**. |
-| **Sala** (`room.png`, `pve.png`) | 4 vagas com cada jogador vestido (roupa, chapéu, asas e auras), VS, modos, mapa, tempo do turno, ferramentas Z/X/C, Convide, Local e Início. Na Instância, **Local** escolhe uma das 4 instâncias e o **espaço de mapa** recebe um mapa da mochila (nível, qualidade e atributos) ou fica na entrada livre. |
+| **Salão de Jogos** (`hall.png`, online: `hall_online.png`) | Lista de salas, filtro, informações do usuário com o personagem equipado, lista de jogadores, **Equipe**, **Buscar** e **Jogar**. |
+| **Sala** (`room.png`, `pve.png`, online: `room_online.png`) | 4 vagas com cada jogador vestido (roupa, chapéu, asas e auras), VS, modos, mapa, tempo do turno, ferramentas Z/X/C, Convide, Local e Início. Na Instância, **Local** escolhe uma das 4 instâncias e o **espaço de mapa** recebe um mapa da mochila (nível, qualidade e atributos) ou fica na entrada livre. |
 | **Partida** (`battle.png`, `pve_battle.png`) | Personagens deitados, com a arma nas costas, asas, chapéu e óculos; como no DDTank, as auras não aparecem em batalha. Habilidades **1–9** iguais às do DDTank: +2, x3, +1, POW 50%, 40%, 30%, 20%, 10% e POW máx (enche a barra de POW). Cada arma tem projétil, rastro e especial (POW) próprios. Tudo da 0.4 continua: Delay, vento, Z/X/C, POW, avião, Confiar, terreno destrutível. Slot **V** para o item auxiliar. |
 | **Som** | Música épica em loop para a entrada/cidade/salas, outra para as batalhas e outra para a Instância. Cada arma tem som de disparo e de impacto próprios; explosões em três tamanhos, POW, habilidades, ferramentas, contagem final do turno, "sua vez", vitória e derrota. **M** liga/desliga a música em qualquer tela; a pausa da partida liga/desliga música e efeitos. |
 | **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |

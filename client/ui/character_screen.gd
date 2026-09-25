@@ -337,21 +337,18 @@ func equip_selected() -> void:
 	if not selected.begins_with("uid:"):
 		return
 	var uid: int = selected.substr(4).to_int()
-	var inst: Dictionary = app.profile.find_instance(uid)
-	var message: String = app.profile.unequip(Armory.slot_of(str(inst.id))) if app.profile.is_equipped(uid) else app.profile.equip(uid)
+	var message: String = (await app.do_op("toggle_equip", [uid])).error
 	if message != "":
 		UiKit.notice(self, tr("MOCHILA"), message)
 		return
-	app.profile.save_profile()
 	app.audio.play("ui_click")
 	build()
 
 func sell_selected() -> void:
 	if not selected.begins_with("uid:"):
 		return
-	var value: int = app.profile.sell(selected.substr(4).to_int())
-	if value > 0:
-		app.profile.save_profile()
+	var outcome: Dictionary = await app.do_op("sell", [selected.substr(4).to_int()])
+	if outcome.error == "":
 		app.audio.play("ui_coin")
 		selected = ""
 		build()

@@ -61,6 +61,8 @@ func _ready() -> void:
 	bar.position = Vector2(714, 656)
 	add_child(bar)
 	app.lobby.rooms_changed.connect(build_rooms)
+	# Online the players list comes with the rooms from the server.
+	app.lobby.rooms_changed.connect(fill_players)
 	build_rooms()
 
 func visible_rooms() -> Array[Dictionary]:
@@ -98,7 +100,7 @@ func room_card(room: Dictionary, rect: Rect2) -> void:
 	var busy: bool = room.playing or full
 	var card: Button = UiKit.button(grid, "", rect, func() -> void: try_join(room), "card_busy" if busy else "card")
 	card.name = "Room_%d" % int(room.id)
-	card.tooltip_text = tr("Sala %d — %s") % [room.id, tr(str(room.title))]
+	card.tooltip_text = tr("Sala %d — %s") % [int(room.id), tr(str(room.title))]
 	UiKit.label(card, tr("Desafio"), Rect2(12, 2, 150, 24), 17, Color("ffd04a"), Color("6a2a08"))
 	UiKit.label(card, tr("das Lutas"), Rect2(12, 20, 150, 24), 17, Color("ffd04a"), Color("6a2a08"))
 	UiKit.label(card, "#%d" % int(room.id), Rect2(128, 6, 80, 20), 13, Color("7a4a20"))
@@ -164,6 +166,11 @@ func build_player_list() -> void:
 	player_rows.custom_minimum_size = Vector2(324, 0)
 	player_rows.add_theme_constant_override("separation", 2)
 	scroll.add_child(player_rows)
+	fill_players()
+
+func fill_players() -> void:
+	for child in player_rows.get_children():
+		child.queue_free()
 	var everyone: Array[Dictionary] = app.lobby.bots.duplicate()
 	everyone.append({"name": app.profile.player_name, "level": app.profile.level(), "gender": app.profile.gender, "me": true})
 	everyone.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
@@ -194,8 +201,7 @@ func build_actions() -> void:
 
 func create_team() -> void:
 	app.audio.play("ui_click")
-	app.create_room("pvp")
-	app.show_room()
+	app.open_room("pvp")
 
 func quick_play() -> void:
 	var room: Dictionary = app.lobby.open_room()

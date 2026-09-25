@@ -1,8 +1,15 @@
 class_name LocalMatch
 extends Node2D
 
-# Local authority for one battle. Turn order follows DDTank's Delay rule: every
-# action adds delay and the living fighter with the lowest delay plays next.
+# One battle. Turn order follows DDTank's Delay rule: every action adds delay and the
+# living fighter with the lowest delay plays next.
+#
+# Offline this node is the authority and steps itself. Online (backend 0.11) the battle
+# runs in lockstep: the game server and every player run this same simulation from the
+# same config and seed. The server stamps each player's intent with a tick and sends it
+# to everyone; each copy applies the intents of a tick (apply_input) and then steps it
+# (step), so every copy stays identical and only intents cross the network. The server's
+# copy decides rewards; `checksum` lets the players notice if theirs drifted.
 
 signal changed
 signal finished(winner_team: int)
@@ -78,6 +85,18 @@ var ai_plan: Vector3 = Vector3(45, 60, INF)
 var ai_planned: bool = false
 var winner_team: int = -2
 var last_impact: Vector2 = Vector2.ZERO
+# Online: stepped from outside (LockstepDriver or the server's MatchHost), no keyboard
+# polling, and the local player's intents go to the server through `remote`.
+var lockstep: bool = false
+var remote: Callable = Callable()
+# The first human fighter: the same on every copy (local_id is not), so rules that
+# follow "the player" (turns survived) use it.
+var anchor_id: int = 0
+# Online: the force bar the local player sees while charging, measured locally so the
+# shot uses exactly the force they released at (the simulation runs a little behind).
+var predicted_power: float = -1.0
+var predicted_pass: int = 0
+const ACTING: Array[State] = [State.TURN_STARTED, State.PLAYER_MOVING, State.PLAYER_AIMING]
 
 func _init() -> void:
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
@@ -94,16 +113,20 @@ func start(config: Dictionary) -> void:
 		terrain.queue_free()
 	mode = str(config.get("mode", "pvp"))
 	pve = mode == "pve"
+	# The seed comes first: the random map is part of the seeded battle (online every
+	# copy must draw the same map).
+	if config.has("seed"):
+		rng.seed = int(config.seed)
 	map = find_map(str(config.get("map", "")))
 	turn_seconds = float(config.get("turn_seconds", balance.turn_seconds))
 	phase = config.get("phase", {})
 	waves = phase.get("waves", []).duplicate(true)
 	threats = config.get("threats", {})
 	players = maxi(1, int(config.get("players", 1)))
+	lockstep = bool(config.get("lockstep", false))
+	predicted_power = -1.0
 	survived = 0
 	hitstop = 0.0
-	if config.has("seed"):
-		rng.seed = int(config.seed)
 	terrain = DestructibleTerrain.new()
 	add_child(terrain)
 	terrain.generate(map, rng.randi() % 100000)
@@ -114,11 +137,13 @@ func start(config: Dictionary) -> void:
 			var entry: Dictionary = entries[i].duplicate()
 			entry.team = team_index
 			spawn_fighter(entry, i, entries.size())
-	local_id = 0
+	anchor_id = 0
 	for fighter in fighters:
 		if fighter.human:
-			local_id = fighter.player_id
+			anchor_id = fighter.player_id
 			break
+	# Online each player's copy knows which fighter is theirs.
+	local_id = clampi(int(config.get("local", anchor_id)), 0, fighters.size() - 1)
 	for fighter in fighters:
 		# Agility decides who opens the battle; a small jitter breaks ties.
 		fighter.delay = rng.randf_range(0.0, 30.0) - fighter.agility * 0.1
@@ -239,10 +264,17 @@ func turn_order() -> Array[TankFighter]:
 	return order
 
 func is_ai_controlled(fighter: TankFighter) -> bool:
-	return not fighter.human or auto_play
+	return not fighter.human or fighter.auto_play
 
 func can_act() -> bool:
-	return running and not paused and state in [State.TURN_STARTED, State.PLAYER_MOVING, State.PLAYER_AIMING] and not is_ai_controlled(active())
+	return running and not paused and state in ACTING and active_id == local_id and not is_ai_controlled(active())
+
+func send_intent(action: String, data: Dictionary = {}) -> bool:
+	# Online: the intent goes to the server, which sends it back to everyone with a tick.
+	if not remote.is_valid():
+		return false
+	remote.call(action, data)
+	return true
 
 func begin_turn() -> void:
 	if not running:
@@ -288,7 +320,7 @@ func begin_turn() -> void:
 		changed.emit()
 		return
 	state = State.PLAYER_AIMING
-	if fighter.player_id == local_id and not auto_play:
+	if fighter.player_id == local_id and not fighter.auto_play:
 		status_message = tr("Sua vez! Segure ESPAÇO para definir a força")
 	else:
 		status_message = tr("Vez de %s") % fighter.display_name
@@ -329,11 +361,27 @@ func finish_turn() -> void:
 func charge() -> void:
 	if not can_act() or not active().settled:
 		return
+	if send_intent("charge"):
+		predicted_power = 0.0
+		predicted_pass = 0
+		return
+	begin_charge()
+
+func begin_charge() -> void:
 	state = State.PLAYER_CHARGING
 	power = 0
 	charge_pass = 0
 	move_input = 0
 	status_message = tr("Solte ESPAÇO para disparar")
+
+func release() -> void:
+	# The player lets go of SPACE. Online the intent carries the force they saw.
+	if remote.is_valid():
+		if active_id == local_id and predicted_power >= 0.0:
+			send_intent("release", {"power": snappedf(predicted_power, 0.01)})
+			predicted_power = -1.0
+		return
+	release_shot()
 
 func release_shot(from_ai: bool = false) -> void:
 	if not running or paused or state != State.PLAYER_CHARGING:
@@ -459,14 +507,19 @@ func make_projectile(fighter: TankFighter, from: Vector2, velocity: Vector2, dam
 	shot_fired.emit(projectile)
 	return projectile
 
+func shown_power() -> float:
+	return predicted_power if predicted_power >= 0.0 else power
+
 func flip_aim() -> void:
-	if can_act():
+	if can_act() and not send_intent("flip"):
 		active().facing *= -1
 		active().update_pose()
 
 func use_item(id: String) -> bool:
 	if not can_act():
 		return false
+	if send_intent("item", {"id": id}):
+		return true
 	return apply_item(active(), id)
 
 func apply_item(fighter: TankFighter, id: String) -> bool:
@@ -503,7 +556,11 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 func use_tool(slot: int) -> bool:
 	if not can_act():
 		return false
-	var fighter: TankFighter = active()
+	if send_intent("tool", {"slot": slot}):
+		return true
+	return apply_tool(active(), slot)
+
+func apply_tool(fighter: TankFighter, slot: int) -> bool:
 	if slot < 0 or slot >= fighter.tools.size() or fighter.tools[slot] == "":
 		return false
 	var tool: Dictionary = tool_def(fighter.tools[slot])
@@ -546,6 +603,8 @@ func use_aux() -> bool:
 	# Item auxiliar (Dom de Anjo, escudos): limited uses per battle, key V.
 	if not can_act():
 		return false
+	if send_intent("aux"):
+		return true
 	return apply_aux(active())
 
 func apply_aux(fighter: TankFighter) -> bool:
@@ -572,7 +631,11 @@ func apply_aux(fighter: TankFighter) -> bool:
 func toggle_fly() -> bool:
 	if not can_act():
 		return false
-	var fighter: TankFighter = active()
+	if send_intent("fly"):
+		return true
+	return apply_fly(active())
+
+func apply_fly(fighter: TankFighter) -> bool:
 	var cost: float = float(balance.fly.energy)
 	if threats.get("no_plane", false) and not turn_fly:
 		return false
@@ -591,7 +654,11 @@ func toggle_fly() -> bool:
 func activate_pow() -> bool:
 	if not can_act():
 		return false
-	var fighter: TankFighter = active()
+	if send_intent("pow"):
+		return true
+	return apply_pow(active())
+
+func apply_pow(fighter: TankFighter) -> bool:
 	if turn_pow or turn_fly or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items:
 		return false
 	arm_pow(fighter)
@@ -604,8 +671,11 @@ func arm_pow(fighter: TankFighter) -> void:
 	skill_used.emit(fighter, {"id": "pow", "name": tr(str(fighter.weapon.get("pow", {}).get("name", "POW"))), "icon": "pow", "kind": "pow"})
 
 func pass_turn() -> void:
-	if not can_act():
+	if not can_act() or send_intent("pass"):
 		return
+	apply_pass()
+
+func apply_pass() -> void:
 	passed = true
 	status_message = tr("%s passou a vez") % active().display_name
 	state = State.RESOLVING_DAMAGE
@@ -613,13 +683,91 @@ func pass_turn() -> void:
 	changed.emit()
 
 func set_auto_play(value: bool) -> void:
-	auto_play = value
-	if running and active_id == local_id and state in [State.PLAYER_AIMING, State.PLAYER_MOVING, State.TURN_STARTED]:
+	if send_intent("auto", {"on": value}):
+		return
+	apply_auto(local_id, value)
+
+func apply_auto(id: int, value: bool) -> void:
+	# "Confiar": the AI plays for this fighter (also when a player leaves or drops).
+	var fighter: TankFighter = fighters[id]
+	fighter.auto_play = value
+	if id == local_id:
+		auto_play = value
+	if running and active_id == id and state in ACTING:
 		if value:
-			plan_ai(active())
-		else:
+			plan_ai(fighter)
+		elif id == local_id:
 			status_message = tr("Sua vez! Segure ESPAÇO para definir a força")
 	changed.emit()
+
+# ---------- online: intents stamped by the server ----------
+
+static func num(data: Dictionary, key: String) -> float:
+	var value: Variant = data.get(key, 0.0)
+	return float(value) if value is float or value is int else 0.0
+
+# Applies one intent on every copy of the battle, at the tick the server gave it.
+# The rules are the same checks the local buttons go through.
+func apply_input(id: int, action: String, data: Dictionary) -> void:
+	if not running or id < 0 or id >= fighters.size():
+		return
+	var fighter: TankFighter = fighters[id]
+	match action:
+		"auto":
+			if not fighter.left:
+				apply_auto(id, bool(data.get("on", false)))
+			return
+		"leave":
+			# The player left or dropped: the AI plays for them until the end.
+			fighter.left = true
+			apply_auto(id, true)
+			return
+	if id != active_id or is_ai_controlled(fighter) or paused:
+		return
+	if action == "release":
+		if state == State.PLAYER_CHARGING:
+			power = clampf(num(data, "power"), 0.0, 100.0)
+			release_shot()
+		return
+	if not state in ACTING:
+		return
+	match action:
+		"move":
+			move_input = clampf(num(data, "d"), -1.0, 1.0)
+		"aim":
+			aim_input = clampf(num(data, "d"), -1.0, 1.0)
+			if data.has("angle"):
+				fighter.angle = clampf(num(data, "angle"), fighter.angle_range.x, fighter.angle_range.y)
+				fighter.update_pose()
+		"charge":
+			if fighter.settled:
+				begin_charge()
+		"item":
+			apply_item(fighter, str(data.get("id", "")))
+		"tool":
+			apply_tool(fighter, int(num(data, "slot")))
+		"pow":
+			apply_pow(fighter)
+		"fly":
+			apply_fly(fighter)
+		"aux":
+			apply_aux(fighter)
+		"pass":
+			apply_pass()
+		"flip":
+			fighter.facing *= -1
+			fighter.update_pose()
+	changed.emit()
+
+# A fingerprint of the battle, compared between the server and the players.
+func checksum() -> int:
+	return checksum_text().hash()
+
+func checksum_text() -> String:
+	var parts: PackedStringArray = PackedStringArray([str(state), str(active_id), str(round_number), "%.2f" % wind, str(rng.state), str(fighters.size()), str(projectiles.size())])
+	for fighter in fighters:
+		parts.append("%d|%.1f|%.1f|%.1f|%.1f|%.1f|%d" % [fighter.hp, fighter.position.x, fighter.position.y, fighter.delay, fighter.pow_gauge, fighter.angle, fighter.facing])
+	return "/".join(parts)
 
 # ---------- resolution ----------
 
@@ -812,7 +960,26 @@ func evaluate_winner() -> bool:
 
 # ---------- simulation ----------
 
+func _process(delta: float) -> void:
+	# Online: the local force bar grows with real time (the reset at the top included).
+	if predicted_power >= 0.0:
+		if state != State.PLAYER_CHARGING and state != State.PLAYER_AIMING and state != State.PLAYER_MOVING and state != State.TURN_STARTED:
+			predicted_power = -1.0
+			return
+		predicted_power += float(balance.charge_rate) * delta
+		if predicted_power >= 100.0:
+			if predicted_pass == 0:
+				predicted_pass = 1
+				predicted_power = 0.0
+			else:
+				predicted_power = 100.0
+				release()
+
 func _physics_process(delta: float) -> void:
+	if not lockstep:
+		step(delta)
+
+func step(delta: float) -> void:
 	if not running or paused:
 		return
 	if hitstop > 0.0:
@@ -852,7 +1019,9 @@ func _physics_process(delta: float) -> void:
 					power = 0
 				else:
 					power = 100
-					release_shot()
+					# Online the player's release carries the force (sent at 100 too).
+					if not lockstep:
+						release_shot()
 			if state == State.PLAYER_CHARGING and not is_ai_controlled(fighter):
 				remaining -= delta
 				if remaining <= 0:
@@ -870,8 +1039,11 @@ func _physics_process(delta: float) -> void:
 func human_step(delta: float) -> void:
 	var fighter: TankFighter = active()
 	remaining -= delta
-	var walking: float = clampf(move_input + keyboard_axis(KEY_A, KEY_D) + keyboard_axis(KEY_LEFT, KEY_RIGHT), -1, 1)
-	var aiming: float = clampf(aim_input + keyboard_axis(KEY_S, KEY_W) + keyboard_axis(KEY_DOWN, KEY_UP), -1, 1)
+	var walking: float = move_input
+	var aiming: float = aim_input
+	if not lockstep:
+		walking = clampf(move_input + keyboard_axis(KEY_A, KEY_D) + keyboard_axis(KEY_LEFT, KEY_RIGHT), -1, 1)
+		aiming = clampf(aim_input + keyboard_axis(KEY_S, KEY_W) + keyboard_axis(KEY_DOWN, KEY_UP), -1, 1)
 	fighter.angle = clampf(fighter.angle + aiming * 30 * delta, fighter.angle_range.x, fighter.angle_range.y)
 	if walking != 0:
 		var cost: float = float(balance.move_energy_per_px)
@@ -984,7 +1156,7 @@ func monster_freezes(fighter: TankFighter) -> bool:
 	return "freeze" in mechanics(fighter) and fighter.turns_taken % 2 == 1
 
 func after_pve_turn(fighter: TankFighter) -> void:
-	if fighter.team == 0 and fighter.player_id == local_id:
+	if fighter.team == 0 and fighter.player_id == anchor_id:
 		survived += 1
 	# Grifo da Tempestade: flies to another spot after every attack.
 	if fighter.is_monster and fighter.hp > 0 and "teleport" in mechanics(fighter) and not skip_turn and not passed:

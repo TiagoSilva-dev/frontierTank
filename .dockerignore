@@ -1,0 +1,15 @@
+# Build context of the game server image (server/docker/game.Dockerfile).
+.git
+.godot
+*.zip
+docs
+server/api
+server/docker/*.Dockerfile
+**/__pycache__
+tools
+tests
+*.md
+build_asset_preview.py
+download_assets.py
+inspect_assets.py
+Jogar.cmd

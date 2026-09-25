@@ -1,0 +1,68 @@
+# Frontier Tank online: PostgreSQL + API (Go) + one game server (Godot headless).
+#   cd server && cp .env.example .env   (then change the passwords and the key)
+#   docker compose up --build
+# The game connects to the API at http://localhost:8080 and lists the game server,
+# which players reach at FT_PUBLIC_URL (ws://localhost:7350 by default).
+name: frontier-tank
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: frontier
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      POSTGRES_DB: frontier
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U frontier -d frontier"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://frontier:${DB_PASSWORD}@db:5432/frontier?sslmode=disable
+      PUBLIC_ADDR: ":8080"
+      INTERNAL_ADDR: ":8081"
+      INTERNAL_KEY: ${INTERNAL_KEY:?set INTERNAL_KEY in .env}
+      ALLOW_ORIGIN: ${ALLOW_ORIGIN:-*}
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+    ports:
+      # Only the public API is published; 8081 (internal) stays inside the network.
+      - "${API_PORT:-8080}:8080"
+    networks:
+      default:
+        # Godot's HTTP client refuses host names shorter than 4 letters ("api").
+        aliases: [frontier-api]
+
+  game:
+    build:
+      context: ..
+      dockerfile: server/docker/game.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    stop_grace_period: 20s
+    environment:
+      FT_API: http://frontier-api:8081
+      FT_API_KEY: ${INTERNAL_KEY}
+      FT_ID: s1
+      FT_NAME: ${GAME_NAME:-S1 · Nova Era}
+      FT_PORT: "7350"
+      FT_PUBLIC_URL: ${GAME_PUBLIC_URL:-ws://localhost:7350}
+      FT_CAPACITY: ${GAME_CAPACITY:-500}
+      FT_TEST_COUPONS: ${TEST_COUPONS:-0}
+      FT_BOT_FILL: ${BOT_FILL_SECONDS:-20}
+      FT_STOP_FILE: /tmp/frontier-stop
+    ports:
+      - "${GAME_PORT:-7350}:7350"
+
+volumes:
+  db-data:

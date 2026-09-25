@@ -391,7 +391,8 @@ func turn_page(step: int) -> void:
 
 func do_craft(currency: String) -> void:
 	var def: Dictionary = Crafting.currency_def(currency)
-	var error: String = app.profile.craft(currency, selected_uid) if craft_target == "item" else app.profile.craft_map(currency, map_uid)
+	var outcome: Dictionary = await app.do_op("craft" if craft_target == "item" else "craft_map", [currency, selected_uid if craft_target == "item" else map_uid])
+	var error: String = outcome.error
 	var subject: Dictionary = craft_subject()
 	var done: String = ""
 	if error == "":
@@ -430,18 +431,18 @@ func report(error: String, success: String) -> void:
 
 func do_strengthen() -> void:
 	var before: Dictionary = app.profile.find_instance(selected_uid).duplicate()
-	var error: String = app.profile.strengthen(selected_uid)
+	var error: String = (await app.do_op("strengthen", [selected_uid])).error
 	var inst: Dictionary = app.profile.find_instance(selected_uid)
 	report(error, tr("Sucesso! %s agora é +%d.") % [Armory.item_name(before, false), int(inst.get("level", 0))])
 
 func do_compose(attr: String) -> void:
-	report(app.profile.compose(selected_uid, attr), tr("Composição feita: %s +%d.") % [Armory.attr_name(attr), int(Armory.data().strengthen.compose.amount)])
+	report((await app.do_op("compose", [selected_uid, attr])).error, tr("Composição feita: %s +%d.") % [Armory.attr_name(attr), int(Armory.data().strengthen.compose.amount)])
 
 func do_fuse(stone_id: String) -> void:
-	report(app.profile.fuse(stone_id), tr("Fusão concluída!"))
+	report((await app.do_op("fuse", [stone_id])).error, tr("Fusão concluída!"))
 
 func do_transfer() -> void:
-	report(app.profile.transfer(selected_uid, target_uid), tr("Transferência concluída!"))
+	report((await app.do_op("transfer", [selected_uid, target_uid])).error, tr("Transferência concluída!"))
 
 func close() -> void:
 	closed.emit()

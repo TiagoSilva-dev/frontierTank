@@ -124,13 +124,13 @@ func try_on(def: Dictionary) -> void:
 	build()
 
 func buy_item(id: String, quality: String) -> void:
-	var error: String = app.profile.buy(id, quality)
+	var error: String = (await app.do_op("buy", [id, quality])).error
 	message = error if error != "" else tr("Comprado! Veja na Mochila.")
 	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()
 
 func buy_stone(id: String, amount: int) -> void:
-	var error: String = app.profile.buy_stone(id, amount)
+	var error: String = (await app.do_op("buy_stone", [id, amount])).error
 	message = error if error != "" else tr("Comprado: %d pedra(s).") % amount
 	app.audio.play("ui_coin" if error == "" else "ui_error")
 	build()

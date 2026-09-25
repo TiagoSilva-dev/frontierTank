@@ -41,6 +41,23 @@ var last_tick: int = -1
 var kick: float = 0.0
 var kick_factor: float = 1.0
 var transition: PhaseTransition
+# Online (backend 0.11): this copy runs in lockstep with the server (LockstepDriver); the
+# local controls become intents, the end of the battle and the rewards come from the server.
+var online: bool = false
+var match_id: int = 0
+var resume: Dictionary = {}
+var driver: LockstepDriver
+var server_end: Dictionary = {}
+var phase_report: Dictionary = {}
+var finished_here: bool = false
+var ending_shown: bool = false
+var end_wait: float = -1.0
+var menu_open: bool = false
+var sent_move: float = 0.0
+var sent_aim: float = 0.0
+var aim_base: float = 0.0
+var aim_clock: float = 0.0
+var catch_up: Label
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -94,6 +111,15 @@ func _ready() -> void:
 	add_child(hud)
 	game.announce.connect(hud.log_line)
 	game.start(config)
+	if online:
+		game.remote = send_intent
+		driver = LockstepDriver.new()
+		driver.game = game
+		add_child(driver)
+		driver.desynced.connect(func(tick: int) -> void: app.net.send_kind("desync", {"m": match_id, "tick": tick}))
+		if resume.has("history"):
+			# Back in a battle already under way: simulate it again up to now.
+			driver.receive({"i": resume.history, "u": resume.u})
 	background = load(str(game.map.bg))
 	ambience.setup(str(game.map.get("ambience", "")), camera)
 	var world_size: Vector2 = game.terrain.world_size
@@ -153,6 +179,16 @@ func _process(delta: float) -> void:
 		end_timer -= delta
 		if end_timer <= 0:
 			show_results()
+	if online:
+		online_controls(delta)
+		if end_wait > 0.0:
+			end_wait -= delta
+			if end_wait <= 0.0 and not finished_here:
+				# The server finished long ago and this copy did not: trust the server.
+				finished_here = true
+				driver.game = null
+				settle_online()
+		show_catch_up()
 
 func camera_rect() -> Rect2:
 	return Rect2(camera.position - Vector2(640, 360), Vector2(1280, 720))
@@ -360,6 +396,10 @@ func on_turn(fighter: TankFighter) -> void:
 		hud.flash(tr("SUA VEZ!"), Color("9aff7a"))
 
 func on_finished(winner: int) -> void:
+	if online:
+		finished_here = true
+		settle_online()
+		return
 	if game.pve and app.run != null and winner == game.local().team and app.run.has_next_phase():
 		# Instance phase won: drops now, a transition screen, then the next phase.
 		var report: Dictionary = app.phase_cleared(game)
@@ -407,6 +447,11 @@ func _exit_tree() -> void:
 		app.audio.set_charge(false, 0.0)
 
 func toggle_pause() -> void:
+	if online:
+		# No pausing online: only the options (sound, give up) open over the battle.
+		menu_open = not menu_open
+		hud.set_paused(menu_open)
+		return
 	if not game.running:
 		return
 	game.paused = not game.paused
@@ -417,6 +462,11 @@ func toggle_pause() -> void:
 	hud.set_paused(game.paused)
 
 func forfeit() -> void:
+	if online:
+		app.net.send_kind("match_leave")
+		app.room = {}
+		app.show_hall()
+		return
 	for fighter in game.fighters:
 		if fighter.team == game.local().team:
 			fighter.hp = 0
@@ -436,7 +486,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		if event.pressed:
 			game.charge()
 		else:
-			game.release_shot()
+			game.release()
 		return
 	if not event.pressed:
 		return
@@ -463,3 +513,98 @@ func _gui_input(event: InputEvent) -> void:
 			focus_on(camera.position, 4.0)
 	elif event is InputEventMouseMotion and dragging:
 		focus_on(manual_focus - event.relative, 4.0)
+
+# ---------- online (backend 0.11) ----------
+
+func send_intent(action: String, data: Dictionary) -> void:
+	app.net.send_kind("in", {"m": match_id, "a": action, "d": data})
+
+func on_net(message: Dictionary) -> void:
+	if int(message.get("m", -1)) != match_id:
+		return
+	match str(message.get("t", "")):
+		"ticks":
+			driver.receive(message)
+		"phase_end":
+			app.apply_profile(message.profile)
+			phase_report = message.report
+			settle_online()
+		"match_end":
+			app.apply_profile(message.profile)
+			server_end = message
+			settle_online()
+		"cards":
+			if is_instance_valid(results):
+				results.reveal_online(message)
+
+func in_phase_break() -> bool:
+	return not phase_report.is_empty()
+
+# Both the server's word and this copy's end are needed; whichever comes second shows
+# the phase transition or the outcome.
+func settle_online() -> void:
+	if not finished_here:
+		if (not server_end.is_empty() or not phase_report.is_empty()) and end_wait < 0.0:
+			end_wait = 8.0
+		return
+	if ending_shown or (server_end.is_empty() and phase_report.is_empty()):
+		return
+	ending_shown = true
+	app.audio.set_charge(false, 0.0)
+	if not phase_report.is_empty():
+		hud.flash(tr("FASE CONCLUÍDA!"), Color("ffd04a"))
+		app.audio.play("victory", -4.0)
+		get_tree().create_timer(1.6).timeout.connect(show_transition.bind(phase_report))
+		return
+	summary = server_end.summary
+	app.last_summary = summary
+	hud.show_outcome(bool(summary.get("won", false)), bool(summary.get("draw", false)))
+	app.audio.play_music("", 0.8)
+	app.audio.play("victory" if summary.get("won", false) else "defeat")
+	end_timer = 2.6
+
+static func axis(negative: Key, positive: Key) -> float:
+	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))
+
+# Arrow keys online: sent as intents when they change. The aim is predicted here so the
+# dial and the aim line answer at once, and each change carries the exact angle seen.
+func online_controls(delta: float) -> void:
+	if not is_instance_valid(game) or game.fighters.is_empty():
+		return
+	var me: TankFighter = game.local()
+	var focus: Control = get_viewport().gui_get_focus_owner()
+	var mine: bool = game.can_act() and not (focus is LineEdit) and not menu_open
+	var walk: float = clampf(axis(KEY_A, KEY_D) + axis(KEY_LEFT, KEY_RIGHT), -1.0, 1.0) if mine else 0.0
+	var aim: float = clampf(axis(KEY_S, KEY_W) + axis(KEY_DOWN, KEY_UP), -1.0, 1.0) if mine else 0.0
+	if not mine:
+		sent_move = 0.0
+		sent_aim = 0.0
+		if not is_nan(me.shown_angle) and (game.active_id != game.local_id or game.aim_input == 0.0):
+			me.shown_angle = NAN
+			me.queue_redraw()
+		return
+	if walk != sent_move:
+		sent_move = walk
+		game.send_intent("move", {"d": walk})
+	if aim != sent_aim:
+		var seen: float = snappedf(me.drawn_angle(), 0.01)
+		game.send_intent("aim", {"d": aim, "angle": seen})
+		sent_aim = aim
+		aim_base = seen
+		aim_clock = 0.0
+		me.shown_angle = seen
+	if aim != 0.0:
+		aim_clock += delta
+		me.shown_angle = clampf(aim_base + aim * 30.0 * aim_clock, me.angle_range.x, me.angle_range.y)
+		me.queue_redraw()
+	elif not is_nan(me.shown_angle) and game.aim_input == 0.0 and absf(me.angle - me.shown_angle) < 0.02:
+		me.shown_angle = NAN
+		me.queue_redraw()
+
+func show_catch_up() -> void:
+	# Coming back to a battle (or a long hiccup): the copy is replaying to catch up.
+	var catching: bool = driver != null and driver.catching_up()
+	if catching and not is_instance_valid(catch_up):
+		catch_up = UiKit.label(self, tr("Sincronizando a batalha…"), Rect2(390, 300, 500, 60), 28, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	elif not catching and is_instance_valid(catch_up):
+		catch_up.queue_free()

@@ -57,7 +57,7 @@ func code_keys() -> Dictionary:
 	var found: Dictionary = {}
 	var call: RegEx = RegEx.create_from_string("(?:\\btr|\\bLang\\.t)\\(\\s*\"((?:[^\"\\\\]|\\\\.)*)\"\\s*\\)")
 	var any: RegEx = RegEx.create_from_string("\"((?:[^\"\\\\]|\\\\.)*)\"")
-	for path in gd_files("res://client"):
+	for path in gd_files("res://client") + gd_files("res://server/game"):
 		for line in FileAccess.get_file_as_string(path).split("\n"):
 			var cut: int = comment_start(line)
 			var code: String = line if cut < 0 else line.substr(0, cut)
@@ -133,7 +133,7 @@ func run_tests() -> void:
 	var accent: RegEx = RegEx.create_from_string("[ÁÀÂÃÇÉÊÍÓÔÕÚáàâãçéêíóôõú]")
 	var literal: RegEx = RegEx.create_from_string("\"((?:[^\"\\\\]|\\\\.)*)\"")
 	var loose: Array[String] = []
-	for path in gd_files("res://client"):
+	for path in gd_files("res://client") + gd_files("res://server/game"):
 		var lines: PackedStringArray = FileAccess.get_file_as_string(path).split("\n")
 		for n in range(lines.size()):
 			var cut: int = comment_start(lines[n])

@@ -4,3 +4,6 @@
 
 # Python caches from tools/*.py
 __pycache__/
+
+# Secrets of the online stack (server/.env.example is the template)
+server/.env

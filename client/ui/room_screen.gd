@@ -4,6 +4,9 @@ extends Control
 # Sala: your team (4 slots), mode, map/time info, battle tools, invite and start.
 # Instance rooms (0.9) pick the instance with "Local" and place a map item in the map
 # slot (level, quality and modifiers); with no map the free entry is used.
+# Online (backend 0.11) the room lives on the server: other players join it, each one
+# gets ready, the owner's settings go to the server, and "Início" searches for a rival
+# room of the same size (AI rivals fill in after a while).
 
 const VS_ART: String = "res://assets/room/vs_art.png"
 var app: Node
@@ -37,6 +40,11 @@ func rebuild() -> void:
 	build_center(room)
 	build_tools(room)
 	build_buttons(room)
+	if app.online:
+		if room.get("searching", false) and not is_instance_valid(searching):
+			begin_search()
+		elif not room.get("searching", false) and is_instance_valid(searching):
+			searching.queue_free()
 	var chat: ChatBox = ChatBox.new()
 	chat.app = app
 	chat.position = Vector2(4, 520)
@@ -55,7 +63,7 @@ func build_slots(room: Dictionary) -> void:
 		else:
 			var empty: Button = UiKit.button(content, "", rect, func() -> void: invite(), "card_busy")
 			empty.name = "Slot_%d" % i
-			empty.tooltip_text = tr("Convide um jogador (IA)") if app.is_owner() else ""
+			empty.tooltip_text = (tr("Adicione um jogador de IA ou espere alguém entrar") if app.online else tr("Convide um jogador (IA)")) if app.is_owner() else ""
 			var ghost: TextureRect = UiKit.art(empty, PixelIcons.get_icon("team"), Rect2(55, 40, 100, 100))
 			ghost.modulate = Color(1, 1, 1, 0.3)
 			UiKit.label(empty, tr("Aguardando…"), Rect2(0, 150, 210, 30), 18, Color("fff0d0"), Color("7a5a3a"), HORIZONTAL_ALIGNMENT_CENTER)
@@ -68,18 +76,18 @@ func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 	# Everyone shows up dressed: outfit, hat, wings, weapon on the back and auras.
 	AvatarView.create(slot, member_look(member), Rect2(10, 30, 190, 140))
 	UiKit.panel(slot, Rect2(6, 6, 198, 28), "dark")
-	UiKit.label(slot, str(member.name), Rect2(40, 6, 160, 28), 16, Color("ffd04a") if member.get("human", false) else Color.WHITE, UiKit.INK)
+	UiKit.label(slot, str(member.name), Rect2(40, 6, 160, 28), 16, Color("9aff7a") if app.online and app.is_me(member) else (Color("ffd04a") if member.get("human", false) else Color.WHITE), UiKit.INK)
 	UiKit.level_badge(slot, int(member.level), Rect2(8, 8, 30, 24))
 	if index == int(room.owner):
 		UiKit.panel(slot, Rect2(6, 168, 70, 30), "plate")
 		UiKit.label(slot, tr("Dono"), Rect2(6, 168, 70, 30), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.art(slot, PixelIcons.get_icon("crown"), Rect2(170, 40, 28, 28))
-	elif member.get("human", false) and not room.get("ready", false):
+	elif member.get("human", false) and not (bool(member.get("ready", false)) if app.online else room.get("ready", false)):
 		UiKit.label(slot, tr("Não preparado"), Rect2(6, 170, 198, 28), 15, Color("c0402f"), Color("fff0d0"), HORIZONTAL_ALIGNMENT_CENTER)
 	else:
 		UiKit.art(slot, "res://assets/expansion/lobby/ready_icon.png", Rect2(8, 166, 32, 32))
 		UiKit.label(slot, tr("Pronto"), Rect2(40, 168, 80, 30), 15, Color("2f8a1f"), Color("fff0d0"))
-	if app.is_owner() and not member.get("human", false):
+	if app.is_owner() and index != int(room.owner) and (app.online or not member.get("human", false)):
 		var kick: Button = UiKit.button(slot, "X", Rect2(172, 170, 30, 28), kick_member.bind(index), "button", 14)
 		kick.tooltip_text = tr("Remover da sala")
 
@@ -159,7 +167,7 @@ func build_instance(art_box: Panel, room: Dictionary) -> void:
 	phases.tooltip_text = tr(str(instance.desc))
 	phases.mouse_filter = Control.MOUSE_FILTER_PASS
 	# Map slot: replaces the old difficulty list. The map decides level and rewards.
-	var item: Dictionary = app.profile.find_map(int(room.get("map_uid", -1)))
+	var item: Dictionary = app.room_map_item()
 	var slot: Button = UiKit.button(art_box, "", Rect2(8, 194, 348, 100), choose_map_item, "card_hover" if not item.is_empty() else "card")
 	slot.name = "MapSlot"
 	if item.is_empty():
@@ -205,11 +213,11 @@ func choose_map_item() -> void:
 	UiKit.button(dialog, tr("FECHAR"), Rect2(rect.position.x + rect.size.x / 2 - 70, rect.end.y - 56, 140, 40), dialog.queue_free)
 
 func pick_map_item(uid: int, dialog: Control = null) -> void:
-	if app.is_owner():
-		app.room.map_uid = uid
-		app.audio.play("ui_click")
 	if is_instance_valid(dialog):
 		dialog.queue_free()
+	if app.is_owner():
+		app.audio.play("ui_click")
+		await app.room_set({"map_uid": uid})
 	rebuild()
 
 func choose_instance() -> void:
@@ -229,10 +237,8 @@ func choose_instance() -> void:
 		UiKit.label(cell, " → ".join(instance.phases.map(func(p: Dictionary) -> String: return tr(str(p.name)))), Rect2(8, 112, 364, 24), 11, Color("7a3a1a")).clip_text = true
 
 func pick_instance(id: String, dialog: Control) -> void:
-	app.room.instance = id
-	app.room.map_uid = -1
-	app.room.title = tr("Expedição: %s") % tr(str(InstanceRun.instance_def(id).name))
 	dialog.queue_free()
+	await app.room_set({"instance": id, "map_uid": -1, "title": tr("Expedição: %s") % tr(str(InstanceRun.instance_def(id).name))})
 	rebuild()
 
 func draw_versus(canvas: Control) -> void:
@@ -251,7 +257,7 @@ func draw_versus(canvas: Control) -> void:
 func build_tools(room: Dictionary) -> void:
 	var box: Panel = UiKit.panel(content, Rect2(856, 32, 418, 380), "wood")
 	UiKit.label(box, tr("Sala"), Rect2(14, 4, 60, 40), 26, Color("fff0d0"), UiKit.INK)
-	UiKit.label(box, str(room.id), Rect2(74, 4, 90, 40), 30, Color("ffd04a"), UiKit.INK)
+	UiKit.label(box, str(int(room.id)), Rect2(74, 4, 90, 40), 30, Color("ffd04a"), UiKit.INK)
 	UiKit.label(box, tr("Canal 1"), Rect2(300, 8, 104, 26), 15, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	var heading: String = tr("Expedição: %s") % tr(str(InstanceRun.instance_def(str(room.instance)).name)) if room.mode == "pve" else tr(str(room.title))
 	var subtitle: Label = UiKit.label(box, heading, Rect2(14, 42, 390, 24), 14, Color("ffe24a"), UiKit.INK)
@@ -289,7 +295,7 @@ func build_tools(room: Dictionary) -> void:
 func build_buttons(room: Dictionary) -> void:
 	UiKit.panel(content, Rect2(856, 420, 418, 232), "wood_dark")
 	var hint: Panel = UiKit.panel(content, Rect2(866, 430, 398, 34), "banner")
-	var start_text: String = tr("Início") if app.is_owner() else (tr("Cancelar") if room.get("ready", false) else tr("Preparar"))
+	var start_text: String = tr("Início") if app.is_owner() else (tr("Cancelar") if my_ready() else tr("Preparar"))
 	UiKit.label(hint, tr("Clique em \"%s\" para começar o jogo") % start_text if start_text != tr("Cancelar") else tr("Aguardando o dono da sala…"), Rect2(0, 0, 398, 34), 14, Color("fff4a0"), Color("5a1004"), HORIZONTAL_ALIGNMENT_CENTER)
 	var invite_button: Button = UiKit.icon_button(content, PixelIcons.get_icon("team"), Rect2(876, 478, 110, 110), invite, tr("Convidar um jogador (IA) para a equipe"))
 	invite_button.name = "Invite"
@@ -303,7 +309,7 @@ func build_buttons(room: Dictionary) -> void:
 	start_button.name = "Start"
 	UiKit.label(start_button, start_text, Rect2(-10, 90, 150, 36), 26, Color("ffd04a"), Color("8a1a04"), HORIZONTAL_ALIGNMENT_CENTER)
 	start_button.get_node("Icon").size = Vector2(130, 94)
-	UiKit.button(content, tr("Sair da sala"), Rect2(876, 604, 150, 38), app.show_hall, "button", 15)
+	UiKit.button(content, tr("Sair da sala"), Rect2(876, 604, 150, 38), app.leave_room, "button", 15)
 
 func tool_def(id: String) -> Dictionary:
 	for tool: Dictionary in app.balance.tools:
@@ -316,26 +322,25 @@ func buy_tool(id: String) -> void:
 	if app.profile.coins < int(tool.price):
 		UiKit.notice(self, tr("MOEDAS INSUFICIENTES"), tr("%s custa %d moedas.") % [tr(str(tool.name)), int(tool.price)])
 		return
-	if not app.profile.add_tool(id):
-		UiKit.notice(self, tr("FERRAMENTAS"), tr("Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."))
+	var error: String = (await app.do_op("buy_tool", [id])).error
+	if error != "":
+		UiKit.notice(self, tr("FERRAMENTAS"), error)
 		return
-	app.profile.coins -= int(tool.price)
-	app.profile.save_profile()
 	app.audio.play("ui_coin")
 	sync_player()
 	rebuild()
 
 func sell_tool(slot: int) -> void:
-	var id: String = app.profile.tools[slot]
-	if id == "":
+	if app.profile.tools[slot] == "":
 		return
-	app.profile.coins += int(tool_def(id).price)
-	app.profile.tools[slot] = ""
-	app.profile.save_profile()
+	await app.do_op("sell_tool", [slot])
 	sync_player()
 	rebuild()
 
 func sync_player() -> void:
+	# Online the server sends the room again with the new equipment.
+	if app.online:
+		return
 	for i in range(app.room.members.size()):
 		if app.room.members[i].get("human", false):
 			app.room.members[i] = app.player_entry()
@@ -345,7 +350,7 @@ func invite() -> void:
 		UiKit.notice(self, tr("CONVITE"), tr("Somente o dono da sala pode convidar jogadores."))
 		return
 	if app.room.mode == "pve" or app.room.members.size() < int(app.room.capacity):
-		if app.invite_bot():
+		if await app.invite_bot():
 			app.audio.play("ui_confirm")
 			rebuild()
 			return
@@ -385,11 +390,27 @@ func cycle_time() -> void:
 	# JSON numbers load as floats, so compare as ints.
 	var options: Array = app.balance.turn_seconds_options.map(func(value: float) -> int: return int(value))
 	var index: int = (options.find(int(app.room.turn_seconds)) + 1) % options.size()
-	app.room.turn_seconds = options[index]
+	await app.room_set({"turn_seconds": options[index]})
 	rebuild()
+
+func my_ready() -> bool:
+	if not app.online:
+		return app.room.get("ready", false)
+	for member: Dictionary in app.room.members:
+		if app.is_me(member):
+			return bool(member.get("ready", false))
+	return false
 
 func press_start() -> void:
 	if searching != null and is_instance_valid(searching):
+		return
+	if app.online:
+		# The server starts the search (or the instance) and tells everyone in the room.
+		var reply: Dictionary = await app.net.request("room_start" if app.is_owner() else "room_ready", {} if app.is_owner() else {"on": not my_ready()})
+		if not reply.ok:
+			UiKit.notice(self, tr("SALA"), app.server_text(reply.error))
+		else:
+			app.audio.play("ui_confirm")
 		return
 	if app.is_owner():
 		begin_search()
@@ -412,8 +433,9 @@ func begin_search() -> void:
 	spinner.position = Vector2(640, 380)
 	spinner.draw.connect(draw_spinner.bind(spinner))
 	searching.add_child(spinner)
-	UiKit.button(searching, tr("Cancelar"), Rect2(700, 382, 120, 30), cancel_search, "button", 13)
-	search_time = 1.0 if app.room.mode == "pve" else 2.2
+	var cancel: Button = UiKit.button(searching, tr("Cancelar"), Rect2(700, 382, 120, 30), cancel_search, "button", 13)
+	cancel.visible = not app.online or app.is_owner()
+	search_time = -1.0 if app.online else (1.0 if app.room.mode == "pve" else 2.2)
 
 func draw_spinner(spinner: Control) -> void:
 	for i in range(8):
@@ -421,6 +443,9 @@ func draw_spinner(spinner: Control) -> void:
 		spinner.draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Color(1, 0.85, 0.3, 0.3 + i * 0.09))
 
 func cancel_search() -> void:
+	if app.online:
+		app.net.send_kind("room_cancel")
+		return
 	if is_instance_valid(searching):
 		searching.queue_free()
 	search_time = -1.0
@@ -433,8 +458,8 @@ func kick_member(index: int) -> void:
 	rebuild()
 
 func pick_map(id: String, dialog: Control) -> void:
-	app.room.map = id
 	dialog.queue_free()
+	await app.room_set({"map": id})
 	rebuild()
 
 func _process(delta: float) -> void:

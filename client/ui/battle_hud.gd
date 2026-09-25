@@ -252,7 +252,10 @@ func set_paused(value: bool) -> void:
 		pause_box.queue_free()
 	if not value:
 		return
-	pause_box = UiKit.modal(self, tr("BATALHA PAUSADA"), tr("Partida local contra IA. Desistir conta como derrota."), Vector2(520, 300))
+	if screen.online:
+		pause_box = UiKit.modal(self, tr("OPÇÕES"), tr("Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."), Vector2(520, 300))
+	else:
+		pause_box = UiKit.modal(self, tr("BATALHA PAUSADA"), tr("Partida local contra IA. Desistir conta como derrota."), Vector2(520, 300))
 	var rect: Rect2 = pause_box.get_meta("rect")
 	var audio: GameAudio = screen.app.audio
 	var music: Button = UiKit.button(pause_box, "", Rect2(rect.position.x + 60, rect.end.y - 124, 180, 40), Callable(), "button_blue", 15)
@@ -408,11 +411,11 @@ func draw_dial() -> void:
 	for i in range(0, 181, 15):
 		var a: float = -deg_to_rad(i)
 		dial.draw_line(center + Vector2.from_angle(a) * 50, center + Vector2.from_angle(a) * 55, Color("fff0d0"), 2)
-	var aim: float = -deg_to_rad(fighter.effective_angle()) if facing > 0 else PI + deg_to_rad(fighter.effective_angle())
+	var aim: float = -deg_to_rad(fighter.drawn_effective_angle()) if facing > 0 else PI + deg_to_rad(fighter.drawn_effective_angle())
 	dial.draw_line(center, center + Vector2.from_angle(aim) * 50, Color("ffe24a"), 3)
 	dial.draw_circle(center, 22, Color("10141f"))
 	var font: Font = UiKit.font(true)
-	var text: String = str(roundi(fighter.angle))
+	var text: String = str(roundi(fighter.drawn_angle()))
 	dial.draw_string_outline(font, center + Vector2(-22, 10), text, HORIZONTAL_ALIGNMENT_CENTER, 44, UiKit.fs(26), 5, Color("0a1a04"))
 	dial.draw_string(font, center + Vector2(-22, 10), text, HORIZONTAL_ALIGNMENT_CENTER, 44, UiKit.fs(26), Color("7aff5a"))
 	if absf(fighter.tilt) >= 1.0:
@@ -432,7 +435,7 @@ func draw_force() -> void:
 		var x: float = bar.size.x * i / 10.0
 		force.draw_line(Vector2(x, bar.position.y), Vector2(x, bar.position.y + 6), Color("8a8a8a"), 2)
 	var mine: bool = game.active_id == game.local_id
-	var value: float = game.power if mine or game.state == LocalMatch.State.PLAYER_CHARGING else 0.0
+	var value: float = game.shown_power() if mine or game.state == LocalMatch.State.PLAYER_CHARGING else 0.0
 	if value > 0:
 		var width: float = bar.size.x * value / 100.0
 		var steps: int = maxi(1, int(width / 8))
