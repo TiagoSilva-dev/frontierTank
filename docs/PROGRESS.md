@@ -43,6 +43,8 @@ Fundação Godot e combate local: física, vento, destruição, queda, turnos, v
 Uma conta corresponde a um personagem. Sem lista de personagens nem troca. No futuro banco, `characters.account_id` terá restrição UNIQUE; criação de conta e personagem será transacional.
 
 ## Próxima entrega
+Lista completa e decisões em aberto em `ROADMAP.md` (POW, instâncias de 3 fases, leilão com moedas, distribuição).
+
 1. Slots de rosto e olhos e mais roupas no PixelLab; mais mapas seguindo a receita de `PIXELLAB_0_6.md`.
 2. PET, Leilão e missões.
 3. Backend Go com protocolo versionado, autenticação e salas reais substituindo `LobbyDirectory`; PostgreSQL como autoridade de progresso e economia.
