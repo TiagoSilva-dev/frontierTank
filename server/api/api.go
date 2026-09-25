@@ -66,6 +66,7 @@ func (a *API) publicRoutes() http.Handler {
 	mux.HandleFunc("GET /v1/me", a.me)
 	mux.HandleFunc("POST /v1/me/password", a.changePassword)
 	mux.HandleFunc("DELETE /v1/me", a.deleteMe)
+	a.privacyRoutes(mux)
 	return a.cors(limitBody(mux, 64<<10))
 }
 
@@ -81,6 +82,7 @@ func (a *API) internalRoutes() http.Handler {
 	mux.HandleFunc("POST /internal/presence/claim", a.claimPresence)
 	mux.HandleFunc("POST /internal/presence/release", a.releasePresence)
 	a.auctionRoutes(mux)
+	a.privacyInternalRoutes(mux)
 	return a.internalOnly(limitBody(mux, 8<<20))
 }
 
@@ -149,6 +151,13 @@ func (a *API) clientIP(r *http.Request) string {
 		return r.RemoteAddr
 	}
 	return host
+}
+
+// logAccess keeps the access record the law asks for; a failure is logged, never shown.
+func (a *API) logAccess(r *http.Request, accountID int64, action string) {
+	if err := a.store.LogAccess(r.Context(), accountID, a.clientIP(r), action); err != nil {
+		a.log.Warn("access log", "err", err)
+	}
 }
 
 func newToken() (string, []byte, error) {
@@ -238,6 +247,9 @@ func (a *API) servers(w http.ResponseWriter, r *http.Request) {
 type credentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	// Register only: the version of the Terms of Use and Privacy Policy the player read
+	// and accepted (LGPD/GDPR consent); it must be the current one.
+	AcceptTerms string `json:"accept_terms,omitempty"`
 }
 
 func (a *API) startSession(w http.ResponseWriter, r *http.Request, account Account, status int) {
@@ -272,12 +284,16 @@ func (a *API) register(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, codePassword, "password: 8-128 characters")
 		return
 	}
+	if code := a.checkTerms(body.AcceptTerms); code != "" {
+		writeError(w, http.StatusBadRequest, code, "accept the current terms: "+a.cfg.LegalVersion)
+		return
+	}
 	hash, err := hashPassword(body.Password, a.cfg.PBKDF2Iterations)
 	if err != nil {
 		a.fail(w, err)
 		return
 	}
-	account, err := a.store.CreateAccount(r.Context(), body.Username, hash)
+	account, err := a.store.CreateAccount(r.Context(), body.Username, hash, body.AcceptTerms)
 	if errors.Is(err, ErrTaken) {
 		writeError(w, http.StatusConflict, codeTaken, "username already registered")
 		return
@@ -287,6 +303,7 @@ func (a *API) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.log.Info("account created", "id", account.ID, "username", account.Username)
+	a.logAccess(r, account.ID, "register")
 	a.startSession(w, r, account, http.StatusCreated)
 }
 
@@ -325,6 +342,7 @@ func (a *API) login(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	_ = a.store.TouchLogin(r.Context(), account.ID)
+	a.logAccess(r, account.ID, "login")
 	a.startSession(w, r, account, http.StatusOK)
 }
 
@@ -445,6 +463,12 @@ func (a *API) verifySession(w http.ResponseWriter, r *http.Request) {
 	}
 	if account.Banned {
 		writeError(w, http.StatusForbidden, codeBanned, "account suspended")
+		return
+	}
+	if account.TermsVersion != a.cfg.LegalVersion {
+		// The player has not accepted the current Terms and Privacy Policy yet: the game
+		// shows them and asks again before entering a server.
+		writeError(w, http.StatusForbidden, codeTermsRequired, "the current terms were not accepted")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"account": account})

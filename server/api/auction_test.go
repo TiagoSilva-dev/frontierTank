@@ -21,7 +21,7 @@ type trader struct {
 
 func (h *harness) newTrader(username, name string) *trader {
 	h.t.Helper()
-	status, reply := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": username, "password": "senha-forte-1"}, nil)
+	status, reply := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": username, "password": "senha-forte-1", "accept_terms": testTerms}, nil)
 	if status != http.StatusCreated {
 		h.t.Fatalf("register %s: %d %v", username, status, reply)
 	}

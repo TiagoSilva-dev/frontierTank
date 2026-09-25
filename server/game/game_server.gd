@@ -271,6 +271,8 @@ func handle(session: PlayerSession, text: String) -> void:
 			mail_list(session, message)
 		"mail_claim":
 			mail_claim(session, message)
+		"account_delete":
+			account_delete(session, message)
 
 # ---------- login ----------
 
@@ -1101,6 +1103,49 @@ func notify_mail(session: PlayerSession) -> void:
 	var result: Dictionary = await api.mail_list(session.account_id)
 	if not result.has("error") and session.is_open():
 		session.send({"t": "mail", "count": int(result.total)})
+
+# ---------- privacy (LGPD/GDPR) ----------
+
+# The player deletes the account from inside the game, with the password. The periodic
+# save stops first (as in an auction operation) so the profile is never written back;
+# once the API has deleted everything, this copy is dropped and the connection closes.
+func account_delete(session: PlayerSession, message: Dictionary) -> void:
+	var password: String = str(message.get("password", "")).substr(0, 128)
+	if session.host != null:
+		reply(session, message, {"error": Lang.t("Saia da batalha antes de excluir a conta.")})
+		return
+	if session.busy:
+		reply(session, message, {"error": Lang.t("Aguarde a operação anterior terminar.")})
+		return
+	if password == "":
+		reply(session, message, {"error": Lang.t("Digite a sua senha.")})
+		return
+	var moment: float = now()
+	session.delete_tries = session.delete_tries.filter(func(at: float) -> bool: return moment - at < 600.0)
+	if session.delete_tries.size() >= 5:
+		reply(session, message, {"error": Lang.t("Muitas tentativas. Aguarde alguns minutos.")})
+		return
+	session.delete_tries.append(moment)
+	await begin_trade(session)
+	var result: Dictionary = await api.delete_account(session.account_id, password)
+	if result.has("error"):
+		end_trade(session)
+		var wrong: bool = str(result.error) == "invalid_credentials"
+		reply(session, message, {"error": Lang.t("Senha incorreta.") if wrong else Lang.t("Não foi possível excluir a conta agora. Tente de novo.")})
+		return
+	# Deleted: nothing of this player is saved or logged again.
+	session.discard = true
+	var gone: int = session.account_id
+	audit_queue = audit_queue.filter(func(entry: Dictionary) -> bool: return entry.account_id == null or int(entry.account_id) != gone)
+	if session.room != null:
+		leave_room(session)
+	session.result = {}
+	accounts.erase(gone)
+	lobby_dirty = true
+	reply(session, message)
+	session.state = "closing"
+	close_later(session.peer, 4005, "account_deleted")
+	log_line("account %d deleted by the player, %d online" % [gone, accounts.size()])
 
 # ---------- API upkeep ----------
 

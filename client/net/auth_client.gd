@@ -64,15 +64,46 @@ static func error_of(reply: Dictionary) -> String:
 		return "api_unavailable"
 	return str(reply.body.get("error", "internal")) if reply.body is Dictionary else "internal"
 
-# "" or an error code; on success `token` and `username` are set.
-func login(user: String, password: String, create: bool = false) -> String:
-	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/register" if create else "/v1/auth/login", {"username": user, "password": password})
+# "" or an error code; on success `token` and `username` are set. A new account carries
+# the version of the Terms of Use and Privacy Policy the player accepted (consent).
+func login(user: String, password: String, create: bool = false, terms: String = "") -> String:
+	var body: Dictionary = {"username": user, "password": password}
+	if create:
+		body.accept_terms = terms
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/register" if create else "/v1/auth/login", body)
 	if int(reply.status) != 200 and int(reply.status) != 201:
 		return error_of(reply)
 	token = str(reply.body.token)
 	username = str(reply.body.account.username)
 	save_session()
 	return ""
+
+# Accepts the current Terms of Use and Privacy Policy (after they changed). "" or a code.
+func accept_terms() -> String:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/me/terms", {"version": Legal.VERSION})
+	return "" if int(reply.status) == 200 else error_of(reply)
+
+# Everything the API keeps about the account, as JSON text ({"text"} or {"error"}).
+func export_data() -> Dictionary:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_GET, "/v1/me/export")
+	if int(reply.status) != 200 or not reply.body is Dictionary:
+		return {"error": error_of(reply)}
+	return {"text": JSON.stringify(reply.body, "\t")}
+
+# Deletes the account and its data with the password (when not connected to a game
+# server; in the game the server does it, see GameServer.account_delete). "" or a code.
+func delete_account(password: String) -> String:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_DELETE, "/v1/me", {"password": password})
+	if int(reply.status) != 204:
+		return error_of(reply)
+	forget()
+	return ""
+
+# The account is gone (deleted): nothing of it stays remembered on this computer.
+func forget() -> void:
+	token = ""
+	username = ""
+	save_session()
 
 func logout() -> void:
 	if token != "":
@@ -122,4 +153,10 @@ static func message_for(code: String) -> String:
 			return Lang.t("O servidor não respondeu a tempo.")
 		"connection_lost", "closed", "offline":
 			return Lang.t("A conexão com o servidor caiu.")
+		"terms_required":
+			return Lang.t("Para jogar online, aceite os Termos de Uso e a Política de Privacidade.")
+		"terms_outdated":
+			return Lang.t("Os Termos de Uso mudaram. Atualize o jogo para ver a versão nova.")
+		"account_deleted":
+			return Lang.t("Sua conta e os seus dados foram excluídos.")
 	return Lang.t("Erro do servidor: %s") % code

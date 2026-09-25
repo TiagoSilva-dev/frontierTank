@@ -294,7 +294,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 **Decidido provisoriamente:** o nome da marca continua *Frontier Tank: Nova Era* nos dois idiomas (é o que está no logotipo). A revisão de nomes do checklist abaixo (25/09/2026) trocou os nomes nos dois idiomas; o subtítulo "Nova Era" continua em aberto.
 - [ ] **Servidor**: uma região no começo (Estados Unidos, com latência razoável para Brasil e Europa) e mais regiões se o público crescer. O turno de 20 s tolera bem a latência.
 - [ ] **Pagamentos**: a Steam cuida de moedas locais e impostos na versão Steam. Na web, Stripe cobre o exterior e o Mercado Pago cobre PIX.
-- [ ] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas. *(0.11: a API já apaga a conta e todos os dados — `DELETE /v1/me` com a senha; falta o botão no jogo, o consentimento e a política.)*
+- [x] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas. *(25/09/2026: Termos de Uso e Política de Privacidade em pt e en (`legal/`), consentimento no cadastro com versão guardada na API e novo aceite quando os textos mudam, AJUDA → Minha conta com a cópia dos dados e a exclusão pelo servidor de jogo, prazos de retenção e os registros de acesso do Marco Civil. Falta: preencher `legal/controller.json`, revisão jurídica dos textos e das exigências do ECA Digital (verificação de idade e ferramentas para os responsáveis).)*
 - [ ] Chat moderado: filtro de palavrões e denúncia, já que o jogo terá chat público e jogadores de vários países. *(0.11: filtro de palavrões e limite de mensagens no servidor, e tudo fica no registro de auditoria; falta a denúncia.)*
 
 ### Checklist de preparação
@@ -327,7 +327,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - **Decisão pendente, a marca**: "Nova Era" também é o nome de uma edição brasileira do DDTank (ver `docs/DDTANK_RESEARCH.md`, complemento 0.4). O subtítulo aparece no logotipo, na janela, no nome do servidor padrão ("S1 · Nova Era") e na página da Steam. Antes da página "em breve", vale trocar o subtítulo (e redesenhar o logotipo) ou confirmar com um advogado que não há risco.
 - [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês.
 - [ ] Integração com a Steam (GodotSteam): login por ticket, microtransações, conquistas.
-- [ ] Política de privacidade e termos de uso (obrigatórios com contas, pagamentos e dados de jogadores).
+- [x] Política de privacidade e termos de uso (obrigatórios com contas, pagamentos e dados de jogadores). *(Modelos prontos em `legal/`; precisam dos dados da empresa e de revisão jurídica.)*
 
 
 ---

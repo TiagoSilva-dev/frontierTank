@@ -66,6 +66,9 @@ func main() {
 				if err := store.PurgeExpired(ctx); err != nil {
 					logger.Warn("purge", "err", err)
 				}
+				if err := store.PurgeAudit(ctx, cfg.Retention); err != nil {
+					logger.Warn("purge audit", "err", err)
+				}
 			case <-expire.C:
 				if count, err := store.ExpireListings(ctx); err != nil {
 					logger.Warn("expire listings", "err", err)

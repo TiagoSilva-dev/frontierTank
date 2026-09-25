@@ -34,6 +34,12 @@ services:
       INTERNAL_KEY: ${INTERNAL_KEY:?set INTERNAL_KEY in .env}
       ALLOW_ORIGIN: ${ALLOW_ORIGIN:-*}
       TRUST_PROXY: ${TRUST_PROXY:-0}
+      # Privacy (launch checklist): the version of legal/*.md players must accept and how
+      # long the logs are kept (see the Privacy Policy).
+      LEGAL_VERSION: ${LEGAL_VERSION:-2026-09-25}
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
+      CHAT_RETENTION_DAYS: ${CHAT_RETENTION_DAYS:-90}
+      ACCESS_LOG_DAYS: ${ACCESS_LOG_DAYS:-183}
     ports:
       # Only the public API is published; 8081 (internal) stays inside the network.
       - "${API_PORT:-8080}:8080"

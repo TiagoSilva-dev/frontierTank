@@ -32,6 +32,8 @@ type Account struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
 	Banned   bool   `json:"banned,omitempty"`
+	// Version of the Terms of Use and Privacy Policy the player accepted ("" = none).
+	TermsVersion string `json:"terms_version"`
 }
 
 type Profile struct {
@@ -122,9 +124,9 @@ func isUnique(err error) bool {
 	return errors.As(err, &pgErr) && pgErr.Code == errUniqueViolation
 }
 
-func (s *Store) CreateAccount(ctx context.Context, username, hash string) (Account, error) {
-	account := Account{Username: username}
-	err := s.pool.QueryRow(ctx, `INSERT INTO accounts (username, password_hash, last_login) VALUES ($1, $2, now()) RETURNING id`, username, hash).Scan(&account.ID)
+func (s *Store) CreateAccount(ctx context.Context, username, hash, terms string) (Account, error) {
+	account := Account{Username: username, TermsVersion: terms}
+	err := s.pool.QueryRow(ctx, `INSERT INTO accounts (username, password_hash, last_login, terms_version, terms_accepted_at) VALUES ($1, $2, now(), $3, now()) RETURNING id`, username, hash, terms).Scan(&account.ID)
 	if isUnique(err) {
 		return account, ErrTaken
 	}
@@ -134,7 +136,7 @@ func (s *Store) CreateAccount(ctx context.Context, username, hash string) (Accou
 func (s *Store) AccountByUsername(ctx context.Context, username string) (Account, string, error) {
 	var account Account
 	var hash string
-	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned)
+	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned, terms_version FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned, &account.TermsVersion)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, "", ErrNotFound
 	}
@@ -161,10 +163,15 @@ func (s *Store) TouchLogin(ctx context.Context, id int64) error {
 }
 
 // DeleteAccount erases the account (LGPD/GDPR). Its items on sale go with it; the sales
-// it took part in stay in the price history without the name.
+// it took part in stay in the price history without the name. What the player wrote
+// (chat) and the character name (op.create) leave the audit log; the rest of it stays
+// without the account (anonymous economy records, kept until the retention period).
 func (s *Store) DeleteAccount(ctx context.Context, id int64) error {
 	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
 		if _, err := tx.Exec(ctx, `DELETE FROM auction_listings WHERE seller_id = $1 AND status = 'active'`, id); err != nil {
+			return err
+		}
+		if _, err := tx.Exec(ctx, `DELETE FROM audit_log WHERE account_id = $1 AND kind IN ('chat', 'op.create')`, id); err != nil {
 			return err
 		}
 		if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
@@ -182,7 +189,7 @@ func (s *Store) CreateSession(ctx context.Context, accountID int64, tokenHash []
 
 func (s *Store) SessionAccount(ctx context.Context, tokenHash []byte) (Account, error) {
 	var account Account
-	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned)
+	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned, a.terms_version FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned, &account.TermsVersion)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, ErrNotFound
 	}
@@ -264,7 +271,8 @@ func (s *Store) AddAudit(ctx context.Context, serverID string, entries []AuditEn
 		if len(detail) == 0 {
 			detail = json.RawMessage("{}")
 		}
-		batch.Queue(`INSERT INTO audit_log (account_id, server_id, kind, detail) VALUES ($1, $2, $3, $4)`, entry.AccountID, serverID, entry.Kind, detail)
+		// An account deleted meanwhile is recorded as no account (the batch never fails).
+		batch.Queue(`INSERT INTO audit_log (account_id, server_id, kind, detail) VALUES ((SELECT id FROM accounts WHERE id = $1), $2, $3, $4)`, entry.AccountID, serverID, entry.Kind, detail)
 	}
 	return s.pool.SendBatch(ctx, batch).Close()
 }

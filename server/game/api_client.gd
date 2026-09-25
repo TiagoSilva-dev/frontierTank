@@ -12,6 +12,8 @@ var server_id: String = "s1"
 var memory_accounts: Dictionary = {}
 var memory_profiles: Dictionary = {}
 var memory_presence: Dictionary = {}
+# Ids are never reused, even after an account is deleted.
+var memory_next_id: int = 1
 
 func is_memory() -> bool:
 	return base_url == "memory"
@@ -46,7 +48,8 @@ func verify(token: String) -> Dictionary:
 			return {"error": "unauthorized"}
 		var username: String = token.substr(4, 16)
 		if not memory_accounts.has(username.to_lower()):
-			memory_accounts[username.to_lower()] = memory_accounts.size() + 1
+			memory_accounts[username.to_lower()] = memory_next_id
+			memory_next_id += 1
 		return {"id": int(memory_accounts[username.to_lower()]), "username": username}
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/sessions/verify", {"token": token})
 	if int(reply.status) != 200:
@@ -109,6 +112,28 @@ func release(account: int) -> void:
 		memory_presence.erase(account)
 		return
 	await request_json(HTTPClient.METHOD_POST, "/internal/presence/release", {"account_id": account, "server_id": server_id})
+
+# Deletes the account and all its data (LGPD/GDPR), with the password the player typed.
+# {} or {"error": "invalid_credentials" | "rate_limited" | ...}
+func delete_account(account: int, password: String) -> Dictionary:
+	if is_memory():
+		# Memory accounts have no password: any one that was typed counts.
+		if password == "":
+			return {"error": "invalid_credentials"}
+		memory_profiles.erase(account)
+		memory_presence.erase(account)
+		for username: String in memory_accounts.keys():
+			if int(memory_accounts[username]) == account:
+				memory_accounts.erase(username)
+		# As in the API: the items on sale go with the account; past sales stay nameless.
+		memory_listings = memory_listings.filter(func(listing: Dictionary) -> bool: return not (int(listing.seller_id) == account and listing.status == "active"))
+		for listing: Dictionary in memory_listings:
+			if int(listing.seller_id) == account:
+				listing.seller_name = ""
+		memory_mail = memory_mail.filter(func(letter: Dictionary) -> bool: return int(letter.account) != account)
+		return {}
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/accounts/%d/delete" % account, {"password": password})
+	return {} if int(reply.status) == 204 else {"error": error_code(reply)}
 
 func heartbeat(info: Dictionary, players: Array) -> bool:
 	if is_memory():

@@ -225,6 +225,23 @@ func open_named(target: String) -> void:
 				smith.build()
 		"title":
 			show_title()
+		"legal":
+			# Capture helpers (launch checklist): --kind=privacy, --mode=update.
+			show_title()
+			LegalScreen.open(ui, str(args.get("kind", "terms")))
+		"consent":
+			show_title()
+			ConsentDialog.open(ui, str(args.get("mode", "create")))
+		"account":
+			show_city()
+			if args.has("logged"):
+				# --logged=1: as if logged in on the title (the account's own buttons).
+				auth.token = "capture"
+				auth.username = "nilo"
+			open_account()
+		"help":
+			show_city()
+			open_help()
 		_:
 			show_city()
 
@@ -477,7 +494,7 @@ func shortcut(id: String) -> void:
 		"bag":
 			open_bag()
 		"help":
-			UiKit.notice(ui, tr("AJUDA"), tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"))
+			open_help()
 		"exit":
 			if screen_name == "city":
 				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Voltar à tela de entrada?") if OS.has_feature("web") else tr("Deseja fechar o Frontier Tank?"))
@@ -504,6 +521,26 @@ func shortcut(id: String) -> void:
 		"pet", "mission":
 			var names: Dictionary = {"pet": "PET", "mission": "MISSÃO"}  # i18n
 			UiKit.notice(ui, tr(names[id]), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
+
+# The controls, the legal texts and the account (launch checklist: LGPD/GDPR).
+func open_help() -> Control:
+	var dialog: Control = UiKit.modal(ui, tr("AJUDA"), tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"), Vector2(760, 360))
+	dialog.name = "HelpDialog"
+	var rect: Rect2 = dialog.get_meta("rect")
+	var row: float = rect.end.y - 62
+	var terms: Button = UiKit.button(dialog, Legal.title("terms"), Rect2(rect.position.x + 30, row, 170, 42), func() -> void: LegalScreen.open(ui, "terms"), "button_blue", 14)
+	terms.name = "HelpTerms"
+	var privacy: Button = UiKit.button(dialog, tr("Privacidade"), Rect2(rect.position.x + 210, row, 170, 42), func() -> void: LegalScreen.open(ui, "privacy"), "button_blue", 14)
+	privacy.name = "HelpPrivacy"
+	var account: Button = UiKit.button(dialog, tr("Minha conta"), Rect2(rect.position.x + 390, row, 170, 42), func() -> void:
+		dialog.queue_free()
+		open_account(), "button_green", 14)
+	account.name = "HelpAccount"
+	UiKit.button(dialog, tr("FECHAR"), Rect2(rect.end.x - 190, row, 160, 42), dialog.queue_free)
+	return dialog
+
+func open_account() -> AccountScreen:
+	return AccountScreen.open(ui, self)
 
 # ---------- Leilão e Correio (0.12) ----------
 
@@ -619,9 +656,9 @@ func go_offline(reason: String = "") -> void:
 	pending_start = {}
 	waiting_phase = false
 	mail_count = 0
-	# The Leilão and the Correio only work online.
+	# The Leilão, the Correio and the account panel belong to the connection.
 	for node: Node in ui.get_children():
-		if node is AuctionScreen or node is MailScreen:
+		if node is AuctionScreen or node is MailScreen or node is AccountScreen or node.name == "HelpDialog":
 			node.queue_free()
 	if was_online:
 		lobby.queue_free()

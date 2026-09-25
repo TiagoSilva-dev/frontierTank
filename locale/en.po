@@ -62,163 +62,187 @@ msgstr "Soldier"
 msgid "Veterano"
 msgstr "Veteran"
 
-#: client/net/auth_client.gd:100
-msgid "Esta conta já existe. Escolha outro nome de conta."
-msgstr "This account already exists. Choose another account name."
-
-#: client/net/auth_client.gd:102
-msgid "Conta ou senha incorreta."
-msgstr "Wrong account or password."
-
-#: client/net/auth_client.gd:104
-msgid "Muitas tentativas. Aguarde um minuto."
-msgstr "Too many attempts. Wait a minute."
-
-#: client/net/auth_client.gd:106
-msgid "Esta conta está suspensa."
-msgstr "This account is suspended."
-
-#: client/net/auth_client.gd:108
-msgid "Sua sessão expirou. Entre de novo."
-msgstr "Your session expired. Log in again."
-
-#: client/net/auth_client.gd:110
-msgid "Sua versão do jogo é diferente da do servidor. Atualize o jogo."
-msgstr "Your game version differs from the server's. Update the game."
-
-#: client/net/auth_client.gd:112
-msgid "Esta conta já está conectada em outro servidor."
-msgstr "This account is already connected to another server."
-
-#: client/net/auth_client.gd:114
-msgid "Sua conta entrou em outro lugar."
-msgstr "Your account logged in somewhere else."
-
-#: client/net/auth_client.gd:116
-msgid "O servidor está cheio. Tente outro servidor."
-msgstr "The server is full. Try another server."
-
-#: client/net/auth_client.gd:118
-msgid "O servidor está reiniciando. Entre de novo em instantes."
-msgstr "The server is restarting. Log in again in a moment."
-
-#: client/net/auth_client.gd:120
-msgid "Seu perfil mudou em outro lugar. Entre de novo."
-msgstr "Your profile changed somewhere else. Log in again."
-
-#: client/net/auth_client.gd:122
-msgid "O servidor não respondeu a tempo."
-msgstr "The server did not answer in time."
-
-#: client/net/auth_client.gd:124
-msgid "A conexão com o servidor caiu."
-msgstr "The connection to the server was lost."
-
 #: client/net/auth_client.gd:125
-msgid "Erro do servidor: %s"
-msgstr "Server error: %s"
-
-#: client/net/auth_client.gd:94
 msgid "Não foi possível conectar ao servidor. Verifique a internet e tente de novo."
 msgstr "Could not reach the server. Check your connection and try again."
 
-#: client/net/auth_client.gd:96
+#: client/net/auth_client.gd:127
 msgid "Conta: use de 3 a 16 letras, números ou _."
 msgstr "Account: use 3 to 16 letters, digits or _."
 
-#: client/net/auth_client.gd:98
+#: client/net/auth_client.gd:129
 msgid "A senha precisa ter de 8 a 128 caracteres."
 msgstr "The password needs 8 to 128 characters."
 
-#: client/scripts/main.gd:272 client/systems/lobby.gd:11 server/game/game_server.gd:532
+#: client/net/auth_client.gd:131
+msgid "Esta conta já existe. Escolha outro nome de conta."
+msgstr "This account already exists. Choose another account name."
+
+#: client/net/auth_client.gd:133
+msgid "Conta ou senha incorreta."
+msgstr "Wrong account or password."
+
+#: client/net/auth_client.gd:135
+msgid "Muitas tentativas. Aguarde um minuto."
+msgstr "Too many attempts. Wait a minute."
+
+#: client/net/auth_client.gd:137
+msgid "Esta conta está suspensa."
+msgstr "This account is suspended."
+
+#: client/net/auth_client.gd:139
+msgid "Sua sessão expirou. Entre de novo."
+msgstr "Your session expired. Log in again."
+
+#: client/net/auth_client.gd:141
+msgid "Sua versão do jogo é diferente da do servidor. Atualize o jogo."
+msgstr "Your game version differs from the server's. Update the game."
+
+#: client/net/auth_client.gd:143
+msgid "Esta conta já está conectada em outro servidor."
+msgstr "This account is already connected to another server."
+
+#: client/net/auth_client.gd:145
+msgid "Sua conta entrou em outro lugar."
+msgstr "Your account logged in somewhere else."
+
+#: client/net/auth_client.gd:147
+msgid "O servidor está cheio. Tente outro servidor."
+msgstr "The server is full. Try another server."
+
+#: client/net/auth_client.gd:149
+msgid "O servidor está reiniciando. Entre de novo em instantes."
+msgstr "The server is restarting. Log in again in a moment."
+
+#: client/net/auth_client.gd:151
+msgid "Seu perfil mudou em outro lugar. Entre de novo."
+msgstr "Your profile changed somewhere else. Log in again."
+
+#: client/net/auth_client.gd:153
+msgid "O servidor não respondeu a tempo."
+msgstr "The server did not answer in time."
+
+#: client/net/auth_client.gd:155
+msgid "A conexão com o servidor caiu."
+msgstr "The connection to the server was lost."
+
+#: client/net/auth_client.gd:157
+msgid "Para jogar online, aceite os Termos de Uso e a Política de Privacidade."
+msgstr "To play online, accept the Terms of Use and the Privacy Policy."
+
+#: client/net/auth_client.gd:159
+msgid "Os Termos de Uso mudaram. Atualize o jogo para ver a versão nova."
+msgstr "The Terms of Use have changed. Update the game to see the new version."
+
+#: client/net/auth_client.gd:161
+msgid "Sua conta e os seus dados foram excluídos."
+msgstr "Your account and your data have been deleted."
+
+#: client/net/auth_client.gd:162
+msgid "Erro do servidor: %s"
+msgstr "Server error: %s"
+
+#: client/scripts/main.gd:289 client/systems/lobby.gd:11 server/game/game_server.gd:534
 msgid "Guerra de equipes, diversão sem limite"
 msgstr "Team war, endless fun"
 
-#: client/scripts/main.gd:278 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
+#: client/scripts/main.gd:295 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
 msgid "Expedição: %s"
 msgstr "Expedition: %s"
 
-#: client/scripts/main.gd:288 client/scripts/main.gd:299 client/scripts/main.gd:358 client/scripts/main.gd:656
+#: client/scripts/main.gd:305 client/scripts/main.gd:316 client/scripts/main.gd:375 client/scripts/main.gd:693
 msgid "SALA"
 msgstr "ROOM"
 
-#: client/scripts/main.gd:480 client/ui/bottom_bar.gd:22
-msgid "AJUDA"
-msgstr "HELP"
-
-#: client/scripts/main.gd:480
-msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
-msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
-
-#: client/scripts/main.gd:483
+#: client/scripts/main.gd:500
 msgid "Deseja fechar o Frontier Tank?"
 msgstr "Close Frontier Tank?"
 
-#: client/scripts/main.gd:483 client/scripts/main.gd:485 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:66
+#: client/scripts/main.gd:500 client/scripts/main.gd:502 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:66
 msgid "SAIR"
 msgstr "EXIT"
 
-#: client/scripts/main.gd:483
+#: client/scripts/main.gd:500
 msgid "Voltar à tela de entrada?"
 msgstr "Go back to the title screen?"
 
-#: client/scripts/main.gd:486
+#: client/scripts/main.gd:503
 msgid "FICAR"
 msgstr "STAY"
 
-#: client/scripts/main.gd:505 client/ui/bottom_bar.gd:17
+#: client/scripts/main.gd:522 client/ui/bottom_bar.gd:17
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/scripts/main.gd:505 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
+#: client/scripts/main.gd:522 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
 msgid "PET"
 msgstr "PET"
 
-#: client/scripts/main.gd:506
+#: client/scripts/main.gd:523
 msgid "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."
 msgstr "This system is not available in this offline version yet.\nBattle tools can be bought inside the room."
 
-#: client/scripts/main.gd:515 client/ui/auction_screen.gd:71
+#: client/scripts/main.gd:527 client/ui/bottom_bar.gd:22
+msgid "AJUDA"
+msgstr "HELP"
+
+#: client/scripts/main.gd:527
+msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
+msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
+
+#: client/scripts/main.gd:533 client/ui/title_screen.gd:71
+msgid "Privacidade"
+msgstr "Privacy"
+
+#: client/scripts/main.gd:535 client/ui/title_screen.gd:119
+msgid "Minha conta"
+msgstr "My account"
+
+#: client/scripts/main.gd:539 client/ui/account_screen.gd:74 client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34
+msgid "FECHAR"
+msgstr "CLOSE"
+
+#: client/scripts/main.gd:552 client/ui/auction_screen.gd:71
 msgid "LEILÃO"
 msgstr "AUCTION HOUSE"
 
-#: client/scripts/main.gd:515
+#: client/scripts/main.gd:552
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:525 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+#: client/scripts/main.gd:562 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
 msgid "CORREIO"
 msgstr "MAIL"
 
-#: client/scripts/main.gd:525
+#: client/scripts/main.gd:562
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:536
+#: client/scripts/main.gd:573
 msgid "O Leilão só funciona online."
 msgstr "The Auction House only works online."
 
-#: client/scripts/main.gd:600
+#: client/scripts/main.gd:637
 msgid "Bem-vindo ao servidor %s!"
 msgstr "Welcome to server %s!"
 
-#: client/scripts/main.gd:633
+#: client/scripts/main.gd:670
 msgid "CONEXÃO"
 msgstr "CONNECTION"
 
-#: client/scripts/main.gd:643
+#: client/scripts/main.gd:680
 msgid "AVISO"
 msgstr "NOTICE"
 
-#: client/scripts/main.gd:656
+#: client/scripts/main.gd:693
 msgid "Você foi removido da sala."
 msgstr "You were removed from the room."
 
-#: client/scripts/main.gd:707
+#: client/scripts/main.gd:744
 msgid "Música desligada"
 msgstr "Music off"
 
-#: client/scripts/main.gd:707
+#: client/scripts/main.gd:744
 msgid "Música ligada"
 msgstr "Music on"
 
@@ -346,7 +370,7 @@ msgstr "%d gold"
 msgid "comissão %s"
 msgstr "commission %s"
 
-#: client/systems/auction.gd:268 server/game/game_server.gd:973
+#: client/systems/auction.gd:268 server/game/game_server.gd:975
 msgid "Este anúncio não está mais à venda."
 msgstr "This listing is no longer for sale."
 
@@ -501,6 +525,14 @@ msgstr "Free entry"
 #: client/systems/instance_run.gd:55
 msgid "Mapa: %s — Nível %d"
 msgstr "Map: %s — Level %d"
+
+#: client/systems/legal.gd:13
+msgid "Política de Privacidade"
+msgstr "Privacy Policy"
+
+#: client/systems/legal.gd:13
+msgid "Termos de Uso"
+msgstr "Terms of Use"
 
 #: client/systems/lobby.gd:11
 msgid "A mais valente aventura"
@@ -798,9 +830,97 @@ msgstr "The character was already created."
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr "Invalid name: use 2 to 14 letters or digits."
 
-#: client/systems/profile.gd:744 server/game/game_server.gd:421
+#: client/systems/profile.gd:744 server/game/game_server.gd:423
 msgid "Operação desconhecida."
 msgstr "Unknown operation."
+
+#: client/ui/account_screen.gd:100
+msgid "Arquivo baixado: %s"
+msgstr "File downloaded: %s"
+
+#: client/ui/account_screen.gd:106
+msgid "Não foi possível salvar o arquivo."
+msgstr "The file could not be saved."
+
+#: client/ui/account_screen.gd:110
+msgid "Seus dados foram salvos em:\n%s"
+msgstr "Your data was saved in:\n%s"
+
+#: client/ui/account_screen.gd:118
+msgid "EXCLUIR CONTA"
+msgstr "DELETE ACCOUNT"
+
+#: client/ui/account_screen.gd:118
+msgid "Isso apaga para sempre a sua conta, o personagem, os itens, as moedas, o Correio e os anúncios do Leilão. Não dá para desfazer.\nDigite a sua senha para confirmar."
+msgstr "This permanently deletes your account, character, items, currencies, Mail and Auction listings. It cannot be undone.\nType your password to confirm."
+
+#: client/ui/account_screen.gd:120 client/ui/title_screen.gd:127
+msgid "sua senha"
+msgstr "your password"
+
+#: client/ui/account_screen.gd:127
+msgid "EXCLUIR PARA SEMPRE"
+msgstr "DELETE FOREVER"
+
+#: client/ui/account_screen.gd:129 client/ui/auction_screen.gd:656 client/ui/auction_screen.gd:696 client/ui/consent_dialog.gd:47
+msgid "CANCELAR"
+msgstr "CANCEL"
+
+#: client/ui/account_screen.gd:136 server/game/game_server.gd:1121
+msgid "Digite a sua senha."
+msgstr "Type your password."
+
+#: client/ui/account_screen.gd:139
+msgid "Excluindo…"
+msgstr "Deleting…"
+
+#: client/ui/account_screen.gd:160
+msgid "CONTA EXCLUÍDA"
+msgstr "ACCOUNT DELETED"
+
+#: client/ui/account_screen.gd:37
+msgid "MINHA CONTA"
+msgstr "MY ACCOUNT"
+
+#: client/ui/account_screen.gd:42 client/ui/title_screen.gd:114 client/ui/title_screen.gd:122
+msgid "Conta"
+msgstr "Account"
+
+#: client/ui/account_screen.gd:47
+msgid "Servidor"
+msgstr "Server"
+
+#: client/ui/account_screen.gd:50
+msgid "Termos aceitos"
+msgstr "Terms accepted"
+
+#: client/ui/account_screen.gd:51
+msgid "versão %s"
+msgstr "version %s"
+
+#: client/ui/account_screen.gd:54
+msgid "Você está no modo offline: o progresso fica só neste computador e nada é enviado para os servidores. Para ter uma conta, escolha um servidor na tela de entrada."
+msgstr "You are in offline mode: your progress stays on this computer only and nothing is sent to the servers. To have an account, choose a server on the title screen."
+
+#: client/ui/account_screen.gd:63
+msgid "Baixar meus dados"
+msgstr "Download my data"
+
+#: client/ui/account_screen.gd:65
+msgid "Um arquivo JSON com tudo o que o servidor guarda sobre a sua conta."
+msgstr "A JSON file with everything the server keeps about your account."
+
+#: client/ui/account_screen.gd:66
+msgid "Excluir conta"
+msgstr "Delete account"
+
+#: client/ui/account_screen.gd:72
+msgid "Abrir pasta"
+msgstr "Open folder"
+
+#: client/ui/account_screen.gd:89
+msgid "Preparando os seus dados…"
+msgstr "Preparing your data…"
 
 #: client/ui/auction_screen.gd:17
 msgid "Comprar"
@@ -990,7 +1110,7 @@ msgstr "BUY"
 msgid "Este anúncio é seu."
 msgstr "This listing is yours."
 
-#: client/ui/auction_screen.gd:336 server/game/game_server.gd:975
+#: client/ui/auction_screen.gd:336 server/game/game_server.gd:977
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr "You do not have enough Solars and Stars."
 
@@ -1074,10 +1194,6 @@ msgstr "For sale (%d/%d)"
 msgid "Encerrados"
 msgstr "Closed"
 
-#: client/ui/auction_screen.gd:656 client/ui/auction_screen.gd:696 client/ui/hall_screen.gd:233
-msgid "CANCELAR"
-msgstr "CANCEL"
-
 #: client/ui/auction_screen.gd:659
 msgid "Nada à venda. Anuncie na aba Vender."
 msgstr "Nothing for sale. List items in the Sell tab."
@@ -1117,10 +1233,6 @@ msgstr "%s is back in your Bag."
 #: client/ui/auction_screen.gd:709
 msgid "O item está no seu Correio."
 msgstr "The item is in your Mail."
-
-#: client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34 client/ui/mail_screen.gd:41 client/ui/room_screen.gd:213
-msgid "FECHAR"
-msgstr "CLOSE"
 
 #: client/ui/auction_screen.gd:73
 msgid "CORREIO (%d)"
@@ -1702,6 +1814,46 @@ msgstr "NAME"
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr "The name needs at least 3 letters."
 
+#: client/ui/consent_dialog.gd:27 client/ui/title_screen.gd:131
+msgid "CRIAR CONTA"
+msgstr "CREATE ACCOUNT"
+
+#: client/ui/consent_dialog.gd:27
+msgid "TERMOS ATUALIZADOS"
+msgstr "UPDATED TERMS"
+
+#: client/ui/consent_dialog.gd:29
+msgid "Para jogar online, leia e aceite os Termos de Uso e a Política de Privacidade.\nResumo: guardamos o nome da conta, a senha protegida, o seu personagem e o que acontece no jogo (compras, partidas e chat), para o jogo funcionar e para a segurança. Não vendemos dados nem mostramos anúncios. Você pode baixar os seus dados ou excluir a conta quando quiser em Ajuda → Minha conta."
+msgstr "To play online, read and accept the Terms of Use and the Privacy Policy.\nSummary: we keep your account name, your protected password, your character and what happens in the game (purchases, matches and chat), so the game works and stays secure. We do not sell data or show ads. You can download your data or delete your account whenever you want in Help → My account."
+
+#: client/ui/consent_dialog.gd:31
+msgid "Os Termos de Uso e a Política de Privacidade mudaram (versão %s). Para continuar jogando online, leia e aceite os textos novos."
+msgstr "The Terms of Use and the Privacy Policy have changed (version %s). To keep playing online, read and accept the new texts."
+
+#: client/ui/consent_dialog.gd:34
+msgid "Ler os Termos de Uso"
+msgstr "Read the Terms of Use"
+
+#: client/ui/consent_dialog.gd:36
+msgid "Ler a Política de Privacidade"
+msgstr "Read the Privacy Policy"
+
+#: client/ui/consent_dialog.gd:38
+msgid "Li e aceito os Termos de Uso e a Política de Privacidade."
+msgstr "I have read and accept the Terms of Use and the Privacy Policy."
+
+#: client/ui/consent_dialog.gd:42
+msgid "Tenho 13 anos ou mais; se tenho menos de 18, meu responsável concorda."
+msgstr "I am 13 or older; if I am under 18, my parent or guardian agrees."
+
+#: client/ui/consent_dialog.gd:45
+msgid "ACEITAR"
+msgstr "ACCEPT"
+
+#: client/ui/consent_dialog.gd:45
+msgid "ACEITAR E CRIAR"
+msgstr "ACCEPT AND CREATE"
+
 #: client/ui/coupon_dialog.gd:10
 msgid "Digite o código do cupom:"
 msgstr "Type the coupon code:"
@@ -2270,7 +2422,7 @@ msgstr "INVITE"
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr "Only the room host can invite players."
 
-#: client/ui/room_screen.gd:357 server/game/game_server.gd:672
+#: client/ui/room_screen.gd:357 server/game/game_server.gd:674
 msgid "Não há vagas livres na sua equipe."
 msgstr "There are no free slots in your team."
 
@@ -2534,37 +2686,25 @@ msgstr "No items available."
 msgid "Alto-falante"
 msgstr "Megaphone"
 
-#: client/ui/title_screen.gd:103
+#: client/ui/title_screen.gd:108
 msgid "Jogue sozinho: as salas e os jogadores do canal são simulados por IA e o progresso fica neste computador."
 msgstr "Play alone: the channel's rooms and players are simulated by AI and your progress stays on this computer."
 
-#: client/ui/title_screen.gd:109 client/ui/title_screen.gd:114
-msgid "Conta"
-msgstr "Account"
-
-#: client/ui/title_screen.gd:111
+#: client/ui/title_screen.gd:116
 msgid "Trocar de conta"
 msgstr "Switch account"
 
-#: client/ui/title_screen.gd:115
+#: client/ui/title_screen.gd:123
 msgid "nome da conta"
 msgstr "account name"
 
-#: client/ui/title_screen.gd:118
+#: client/ui/title_screen.gd:126
 msgid "Senha"
 msgstr "Password"
 
-#: client/ui/title_screen.gd:119
-msgid "sua senha"
-msgstr "your password"
-
-#: client/ui/title_screen.gd:123
+#: client/ui/title_screen.gd:130
 msgid "Lembrar"
 msgstr "Remember"
-
-#: client/ui/title_screen.gd:137
-msgid "CRIAR CONTA"
-msgstr "CREATE ACCOUNT"
 
 #: client/ui/title_screen.gd:14
 msgid "Modo offline"
@@ -2574,35 +2714,39 @@ msgstr "Offline mode"
 msgid "Sozinho"
 msgstr "Solo"
 
-#: client/ui/title_screen.gd:164
+#: client/ui/title_screen.gd:158
 msgid "%d online"
 msgstr "%d online"
 
-#: client/ui/title_screen.gd:164
+#: client/ui/title_screen.gd:158
 msgid "Cheio"
 msgstr "Full"
 
-#: client/ui/title_screen.gd:172
+#: client/ui/title_screen.gd:166
 msgid "Servidores online indisponíveis agora. Você pode jogar no modo offline."
 msgstr "Online servers are unavailable right now. You can play in offline mode."
 
-#: client/ui/title_screen.gd:208
+#: client/ui/title_screen.gd:202
 msgid "Bem-vindo ao modo offline!"
 msgstr "Welcome to offline mode!"
 
-#: client/ui/title_screen.gd:226
+#: client/ui/title_screen.gd:220
 msgid "Digite a conta e a senha."
 msgstr "Type your account and password."
 
-#: client/ui/title_screen.gd:229
+#: client/ui/title_screen.gd:225
+msgid "Para criar a conta, aceite os Termos de Uso e a Política de Privacidade."
+msgstr "To create the account, accept the Terms of Use and the Privacy Policy."
+
+#: client/ui/title_screen.gd:227
 msgid "Criando a conta…"
 msgstr "Creating the account…"
 
-#: client/ui/title_screen.gd:229
+#: client/ui/title_screen.gd:227
 msgid "Entrando…"
 msgstr "Logging in…"
 
-#: client/ui/title_screen.gd:234
+#: client/ui/title_screen.gd:232
 msgid "Conectando a %s…"
 msgstr "Connecting to %s…"
 
@@ -2614,83 +2758,99 @@ msgstr "SELECT A SERVER"
 msgid "Frontier Tank: Nova Era %s"
 msgstr "Frontier Tank: Nova Era %s"
 
-#: client/ui/title_screen.gd:92
+#: client/ui/title_screen.gd:97
 msgid "Buscando servidores…"
 msgstr "Looking for servers…"
 
-#: client/ui/ui_kit.gd:364
+#: client/ui/ui_kit.gd:395
 msgid "OK"
 msgstr "OK"
 
-#: server/game/game_server.gd:399 server/game/game_server.gd:439
+#: server/game/game_server.gd:1115
+msgid "Saia da batalha antes de excluir a conta."
+msgstr "Leave the battle before deleting your account."
+
+#: server/game/game_server.gd:1126
+msgid "Muitas tentativas. Aguarde alguns minutos."
+msgstr "Too many attempts. Wait a few minutes."
+
+#: server/game/game_server.gd:1134
+msgid "Não foi possível excluir a conta agora. Tente de novo."
+msgstr "The account could not be deleted now. Try again."
+
+#: server/game/game_server.gd:1134
+msgid "Senha incorreta."
+msgstr "Wrong password."
+
+#: server/game/game_server.gd:401 server/game/game_server.gd:441
 msgid "Este nome já está em uso. Escolha outro."
 msgstr "This name is taken. Choose another."
 
-#: server/game/game_server.gd:426 server/game/game_server.gd:525 server/game/game_server.gd:548 server/game/game_server.gd:875
+#: server/game/game_server.gd:428 server/game/game_server.gd:527 server/game/game_server.gd:550 server/game/game_server.gd:877
 msgid "Você está numa batalha."
 msgstr "You are in a battle."
 
-#: server/game/game_server.gd:429 server/game/game_server.gd:689 server/game/game_server.gd:879
+#: server/game/game_server.gd:431 server/game/game_server.gd:691 server/game/game_server.gd:881 server/game/game_server.gd:1118
 msgid "Aguarde a operação anterior terminar."
 msgstr "Wait for the previous operation to finish."
 
-#: server/game/game_server.gd:436
+#: server/game/game_server.gd:438
 msgid "Servidor indisponível. Tente de novo."
 msgstr "Server unavailable. Try again."
 
-#: server/game/game_server.gd:464
+#: server/game/game_server.gd:466
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr "Easy! Wait a little before talking again."
 
-#: server/game/game_server.gd:550
+#: server/game/game_server.gd:552
 msgid "Sala não encontrada neste canal."
 msgstr "Room not found on this channel."
 
-#: server/game/game_server.gd:552
+#: server/game/game_server.gd:554
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr "The room is in battle. Pick another room or wait."
 
-#: server/game/game_server.gd:554
+#: server/game/game_server.gd:556
 msgid "A sala está cheia."
 msgstr "The room is full."
 
-#: server/game/game_server.gd:565
+#: server/game/game_server.gd:567
 msgid "%s entrou na sala."
 msgstr "%s joined the room."
 
-#: server/game/game_server.gd:581
+#: server/game/game_server.gd:583
 msgid "%s saiu da sala."
 msgstr "%s left the room."
 
-#: server/game/game_server.gd:600
+#: server/game/game_server.gd:602
 msgid "Somente o dono da sala pode fazer isso."
 msgstr "Only the room owner can do that."
 
-#: server/game/game_server.gd:603
+#: server/game/game_server.gd:605
 msgid "A sala está em batalha."
 msgstr "The room is in battle."
 
-#: server/game/game_server.gd:641
+#: server/game/game_server.gd:643
 msgid "Você não está numa sala."
 msgstr "You are not in a room."
 
-#: server/game/game_server.gd:655
+#: server/game/game_server.gd:657
 msgid "Jogador não encontrado."
 msgstr "Player not found."
 
-#: server/game/game_server.gd:684
+#: server/game/game_server.gd:686
 msgid "Todos os jogadores precisam estar preparados."
 msgstr "Every player must be ready."
 
-#: server/game/game_server.gd:826
+#: server/game/game_server.gd:828
 msgid "Carta indisponível."
 msgstr "Card unavailable."
 
-#: server/game/game_server.gd:877
+#: server/game/game_server.gd:879
 msgid "Crie o seu personagem primeiro."
 msgstr "Create your character first."
 
-#: server/game/game_server.gd:927
+#: server/game/game_server.gd:929
 msgid "Aguarde um instante para buscar de novo."
 msgstr "Wait a moment before searching again."
 

@@ -5,7 +5,8 @@ extends SceneTree
 # character, profile operations checked by the server, chat, rooms, matchmaking, a PvP
 # battle in lockstep played to the end, a player dropping and coming back mid-battle,
 # the reward cards dealt by the server, an instance with a group and the Leilão (0.12):
-# listing, searching, buying, the Correio, cancelling and the screens.
+# listing, searching, buying, the Correio, cancelling and the screens. Launch checklist:
+# deleting the account from inside the game (Ajuda → Minha conta).
 # Physics runs at 480 ticks per second so battles take a fraction of the time.
 
 const PORT: int = 7391
@@ -71,6 +72,7 @@ func run_tests() -> void:
 	await pve_tests(alice, bob)
 	await auction_tests(alice, bob)
 	await takeover_tests(alice)
+	await privacy_tests(bob)
 	print("NET E2E RESULT: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -346,3 +348,26 @@ func takeover_tests(alice: Node) -> void:
 	other.disconnect_now()
 	await wait_until(func() -> bool: return server.accounts.size() == 1, 5)
 	check(server.accounts.size() == 1, "logging out frees the account")
+
+func privacy_tests(bob: Node) -> void:
+	# LGPD/GDPR: the player deletes the account from inside the game, with the password.
+	check(bob.online, "the second player is still online")
+	var old_id: int = bob.my_account()
+	var reply: Dictionary = await bob.net.request("account_delete", {"password": ""})
+	check(not reply.ok and server.accounts.has(old_id), "deleting needs the password")
+	var screen: AccountScreen = bob.open_account()
+	await process_frame
+	check(screen.find_child("Delete", true, false) != null and screen.find_child("Download", true, false) != null, "Minha conta offers the copy of the data and the deletion")
+	screen.ask_delete()
+	var problem: Label = screen.confirm_root.find_child("DeleteProblem", true, false)
+	await screen.confirm_delete("", problem)
+	check(problem.text != "" and server.accounts.has(old_id), "an empty password is refused on the screen")
+	server.audit(server.accounts[old_id], "chat", {"text": "fica na fila"})
+	await screen.confirm_delete("minha-senha", problem)
+	check(await wait_until(func() -> bool: return not bob.online and bob.screen_name == "title", 5), "after deleting, the game goes back to the title")
+	check(not server.accounts.has(old_id) and not server.api.memory_profiles.has(old_id), "the account and the profile are gone from the server")
+	check(server.audit_queue.all(func(entry: Dictionary) -> bool: return entry.account_id == null or int(entry.account_id) != old_id), "nothing of the deleted account is logged afterwards")
+	check(not is_instance_valid(screen) or not screen.is_inside_tree(), "the account panel closes with the connection")
+	check(bob.auth.token == "", "the session is forgotten on this computer")
+	check(await login(bob, "bob") == "" and bob.my_account() != old_id and not bob.profile.created, "the same name starts a brand new account")
+	bob.net.disconnect_now()

@@ -30,6 +30,7 @@ const FRAMES: Dictionary = {
 	"button_disabled": {"rings": ["3a2a1e", "b0a291"], "top": "9a8d7e", "bottom": "746a5e", "radius": 3},
 	"button_green": {"rings": ["0f2a06", "d8ffb0"], "top": "8ee05a", "bottom": "3f9a1f", "radius": 3, "shine": true},
 	"button_blue": {"rings": ["0a1a3a", "c8ecff"], "top": "74c6ff", "bottom": "2a6fd6", "radius": 3, "shine": true},
+	"button_red": {"rings": ["3a0a06", "ffd0c0"], "top": "f07a5a", "bottom": "b8281c", "radius": 3, "shine": true},
 	"plate": {"rings": ["2a1608", "f2b65a", "6e3510"], "top": "a4541c", "bottom": "7b3b12", "radius": 3},
 	"tab": {"rings": ["2a1608", "c98b45"], "top": "7a4420", "bottom": "5a2e12", "radius": 2},
 	"tab_active": {"rings": ["2a1608", "fff0b0"], "top": "ffc94f", "bottom": "e0701a", "radius": 2, "shine": true},
@@ -223,6 +224,36 @@ static func button(parent: Node, text: String, rect: Rect2, action: Callable = C
 		node.add_theme_stylebox_override("pressed", frame(kind))
 	if action.is_valid():
 		node.pressed.connect(action)
+	parent.add_child(node)
+	return node
+
+# A check box drawn on the paper panels (dark text, no frame).
+static func check_box(parent: Node, text: String, rect: Rect2, pressed: bool = false, font_size: int = 15) -> CheckBox:
+	var node: CheckBox = CheckBox.new()
+	node.text = text
+	node.button_pressed = pressed
+	node.position = rect.position
+	node.size = rect.size
+	node.add_theme_font_override("font", font(true))
+	node.add_theme_font_size_override("font_size", fs(font_size))
+	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		node.add_theme_color_override(state, TEXT_DARK)
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+		node.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	# Dark text on paper: no button outline.
+	node.add_theme_constant_override("outline_size", 0)
+	parent.add_child(node)
+	return node
+
+static func text_field(parent: Node, rect: Rect2, hint: String = "", secret: bool = false, max_length: int = 64, font_size: int = 16) -> LineEdit:
+	var node: LineEdit = LineEdit.new()
+	node.position = rect.position
+	node.size = rect.size
+	node.placeholder_text = hint
+	node.secret = secret
+	node.max_length = max_length
+	node.add_theme_font_override("font", font(true))
+	node.add_theme_font_size_override("font_size", fs(font_size))
 	parent.add_child(node)
 	return node
 

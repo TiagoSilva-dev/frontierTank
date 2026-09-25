@@ -23,6 +23,11 @@ type Config struct {
 	TrustProxy bool
 	// Login/register attempts per IP per minute.
 	AuthPerMinute int
+	// Version of the Terms of Use and Privacy Policy (legal/*.md in the game). Changing
+	// it makes every player accept the new texts before playing again.
+	LegalVersion string
+	// How long the audit log is kept (privacy policy); chat lines are kept less.
+	Retention Retention
 }
 
 func env(key, fallback string) string {
@@ -51,6 +56,8 @@ func loadConfig() (Config, error) {
 		AllowOrigin:      env("ALLOW_ORIGIN", "*"),
 		TrustProxy:       env("TRUST_PROXY", "") == "1",
 		AuthPerMinute:    envInt("AUTH_PER_MINUTE", 20),
+		LegalVersion:     env("LEGAL_VERSION", "2026-09-25"),
+		Retention:        Retention{AuditDays: envInt("AUDIT_RETENTION_DAYS", 365), ChatDays: envInt("CHAT_RETENTION_DAYS", 90), AccessDays: envInt("ACCESS_LOG_DAYS", 183)},
 	}
 	if len(cfg.InternalKey) < 16 {
 		return cfg, errors.New("INTERNAL_KEY must have at least 16 characters")
