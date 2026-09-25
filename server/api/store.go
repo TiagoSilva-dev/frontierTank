@@ -34,6 +34,10 @@ type Account struct {
 	Banned   bool   `json:"banned,omitempty"`
 	// Version of the Terms of Use and Privacy Policy the player accepted ("" = none).
 	TermsVersion string `json:"terms_version"`
+	// Linked to a SteamID; NoPassword: created by the Steam login (no password to type:
+	// deleting it is confirmed with a Steam ticket).
+	Steam      bool `json:"steam,omitempty"`
+	NoPassword bool `json:"no_password,omitempty"`
 }
 
 type Profile struct {
@@ -136,7 +140,7 @@ func (s *Store) CreateAccount(ctx context.Context, username, hash, terms string)
 func (s *Store) AccountByUsername(ctx context.Context, username string) (Account, string, error) {
 	var account Account
 	var hash string
-	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned, terms_version FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned, &account.TermsVersion)
+	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned, terms_version, steam_id IS NOT NULL FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned, &account.TermsVersion, &account.Steam)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, "", ErrNotFound
 	}
@@ -194,7 +198,7 @@ func (s *Store) CreateSession(ctx context.Context, accountID int64, tokenHash []
 
 func (s *Store) SessionAccount(ctx context.Context, tokenHash []byte) (Account, error) {
 	var account Account
-	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned, a.terms_version FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned, &account.TermsVersion)
+	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned, a.terms_version, a.steam_id IS NOT NULL, a.password_hash = '' FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned, &account.TermsVersion, &account.Steam, &account.NoPassword)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, ErrNotFound
 	}

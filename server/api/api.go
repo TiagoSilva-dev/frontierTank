@@ -39,6 +39,7 @@ const (
 var usernamePattern = regexp.MustCompile(`^[A-Za-z0-9_]{3,16}$`)
 
 type API struct {
+	steam   *SteamClient
 	store   *Store
 	cfg     Config
 	limiter *RateLimiter
@@ -53,7 +54,8 @@ func newAPI(store *Store, cfg Config, logger *slog.Logger) (*API, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &API{store: store, cfg: cfg, limiter: NewRateLimiter(cfg.AuthPerMinute, time.Minute), log: logger, dummyHash: dummy}, nil
+	steam := cfg.Steam
+	return &API{steam: &steam, store: store, cfg: cfg, limiter: NewRateLimiter(cfg.AuthPerMinute, time.Minute), log: logger, dummyHash: dummy}, nil
 }
 
 func (a *API) publicRoutes() http.Handler {
@@ -67,6 +69,7 @@ func (a *API) publicRoutes() http.Handler {
 	mux.HandleFunc("POST /v1/me/password", a.changePassword)
 	mux.HandleFunc("DELETE /v1/me", a.deleteMe)
 	a.privacyRoutes(mux)
+	a.steamRoutes(mux)
 	return a.cors(limitBody(mux, 64<<10))
 }
 
@@ -84,6 +87,7 @@ func (a *API) internalRoutes() http.Handler {
 	a.auctionRoutes(mux)
 	a.privacyInternalRoutes(mux)
 	a.reportRoutes(mux)
+	a.storeRoutes(mux)
 	return a.internalOnly(limitBody(mux, 8<<20))
 }
 
@@ -410,9 +414,7 @@ func (a *API) deleteMe(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	var body struct {
-		Password string `json:"password"`
-	}
+	var body deleteBody
 	if err := readJSON(r, &body); err != nil {
 		writeError(w, http.StatusBadRequest, codeBadRequest, "invalid body")
 		return
@@ -422,7 +424,7 @@ func (a *API) deleteMe(w http.ResponseWriter, r *http.Request) {
 		a.fail(w, err)
 		return
 	}
-	if !verifyPassword(body.Password, hash) {
+	if !a.confirmsDeletion(r.Context(), account.ID, hash, body) {
 		writeError(w, http.StatusUnauthorized, codeCredentials, "wrong password")
 		return
 	}

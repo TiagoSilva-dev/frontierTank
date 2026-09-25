@@ -157,7 +157,11 @@
     {"id": "cabelo_prateado", "slot": "cabelo", "gender": "u", "name": "Cabelo Prateado", "dye": "d8e0f0", "price": 150, "attrs": {"sorte": 5}},
     {"id": "cabelo_verde", "slot": "cabelo", "gender": "u", "name": "Cabelo Verde Menta", "dye": "4ee08a", "price": 150, "attrs": {"sorte": 5}},
     {"id": "cabelo_roxo", "slot": "cabelo", "gender": "u", "name": "Cabelo Roxo", "dye": "a45cff", "price": 150, "attrs": {"sorte": 5}},
-    {"id": "cabelo_preto", "slot": "cabelo", "gender": "u", "name": "Cabelo Preto", "dye": "3a3448", "price": 150, "attrs": {"sorte": 5}}
+    {"id": "cabelo_preto", "slot": "cabelo", "gender": "u", "name": "Cabelo Preto", "dye": "3a3448", "price": 150, "attrs": {"sorte": 5}},
+    {"id": "cabelo_rosa_neon", "slot": "cabelo", "gender": "u", "name": "Cabelo Rosa Neon", "dye": "ff4fc8", "price": 0, "premium": true, "attrs": {}},
+    {"id": "cabelo_branco_gelo", "slot": "cabelo", "gender": "u", "name": "Cabelo Branco Gelo", "dye": "e6f2ff", "price": 0, "premium": true, "attrs": {}},
+    {"id": "cabelo_chama", "slot": "cabelo", "gender": "u", "name": "Cabelo Chama", "dye": "ff6a1a", "price": 0, "premium": true, "attrs": {}},
+    {"id": "cabelo_aurora", "slot": "cabelo", "gender": "u", "name": "Cabelo Aurora", "dye": "36e0b8", "price": 0, "premium": true, "attrs": {}}
   ],
   "coupons": [
     {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.", "all": true, "coins": 99999, "stones": 200, "crystals": 50},

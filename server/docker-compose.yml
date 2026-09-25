@@ -41,6 +41,12 @@ services:
       CHAT_RETENTION_DAYS: ${CHAT_RETENTION_DAYS:-90}
       ACCESS_LOG_DAYS: ${ACCESS_LOG_DAYS:-183}
       REPORT_RETENTION_DAYS: ${REPORT_RETENTION_DAYS:-180}
+      # Steam (docs/STEAM.md): without the app id and the publisher key, Steam is off.
+      STEAM_APP_ID: ${STEAM_APP_ID:-0}
+      STEAM_WEB_API_KEY: ${STEAM_WEB_API_KEY:-}
+      STEAM_IDENTITY: ${STEAM_IDENTITY:-frontiertank}
+      STEAM_MICROTXN_SANDBOX: ${STEAM_MICROTXN_SANDBOX:-1}
+      ORDER_RETENTION_DAYS: ${ORDER_RETENTION_DAYS:-1826}
     ports:
       # Only the public API is published; 8081 (internal) stays inside the network.
       - "${API_PORT:-8080}:8080"

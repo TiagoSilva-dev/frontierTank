@@ -241,6 +241,8 @@ static func mail_title(mail: Dictionary) -> String:
 			return Lang.t("Vendido no leilão: %s") % name_text
 		"purchase":
 			return Lang.t("Comprado no leilão: %s") % item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
+		"store":
+			return Lang.t("Loja Steam: %s") % item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 		"returned":
 			var name_text: String = item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 			return (Lang.t("Anúncio vencido: %s") if str(detail.get("reason", "")) == "expired" else Lang.t("Anúncio cancelado: %s")) % name_text

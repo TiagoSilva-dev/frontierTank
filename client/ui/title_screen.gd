@@ -29,6 +29,9 @@ var status_label: Label
 var enter_button: Button
 var busy: bool = false
 var searching: bool = true
+# Running from Steam: the account box offers the Steam login; the player may switch to
+# an account and password instead.
+var use_password: bool = false
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -119,6 +122,16 @@ func build_account() -> void:
 		var mine: Button = UiKit.button(account_box, tr("Minha conta"), Rect2(236, 92, 176, 38), func() -> void: AccountScreen.open(self, app), "button", 15)
 		mine.name = "MyAccount"
 		return
+	if steam_mode():
+		var who: Label = UiKit.label(account_box, tr("Steam: %s") % app.steam.persona, Rect2(16, 12, 424, 30), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		who.name = "SteamPersona"
+		var steam_login: Button = UiKit.button(account_box, tr("ENTRAR COM A STEAM"), Rect2(88, 46, 280, 46), login_steam, "button_blue", 18)
+		steam_login.name = "SteamLogin"
+		var classic: Button = UiKit.button(account_box, tr("Usar conta e senha"), Rect2(138, 104, 180, 34), func() -> void:
+			use_password = true
+			build_account(), "tab", 14)
+		classic.name = "UsePassword"
+		return
 	UiKit.label(account_box, tr("Conta"), Rect2(14, 12, 90, 34), 16, UiKit.TEXT_DARK)
 	user_field = field(Rect2(104, 12, 340, 34), tr("nome da conta"), false)
 	user_field.name = "User"
@@ -202,7 +215,36 @@ func enter() -> void:
 		app.lobby.post("Sistema", tr("Bem-vindo ao modo offline!"), "system")
 		app.show_city()
 		return
+	if steam_mode():
+		await login_steam()
+		return
 	await login(false)
+
+func steam_mode() -> bool:
+	return app.steam.available and app.auth.token == "" and not use_password
+
+# Steam login (launch checklist): a ticket from GodotSteam goes to the API; a SteamID
+# without an account gets one after the consent, like any new account.
+func login_steam() -> void:
+	if busy:
+		return
+	var server: Dictionary = servers[chosen]
+	if server.get("offline", false):
+		return
+	var auth: AuthClient = app.auth
+	busy = true
+	enter_button.disabled = true
+	set_status(tr("Conectando à Steam…"))
+	var error: String = await auth.login_steam(await app.steam.web_ticket())
+	if error == "terms_required":
+		if not await ask_consent("create"):
+			finish(tr("Para criar a conta, aceite os Termos de Uso e a Política de Privacidade."))
+			return
+		error = await auth.login_steam(await app.steam.web_ticket(), Legal.VERSION)
+	if error != "":
+		finish(AuthClient.message_for(error))
+		return
+	await join_server(server)
 
 func login(create: bool) -> void:
 	if busy:
@@ -229,6 +271,12 @@ func login(create: bool) -> void:
 		if error != "":
 			finish(AuthClient.message_for(error))
 			return
+	await join_server(server)
+
+# With a session token: connects to the game server (asking again for the consent when
+# the Terms or the Privacy Policy changed) and goes online.
+func join_server(server: Dictionary) -> void:
+	var auth: AuthClient = app.auth
 	set_status(tr("Conectando a %s…") % tr(str(server.name)))
 	var code: String = await app.net.connect_to(str(server.url), auth.token)
 	if code == "terms_required":

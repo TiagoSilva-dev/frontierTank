@@ -594,7 +594,8 @@ func redeem(code: String) -> String:
 			if not has_item(def.id):
 				add_instance(def.id)
 		for def: Dictionary in Armory.data().cosmetics:
-			if not has_item(def.id):
+			# Premium cosmetics only come from the Steam shop.
+			if not has_item(def.id) and not bool(def.get("premium", false)):
 				add_instance(def.id)
 	for raw: Variant in coupon.get("weapons", []):
 		add_instance(str(raw[0]), str(raw[1]), int(raw[2]))

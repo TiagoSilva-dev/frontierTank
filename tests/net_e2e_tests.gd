@@ -6,7 +6,8 @@ extends SceneTree
 # battle in lockstep played to the end, a player dropping and coming back mid-battle,
 # the reward cards dealt by the server, an instance with a group and the Leilão (0.12):
 # listing, searching, buying, the Correio, cancelling and the screens. Launch checklist:
-# deleting the account from inside the game (Ajuda → Minha conta).
+# deleting the account from inside the game (Ajuda → Minha conta), and the Steam shop
+# (GodotSteam faked; the Steam Web API side is in server/api/steam_test.go).
 # Physics runs at 480 ticks per second so battles take a fraction of the time.
 
 const PORT: int = 7391
@@ -73,6 +74,7 @@ func run_tests() -> void:
 	await auction_tests(alice, bob)
 	await takeover_tests(alice)
 	await privacy_tests(bob)
+	await steam_tests()
 	print("NET E2E RESULT: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -418,3 +420,52 @@ func privacy_tests(bob: Node) -> void:
 	await server.heartbeat()
 	check(await wait_until(func() -> bool: return not bob.online and bob.screen_name == "title", 5), "a banned player is disconnected at the next heartbeat")
 	bob.net.disconnect_now()
+
+func steam_tests() -> void:
+	var fake: Object = load("res://tests/fake_steam.gd").new()
+	SteamService.override = fake
+	var carol: Node = await make_app()
+	check(carol.steam.available, "the game sees Steam (GodotSteam)")
+	check(await login(carol, "carol") == "" and (await carol.do_op("create", ["Carol", "f"])).error == "", "a Steam player logs in and creates the character")
+	var shop: ShopScreen = ShopScreen.new()
+	shop.app = carol
+	carol.ui.add_child(shop)
+	shop.select_tab("premium")
+	await process_frame
+	check(not shop.find_child("Buy_pacote_tinturas", true, false).disabled, "online with Steam, the Premium tab sells")
+	check(not (await carol.net.request("store_buy", {"sku": "roupa_samurai"})).ok, "only catalog products can be ordered")
+	# The overlay refuses: the order is cancelled and nothing arrives.
+	var answer: Array = [""]
+	var buy: Callable = func(sku: String) -> void: answer[0] = await carol.buy_premium(sku)
+	buy.call("tintura_chama")
+	check(await wait_until(func() -> bool: return server.api.memory_orders.size() == 1, 5), "the server opens the order with the API")
+	var first: int = server.api.memory_orders.keys()[0]
+	fake.approve(first, false)
+	check(await wait_until(func() -> bool: return answer[0] != "", 5) and answer[0].contains("cancelada"), "refused in the overlay: cancelled")
+	check(await wait_until(func() -> bool: return str(server.api.memory_orders[first].status) == "cancelled", 5) and carol.mail_count == 0, "a refused order is closed and delivers nothing")
+	# The overlay approves: the items arrive in the Correio.
+	answer[0] = ""
+	buy.call("pacote_tinturas")
+	check(await wait_until(func() -> bool: return server.api.memory_orders.size() == 2, 5), "a second order")
+	var second: int = server.api.memory_orders.keys()[1]
+	fake.approve(second, true)
+	check(await wait_until(func() -> bool: return answer[0] != "", 5) and answer[0].contains("Correio"), "approved in the overlay: %s" % answer[0])
+	check(await wait_until(func() -> bool: return carol.mail_count == 4, 5), "the four dyes wait in the Correio")
+	var claim: Dictionary = await carol.trade("mail_list")
+	var ids: Array = (claim.get("mail", []) as Array).map(func(letter: Dictionary) -> int: return int(letter.id))
+	check((claim.get("mail", []) as Array).all(func(letter: Dictionary) -> bool: return Auction.mail_title(letter).begins_with("Loja Steam")), "the letters say they come from the Steam shop")
+	var claimed: Dictionary = await carol.trade("mail_claim", {"ids": ids})
+	check(claimed.ok and ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"].all(func(id: String) -> bool: return carol.profile.has_item(id)), "the dyes are in the Mochila")
+	var dye: Dictionary = carol.profile.inventory.filter(func(inst: Dictionary) -> bool: return str(inst.id) == "cabelo_aurora").front()
+	check(bool(dye.get("bound", false)) and (dye.get("mods", []) as Array).is_empty(), "bought items are bound and have no bonuses")
+	check(Auction.item_reason(carol.profile, dye) != "", "bought items never go to the auction")
+	check(not (await carol.net.request("store_buy", {"sku": "pacote_tinturas"})).ok, "what the player has is not sold again")
+	# Achievements come from the server's profile.
+	server.accounts[carol.my_account()].profile.victories = 1
+	await carol.do_op("redeem", ["PEDRAS"])
+	check(await wait_until(func() -> bool: return fake.achievements.has("FIRST_VICTORY"), 5), "a victory on the server unlocks the Steam achievement")
+	carol.net.disconnect_now()
+	carol.queue_free()
+	await process_frame
+	SteamService.override = null
+	fake.free()

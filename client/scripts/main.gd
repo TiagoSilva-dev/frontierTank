@@ -24,6 +24,8 @@ var args: Dictionary = {}
 var capture_frames: int = -1
 var net: NetClient
 var auth: AuthClient
+# GodotSteam, when the game runs from Steam (launch checklist); `steam.available`.
+var steam: SteamService
 var online: bool = false
 var offline_profile: PlayerProfile
 # The next phase of an online instance, kept while the transition screen counts down.
@@ -63,6 +65,8 @@ func _ready() -> void:
 	if args.has("api"):
 		auth.base_url = str(args.api)
 	add_child(auth)
+	steam = SteamService.new()
+	add_child(steam)
 	audio = GameAudio.new()
 	add_child(audio)
 	lobby = LobbyDirectory.new()
@@ -618,6 +622,42 @@ func apply_profile(data: Dictionary) -> void:
 	profile.load_data(data)
 	if lobby is OnlineLobby:
 		lobby.my_name = profile.player_name
+	sync_achievements()
+
+# Steam achievements come from the online profile (the server's copy) only.
+func sync_achievements() -> void:
+	if not online or not steam.available:
+		return
+	for id: String in steam.sync_achievements(profile):
+		for entry: Dictionary in Achievements.list():
+			if str(entry.id) == id:
+				toast(tr("Conquista: %s") % tr(str(entry.name)))
+
+# ---------- Steam shop (launch checklist) ----------
+
+# Buys a product of the Premium tab: the server opens the order, the Steam overlay asks
+# the player, and once approved the items arrive in the Correio. Returns the message for
+# the shop.
+func buy_premium(sku: String) -> String:
+	if not online or not steam.available:
+		return tr("Compras só na versão Steam, com a conta ligada à Steam.")
+	var reply: Dictionary = await net.request("store_buy", {"sku": sku}, 30.0)
+	if not reply.ok:
+		return server_text(reply.get("error", ""))
+	var order_id: int = int(reply.order_id)
+	var answer: int = await steam.wait_purchase(order_id)
+	if answer < 0:
+		# No answer from the overlay: an approval that comes later is delivered at the
+		# next login (the server reconciles open orders).
+		return tr("A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio.")
+	if answer == 0:
+		net.send_kind("store_cancel", {"order_id": order_id})
+		return tr("Compra cancelada.")
+	var done: Dictionary = await net.request("store_finalize", {"order_id": order_id}, 40.0)
+	if not done.ok:
+		return server_text(done.get("error", ""))
+	audio.play("ui_coin")
+	return tr("Compra concluída! Os itens chegaram ao Correio.")
 
 # ---------- online (backend 0.11) ----------
 
@@ -635,6 +675,7 @@ func go_online(welcome: Dictionary) -> void:
 	for entry: Variant in welcome.get("chat", []):
 		if entry is Dictionary:
 			channel.add(entry)
+	sync_achievements()
 	if welcome.get("speaker") is Dictionary and not welcome.speaker.is_empty():
 		channel.speaker = OnlineLobby.text_of(welcome.speaker)
 	channel.post("Sistema", tr("Bem-vindo ao servidor %s!") % str(welcome.server.name), "system")

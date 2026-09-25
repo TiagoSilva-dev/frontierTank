@@ -98,9 +98,7 @@ func (a *API) deleteAccountInternal(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	var body struct {
-		Password string `json:"password"`
-	}
+	var body deleteBody
 	if err := readJSON(r, &body); err != nil {
 		writeError(w, http.StatusBadRequest, codeBadRequest, "invalid body")
 		return
@@ -118,7 +116,7 @@ func (a *API) deleteAccountInternal(w http.ResponseWriter, r *http.Request) {
 		a.fail(w, err)
 		return
 	}
-	if !verifyPassword(body.Password, hash) {
+	if !a.confirmsDeletion(r.Context(), id, hash, body) {
 		writeError(w, http.StatusUnauthorized, codeCredentials, "wrong password")
 		return
 	}
@@ -128,6 +126,20 @@ func (a *API) deleteAccountInternal(w http.ResponseWriter, r *http.Request) {
 	}
 	a.log.Info("account deleted from the game", "id", id)
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// deleteBody: the password, or for an account made by the Steam login (no password) a
+// fresh Steam ticket of the same SteamID.
+type deleteBody struct {
+	Password    string `json:"password"`
+	SteamTicket string `json:"steam_ticket,omitempty"`
+}
+
+func (a *API) confirmsDeletion(ctx context.Context, accountID int64, hash string, body deleteBody) bool {
+	if hash == "" {
+		return a.steamConfirms(ctx, accountID, body.SteamTicket)
+	}
+	return verifyPassword(body.Password, hash)
 }
 
 // ---------- store ----------
@@ -189,6 +201,8 @@ type Retention struct {
 	AccessDays int
 	// Chat reports, counted from the review (open reports stay until reviewed).
 	ReportDays int
+	// Steam purchases (tax and consumer records: 5 years).
+	OrderDays int
 }
 
 func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
@@ -203,6 +217,9 @@ func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
 		}
 	}
 	if err := s.PurgeReports(ctx, keep.ReportDays); err != nil {
+		return err
+	}
+	if err := s.PurgeOrders(ctx, keep.OrderDays); err != nil {
 		return err
 	}
 	if keep.AccessDays > 0 {

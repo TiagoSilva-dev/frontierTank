@@ -22,6 +22,14 @@ static func open(parent: Node, app_node: Node) -> AccountScreen:
 func logged_in() -> bool:
 	return bool(app.online) or str(app.auth.token) != ""
 
+# Accounts made by the Steam login have no password: deleting is confirmed by typing
+# the word and a fresh Steam ticket.
+func steam_only() -> bool:
+	return bool(app.auth.no_password)
+
+func can_link() -> bool:
+	return logged_in() and app.steam.available and not bool(app.auth.steam_linked)
+
 func account_name() -> String:
 	if app.online:
 		return str(app.net.account.get("username", app.auth.username))
@@ -31,7 +39,7 @@ func _ready() -> void:
 	size = Vector2(1280, 720)
 	UiKit.dim(self, 0.7)
 	# The panel fits what it shows: the account lines and buttons, or the offline note.
-	var height: float = 64 + 56 + 84 + 66 + ((96 if app.online else 64) + 8 + 56 + 40 if logged_in() else 120)
+	var height: float = 64 + 56 + 84 + 66 + ((96 if app.online else 64) + 8 + 56 + 40 if logged_in() else 120) + (56 if can_link() else 0)
 	var rect: Rect2 = Rect2(330, roundf((720 - height) / 2.0), 620, height)
 	UiKit.panel(self, rect, "wood")
 	UiKit.title(self, tr("MINHA CONTA"), Rect2(rect.position.x, rect.position.y + 8, rect.size.x, 34), 24)
@@ -65,6 +73,10 @@ func _ready() -> void:
 		download.tooltip_text = tr("Um arquivo JSON com tudo o que o servidor guarda sobre a sua conta.")
 		var remove: Button = UiKit.button(self, tr("Excluir conta"), Rect2(x + 278, y, 262, 44), ask_delete, "button_red", 16)
 		remove.name = "Delete"
+		y += 56
+	if can_link():
+		var link: Button = UiKit.button(self, tr("Vincular à Steam"), Rect2(x + 139, y, 262, 44), link_steam, "button_blue", 16)
+		link.name = "LinkSteam"
 		y += 56
 	status = UiKit.label(self, "", Rect2(x, y, 540, 84), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	status.name = "Status"
@@ -115,9 +127,10 @@ func download_data() -> void:
 func ask_delete() -> void:
 	if busy or is_instance_valid(confirm_root):
 		return
-	confirm_root = UiKit.modal(self, tr("EXCLUIR CONTA"), tr("Isso apaga para sempre a sua conta, o personagem, os itens, as moedas, o Correio e os anúncios do Leilão. Não dá para desfazer.\nDigite a sua senha para confirmar."), Vector2(620, 360))
+	var asked: String = tr("Digite EXCLUIR para confirmar (a Steam confirma que a conta é sua).") if steam_only() else tr("Digite a sua senha para confirmar.")
+	confirm_root = UiKit.modal(self, tr("EXCLUIR CONTA"), tr("Isso apaga para sempre a sua conta, o personagem, os itens, as moedas, o Correio e os anúncios do Leilão. Não dá para desfazer.") + "\n" + asked, Vector2(620, 360))
 	var rect: Rect2 = confirm_root.get_meta("rect")
-	var password: LineEdit = UiKit.text_field(confirm_root, Rect2(rect.position.x + 110, rect.position.y + 196, 400, 38), tr("sua senha"), true, 128)
+	var password: LineEdit = UiKit.text_field(confirm_root, Rect2(rect.position.x + 110, rect.position.y + 196, 400, 38), tr("EXCLUIR") if steam_only() else tr("sua senha"), not steam_only(), 128)
 	password.name = "DeletePassword"
 	var problem: Label = UiKit.label(confirm_root, "", Rect2(rect.position.x + 40, rect.position.y + 238, 540, 40), 15, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	problem.name = "DeleteProblem"
@@ -132,21 +145,34 @@ func ask_delete() -> void:
 func confirm_delete(password: String, problem: Label) -> void:
 	if busy:
 		return
-	if password == "":
+	var ticket: String = ""
+	if steam_only():
+		if password.strip_edges().to_upper() != tr("EXCLUIR").to_upper():
+			problem.text = tr("Digite EXCLUIR para confirmar.")
+			return
+		busy = true
+		problem.text = tr("Excluindo…")
+		ticket = await app.steam.web_ticket()
+		password = ""
+		if ticket == "":
+			busy = false
+			problem.text = AuthClient.message_for("steam_unavailable")
+			return
+	elif password == "":
 		problem.text = tr("Digite a sua senha.")
 		return
 	busy = true
 	problem.text = tr("Excluindo…")
 	var error: String = ""
 	if app.online:
-		var reply: Dictionary = await app.net.request("account_delete", {"password": password}, 30.0)
+		var reply: Dictionary = await app.net.request("account_delete", {"password": password, "steam_ticket": ticket}, 30.0)
 		error = "" if reply.ok else app.server_text(reply.get("error", ""))
 		if reply.ok:
 			# The server closes the connection ("account_deleted") and the game goes
 			# back to the title with the notice.
 			app.auth.forget()
 	else:
-		var code: String = await app.auth.delete_account(password)
+		var code: String = await app.auth.delete_account(password, ticket)
 		error = "" if code == "" else AuthClient.message_for(code)
 	busy = false
 	if error != "":
@@ -160,6 +186,25 @@ func confirm_delete(password: String, problem: Label) -> void:
 		UiKit.notice(host, tr("CONTA EXCLUÍDA"), AuthClient.message_for("account_deleted"))
 		if app.screen is TitleScreen:
 			app.screen.build_account()
+
+# ---------- Steam ----------
+
+func link_steam() -> void:
+	if busy:
+		return
+	busy = true
+	status.text = tr("Conectando à Steam…")
+	var code: String = await app.auth.link_steam(await app.steam.web_ticket())
+	busy = false
+	if not is_inside_tree():
+		return
+	if code != "":
+		say(AuthClient.message_for(code), true)
+		return
+	say(tr("Conta ligada à Steam. Agora você pode entrar com a Steam e comprar na loja."))
+	var link: Node = find_child("LinkSteam", true, false)
+	if link != null:
+		link.queue_free()
 
 func _gui_input(_event: InputEvent) -> void:
 	accept_event()

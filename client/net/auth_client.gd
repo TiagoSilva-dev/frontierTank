@@ -14,6 +14,10 @@ var base_url: String = DEFAULT_API
 var token: String = ""
 var username: String = ""
 var remember: bool = true
+# The account is linked to Steam; no_password: it was made by the Steam login (deleting
+# it is confirmed with a Steam ticket instead of a password).
+var steam_linked: bool = false
+var no_password: bool = false
 
 func _init() -> void:
 	base_url = default_api()
@@ -22,6 +26,8 @@ func _init() -> void:
 		base_url = str(config.get_value("online", "api", base_url))
 		token = str(config.get_value("session", "token", ""))
 		username = str(config.get_value("session", "username", ""))
+		steam_linked = bool(config.get_value("session", "steam", false))
+		no_password = bool(config.get_value("session", "no_password", false))
 
 static func default_api() -> String:
 	if OS.has_feature("web"):
@@ -36,6 +42,8 @@ func save_session() -> void:
 	config.set_value("online", "api", base_url)
 	config.set_value("session", "token", token if remember else "")
 	config.set_value("session", "username", username)
+	config.set_value("session", "steam", steam_linked)
+	config.set_value("session", "no_password", no_password)
 	config.save(config_path)
 
 func request_json(method: HTTPClient.Method, path: String, body: Variant = null) -> Dictionary:
@@ -73,8 +81,35 @@ func login(user: String, password: String, create: bool = false, terms: String =
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/register" if create else "/v1/auth/login", body)
 	if int(reply.status) != 200 and int(reply.status) != 201:
 		return error_of(reply)
-	token = str(reply.body.token)
-	username = str(reply.body.account.username)
+	take_session(reply.body)
+	return ""
+
+func take_session(body: Dictionary) -> void:
+	token = str(body.token)
+	username = str(body.account.username)
+	steam_linked = bool(body.account.get("steam", false))
+	no_password = bool(body.account.get("no_password", false))
+	save_session()
+
+# Steam login (launch checklist): the ticket from SteamService.web_ticket(). A SteamID
+# without an account gets one only with the consent: "terms_required" means ask and try
+# again with the version. "" or an error code.
+func login_steam(ticket: String, terms: String = "") -> String:
+	var body: Dictionary = {"ticket": ticket}
+	if terms != "":
+		body.accept_terms = terms
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/steam", body)
+	if int(reply.status) != 200 and int(reply.status) != 201:
+		return error_of(reply)
+	take_session(reply.body)
+	return ""
+
+# Links Steam to the account that is logged in (players from the web tests).
+func link_steam(ticket: String) -> String:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/me/steam", {"ticket": ticket})
+	if int(reply.status) != 200:
+		return error_of(reply)
+	steam_linked = true
 	save_session()
 	return ""
 
@@ -92,8 +127,11 @@ func export_data() -> Dictionary:
 
 # Deletes the account and its data with the password (when not connected to a game
 # server; in the game the server does it, see GameServer.account_delete). "" or a code.
-func delete_account(password: String) -> String:
-	var reply: Dictionary = await request_json(HTTPClient.METHOD_DELETE, "/v1/me", {"password": password})
+func delete_account(password: String, steam_ticket: String = "") -> String:
+	var body: Dictionary = {"password": password}
+	if steam_ticket != "":
+		body.steam_ticket = steam_ticket
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_DELETE, "/v1/me", body)
 	if int(reply.status) != 204:
 		return error_of(reply)
 	forget()
@@ -103,6 +141,8 @@ func delete_account(password: String) -> String:
 func forget() -> void:
 	token = ""
 	username = ""
+	steam_linked = false
+	no_password = false
 	save_session()
 
 func logout() -> void:
@@ -159,4 +199,10 @@ static func message_for(code: String) -> String:
 			return Lang.t("Os Termos de Uso mudaram. Atualize o jogo para ver a versão nova.")
 		"account_deleted":
 			return Lang.t("Sua conta e os seus dados foram excluídos.")
+		"steam_unavailable", "steam_error":
+			return Lang.t("A Steam não respondeu. Abra o jogo pela Steam e tente de novo.")
+		"steam_invalid":
+			return Lang.t("A Steam não confirmou a sua conta. Tente de novo.")
+		"steam_taken":
+			return Lang.t("Esta conta Steam já está ligada a outra conta do jogo.")
 	return Lang.t("Erro do servidor: %s") % code

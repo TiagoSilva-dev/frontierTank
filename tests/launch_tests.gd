@@ -78,6 +78,7 @@ func run_tests() -> void:
 	test_identity()
 	test_legal_texts()
 	await test_privacy_screens()
+	await test_steam_client()
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
 	print("LAUNCH RESULT: %d checks, %d failures" % [checks, failures])
@@ -225,5 +226,88 @@ func test_privacy_screens() -> void:
 	check(account != null and account.find_child("Delete", true, false) == null and account.find_child("Terms", true, false) != null, "Minha conta offline: the texts, nothing to delete")
 	app.queue_free()
 	await process_frame
+	if FileAccess.file_exists(AuthClient.config_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(AuthClient.config_path))
+
+# ---------- Steam (GodotSteam faked; the API side is in server/api/steam_test.go) ----------
+
+func test_steam_client() -> void:
+	# Without the extension the game keeps accounts and passwords.
+	var plain: SteamService = SteamService.new()
+	root.add_child(plain)
+	check(not plain.available and await plain.web_ticket() == "", "without GodotSteam, Steam is off and there is no ticket")
+	plain.queue_free()
+	var newer: Object = load("res://tests/fake_steam_new_init.gd").new()
+	SteamService.override = newer
+	var service: SteamService = SteamService.new()
+	root.add_child(service)
+	check(service.available and newer.init_args == [SteamService.APP_ID, false], "newer GodotSteam: steamInitEx(app_id, embed_callbacks)")
+	service.queue_free()
+	var fake: Object = load("res://tests/fake_steam.gd").new()
+	SteamService.override = fake
+	service = SteamService.new()
+	root.add_child(service)
+	check(service.available and fake.init_args == [false, SteamService.APP_ID, false] and service.persona == "Jogadora Steam", "GodotSteam 4.13: steamInitEx(retrieve_stats, app_id, embed_callbacks)")
+	var ticket: String = await service.web_ticket()
+	check(ticket == "1400abcd%02x" % SteamService.TICKET_IDENTITY.length() + "00".repeat(19), "the Web API ticket comes as hex, made for the API's identity")
+	fake.approve(1234, false)
+	check(await service.wait_purchase(1234, 2.0) == 0, "a purchase refused in the overlay")
+	fake.approve(1235, true)
+	check(await service.wait_purchase(1235, 2.0) == 1, "a purchase approved in the overlay")
+	check(await service.wait_purchase(1236, 0.2) == -1, "no answer from the overlay")
+	# Achievements from the profile numbers.
+	var profile: PlayerProfile = PlayerProfile.new()
+	profile.created = true
+	check(Achievements.reached(profile).is_empty(), "a new character has no achievement")
+	profile.victories = 12
+	profile.inventory.append({"uid": 90, "id": "quebra_tijolos", "quality": "verdadeira", "level": 12})
+	var reached: Array[String] = Achievements.reached(profile)
+	check(reached.has("FIRST_VICTORY") and reached.has("TEN_VICTORIES") and reached.has("FORGE_12") and reached.has("TRUE_WEAPON") and not reached.has("HUNDRED_VICTORIES"), "achievements follow the profile %s" % str(reached))
+	var fresh: Array[String] = service.sync_achievements(profile)
+	check(fresh.size() == reached.size() and fake.achievements.size() == reached.size() and fake.stored == 1, "Steam unlocks them once and stores the stats")
+	check(service.sync_achievements(profile).is_empty() and fake.stored == 1, "nothing is sent twice")
+	var ids: Dictionary = {}
+	for entry: Dictionary in Achievements.list():
+		ids[str(entry.id)] = true
+		check(RegEx.create_from_string("^[A-Z0-9_]+$").search(str(entry.id)) != null and Lang.t(str(entry.name)) != "", "achievement %s has an API name and a name" % entry.id)
+	check(ids.size() == Achievements.list().size(), "achievement ids are unique")
+	# Premium catalog: only looks, never power.
+	for entry: Dictionary in PremiumStore.products():
+		check(PremiumStore.valid(entry), "premium product %s sells only attribute-free premium cosmetics" % entry.sku)
+		check((entry.prices as Dictionary).has("USD") and (entry.prices as Dictionary).has("BRL"), "premium product %s has USD and BRL prices" % entry.sku)
+	check(not PremiumStore.valid({"sku": "x", "steam_item_id": 9, "items": ["roupa_samurai"], "prices": {"USD": 99}}), "an item with attributes can never be sold for money")
+	var buyer: PlayerProfile = PlayerProfile.new()
+	buyer.coins = 999999
+	check(buyer.buy("cabelo_aurora") != "" and not buyer.has_item("cabelo_aurora"), "premium cosmetics are not sold for gold")
+	buyer.redeem("TESTARTUDO")
+	check(not buyer.has_item("cabelo_aurora") and buyer.has_item("cabelo_preto"), "the test coupon does not give premium cosmetics")
+	# The title offers the Steam login.
+	AuthClient.config_path = "user://launch_test_online.cfg"
+	var app: Node = load("res://client/scenes/main.tscn").instantiate()
+	root.add_child(app)
+	await process_frame
+	var title: TitleScreen = app.screen
+	title.servers = [{"name": "Teste", "url": "ws://127.0.0.1:1", "state": "", "color": "ffffff"}, TitleScreen.OFFLINE]
+	title.chosen = 0
+	title.build_account()
+	check(title.find_child("SteamLogin", true, false) != null and title.find_child("SteamPersona", true, false).text.contains("Jogadora Steam"), "running from Steam, the title offers ENTRAR COM A STEAM")
+	(title.find_child("UsePassword", true, false) as Button).pressed.emit()
+	await process_frame
+	check(title.user_field != null and title.find_child("SteamLogin", true, false) == null, "the player can use an account and password instead")
+	var shop: ShopScreen = ShopScreen.new()
+	shop.app = app
+	app.ui.add_child(shop)
+	shop.select_tab("premium")
+	await process_frame
+	var card: Button = shop.find_child("Buy_pacote_tinturas", true, false)
+	check(card != null and card.disabled, "offline the Premium tab shows the products but does not sell")
+	shop.select_tab("cabelo")
+	check(shop.find_child("Shop_cabelo_aurora", true, false) == null and shop.find_child("Shop_cabelo_preto", true, false) != null, "the gold shop does not list premium cosmetics")
+	app.queue_free()
+	service.queue_free()
+	await process_frame
+	SteamService.override = null
+	fake.free()
+	newer.free()
 	if FileAccess.file_exists(AuthClient.config_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(AuthClient.config_path))

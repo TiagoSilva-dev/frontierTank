@@ -94,7 +94,7 @@ type harness struct {
 	store    *Store
 }
 
-func newHarness(t *testing.T) *harness {
+func newHarness(t *testing.T, options ...func(*Config)) *harness {
 	url := os.Getenv("TEST_DATABASE_URL")
 	if url == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -104,7 +104,7 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS chat_reports, access_log, auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
+	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS store_orders, chat_reports, access_log, auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE; DROP SEQUENCE IF EXISTS store_order_seq`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,6 +112,9 @@ func newHarness(t *testing.T) *harness {
 		t.Fatal(err)
 	}
 	cfg := Config{InternalKey: "test-internal-key-123", SessionTTL: time.Hour, PBKDF2Iterations: 1000, AllowOrigin: "*", AuthPerMinute: 1000, LegalVersion: testTerms}
+	for _, option := range options {
+		option(&cfg)
+	}
 	api, err := newAPI(store, cfg, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	if err != nil {
 		t.Fatal(err)

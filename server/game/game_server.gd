@@ -292,11 +292,18 @@ func handle(session: PlayerSession, text: String) -> void:
 			account_delete(session, message)
 		"chat_report":
 			chat_report(session, message)
+		"store_buy":
+			store_buy(session, message)
+		"store_finalize":
+			store_finalize(session, message)
+		"store_cancel":
+			store_cancel(session, message)
 
 # ---------- login ----------
 
 func hello(session: PlayerSession, message: Dictionary) -> void:
 	session.state = "joining"
+	session.locale = "en" if str(message.get("locale", "")).begins_with("en") else "pt_BR"
 	if int(message.get("protocol", 0)) != PROTOCOL or str(message.get("content", "")) != NetClient.content_version():
 		fail(session, "outdated")
 		return
@@ -360,6 +367,8 @@ func hello(session: PlayerSession, message: Dictionary) -> void:
 	welcome(session)
 	lobby_dirty = true
 	log_line("account %d (%s) logged in, %d online" % [session.account_id, session.username, accounts.size()])
+	# Steam purchases approved while the game was closed are delivered now.
+	await api.store_reconcile(session.account_id)
 	notify_mail(session)
 
 func welcome(session: PlayerSession) -> void:
@@ -1202,13 +1211,14 @@ func notify_mail(session: PlayerSession) -> void:
 # once the API has deleted everything, this copy is dropped and the connection closes.
 func account_delete(session: PlayerSession, message: Dictionary) -> void:
 	var password: String = str(message.get("password", "")).substr(0, 128)
+	var steam_ticket: String = str(message.get("steam_ticket", "")).substr(0, 4096)
 	if session.host != null:
 		reply(session, message, {"error": Lang.t("Saia da batalha antes de excluir a conta.")})
 		return
 	if session.busy:
 		reply(session, message, {"error": Lang.t("Aguarde a operação anterior terminar.")})
 		return
-	if password == "":
+	if password == "" and steam_ticket == "":
 		reply(session, message, {"error": Lang.t("Digite a sua senha.")})
 		return
 	var moment: float = now()
@@ -1218,7 +1228,7 @@ func account_delete(session: PlayerSession, message: Dictionary) -> void:
 		return
 	session.delete_tries.append(moment)
 	await begin_trade(session)
-	var result: Dictionary = await api.delete_account(session.account_id, password)
+	var result: Dictionary = await api.delete_account(session.account_id, password, steam_ticket)
 	if result.has("error"):
 		end_trade(session)
 		var wrong: bool = str(result.error) == "invalid_credentials"
@@ -1237,6 +1247,59 @@ func account_delete(session: PlayerSession, message: Dictionary) -> void:
 	session.state = "closing"
 	close_later(session.peer, 4005, "account_deleted")
 	log_line("account %d deleted by the player, %d online" % [gone, accounts.size()])
+
+# ---------- Steam shop (launch checklist) ----------
+
+# The player picks a product in the Premium tab: the API opens the order with Steam and
+# the overlay asks them to approve it. Products are checked against the catalog here:
+# only premium cosmetics, and not what the player already has.
+func store_buy(session: PlayerSession, message: Dictionary) -> void:
+	var entry: Dictionary = PremiumStore.product(str(message.get("sku", "")))
+	if not PremiumStore.valid(entry):
+		reply(session, message, {"error": Lang.t("Produto desconhecido.")})
+		return
+	if not session.profile.created:
+		reply(session, message, {"error": Lang.t("Crie o seu personagem primeiro.")})
+		return
+	if PremiumStore.owns_all(session.profile, entry):
+		reply(session, message, {"error": Lang.t("Você já tem estes itens.")})
+		return
+	var result: Dictionary = await api.store_init(session.account_id, entry, session.locale)
+	audit(session, "store.init", {"sku": str(entry.sku), "order_id": result.get("order_id", 0), "error": result.get("error", "")})
+	if result.has("error"):
+		reply(session, message, {"error": store_error(str(result.error))})
+		return
+	reply(session, message, {"order_id": int(result.order_id), "amount": int(result.amount), "currency": str(result.currency)})
+
+# The overlay said yes: the API charges and the items go to the Correio.
+func store_finalize(session: PlayerSession, message: Dictionary) -> void:
+	var order_id: int = number(message, "order_id")
+	var result: Dictionary = await api.store_finalize(session.account_id, order_id)
+	audit(session, "store.finalize", {"order_id": order_id, "error": result.get("error", "")})
+	if result.has("error"):
+		reply(session, message, {"error": store_error(str(result.error))})
+		return
+	reply(session, message, {"order": result.get("order", {})})
+	notify_mail(session)
+
+func store_cancel(session: PlayerSession, message: Dictionary) -> void:
+	var order_id: int = number(message, "order_id")
+	var result: Dictionary = await api.store_cancel(session.account_id, order_id)
+	reply(session, message, {"error": store_error(str(result.error))} if result.has("error") else {})
+
+static func store_error(code: String) -> String:
+	match code:
+		"steam_required":
+			return Lang.t("Compras só na versão Steam, com a conta ligada à Steam.")
+		"steam_unavailable", "steam_error", "api_unavailable":
+			return Lang.t("A Steam não respondeu. Tente de novo em instantes.")
+		"currency_unsupported":
+			return Lang.t("A loja ainda não tem preço na moeda da sua carteira Steam.")
+		"order_state":
+			return Lang.t("Este pedido já foi encerrado.")
+		"not_found":
+			return Lang.t("Pedido não encontrado.")
+	return Lang.t("Não foi possível concluir a compra agora.")
 
 # ---------- API upkeep ----------
 
