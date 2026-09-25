@@ -11,7 +11,8 @@ const SKILL_SOUNDS: Dictionary = {
 }
 const EFFECT_SOUNDS: Dictionary = {
 	"lightning": "special_lightning", "beam": "special_beam", "bull": "special_bull", "heal": "special_heal",
-	"hearts": "special_hearts", "tornado": "special_tornado",
+	"hearts": "special_hearts", "tornado": "special_tornado", "summon": "pow_activate", "warp": "special_tornado",
+	"wave": "battle_start",
 }
 
 var app: Node
@@ -39,6 +40,7 @@ var alive: Dictionary = {}
 var last_tick: int = -1
 var kick: float = 0.0
 var kick_factor: float = 1.0
+var transition: PhaseTransition
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -80,6 +82,7 @@ func _ready() -> void:
 	game.damage_text.connect(show_damage)
 	game.special.connect(show_special)
 	game.effect.connect(show_effect)
+	game.pow_impact.connect(show_pow_impact)
 	# Deferred: secondary projectiles get their stage right after they are created.
 	game.shot_fired.connect(func(projectile: TankProjectile) -> void: on_shot.call_deferred(projectile))
 	game.skill_used.connect(on_skill)
@@ -125,6 +128,7 @@ func _process(delta: float) -> void:
 	for animation in get_tree().get_nodes_in_group("pixel_animations"):
 		animation.frozen = game.paused
 	update_sound()
+	update_pow_charge()
 	# POW punch: a quick zoom-in that eases back (kept on top of any external zoom).
 	camera.zoom /= kick_factor
 	kick = maxf(0.0, kick - delta)
@@ -187,10 +191,17 @@ func update_sound() -> void:
 			app.audio.play("fighter_down", -2.0, 1.0, 300)
 		alive[fighter.player_id] = fighter.hp > 0
 
+func update_pow_charge() -> void:
+	# POW charge phase: the armed fighter's aura grows with the force bar.
+	var aura: Variant = pow_auras.get(game.active_id)
+	if aura != null and is_instance_valid(aura):
+		var charging: bool = game.state == LocalMatch.State.PLAYER_CHARGING and game.turn_pow
+		aura.charge = clampf(game.power / 100.0, 0.05, 1.0) if charging else 0.0
+
 func fire_sound(shooter: TankFighter, projectile: TankProjectile) -> String:
 	if projectile.fly:
 		return "fire_plane"
-	if shooter.is_boss:
+	if shooter.is_monster:
 		return "fire_boss"
 	var sound: String = "fire_" + str(shooter.weapon.get("id", ""))
 	return sound if app.audio.has_sound(sound) else "fire_quebra_tijolos"
@@ -249,6 +260,7 @@ func show_pow_aura(fighter: TankFighter) -> void:
 	var aura: PowFx = PowFx.new()
 	aura.mode = "aura"
 	aura.fighter = fighter
+	aura.weapon_id = str(fighter.weapon.get("id", ""))
 	aura.tint = Color(str(fighter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.5)
 	fighter.add_child(aura)
 	pow_auras[fighter.player_id] = aura
@@ -257,6 +269,7 @@ func clear_pow_aura(fighter: TankFighter) -> void:
 	var aura: Variant = pow_auras.get(fighter.player_id)
 	if aura != null and is_instance_valid(aura):
 		aura.queue_free()
+		fighter.set_pow_armed(false)
 	pow_auras.erase(fighter.player_id)
 
 func show_blast(point: Vector2, radius: float) -> void:
@@ -270,24 +283,37 @@ func show_blast(point: Vector2, radius: float) -> void:
 	blast.position = point
 	effects.add_child(blast)
 
-func show_special(point: Vector2, path: String) -> void:
+func show_special(point: Vector2, _path: String) -> void:
 	# The POW shot: burst of light at the fighter, "POW!" banner, zoom punch and shake.
 	var shooter: TankFighter = game.active()
 	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
 	app.audio.play("pow_fire")
 	hud.pow_banner(str(shooter.weapon.get("pow", {}).get("name", "")), tint)
-	if path == "" or not ResourceLoader.exists(path):
-		# Default power-up burst behind the fighter who fired the POW.
-		path = "res://assets/expansion/effects/celestial_pow.png"
+	# The weapon's own animated POW art (assets/effects/pow/<weapon>/) bursts behind it.
 	var burst: PowFx = PowFx.new()
 	burst.mode = "burst"
 	burst.tint = tint
-	burst.sprite_path = path
+	burst.weapon_id = str(shooter.weapon.get("id", ""))
 	burst.position = point
 	effects.add_child(burst)
 	clear_pow_aura(shooter)
+	# Fire: the kick of the special pushes the fighter back.
+	shooter.recoil(12.0, 0.4)
 	shake = 0.45
 	kick = 0.5
+
+func show_pow_impact(point: Vector2, radius: float, weapon_id: String) -> void:
+	# The POW lands: each weapon's own shape, colours and particles, a heavy shake and
+	# a second camera punch (the match itself holds for LocalMatch.hitstop).
+	var impact: PowImpact = PowImpact.new()
+	impact.weapon_id = weapon_id
+	impact.radius = radius
+	impact.position = point
+	impact.top = camera.position.y - 420.0
+	effects.add_child(impact)
+	app.audio.play("explosion_big", 1.0, 0.9, 120)
+	shake = 0.6
+	kick = 0.4
 
 func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	# Weapon POW visuals; each draws itself on a throwaway node and fades out.
@@ -334,12 +360,29 @@ func on_turn(fighter: TankFighter) -> void:
 		hud.flash("SUA VEZ!", Color("9aff7a"))
 
 func on_finished(winner: int) -> void:
+	if game.pve and app.run != null and winner == game.local().team and app.run.has_next_phase():
+		# Instance phase won: drops now, a transition screen, then the next phase.
+		var report: Dictionary = app.phase_cleared(game)
+		hud.flash("FASE CONCLUÍDA!", Color("ffd04a"))
+		app.audio.set_charge(false, 0.0)
+		app.audio.play("victory", -4.0)
+		get_tree().create_timer(1.6).timeout.connect(show_transition.bind(report))
+		return
 	summary = app.battle_finished(game)
 	hud.show_outcome(winner == game.local().team, winner < 0)
 	app.audio.set_charge(false, 0.0)
 	app.audio.play_music("", 0.8)
 	app.audio.play("victory" if summary.won else "defeat")
 	end_timer = 2.6
+
+func show_transition(report: Dictionary) -> void:
+	if not is_instance_valid(hud) or is_instance_valid(transition):
+		return
+	hud.hide()
+	transition = PhaseTransition.new()
+	transition.app = app
+	transition.report = report
+	add_child(transition)
 
 func show_results() -> void:
 	end_timer = -1

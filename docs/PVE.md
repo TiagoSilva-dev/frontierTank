@@ -1,5 +1,7 @@
 # PvE 0.2 — Templo do Sol
 
+> Histórico. Desde a 0.9 a Instância tem 4 instâncias de 3 fases e mapas no lugar das dificuldades: veja `ROADMAP.md` (item 2), `ARCHITECTURE.md` (Instâncias e mapas) e `README.md`.
+
 A entrada principal agora é uma cidade celeste. O portal e o botão de expedição iniciam a primeira missão solo contra Rei Hélio. Um único herói pertence ao perfil; o chefe é um inimigo, sem perfil de jogador.
 
 ## Arte PixelLab incorporada

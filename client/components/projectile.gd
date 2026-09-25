@@ -4,7 +4,10 @@ extends Node2D
 # One shot in flight. Each weapon gives it its own sprite (brick, apple, shuriken,
 # plunger, TV...), a spin or nose-first flight and a trail style drawn over a soft
 # glowing streak; POW specials hang extra behaviour on `special` that LocalMatch runs
-# on impact, and glow gold while they fly. The dashed flight line is ShotTrails.
+# on impact. A POW shot (0.8) flies bigger, with a halo and a particle trail in its
+# weapon's colours. The dashed flight line is ShotTrails. Only the drawing grows with
+# `sprite_size`: hits test the projectile's point against the terrain mask and each
+# fighter's hit_radius.
 
 signal impacted(projectile: TankProjectile, point: Vector2)
 signal missed(projectile: TankProjectile)
@@ -53,6 +56,8 @@ var base_damage: int = 100
 var base_radius: float = 40.0
 var ignores_fighters_until: float = 0.25
 var glow: Node2D
+var pow_colors: Array[Color] = []
+var sparks: CPUParticles2D
 
 func _ready() -> void:
 	# Additive streak under the sprite and the weapon's own trail.
@@ -74,6 +79,11 @@ func apply_style(style: Dictionary, sprite_path: String) -> void:
 	trail_kind = str(style.get("trail", "plain"))
 	if not TRAILS.has(trail_kind):
 		trail_kind = "plain"
+
+func set_powered(colors: Array[Color]) -> void:
+	pow_colors = colors
+	# Embers shed along the flight; they stay in the world where they were emitted.
+	sparks = FxParticles.stream(self, Vector2.ZERO, {"amount": 42, "lifetime": 0.6, "speed": [10.0, 50.0], "gravity": Vector2(0, 60), "size": [2.0, maxf(3.0, sprite_size * 0.12)], "colors": ["ffffff", colors[1], colors[2], colors[3]], "radius": sprite_size * 0.3, "z": -1})
 
 func advance(delta: float) -> void:
 	if not live:
@@ -139,9 +149,13 @@ func draw_glow() -> void:
 		glow.draw_polyline_colors(points, outer, sprite_size * (0.95 if powered else 0.6))
 		glow.draw_polyline_colors(points, inner, maxf(2.0, sprite_size * 0.2))
 	if powered:
+		# POW halo in the weapon's colours: an outer ring that breathes and a hot core.
 		var pulse: float = 0.5 + 0.5 * sin(age * 18.0)
-		glow.draw_circle(Vector2.ZERO, sprite_size * (0.95 + 0.2 * pulse), Color(1.0, 0.75, 0.25, 0.28))
-		glow.draw_circle(Vector2.ZERO, sprite_size * 0.62, Color(1.0, 0.95, 0.7, 0.32))
+		var outer: Color = pow_colors[2] if pow_colors.size() > 2 else Color(1.0, 0.75, 0.25)
+		var core: Color = pow_colors[1] if pow_colors.size() > 1 else Color(1.0, 0.95, 0.7)
+		glow.draw_circle(Vector2.ZERO, sprite_size * (0.95 + 0.2 * pulse), Color(outer.r, outer.g, outer.b, 0.3))
+		glow.draw_circle(Vector2.ZERO, sprite_size * 0.62, Color(core.r, core.g, core.b, 0.34))
+		glow.draw_arc(Vector2.ZERO, sprite_size * (1.1 + 0.25 * pulse), 0, TAU, 32, Color(1, 1, 1, 0.35 * (1.0 - pulse)), 2.0)
 
 func draw_trail() -> void:
 	var colors: Array = TRAILS[trail_kind]

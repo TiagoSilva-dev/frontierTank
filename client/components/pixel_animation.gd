@@ -9,6 +9,8 @@ var elapsed: float = 0.0
 var frozen: bool = false
 # Play forward then backward, for clips that do not loop back to their first pose.
 var pingpong: bool = false
+# One-shot clips (the POW burst) stop on their last frame.
+var loop: bool = true
 
 func _ready() -> void:
 	add_to_group("pixel_animations")
@@ -36,6 +38,8 @@ func _process(delta: float) -> void:
 		var period: int = count * 2 - 2
 		var k: int = step % period
 		frame_index = k if k < count else period - k
+	elif not loop:
+		frame_index = mini(step, count - 1)
 	else:
 		frame_index = step % count
 	texture = frames[frame_index]

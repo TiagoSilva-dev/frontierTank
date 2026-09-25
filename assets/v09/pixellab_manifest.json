@@ -1,0 +1,433 @@
+{
+ "date": "2026-09-25",
+ "cost": 130,
+ "remaining_after": 249,
+ "images": [
+  {
+   "name": "escaravelho_solar",
+   "job_id": "18ab05c5-4fe6-4793-afde-7f2d06b2bde1",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/escaravelho_solar/sprite.png"
+  },
+  {
+   "name": "mascara_flamejante",
+   "job_id": "4e9ea5ea-7c96-4dd7-966e-241617756135",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/mascara_flamejante/sprite.png"
+  },
+  {
+   "name": "lobo_nevasca",
+   "job_id": "b460c0f8-6e4b-47d7-bbf1-a6b1aef9b2db",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/lobo_nevasca/sprite.png"
+  },
+  {
+   "name": "harpia_ruinas",
+   "job_id": "7a78a44d-892e-43b5-a12c-c420f9bec263",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/harpia_ruinas/sprite.png"
+  },
+  {
+   "name": "sentinela_obsidiana",
+   "job_id": "b62e713b-fc29-4e59-8793-a00dc0e6c315",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/sentinela_obsidiana/sprite.png"
+  },
+  {
+   "name": "golem_gelo",
+   "job_id": "bc871605-6e02-4ab7-8274-6ae83180b8ef",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/golem_gelo/sprite.png"
+  },
+  {
+   "name": "cavaleiro_celeste",
+   "job_id": "e0718d12-d728-47d7-b2da-3f486e6d0ba4",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/cavaleiro_celeste/sprite.png"
+  },
+  {
+   "name": "rainha_nevasca",
+   "job_id": "8de2f492-f374-42b3-bd43-a681522cbb20",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/rainha_nevasca/sprite.png"
+  },
+  {
+   "name": "grifo_tempestade",
+   "job_id": "73a23bd5-5a3d-47e6-84c8-0f38d38177ab",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/grifo_tempestade/sprite.png"
+  },
+  {
+   "name": "bg_portoes_brasa",
+   "job_id": "f889d629-40c8-448f-b6c1-9af6060363d4",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/portoes_brasa.png"
+  },
+  {
+   "name": "escaravelho_solar/idle",
+   "job_id": "ceb4d860-ab41-47f3-a9e7-a690090e58ff",
+   "tool": "animate_image",
+   "target": "assets/enemies/escaravelho_solar/idle/frame_*.png"
+  },
+  {
+   "name": "escaravelho_solar/attack",
+   "job_id": "5fb693de-84b4-4236-b515-1d44fdf5087a",
+   "tool": "animate_image",
+   "target": "assets/enemies/escaravelho_solar/attack/frame_*.png"
+  },
+  {
+   "name": "mascara_flamejante/idle",
+   "job_id": "f13632b9-6e69-4195-8b5c-fef953d5d410",
+   "tool": "animate_image",
+   "target": "assets/enemies/mascara_flamejante/idle/frame_*.png"
+  },
+  {
+   "name": "mascara_flamejante/attack",
+   "job_id": "8d89e4fb-91f5-4474-a598-0d8b79a9c4db",
+   "tool": "animate_image",
+   "target": "assets/enemies/mascara_flamejante/attack/frame_*.png"
+  },
+  {
+   "name": "lobo_nevasca/idle",
+   "job_id": "dd597837-5676-49d8-9668-674c9cc77a5e",
+   "tool": "animate_image",
+   "target": "assets/enemies/lobo_nevasca/idle/frame_*.png"
+  },
+  {
+   "name": "lobo_nevasca/attack",
+   "job_id": "85b8e450-da75-4956-8dde-c9c31f8a2fd1",
+   "tool": "animate_image",
+   "target": "assets/enemies/lobo_nevasca/attack/frame_*.png"
+  },
+  {
+   "name": "harpia_ruinas/idle",
+   "job_id": "fb928bca-ca7c-4b5f-b0da-625d0824e1c7",
+   "tool": "animate_image",
+   "target": "assets/enemies/harpia_ruinas/idle/frame_*.png"
+  },
+  {
+   "name": "harpia_ruinas/attack",
+   "job_id": "5d128a0b-bf74-4dd9-94d3-8adf6aebe868",
+   "tool": "animate_image",
+   "target": "assets/enemies/harpia_ruinas/attack/frame_*.png"
+  },
+  {
+   "name": "sentinela_obsidiana/idle",
+   "job_id": "e06b47cb-d505-415d-a456-990943d9639e",
+   "tool": "animate_image",
+   "target": "assets/enemies/sentinela_obsidiana/idle/frame_*.png"
+  },
+  {
+   "name": "bg_salao_mascaras",
+   "job_id": "bb4acbfe-58cc-47a5-961a-3c86768c3366",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/salao_mascaras.png"
+  },
+  {
+   "name": "bg_trilha_gelada",
+   "job_id": "bc812ea1-563c-4c8d-b3cc-1bd8bcd0bb7e",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/trilha_gelada.png"
+  },
+  {
+   "name": "bg_caverna_cristal",
+   "job_id": "22934a3f-3230-4d04-b266-55631aad97f2",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/caverna_cristal.png"
+  },
+  {
+   "name": "sentinela_obsidiana/attack",
+   "job_id": "6ded5744-b9ae-4b91-8c6a-93ca3fa7a813",
+   "tool": "animate_image",
+   "target": "assets/enemies/sentinela_obsidiana/attack/frame_*.png"
+  },
+  {
+   "name": "golem_gelo/idle",
+   "job_id": "37720f85-ecd3-4255-af1b-615aeba37407",
+   "tool": "animate_image",
+   "target": "assets/enemies/golem_gelo/idle/frame_*.png"
+  },
+  {
+   "name": "golem_gelo/attack",
+   "job_id": "26ae4276-b509-4e03-9a6a-51acef5c516b",
+   "tool": "animate_image",
+   "target": "assets/enemies/golem_gelo/attack/frame_*.png"
+  },
+  {
+   "name": "cavaleiro_celeste/idle",
+   "job_id": "377fb092-cfe2-4b8e-a11f-0dd20dc7cd7d",
+   "tool": "animate_image",
+   "target": "assets/enemies/cavaleiro_celeste/idle/frame_*.png"
+  },
+  {
+   "name": "cavaleiro_celeste/attack",
+   "job_id": "bd5fd965-baa9-4d9b-8a1f-4fd121d4434d",
+   "tool": "animate_image",
+   "target": "assets/enemies/cavaleiro_celeste/attack/frame_*.png"
+  },
+  {
+   "name": "rainha_nevasca/idle",
+   "job_id": "5cb38d04-962a-4e08-86ba-b8f8cf224ec5",
+   "tool": "animate_image",
+   "target": "assets/enemies/rainha_nevasca/idle/frame_*.png"
+  },
+  {
+   "name": "bg_pico_nevasca",
+   "job_id": "2a526294-f40a-49bb-98d1-169272524cd6",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/pico_nevasca.png"
+  },
+  {
+   "name": "bg_ruinas_flutuantes",
+   "job_id": "69348ad7-84c4-4c53-82f5-14cd25211c20",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/ruinas_flutuantes.png"
+  },
+  {
+   "name": "rainha_nevasca/attack",
+   "job_id": "5a692894-85b5-45dc-a910-f1932ded82ba",
+   "tool": "animate_image",
+   "target": "assets/enemies/rainha_nevasca/attack/frame_*.png"
+  },
+  {
+   "name": "grifo_tempestade/idle",
+   "job_id": "c7c1fbb9-9631-46cf-b698-9ca713065d29",
+   "tool": "animate_image",
+   "target": "assets/enemies/grifo_tempestade/idle/frame_*.png"
+  },
+  {
+   "name": "guardiao_templo/idle",
+   "job_id": "c56a9378-3b24-4e90-9b0c-4c9d33030a14",
+   "tool": "animate_image",
+   "target": "assets/enemies/guardiao_templo/idle/frame_*.png"
+  },
+  {
+   "name": "grifo_tempestade/attack",
+   "job_id": "7fcb073a-ca84-4729-a40b-a48938980197",
+   "tool": "animate_image",
+   "target": "assets/enemies/grifo_tempestade/attack/frame_*.png"
+  },
+  {
+   "name": "pow_quebra_tijolos",
+   "job_id": "5ca9f692-cfdf-44bd-958e-bbd447ffe73d",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/quebra_tijolos/"
+  },
+  {
+   "name": "pow_fogo_intenso",
+   "job_id": "481bd984-b62c-4774-9492-5753af3251aa",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/fogo_intenso/"
+  },
+  {
+   "name": "pow_canhao_arco_iris",
+   "job_id": "69b94aab-fcc0-4880-b7c7-7c0603ce3e96",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/canhao_arco_iris/"
+  },
+  {
+   "name": "pow_vento_de_deus",
+   "job_id": "60fabfab-1712-4c2d-8e13-7f520942bbf0",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/vento_de_deus/"
+  },
+  {
+   "name": "pow_cesto_newton",
+   "job_id": "70fecab4-aadf-4f0d-b043-5efc182b8fa8",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/cesto_newton/"
+  },
+  {
+   "name": "pow_kit_medico",
+   "job_id": "0648bef2-bc49-46b2-8b5a-ef0c8e608be7",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/kit_medico/"
+  },
+  {
+   "name": "pow_eletrodomestico",
+   "job_id": "f292b4d0-e438-4043-930d-0f924a6fd2fe",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/eletrodomestico/"
+  },
+  {
+   "name": "guardiao_templo/attack",
+   "job_id": "793facde-69b7-4f8d-aaae-bc4305169568",
+   "tool": "animate_image",
+   "target": "assets/enemies/guardiao_templo/attack/frame_*.png"
+  },
+  {
+   "name": "pow_trovao",
+   "job_id": "fb58904c-ecf5-435c-9eb7-1738877e371c",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/trovao/"
+  },
+  {
+   "name": "pow_desentupidor",
+   "job_id": "57c9de24-b7e3-4a28-b45d-f9744e08d0bb",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/desentupidor/"
+  },
+  {
+   "name": "pow_cabeca_de_boi",
+   "job_id": "272d6a3c-424d-4dc8-b301-ebb2db2f5dec",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/cabeca_de_boi/"
+  },
+  {
+   "name": "pow_bumerangue_amor",
+   "job_id": "8a614ca6-c56e-463b-9748-5fb54017c16d",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/bumerangue_amor/"
+  },
+  {
+   "name": "pow_lanca_antiga",
+   "job_id": "19767a7e-e877-426d-9a77-a037e89c6a16",
+   "tool": "create_image_pixen",
+   "target": "first frame of assets/effects/pow/lanca_antiga/"
+  },
+  {
+   "name": "bg_santuario_ventos",
+   "job_id": "d57d57f0-95f4-479f-ac56-81148d299033",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/santuario_ventos.png"
+  },
+  {
+   "name": "powanim_quebra_tijolos",
+   "job_id": "514c7c7a-c43d-4ace-93c8-6a8a21504a64",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/quebra_tijolos/frame_*.png"
+  },
+  {
+   "name": "powanim_fogo_intenso",
+   "job_id": "dc342e23-1872-4242-b477-c6ab8a8429a8",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/fogo_intenso/frame_*.png"
+  },
+  {
+   "name": "powanim_canhao_arco_iris",
+   "job_id": "5877e186-20a2-402d-88bb-0d6e3d10c81c",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/canhao_arco_iris/frame_*.png"
+  },
+  {
+   "name": "powanim_vento_de_deus",
+   "job_id": "26e9ef09-f415-42ae-81dd-4cf15dfb0f74",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/vento_de_deus/frame_*.png"
+  },
+  {
+   "name": "powanim_cesto_newton",
+   "job_id": "f3959361-f219-42ed-8ec0-524917bdfd27",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/cesto_newton/frame_*.png"
+  },
+  {
+   "name": "powanim_kit_medico",
+   "job_id": "ee73dfbc-015c-4f81-ace0-6d5a88166e0c",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/kit_medico/frame_*.png"
+  },
+  {
+   "name": "terrain_brasa_a",
+   "job_id": "524167e7-08a7-49d3-8bec-16ac7e00c0f3",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/brasa_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "powanim_eletrodomestico",
+   "job_id": "90cc34f5-66b3-43e0-81f5-622a6d8a046a",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/eletrodomestico/frame_*.png"
+  },
+  {
+   "name": "powanim_trovao",
+   "job_id": "7d9b457a-a268-4c07-be40-4b3589ea3145",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/trovao/frame_*.png"
+  },
+  {
+   "name": "powanim_desentupidor",
+   "job_id": "9d938b79-f9ce-4026-b433-94cd93d8cd73",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/desentupidor/frame_*.png"
+  },
+  {
+   "name": "powanim_cabeca_de_boi",
+   "job_id": "1d08993e-54ec-49bc-9414-18861c1b6e1b",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/cabeca_de_boi/frame_*.png"
+  },
+  {
+   "name": "powanim_bumerangue_amor",
+   "job_id": "cfd08693-a655-48b3-961e-0a3ea81be7b7",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/bumerangue_amor/frame_*.png"
+  },
+  {
+   "name": "powanim_lanca_antiga",
+   "job_id": "aaa44ca8-688c-44b5-b8ad-aa790cf8cc09",
+   "tool": "animate_image",
+   "target": "assets/effects/pow/lanca_antiga/frame_*.png"
+  },
+  {
+   "name": "terrain_mascaras_a",
+   "job_id": "273433e8-5dbb-4abf-bf84-295895ef873a",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/mascaras_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain_trilha_a",
+   "job_id": "32c17cd0-798a-4ac6-a64f-ee1f0cad5e27",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/trilha_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain_cristal_a",
+   "job_id": "df9dfd3b-2139-441b-bea4-76420dc3e714",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/cristal_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain_pico_a",
+   "job_id": "8b215767-d832-47b3-984b-5baad7353c7f",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/pico_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain_ruina_a",
+   "job_id": "276736f9-b0ff-4d99-a910-1743b53e1c7b",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/ruina_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain_santuario_a",
+   "job_id": "02d42759-3ce0-43f6-8180-00e6d3b689fb",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/santuario_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "icon_templo_sol",
+   "job_id": "b667b006-1144-4d82-95a7-7bab19747a13",
+   "tool": "create_image_pixen",
+   "target": "assets/items/maps/templo_sol.png"
+  },
+  {
+   "name": "icon_trono_mascaras",
+   "job_id": "f7a9b372-826b-4e0c-b337-82e99d6f5714",
+   "tool": "create_image_pixen",
+   "target": "assets/items/maps/trono_mascaras.png"
+  },
+  {
+   "name": "icon_picos_gelados",
+   "job_id": "ea2359da-f547-48f1-8da5-c2130bc5afa8",
+   "tool": "create_image_pixen",
+   "target": "assets/items/maps/picos_gelados.png"
+  },
+  {
+   "name": "icon_ilha_ruinas",
+   "job_id": "58c3edf9-9872-4077-a85a-0c06852afca2",
+   "tool": "create_image_pixen",
+   "target": "assets/items/maps/ilha_ruinas.png"
+  }
+ ]
+}

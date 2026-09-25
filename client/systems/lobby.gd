@@ -105,7 +105,7 @@ func make_room() -> Dictionary:
 	var id: int = rng.randi_range(100, 999)
 	while find_room(id).size() > 0:
 		id = rng.randi_range(100, 999)
-	return {"id": id, "title": ROOM_TITLES[rng.randi() % ROOM_TITLES.size()], "mode": "pvp", "capacity": capacity, "members": members, "playing": rng.randf() < 0.3, "map": "", "turn_seconds": 10, "difficulty": "normal"}
+	return {"id": id, "title": ROOM_TITLES[rng.randi() % ROOM_TITLES.size()], "mode": "pvp", "capacity": capacity, "members": members, "playing": rng.randf() < 0.3, "map": "", "turn_seconds": 10}
 
 func find_room(id: int) -> Dictionary:
 	for room in rooms:

@@ -4,8 +4,8 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 
 | # | Item | Precisa de servidor? | Entrega |
 |---|------|----------------------|---------|
-| 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 |
-| 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 |
+| 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 — **feito** |
+| 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo) |
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft), 0.11 (leilão) |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes |
 
@@ -40,16 +40,17 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 - A arma nas costas é escalada em `look_rig.gd` (`back_weapon.scale`).
 
 **Proposta:**
-- [ ] **Animação em fases**: preparação (o personagem recua e a arma brilha), carga (a aura cresce e as partículas são puxadas para a arma), disparo (clarão e recuo), voo (projétil com halo e rastro próprio do POW) e impacto (hit-stop de 60–100 ms, tremor, ondas e fumaça).
-- [ ] **Mais quadros**: animar a arte de cada POW com PixelLab (`animate_image`, cerca de 2 gerações por clipe de 8 quadros) em vez de só escalar uma imagem parada; curvas de easing em todos os tweens.
-- [ ] **Um impacto próprio por arma**: hoje o estouro é quase o mesmo para todas. Cada um dos 12 POW ganha a sua cor, forma e partículas (lava na Fogo Intenso, cristais de gelo, raios duplos no Trovão, corações no Bumerangue do Amor e assim por diante).
-- [ ] **Partículas de verdade** (`CPUParticles2D`, que funciona no renderizador Compatibility e no web) para brasas, faíscas e poeira, no lugar de parte do desenho feito à mão.
-- [ ] **Projétil maior**: por exemplo 24 → 36 px no tiro normal e 1,6× a mais no tiro de POW, ajustado vendo capturas. O projétil é só visual; `hit_radius` e o raio da explosão não mudam.
-- [ ] **Arma maior durante a batalha inteira** (decidido): a arma nas costas fica maior o tempo todo, não só no POW. Conferir que ela não cobre a cabeça nem a placa de nome e que continua alinhada ao rastejar.
-- [ ] **Teste de regressão**: criar um teste que confirma que o dano, o raio da cratera e a detecção de acerto são os mesmos antes e depois do aumento visual.
+- [x] **Animação em fases**: preparação (o personagem recua e a arma brilha), carga (a aura cresce e as partículas são puxadas para a arma), disparo (clarão e recuo), voo (projétil com halo e rastro próprio do POW) e impacto (hit-stop de 60–100 ms, tremor, ondas e fumaça).
+- [x] **Mais quadros**: animar a arte de cada POW com PixelLab (`animate_image`, cerca de 2 gerações por clipe de 8 quadros) em vez de só escalar uma imagem parada; curvas de easing em todos os tweens.
+- [x] **Um impacto próprio por arma**: hoje o estouro é quase o mesmo para todas. Cada um dos 12 POW ganha a sua cor, forma e partículas (lava na Fogo Intenso, cristais de gelo, raios duplos no Trovão, corações no Bumerangue do Amor e assim por diante).
+- [x] **Partículas de verdade** (`CPUParticles2D`, que funciona no renderizador Compatibility e no web) para brasas, faíscas e poeira, no lugar de parte do desenho feito à mão.
+- [x] **Projétil maior**: por exemplo 24 → 36 px no tiro normal e 1,6× a mais no tiro de POW, ajustado vendo capturas. O projétil é só visual; `hit_radius` e o raio da explosão não mudam.
+- [x] **Arma maior durante a batalha inteira** (decidido): a arma nas costas fica maior o tempo todo, não só no POW. Conferir que ela não cobre a cabeça nem a placa de nome e que continua alinhada ao rastejar.
+- [x] **Teste de regressão**: criar um teste que confirma que o dano, o raio da cratera e a detecção de acerto são os mesmos antes e depois do aumento visual.
 
-**Em aberto:**
-- Quanto maior (arma e projétil): vamos decidir em cima de capturas lado a lado (atual × 1,5× × 2×).
+**Feito na 0.8 (25/09/2026):** `pow_fx.gd` (preparação e carga), `pow_impact.gd` (impacto por arma), `fx_particles.gd` (`CPUParticles2D`), halo e rastro do POW em `projectile.gd`, hit-stop de 80 ms em `LocalMatch.hitstop`, arte animada de cada POW em `assets/effects/pow/<arma>/` (PixelLab), arma nas costas maior em `look_rig.gd`, teste `tests/pow_tests.gd`.
+
+**Decidido provisoriamente:** arma nas costas e projétil em **1,5×**, tiro de POW mais **1,6×** (`items.json` → `visual`). Captura lado a lado 1× · 1,5× · 2× em `docs/screens/scale_compare.png`; basta trocar os números para 2× se preferir.
 
 ---
 
@@ -64,11 +65,11 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 - As dificuldades aparecem em `main.gd`, `match.gd`, `lobby.gd`, `room_screen.gd` (seletor com os ícones `difficulty_*.png`), `result_screen.gd` e nos testes `pve_tests.gd` e `ui_tests.gd`. Tudo isso passa a usar o nível do mapa.
 
 ### 2.1 Estrutura das instâncias
-- [ ] **Fase 1 — Entrada**: ondas de lacaios (2–4 inimigos fracos).
-- [ ] **Fase 2 — Guardião**: um mini-chefe com lacaios ou um objetivo (destruir totens, sobreviver N turnos).
-- [ ] **Fase 3 — Chefão**: o chefe com mecânicas próprias e fúria, como o Rei Hélio.
-- [ ] Entre as fases: tela de transição, vida recupera 30% e o POW continua. Quem morreu volta na fase seguinte com pouca vida. As cartas de recompensa aparecem só no fim, e o baú do chefe é maior.
-- [ ] Dados em `combat.json` → `instances[]` (id, nome, mapas das 3 fases, inimigos por fase, chefe, tabela de loot), no lugar do bloco `pve` único.
+- [x] **Fase 1 — Entrada**: ondas de lacaios (2–4 inimigos fracos).
+- [x] **Fase 2 — Guardião**: um mini-chefe com lacaios ou um objetivo (destruir totens, sobreviver N turnos).
+- [x] **Fase 3 — Chefão**: o chefe com mecânicas próprias e fúria, como o Rei Hélio.
+- [x] Entre as fases: tela de transição, vida recupera 30% e o POW continua. Quem morreu volta na fase seguinte com pouca vida. As cartas de recompensa aparecem só no fim, e o baú do chefe é maior.
+- [x] Dados em `combat.json` → `instances[]` (id, nome, mapas das 3 fases, inimigos por fase, chefe, tabela de loot), no lugar do bloco `pve` único.
 
 **Instâncias sugeridas** (aproveitando os mapas que já existem e criando novos com a receita de `PIXELLAB_0_6.md`):
 1. **Templo do Sol** — converter a atual para 3 fases: Pátio do Templo → Câmara do Guardião → Rei Hélio.
@@ -77,6 +78,8 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 4. **Ilha Celeste em Ruínas** — chefe voador que troca de posição.
 
 Cada chefe novo precisa de arte PixelLab (pose, repouso e ataque). Temos um limite de gerações por mês, então vamos planejar isso por instância.
+
+**Feito na 0.9:** as quatro instâncias, com lacaios, guardiões, chefes, totens e 7 mapas novos (arte em `docs/PIXELLAB_0_9.md`). Fase 2: Templo e Trono têm guardião com lacaio; Picos Gelados tem o objetivo "destruir os cristais"; Ilha em Ruínas tem "sobreviver 5 turnos". Mecânicas dos chefes: fúria (todos), invocar máscaras (Rei das Máscaras), congelar a vez (Rainha da Nevasca) e trocar de posição (Grifo da Tempestade).
 
 ### 2.2 Mapas (no lugar das dificuldades)
 **Como funciona:**
@@ -124,6 +127,8 @@ Cada chefe novo precisa de arte PixelLab (pose, repouso e ataque). Temos um limi
   - +X% chance de Super Verdadeira
 - As moedas do item 3 funcionam também nos mapas: Brasa e Coroa sobem a qualidade, Estrela acrescenta um atributo, Tormenta rerola tudo. **Os mapas são o principal gasto de moedas**, e isso é o que mantém o valor delas.
 
+**Feito na 0.9:** mapas com nível, qualidade e atributos (`combat.json` → `map_items`, `InstanceRun`), consumidos ao entrar, espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS` para teste. **Falta:** negociar no leilão (item 3.3), Solar e moedas raras (item 3) e usar as moedas nos mapas (item 3.2).
+
 **Depois (opcional):** um "Atlas", com árvore de pontos ganhos ao completar mapas, para personalizar os drops (como no PoE 2).
 
 ### 2.3 Escala por tamanho do grupo
@@ -138,16 +143,19 @@ Vale só para jogadores. Multiplica os valores do nível do mapa.
 
 Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. Enquanto não houver servidor, só dá para jogar solo: a escala fica pronta e coberta por testes automáticos e passa a valer quando os grupos existirem.
 
-### 2.4 Loot
-- [ ] Armas Verdadeiras e as Super Verdadeiras no loot das instâncias, **com atributos bônus aleatórios** (item 3). Uma Verdadeira com bons bônus é o item mais cobiçado.
-- [ ] **Garantia** de Super Verdadeira: um contador por instância que garante uma depois de N vitórias de chefão sem ela.
-- [ ] Mapas e moedas no loot.
-- [ ] As cartas de recompensa ganham uma raridade nova para mapas e moedas raras, com arte própria.
-- [ ] Proposta: a Loja passa a vender só Normal e Excelente, sem bônus. A Verdadeira vem de drop ou da Coroa; se não, o ouro compra o que deveria vir das instâncias.
+**Feito na 0.9:** `combat.json` → `party_scaling`, aplicado por `InstanceRun` (conta só jogadores humanos) e coberto por `tests/pve_tests.gd`.
 
-**Em aberto:**
-- Cada mapa é de uma instância específica (proposta acima) ou o mapa sorteia a instância?
-- Limite de entradas por dia? Com mapas consumíveis talvez nem precise.
+### 2.4 Loot
+- [x] Armas Verdadeiras e as Super Verdadeiras no loot das instâncias (com nível do item = nível do mapa); os **atributos bônus aleatórios** entram com o item 3. Uma Verdadeira com bons bônus é o item mais cobiçado.
+- [x] **Garantia** de Super Verdadeira: um contador por instância que garante uma depois de N vitórias de chefão sem ela.
+- [x] Mapas no loot (as moedas entram com o item 3).
+- [x] As cartas de recompensa ganham uma raridade nova para mapas (carta esmeralda); moedas raras com o item 3.
+- [x] Proposta: a Loja passa a vender só Normal e Excelente, sem bônus. A Verdadeira vem de drop ou da Coroa; se não, o ouro compra o que deveria vir das instâncias.
+
+**Decidido provisoriamente na 0.9:**
+- Cada mapa é de uma instância específica; 20% dos mapas que caem são de outra instância, para circular entre elas.
+- Sem limite de entradas por dia (os mapas consumíveis já limitam).
+- Garantia da Super Verdadeira: 20 vitórias de chefão sem ela.
 
 ---
 
@@ -263,8 +271,8 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 
 ## Ordem sugerida
 
-1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto.
-2. **0.9 — Instâncias e mapas** (item 2): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
+1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo (**feito**) e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto (**falta**).
+2. **0.9 — Instâncias e mapas** (item 2, **feito**): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **Backend**: contas, grupos reais, partida com autoridade do servidor, e drops, rolagens e moedas no servidor.
 5. **0.11 — Leilão** (item 3.3) em cima do backend.

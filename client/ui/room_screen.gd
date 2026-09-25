@@ -2,6 +2,8 @@ class_name RoomScreen
 extends Control
 
 # Sala: your team (4 slots), mode, map/time info, battle tools, invite and start.
+# Instance rooms (0.9) pick the instance with "Local" and place a map item in the map
+# slot (level, quality and modifiers); with no map the free entry is used.
 
 const VS_ART: String = "res://assets/room/vs_art.png"
 var app: Node
@@ -86,18 +88,7 @@ func build_center(room: Dictionary) -> void:
 	var art_box: Panel = UiKit.panel(content, Rect2(476, 42, 364, 300), "slot")
 	art_box.clip_contents = true
 	if room.mode == "pve":
-		UiKit.art(art_box, "res://assets/expansion/lobby/instance_preview.png", Rect2(4, 4, 356, 200), false)
-		UiKit.art(art_box, "res://assets/pve/rei_sol.png", Rect2(210, 90, 150, 150))
-		UiKit.title(art_box, "Templo do Sol", Rect2(0, 206, 364, 34), 24)
-		UiKit.label(art_box, "Chefe: Rei Hélio  •  Fúria abaixo de 50% de vida", Rect2(0, 238, 364, 22), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-		var difficulties: Array = app.balance.pve.difficulties
-		for i in range(difficulties.size()):
-			var entry: Dictionary = difficulties[i]
-			var selected: bool = entry.id == room.difficulty
-			var chip: Button = UiKit.button(art_box, "", Rect2(10 + i * 88, 262, 82, 34), pick_difficulty.bind(str(entry.id)), "tab_active" if selected else "tab")
-			chip.name = "Difficulty_" + str(entry.id)
-			UiKit.art(chip, str(entry.icon), Rect2(4, 5, 24, 24))
-			UiKit.label(chip, str(entry.name), Rect2(28, 0, 54, 34), 12, Color.WHITE, UiKit.INK)
+		build_instance(art_box, room)
 	else:
 		if ResourceLoader.exists(VS_ART):
 			UiKit.art(art_box, VS_ART, Rect2(0, 0, 364, 300), false)
@@ -112,7 +103,7 @@ func build_center(room: Dictionary) -> void:
 			vs.add_theme_constant_override("outline_size", 14)
 	var modes: Array = [["Combate Livre", "1. Sem limite\n2. Cenário sorteado\n3. Níveis próximos", room.mode == "pvp"], ["Guerra Soc.", "1. 2+ jogadores\n2. Mesma sociedade", false]]
 	if room.mode == "pve":
-		modes = [["Instância", "1. Até 4 contra o chefe\n2. Dificuldade: vida e dano\n3. Super armas no drop", true], ["Guerra Soc.", "1. 2+ jogadores\n2. Mesma sociedade", false]]
+		modes = [["Instância", "1. 3 fases e chefão\n2. Mapas nível 1–16\n3. Super no baú", true], ["Guerra Soc.", "1. 2+ jogadores\n2. Mesma sociedade", false]]
 	for i in range(2):
 		var mode: Array = modes[i]
 		var box: Panel = UiKit.panel(content, Rect2(476 + i * 184, 348, 180, 110), "mode_green" if mode[2] else "mode_gray")
@@ -127,8 +118,11 @@ func build_center(room: Dictionary) -> void:
 	UiKit.label(info, "Informações", Rect2(10, 2, 200, 24), 15, Color("ffe6a0"), UiKit.INK)
 	var map_box: Panel = UiKit.panel(info, Rect2(10, 28, 270, 80), "paper")
 	var map_name: String = "Mapa Aleatório"
+	var shown_map: String = room.map
+	if room.mode == "pve":
+		shown_map = str(InstanceRun.instance_def(str(room.instance)).phases[0].map)
 	for entry: Dictionary in app.balance.maps:
-		if entry.id == room.map:
+		if entry.id == shown_map:
 			map_name = str(entry.name)
 			UiKit.art(map_box, map_thumb(entry), Rect2(8, 8, 96, 64)).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	if map_name == "Mapa Aleatório":
@@ -137,6 +131,109 @@ func build_center(room: Dictionary) -> void:
 	UiKit.label(map_box, "%d seg por turno" % int(room.turn_seconds), Rect2(108, 50, 130, 24), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var gear: Button = UiKit.icon_button(map_box, PixelIcons.get_icon("gear"), Rect2(240, 46, 26, 26), cycle_time, "Tempo por turno (10/15/20 s)")
 	gear.name = "TimeGear"
+
+func build_instance(art_box: Panel, room: Dictionary) -> void:
+	# The Pixel Operator font never goes below 16 px, so the box is laid out for it.
+	var instance: Dictionary = InstanceRun.instance_def(str(room.instance))
+	var boss: Dictionary = {}
+	for entry: Dictionary in app.balance.enemies:
+		if entry.id == instance.boss:
+			boss = entry
+	var preview: String = str(instance.get("preview", ""))
+	if not ResourceLoader.exists(preview):
+		preview = map_thumb({"id": str(instance.phases[2].map), "bg": ""})
+	if ResourceLoader.exists(preview):
+		var picture: TextureRect = UiKit.art(art_box, preview, Rect2(4, 4, 356, 118), false)
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		picture.tooltip_text = str(instance.desc)
+		picture.mouse_filter = Control.MOUSE_FILTER_PASS
+	if ResourceLoader.exists(str(boss.get("sprite", ""))):
+		var portrait: TextureRect = UiKit.art(art_box, str(boss.sprite), Rect2(250, 6, 110, 110))
+		portrait.flip_h = str(boss.get("faces", "left")) != "left"
+	UiKit.title(art_box, str(instance.name), Rect2(0, 118, 364, 30), 24)
+	var steps: PackedStringArray = PackedStringArray()
+	for i in range(instance.phases.size()):
+		steps.append("%d.\u00a0%s" % [i + 1, instance.phases[i].name])
+	var phases: Label = UiKit.label(art_box, "   ".join(steps), Rect2(8, 146, 348, 44), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.wrap(phases, Vector2(348, 44))
+	phases.tooltip_text = str(instance.desc)
+	phases.mouse_filter = Control.MOUSE_FILTER_PASS
+	# Map slot: replaces the old difficulty list. The map decides level and rewards.
+	var item: Dictionary = app.profile.find_map(int(room.get("map_uid", -1)))
+	var slot: Button = UiKit.button(art_box, "", Rect2(8, 194, 348, 100), choose_map_item, "card_hover" if not item.is_empty() else "card")
+	slot.name = "MapSlot"
+	if item.is_empty():
+		UiKit.art(slot, PixelIcons.get_icon("search"), Rect2(10, 26, 48, 48)).modulate.a = 0.6
+		UiKit.label(slot, "Entrada livre (sem mapa)", Rect2(66, 6, 276, 26), 18, UiKit.TEXT_DARK)
+		var hint: Label = UiKit.label(slot, "Nível 1 e recompensa baixa. Clique para colocar um mapa.", Rect2(66, 32, 276, 62), 16, Color("7a5a3a"))
+		UiKit.wrap(hint, Vector2(276, 62))
+		slot.tooltip_text = "Coloque um mapa desta instância: o nível do mapa define a dificuldade e a recompensa.\nA entrada livre dá mapas de nível 1."
+	else:
+		UiKit.art(slot, InstanceRun.map_icon(item), Rect2(6, 22, 56, 56))
+		UiKit.label(slot, "Nível %d  •  %s" % [int(item.level), InstanceRun.quality_label(str(item.quality))], Rect2(66, 4, 276, 26), 18, InstanceRun.quality_color(str(item.quality)).darkened(0.5))
+		var lines: Array[String] = InstanceRun.describe_map(item)
+		var mods: Label = UiKit.label(slot, "\n".join(lines.slice(0, 3)) if not lines.is_empty() else "Sem atributos", Rect2(66, 30, 276, 66), 16, Color("7a3a1a"))
+		mods.clip_text = true
+		slot.tooltip_text = "%s\n%s\nO mapa é consumido ao entrar." % [InstanceRun.map_name(item), "\n".join(lines)]
+
+func choose_map_item() -> void:
+	if not app.is_owner():
+		UiKit.notice(self, "MAPA", "O mapa é do dono da sala.")
+		return
+	var maps: Array[Dictionary] = app.profile.maps_for(str(app.room.instance))
+	var dialog: Control = UiKit.modal(self, "COLOCAR MAPA", "", Vector2(760, 470))
+	var rect: Rect2 = dialog.get_meta("rect")
+	var options: Array = [{}]
+	options.append_array(maps.slice(0, 11))
+	for i in range(options.size()):
+		var item: Dictionary = options[i]
+		var cell: Rect2 = Rect2(rect.position.x + 28 + (i % 3) * 236, rect.position.y + 58 + (i / 3) * 96, 228, 88)
+		var button: Button = UiKit.button(dialog, "", cell, pick_map_item.bind(int(item.get("uid", -1)), dialog), "card_hover" if int(item.get("uid", -1)) == int(app.room.get("map_uid", -1)) else "card")
+		button.name = "MapItem_%d" % int(item.get("uid", -1))
+		if item.is_empty():
+			UiKit.label(button, "Entrada livre", Rect2(10, 8, 208, 26), 17, UiKit.TEXT_DARK)
+			UiKit.label(button, "Nível 1 • recompensa baixa\nDá mapas de nível 1", Rect2(10, 36, 208, 44), 13, Color("7a5a3a"))
+			continue
+		UiKit.art(button, InstanceRun.map_icon(item), Rect2(6, 6, 44, 44))
+		UiKit.label(button, "Nível %d" % int(item.level), Rect2(56, 4, 164, 26), 18, InstanceRun.quality_color(str(item.quality)).darkened(0.45))
+		UiKit.label(button, "%s • %d atrib." % [InstanceRun.quality_label(str(item.quality)), item.mods.size()], Rect2(56, 30, 164, 22), 13, Color("7a5a3a"))
+		var lines: Array[String] = InstanceRun.describe_map(item)
+		UiKit.label(button, lines[0] if not lines.is_empty() else "Sem atributos", Rect2(8, 58, 214, 22), 11, Color("7a3a1a")).clip_text = true
+		button.tooltip_text = "\n".join(lines)
+	if maps.is_empty():
+		UiKit.wrap(UiKit.label(dialog, "Você ainda não tem mapas desta instância. Vença as fases para encontrar mapas.", Rect2(rect.position.x + 40, rect.end.y - 110, rect.size.x - 80, 44), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER), Vector2(rect.size.x - 80, 44))
+	UiKit.button(dialog, "FECHAR", Rect2(rect.position.x + rect.size.x / 2 - 70, rect.end.y - 56, 140, 40), dialog.queue_free)
+
+func pick_map_item(uid: int, dialog: Control = null) -> void:
+	if app.is_owner():
+		app.room.map_uid = uid
+		app.audio.play("ui_click")
+	if is_instance_valid(dialog):
+		dialog.queue_free()
+	rebuild()
+
+func choose_instance() -> void:
+	var dialog: Control = UiKit.modal(self, "ESCOLHER INSTÂNCIA", "", Vector2(820, 420))
+	var rect: Rect2 = dialog.get_meta("rect")
+	var list: Array = app.balance.instances
+	for i in range(list.size()):
+		var instance: Dictionary = list[i]
+		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 26 + (i % 2) * 386, rect.position.y + 58 + (i / 2) * 150, 378, 142), pick_instance.bind(str(instance.id), dialog), "card_hover" if app.room.instance == instance.id else "card")
+		cell.name = "Instance_" + str(instance.id)
+		var thumb: String = map_thumb({"id": str(instance.phases[2].map), "bg": ""})
+		if ResourceLoader.exists(thumb):
+			UiKit.art(cell, thumb, Rect2(8, 8, 150, 100), false).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		UiKit.wrap(UiKit.label(cell, str(instance.name), Rect2(166, 8, 206, 50), 17, UiKit.TEXT_DARK), Vector2(206, 50))
+		var owned: int = app.profile.maps_for(str(instance.id)).size()
+		UiKit.label(cell, "%d mapa(s) na mochila" % owned, Rect2(166, 60, 206, 22), 13, Color("7a5a3a"))
+		UiKit.label(cell, " → ".join(instance.phases.map(func(p: Dictionary) -> String: return str(p.name))), Rect2(8, 112, 364, 24), 11, Color("7a3a1a")).clip_text = true
+
+func pick_instance(id: String, dialog: Control) -> void:
+	app.room.instance = id
+	app.room.map_uid = -1
+	app.room.title = "Expedição: %s" % InstanceRun.instance_def(id).name
+	dialog.queue_free()
+	rebuild()
 
 func draw_versus(canvas: Control) -> void:
 	for i in range(14):
@@ -156,7 +253,8 @@ func build_tools(room: Dictionary) -> void:
 	UiKit.label(box, "Sala", Rect2(14, 4, 60, 40), 26, Color("fff0d0"), UiKit.INK)
 	UiKit.label(box, str(room.id), Rect2(74, 4, 90, 40), 30, Color("ffd04a"), UiKit.INK)
 	UiKit.label(box, "Canal 1", Rect2(300, 8, 104, 26), 15, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	var subtitle: Label = UiKit.label(box, str(room.title), Rect2(14, 42, 390, 24), 14, Color("ffe24a"), UiKit.INK)
+	var heading: String = "Expedição: %s" % InstanceRun.instance_def(str(room.instance)).name if room.mode == "pve" else str(room.title)
+	var subtitle: Label = UiKit.label(box, heading, Rect2(14, 42, 390, 24), 14, Color("ffe24a"), UiKit.INK)
 	subtitle.clip_text = true
 	UiKit.panel(box, Rect2(12, 70, 394, 300), "paper")
 	UiKit.panel(box, Rect2(100, 76, 218, 26), "plate")
@@ -258,9 +356,9 @@ func choose_map() -> void:
 		UiKit.notice(self, "LOCAL", "Somente o dono da sala escolhe o mapa.")
 		return
 	if app.room.mode == "pve":
-		UiKit.notice(self, "LOCAL", "A instância acontece no Templo do Sol.")
+		choose_instance()
 		return
-	var dialog: Control = UiKit.modal(self, "ESCOLHER LOCAL", "", Vector2(700, 380))
+	var dialog: Control = UiKit.modal(self, "ESCOLHER LOCAL", "", Vector2(920, 500))
 	var rect: Rect2 = dialog.get_meta("rect")
 	var options: Array = [{"id": "", "name": "Mapa Aleatório", "bg": ""}]
 	for entry: Dictionary in app.balance.maps:
@@ -268,7 +366,7 @@ func choose_map() -> void:
 			options.append(entry)
 	for i in range(options.size()):
 		var entry: Dictionary = options[i]
-		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 30 + (i % 3) * 216, rect.position.y + 60 + (i / 3) * 130, 204, 120), pick_map.bind(str(entry.id), dialog), "card_hover" if app.room.map == entry.id else "card")
+		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 26 + (i % 4) * 218, rect.position.y + 56 + (i / 4) * 128, 204, 120), pick_map.bind(str(entry.id), dialog), "card_hover" if app.room.map == entry.id else "card")
 		cell.name = "Map_" + (str(entry.id) if entry.id != "" else "random")
 		if str(entry.bg) != "":
 			UiKit.art(cell, map_thumb(entry), Rect2(10, 8, 184, 78), false)
@@ -333,11 +431,6 @@ func cancel_search() -> void:
 func kick_member(index: int) -> void:
 	app.kick(index)
 	rebuild()
-
-func pick_difficulty(id: String) -> void:
-	if app.is_owner():
-		app.room.difficulty = id
-		rebuild()
 
 func pick_map(id: String, dialog: Control) -> void:
 	app.room.map = id

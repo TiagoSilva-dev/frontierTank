@@ -13,7 +13,7 @@ const ITEM_NAMES: Dictionary = {
 	"golden_crystal": ["Cristal Dourado", "res://assets/expansion/items/golden_crystal.png"],
 	"pet_egg": ["Ovo de Mascote", "res://assets/expansion/items/pet_egg.png"],
 }
-const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais"]
+const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]
 const LEFT_SLOTS: Array[String] = ["chapeu", "oculos", "cabelo", "roupa"]
 const RIGHT_SLOTS: Array[String] = ["asas", "arma", "auxiliar"]
 const PER_PAGE: int = 42
@@ -179,6 +179,12 @@ func entries() -> Array[Dictionary]:
 			for tool: Dictionary in app.balance.tools:
 				if tool.id == tool_id:
 					list.append({"key": "tool:" + tool_id, "name": tool.name, "icon": tool.icon, "count": 1, "sort": "zz" + tool_id})
+	if category in ["Todos", "Mapas"]:
+		# Instance maps (0.9): consumed when entering an instance, highest level first.
+		var maps: Array[Dictionary] = app.profile.maps.duplicate()
+		maps.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
+		for item: Dictionary in maps:
+			list.append({"key": "map:%d" % int(item.uid), "map": item, "name": InstanceRun.map_name(item), "icon": InstanceRun.map_icon(item), "count": 1})
 	return list
 
 func build_inventory() -> void:
@@ -186,7 +192,8 @@ func build_inventory() -> void:
 	UiKit.panel(contents, Rect2(660, 140, 584, 554), "paper")
 	for i in range(CATEGORIES.size()):
 		var filter: String = CATEGORIES[i]
-		UiKit.button(contents, filter, Rect2(662 + i * 104, 100, 100, 36), filter_items.bind(filter), "tab_active" if category == filter else "tab", 15)
+		var tab: Button = UiKit.button(contents, filter, Rect2(662 + i * 97, 100, 94, 36), filter_items.bind(filter), "tab_active" if category == filter else "tab", 15)
+		tab.name = "Tab_" + filter
 	var list: Array[Dictionary] = entries()
 	var pages: int = maxi(1, ceili(list.size() / float(PER_PAGE)))
 	page = clampi(page, 0, pages - 1)
@@ -204,6 +211,10 @@ func build_inventory() -> void:
 			item_art(slot, entry.inst, Rect2(14, 4, 48, 50))
 			if app.profile.is_equipped(int(entry.inst.uid)):
 				UiKit.label(slot, "E", Rect2(58, 36, 16, 20), 14, Color("9aff7a"), UiKit.INK)
+		elif entry.has("map"):
+			UiKit.art(slot, str(entry.icon), Rect2(14, 4, 48, 50))
+			var tone: Color = InstanceRun.quality_color(str(entry.map.quality))
+			UiKit.label(slot, str(int(entry.map.level)), Rect2(40, 34, 34, 22), 16, tone, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		else:
 			UiKit.art(slot, str(entry.icon), Rect2(14, 4, 48, 50))
 			if int(entry.count) > 1:
@@ -267,7 +278,11 @@ func refresh_selection(list: Array[Dictionary]) -> void:
 		sell_button.disabled = equipped
 		return
 	for entry: Dictionary in list:
-		if entry.key == selected:
+		if entry.key == selected and entry.has("map"):
+			var item: Dictionary = entry.map
+			var lines: Array[String] = InstanceRun.describe_map(item)
+			selected_label.text = "[color=#%s]%s[/color]  [color=#ffd46b]%s[/color]\n%s" % [InstanceRun.quality_color(str(item.quality)).to_html(false), entry.name, InstanceRun.quality_label(str(item.quality)), " • ".join(lines) if not lines.is_empty() else "Sem atributos. Coloque no espaço de mapa da sala da instância."]
+		elif entry.key == selected:
 			selected_label.text = "%s  x%d" % [entry.name, int(entry.get("count", 1))]
 			var stone: Dictionary = Armory.stone_def(selected.substr(5))
 			if not stone.is_empty():

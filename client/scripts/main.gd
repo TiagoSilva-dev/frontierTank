@@ -12,6 +12,7 @@ var screen: Control
 var screen_name: String = ""
 var bag: Control
 var room: Dictionary = {}
+var run: InstanceRun
 var last_summary: Dictionary = {}
 var args: Dictionary = {}
 var capture_frames: int = -1
@@ -75,11 +76,30 @@ func open_named(target: String) -> void:
 			show_room()
 		"pve":
 			create_room("pve")
+			room.instance = str(args.get("instance", "templo_sol"))
+			if args.has("level"):
+				# Capture helper: a map of that level in the slot (--level=10).
+				profile.redeem("MAPAS")
+				for item: Dictionary in profile.maps_for(str(room.instance)):
+					if int(item.level) == int(args.level):
+						room.map_uid = int(item.uid)
 			show_room()
 		"pve_battle":
 			create_room("pve")
-			invite_bot()
+			room.instance = str(args.get("instance", "templo_sol"))
+			if args.has("level"):
+				profile.redeem("MAPAS")
+				for item: Dictionary in profile.maps_for(str(room.instance)):
+					if int(item.level) == int(args.level):
+						room.map_uid = int(item.uid)
 			start_battle()
+			if args.has("phase"):
+				# Capture helper: jump to phase 2 or 3 (clears the phases before it).
+				for i in range(clampi(int(args.phase) - 1, 0, 2)):
+					run.complete_phase(screen.game)
+				start_phase()
+			if args.has("zoom"):
+				screen.camera.zoom = Vector2.ONE * float(args.zoom)
 		"battle", "result", "cards":
 			create_room("pvp")
 			room.map = str(args.get("map", ""))
@@ -152,7 +172,13 @@ func player_entry() -> Dictionary:
 	return profile.entry(balance)
 
 func create_room(mode: String) -> void:
-	room = {"id": lobby.rng.randi_range(100, 999), "title": "Guerra de equipes, diversão sem limite" if mode == "pvp" else "Expedição ao Templo do Sol", "mode": mode, "capacity": 4, "members": [player_entry()], "owner": 0, "map": "templo_sol" if mode == "pve" else "", "turn_seconds": int(balance.turn_seconds), "difficulty": "normal", "ready": true}
+	room = {"id": lobby.rng.randi_range(100, 999), "title": "Guerra de equipes, diversão sem limite", "mode": mode, "capacity": 4, "members": [player_entry()], "owner": 0, "map": "", "turn_seconds": int(balance.turn_seconds), "ready": true}
+	if mode == "pve":
+		# Instance rooms: which instance and which map item (-1 = free entry) go in.
+		room.instance = "templo_sol"
+		room.map_uid = -1
+		room.turn_seconds = int(balance.pve.get("turn_seconds", 20))
+		room.title = "Expedição: %s" % InstanceRun.instance_def(room.instance).name
 
 func join_room(source: Dictionary) -> bool:
 	if source.is_empty() or source.playing or source.members.size() >= int(source.capacity):
@@ -179,24 +205,48 @@ func kick(index: int) -> void:
 func is_owner() -> bool:
 	return not room.is_empty() and bool(room.members[int(room.owner)].get("human", false))
 
-func start_battle() -> void:
+func team_entries() -> Array:
 	var team: Array = []
-	var level_sum: int = 0
 	for member: Dictionary in room.members:
-		var entry: Dictionary = player_entry() if member.get("human", false) else member.duplicate()
-		team.append(entry)
+		team.append(player_entry() if member.get("human", false) else member.duplicate())
+	return team
+
+func start_battle() -> void:
+	if room.mode == "pve":
+		start_instance()
+		return
+	var team: Array = team_entries()
+	var level_sum: int = 0
+	for entry: Dictionary in team:
 		level_sum += int(entry.level)
 	var rivals: Array = []
-	if room.mode == "pve":
-		rivals.append({"name": "Rei Hélio", "boss": true, "party": team.size(), "level": 12, "weapon": 0})
-	else:
-		var names: Array = team.map(func(m: Dictionary) -> String: return m.name)
-		for i in range(team.size()):
-			var rival: Dictionary = lobby.bot_near(level_sum / team.size(), names)
-			names.append(rival.name)
-			rivals.append(rival)
+	var names: Array = team.map(func(m: Dictionary) -> String: return m.name)
+	for i in range(team.size()):
+		var rival: Dictionary = lobby.bot_near(level_sum / team.size(), names)
+		names.append(rival.name)
+		rivals.append(rival)
+	run = null
 	var battle: BattleScreen = BattleScreen.new()
-	battle.config = {"mode": room.mode, "map": room.map, "turn_seconds": room.turn_seconds, "difficulty": room.difficulty, "teams": [team, rivals]}
+	battle.config = {"mode": room.mode, "map": room.map, "turn_seconds": room.turn_seconds, "teams": [team, rivals]}
+	switch_to(battle, "battle")
+
+func start_instance() -> void:
+	# The map item is consumed on entry; without one it is the free entry (level 1).
+	var item: Dictionary = profile.find_map(int(room.get("map_uid", -1)))
+	if not item.is_empty():
+		item = item.duplicate(true)
+		profile.remove_map(int(item.uid))
+		profile.save_profile()
+	room.map_uid = -1
+	var team: Array = team_entries()
+	# Party scaling counts players only (bots are ignored for now).
+	var humans: int = team.filter(func(entry: Dictionary) -> bool: return entry.get("human", false)).size()
+	run = InstanceRun.new(balance, str(room.get("instance", "templo_sol")), item, humans, team, profile)
+	start_phase()
+
+func start_phase() -> void:
+	var battle: BattleScreen = BattleScreen.new()
+	battle.config = run.phase_config(run.members)
 	switch_to(battle, "battle")
 
 func battle_finished(game: LocalMatch) -> Dictionary:
@@ -207,8 +257,15 @@ func battle_finished(game: LocalMatch) -> Dictionary:
 	var hurt_exp: int = roundi(float(me.stats.damage) * float(rules.exp_per_damage))
 	var result_exp: int = int(rules.win_exp if won else rules.loss_exp)
 	var bonus_exp: int = 0
-	if game.pve and won:
-		bonus_exp = roundi(float(rules.pve_exp) * float(game.difficulty.get("reward", 1.0)))
+	var loot: Dictionary = {}
+	if game.pve and run != null:
+		# Instance end (boss down or party wiped): XP scales with the map level and
+		# party, the chest is opened and the reward cards rolled.
+		if won:
+			bonus_exp = roundi(float(balance.pve.exp) * run.xp_scale())
+		kill_exp = roundi(kill_exp * run.xp_scale())
+		hurt_exp = roundi(hurt_exp * run.xp_scale())
+		loot = run.finish(won)
 	var merit: int = int(rules.merit_win if won else rules.merit_loss) + int(me.stats.kills) * int(rules.merit_per_kill)
 	var level_before: int = profile.level()
 	profile.tools = ["", "", ""]
@@ -220,13 +277,27 @@ func battle_finished(game: LocalMatch) -> Dictionary:
 		if fighter.team == me.team:
 			var fighter_exp: int = int(rules.win_exp if won else rules.loss_exp) + roundi(float(fighter.stats.damage) * float(rules.exp_per_damage)) + int(fighter.stats.kills) * int(rules.exp_per_kill)
 			roster.append({"name": fighter.display_name, "exp": fighter_exp, "merit": int(rules.merit_win if won else rules.merit_loss) + int(fighter.stats.kills) * int(rules.merit_per_kill)})
-	last_summary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills), "difficulty": str(game.difficulty.get("id", "normal"))}
+	last_summary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
+	if game.pve and run != null:
+		last_summary.loot = loot
+		last_summary.instance = {"name": str(run.instance.name), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
 	return last_summary
+
+func phase_cleared(game: LocalMatch) -> Dictionary:
+	# A phase before the boss was won: drops are kept even if the party falls later.
+	var cleared: Dictionary = run.current_phase()
+	var report: Dictionary = run.complete_phase(game)
+	report.cleared = str(cleared.name)
+	report.next = run.current_phase()
+	report.index = run.phase_index
+	report.count = run.phase_count()
+	return report
 
 func return_to_room() -> void:
 	if room.is_empty():
 		show_hall()
 		return
+	run = null
 	for i in range(room.members.size()):
 		if room.members[i].get("human", false):
 			room.members[i] = player_entry()

@@ -39,7 +39,8 @@ func run_tests() -> void:
 	check(profile.equipped_instance("arma").id == "quebra_tijolos", "new account starts with a Quebra Tijolos")
 	check(profile.look().skin == "base_m" and profile.look().hat == "", "default look: t-shirt and shorts, nothing else")
 	profile.coins = 10000
-	check(profile.buy("kit_medico", "verdadeira") == "" and profile.coins == 10000 - 400 * 8, "weapons are bought by quality")
+	check(profile.buy("kit_medico", "excelente") == "" and profile.coins == 10000 - 400 * 3, "weapons are bought by quality")
+	check(profile.buy("kit_medico", "verdadeira") != "" and profile.coins == 10000 - 400 * 3, "Verdadeira weapons only drop in instances (0.9)")
 	check(profile.buy("bumerangue_amor", "super") != "", "super weapons cannot be bought")
 	check(profile.buy("roupa_samurai") == "", "outfits can be bought")
 	var samurai: Dictionary = profile.inventory[-1]

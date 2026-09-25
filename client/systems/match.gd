@@ -19,6 +19,9 @@ signal effect(kind: String, point: Vector2, data: Dictionary)
 # (multi, power, powmax, heal, energy, shield, plane, angel, pow) and icon (a res://
 # path or a PixelIcons name).
 signal skill_used(fighter: TankFighter, info: Dictionary)
+# A POW shot landed (0.8): the screen plays the weapon's own impact; the match holds
+# still for `hitstop` seconds.
+signal pow_impact(point: Vector2, radius: float, weapon_id: String)
 
 enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED }
 
@@ -47,7 +50,14 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var mode: String = "pvp"
 var pve: bool = false
 var map: Dictionary = {}
-var difficulty: Dictionary = {}
+# PvE phase (0.9, built by InstanceRun): name, objective ("defeat", "totems", "survive"),
+# turns to survive and the waves still to come; threats come from the map item.
+var phase: Dictionary = {}
+var waves: Array = []
+var threats: Dictionary = {}
+var players: int = 1
+var survived: int = 0
+var hitstop: float = 0.0
 var boss_enraged: bool = false
 var auto_play: bool = false
 var turn_items: Array[String] = []
@@ -86,7 +96,12 @@ func start(config: Dictionary) -> void:
 	pve = mode == "pve"
 	map = find_map(str(config.get("map", "")))
 	turn_seconds = float(config.get("turn_seconds", balance.turn_seconds))
-	difficulty = find_difficulty(str(config.get("difficulty", "normal")))
+	phase = config.get("phase", {})
+	waves = phase.get("waves", []).duplicate(true)
+	threats = config.get("threats", {})
+	players = maxi(1, int(config.get("players", 1)))
+	survived = 0
+	hitstop = 0.0
 	if config.has("seed"):
 		rng.seed = int(config.seed)
 	terrain = DestructibleTerrain.new()
@@ -115,33 +130,64 @@ func start(config: Dictionary) -> void:
 	paused = false
 	state = State.WAITING_FOR_TURN
 	var opener: TankFighter = next_fighter()
+	if pve and not phase.is_empty():
+		announce.emit("Fase %d: %s" % [int(phase.get("index", 0)) + 1, str(phase.get("name", ""))], Color("ffd04a"))
 	if opener != null and opener.team == fighters[local_id].team:
 		announce.emit("Processo de busca sucedido! A sua equipe começará o combate!", Color("fff4a0"))
 	else:
 		announce.emit("Processo de busca sucedido! A equipe adversária começa.", Color("fff4a0"))
 	begin_turn()
 
-func spawn_fighter(entry: Dictionary, index: int, count: int) -> void:
+func spawn_fighter(entry: Dictionary, index: int, count: int, drop: bool = false) -> TankFighter:
 	var fighter: TankFighter = TankFighter.new()
-	fighter.setup(fighters.size(), entry, Armory.weapon_for_entry(entry), balance)
-	if entry.get("boss", false):
-		var size_scale: float = 0.4 + 0.2 * maxi(1, int(entry.get("party", 1)))
-		fighter.max_hp = roundi(float(balance.pve.boss_hp) * float(difficulty.get("hp", 1.0)) * size_scale)
-		fighter.hp = fighter.max_hp
-		fighter.agility = int(balance.pve.agility)
-		fighter.setup_boss(entry, roundi(float(balance.pve.damage) * float(difficulty.get("damage", 1.0))), int(balance.pve.radius))
+	var enemy: String = str(entry.get("enemy", "rei_helio" if entry.get("boss", false) else ""))
+	if enemy != "":
+		fighter.setup_monster(fighters.size(), entry, enemy_def(enemy), balance)
+	else:
+		fighter.setup(fighters.size(), entry, Armory.weapon_for_entry(entry), balance)
+		# Map threat: players have less energy (move less).
+		fighter.max_energy = roundi(fighter.max_energy * float(entry.get("energy_scale", 1.0)))
 	var tools: Array = entry.get("tools", [])
 	for tool in tools:
 		fighter.tools.append(str(tool))
+	apply_carry(fighter, entry.get("carry", {}))
 	var span: Array = map.spawns[int(entry.team)]
 	var x: float = lerpf(float(span[0]), float(span[1]), (index + 0.5) / maxf(1, count)) + rng.randf_range(-30, 30)
+	x = float(entry.get("x", x))
 	x = find_ground(x)
 	fighter.position = Vector2(x, terrain.surface_y(x) - 1)
-	fighter.tilt = 0.0 if fighter.is_boss else terrain.slope_degrees(fighter.position.x, fighter.position.y)
+	if drop:
+		# Reinforcements fall from the sky onto the battlefield.
+		fighter.position.y = maxf(-200.0, fighter.position.y - 420.0)
+		fighter.settled = false
+	fighter.tilt = 0.0 if fighter.is_monster or drop else terrain.slope_degrees(fighter.position.x, fighter.position.y)
 	fighter.facing = 1 if fighter.position.x < terrain.world_size.x * 0.5 else -1
 	add_child(fighter)
 	fighter.update_pose()
 	fighters.append(fighter)
+	return fighter
+
+func apply_carry(fighter: TankFighter, carry: Dictionary) -> void:
+	# State kept between the phases of an instance: life (already healed by the run),
+	# POW, tools, uses of the auxiliary item and the battle statistics.
+	if carry.is_empty():
+		return
+	fighter.hp = clampi(int(carry.get("hp", fighter.max_hp)), 1, fighter.max_hp)
+	fighter.pow_gauge = float(carry.get("pow", 0.0))
+	if carry.has("tools"):
+		fighter.tools.clear()
+		for tool: Variant in carry.tools:
+			fighter.tools.append(str(tool))
+	if carry.has("aux_uses"):
+		fighter.aux_uses = int(carry.aux_uses)
+	if carry.has("stats"):
+		fighter.stats = (carry.stats as Dictionary).duplicate()
+
+func enemy_def(id: String) -> Dictionary:
+	for entry: Dictionary in balance.get("enemies", []):
+		if entry.id == id:
+			return entry
+	return balance.enemies[0]
 
 func find_ground(x: float) -> float:
 	for offset in range(0, 600, 12):
@@ -158,12 +204,6 @@ func find_map(id: String) -> Dictionary:
 		if pve == bool(entry.get("pve_only", false)):
 			pool.append(entry)
 	return pool[rng.randi() % pool.size()]
-
-func find_difficulty(id: String) -> Dictionary:
-	for entry: Dictionary in balance.pve.difficulties:
-		if entry.id == id:
-			return entry
-	return balance.pve.difficulties[0]
 
 func item_def(id: String) -> Dictionary:
 	for item: Dictionary in balance.items:
@@ -186,14 +226,14 @@ func local() -> TankFighter:
 func next_fighter() -> TankFighter:
 	var best: TankFighter = null
 	for fighter in fighters:
-		if fighter.hp > 0 and (best == null or fighter.delay < best.delay):
+		if fighter.acts() and (best == null or fighter.delay < best.delay):
 			best = fighter
 	return best
 
 func turn_order() -> Array[TankFighter]:
 	var order: Array[TankFighter] = []
 	for fighter in fighters:
-		if fighter.hp > 0:
+		if fighter.acts():
 			order.append(fighter)
 	order.sort_custom(func(a: TankFighter, b: TankFighter) -> bool: return a.delay < b.delay or (a.delay == b.delay and a.player_id < b.player_id))
 	return order
@@ -230,6 +270,9 @@ func begin_turn() -> void:
 	shots_left = 0
 	ai_planned = false
 	wind = snappedf(rng.randf_range(-float(balance.wind_max), float(balance.wind_max)), 0.1)
+	if threats.get("strong_wind", false):
+		# Map threat: the wind never drops below 70% of the maximum.
+		wind = snappedf((1.0 if rng.randf() < 0.5 else -1.0) * rng.randf_range(float(balance.wind_max) * 0.7, float(balance.wind_max)), 0.1)
 	fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(balance.pow_per_turn))
 	for other in fighters:
 		other.active = other == fighter
@@ -272,6 +315,10 @@ func finish_turn() -> void:
 	fighter.fly_cooldown = maxi(0, fighter.fly_cooldown - 1)
 	fighter.active = false
 	state = State.TURN_FINISHED
+	if pve:
+		after_pve_turn(fighter)
+		if evaluate_winner():
+			return
 	begin_turn()
 
 # ---------- player intents ----------
@@ -312,6 +359,12 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 	var radius_scale: float = 1.0
 	var freeze: bool = false
 	var pow_plan: Dictionary = {}
+	if fighter.is_monster:
+		freeze = monster_freezes(fighter)
+		# Groups of 3+ players: the boss adds an area attack (three shots) every round.
+		if fighter.is_boss and players >= int(balance.party_scaling.get("boss_area_from", 3)):
+			balls = 3
+			spread = 6.0
 	for id in turn_items:
 		var item: Dictionary = item_def(id)
 		bonus += float(item.get("damage_bonus", 0.0))
@@ -357,6 +410,11 @@ func fire_volley() -> void:
 		projectile.fly = bool(shot_plan.fly)
 		projectile.freeze = bool(shot_plan.freeze)
 		projectile.special = pow_plan
+		if not pow_plan.is_empty():
+			# 0.8: the POW shot is drawn bigger and trails its own colours (visual only).
+			if str(pow_plan.get("kind", "")) != "giant":
+				projectile.sprite_size *= Armory.visual("pow_projectile_scale")
+			projectile.set_powered(PowImpact.colors_for(str(fighter.weapon.get("id", ""))))
 		projectile.base_damage = int(shot_plan.get("base_damage", shot_plan.damage))
 		projectile.base_radius = float(shot_plan.get("base_radius", shot_plan.radius))
 	fighter.stats.shots += 1
@@ -382,9 +440,14 @@ func make_projectile(fighter: TankFighter, from: Vector2, velocity: Vector2, dam
 	projectile.tint = Color(str(fighter.weapon.get("color", "fff0c2")))
 	var key: String = sprite_key if sprite_key != "" else str(style.get("sprite", ""))
 	var path: String = ""
-	if key != "" and fighter.weapon.has("projectile"):
+	if style.has("texture"):
+		path = str(style.texture)
+	elif key != "" and fighter.weapon.has("projectile"):
 		path = Armory.projectile_path(str(fighter.weapon.id), key, int(fighter.weapon.get("level", 0)))
 	projectile.apply_style(style, path)
+	# 0.8: bigger projectile art; hits still use the projectile's point against
+	# fighter.hit_radius and the terrain mask, so the hitbox does not change.
+	projectile.sprite_size *= Armory.visual("projectile_scale")
 	projectile.impacted.connect(resolve_impact)
 	projectile.missed.connect(resolve_miss)
 	add_child(projectile)
@@ -404,7 +467,7 @@ func use_item(id: String) -> bool:
 
 func apply_item(fighter: TankFighter, id: String) -> bool:
 	var item: Dictionary = item_def(id)
-	if item.is_empty() or turn_fly or fighter.is_boss:
+	if item.is_empty() or turn_fly or fighter.is_monster:
 		return false
 	var multi: bool = item.has("extra_shots") or item.has("balls")
 	if multi:
@@ -502,6 +565,8 @@ func toggle_fly() -> bool:
 		return false
 	var fighter: TankFighter = active()
 	var cost: float = float(balance.fly.energy)
+	if threats.get("no_plane", false) and not turn_fly:
+		return false
 	if turn_fly:
 		turn_fly = false
 		energy += cost
@@ -526,6 +591,7 @@ func activate_pow() -> bool:
 
 func arm_pow(fighter: TankFighter) -> void:
 	turn_pow = true
+	fighter.set_pow_armed(true)
 	skill_used.emit(fighter, {"id": "pow", "name": str(fighter.weapon.get("pow", {}).get("name", "POW")), "icon": "pow", "kind": "pow"})
 
 func pass_turn() -> void:
@@ -560,6 +626,10 @@ func resolve_impact(projectile: TankProjectile, point: Vector2) -> void:
 		return
 	var rules: Dictionary = projectile.special
 	var kind: String = str(rules.get("kind", ""))
+	if not rules.is_empty() and projectile.stage == "main" and rules.has("name"):
+		# The POW lands: a few frames of hit-stop and the weapon's own impact.
+		hitstop = maxf(hitstop, Armory.visual("pow_hitstop"))
+		pow_impact.emit(point, projectile.radius, str(shooter.weapon.get("id", "")))
 	match kind:
 		"beam":
 			effect.emit("beam", point, {})
@@ -694,8 +764,22 @@ func resolve_miss(projectile: TankProjectile) -> void:
 func evaluate_winner() -> bool:
 	var alive_teams: Dictionary = {}
 	for fighter in fighters:
-		if fighter.hp > 0:
+		if fighter.hp > 0 and fighter.rank != "totem":
 			alive_teams[fighter.team] = true
+	if pve and alive_teams.has(0):
+		var objective: String = str(phase.get("objective", "defeat"))
+		var totems: Array[TankFighter] = fighters.filter(func(f: TankFighter) -> bool: return f.rank == "totem")
+		if objective == "totems" and not totems.is_empty() and totems.all(func(f: TankFighter) -> bool: return f.hp <= 0):
+			alive_teams = {0: true}
+		elif objective == "survive" and survived >= int(phase.get("turns", 6)):
+			alive_teams = {0: true}
+		elif not alive_teams.has(1) and not waves.is_empty():
+			# The next wave of minions drops in; the phase goes on.
+			spawn_wave(waves.pop_front())
+			return false
+		elif objective == "totems" and not alive_teams.has(1):
+			# Only the totems are left standing: the phase goes on until they break.
+			return false
 	if alive_teams.size() > 1:
 		return false
 	winner_team = alive_teams.keys()[0] if alive_teams.size() == 1 else -1
@@ -712,6 +796,9 @@ func evaluate_winner() -> bool:
 
 func _physics_process(delta: float) -> void:
 	if not running or paused:
+		return
+	if hitstop > 0.0:
+		hitstop -= delta
 		return
 	for fighter in fighters:
 		fighter.step_fall(delta, terrain, float(balance.gravity))
@@ -789,31 +876,28 @@ func human_step(delta: float) -> void:
 func plan_ai(fighter: TankFighter) -> void:
 	ai_time = 0
 	ai_planned = true
-	ai_think = float(balance.pve.think_seconds) if fighter.is_boss else rng.randf_range(float(balance.bots.think_min), float(balance.bots.think_max))
+	ai_think = float(balance.pve.think_seconds) if fighter.is_monster else rng.randf_range(float(balance.bots.think_min), float(balance.bots.think_max))
 	var target: TankFighter = EnemyAI.pick_target(fighter, fighters)
 	if target == null:
 		ai_plan = Vector3(45, 50, INF)
 		return
 	fighter.facing = 1 if target.position.x > fighter.position.x else -1
 	fighter.update_pose()
-	if fighter.is_boss:
-		boss_enraged = fighter.hp <= fighter.max_hp / 2
-		var base: float = float(balance.pve.enraged_damage if boss_enraged else balance.pve.damage)
-		fighter.weapon.damage = roundi(base * float(difficulty.get("damage", 1.0)))
-		status_message = "%s prepara FÚRIA SOLAR!" % fighter.display_name if boss_enraged else "%s está calculando seu ataque…" % fighter.display_name
+	if fighter.is_monster:
+		plan_monster(fighter)
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
 	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale, balance)
-	var spread: float = float(balance.pve.power_error)
-	if not fighter.is_boss:
+	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
+	if not fighter.is_monster:
 		spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
 	ai_plan = Vector3(solution.x, clampf(solution.y + rng.randf_range(-spread, spread), 5, 100), solution.z)
-	if not fighter.is_boss and fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
+	if not fighter.is_monster and fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
 		apply_aux(fighter)
-	if not fighter.is_boss and not fighter.human and rng.randf() < float(balance.bots.item_chance):
+	if not fighter.is_monster and not fighter.human and rng.randf() < float(balance.bots.item_chance):
 		var combos: Array = [["plus2", "dmg50", "dmg20"], ["triple", "dmg50", "dmg20"], ["plus1", "dmg50", "dmg20"], ["dmg50", "dmg50", "dmg40"], ["plus1", "dmg30"], ["dmg50", "dmg20"], ["powmax", "dmg50"]]
 		for id: String in combos[rng.randi() % combos.size()]:
 			apply_item(fighter, id)
-	if not fighter.is_boss and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
+	if not fighter.is_monster and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
 		arm_pow(fighter)
 
 func ai_step(delta: float) -> void:
@@ -828,6 +912,75 @@ func ai_step(delta: float) -> void:
 		state = State.PLAYER_CHARGING
 		power = 0
 		charge_pass = 0
+
+# ---------- PvE: waves and boss mechanics ----------
+
+func spawn_wave(entries: Array) -> void:
+	var floor_delay: float = next_delay_floor()
+	for i in range(entries.size()):
+		var entry: Dictionary = entries[i].duplicate()
+		entry.team = 1
+		var fighter: TankFighter = spawn_fighter(entry, i, entries.size(), true)
+		# Newcomers wait for the fighters already on the field before acting.
+		fighter.delay = floor_delay + 60.0 + rng.randf_range(0.0, 40.0)
+	announce.emit("Uma nova onda de inimigos chegou!", Color("ff9a5a"))
+	effect.emit("wave", Vector2(terrain.world_size.x * 0.7, 0), {"count": entries.size()})
+
+func next_delay_floor() -> float:
+	var lowest: float = INF
+	for fighter in fighters:
+		if fighter.acts():
+			lowest = minf(lowest, fighter.delay)
+	return 0.0 if lowest == INF else lowest
+
+func mechanics(fighter: TankFighter) -> Array:
+	return fighter.monster.get("mechanics", [])
+
+func plan_monster(fighter: TankFighter) -> void:
+	if not fighter.is_boss and fighter.rank != "guardian":
+		status_message = "%s prepara um ataque" % fighter.display_name
+		return
+	var enraged: bool = fighter.always_enraged or fighter.hp <= fighter.max_hp / 2
+	if fighter.is_boss:
+		boss_enraged = enraged
+	if enraged and "fury" in mechanics(fighter):
+		fighter.weapon.damage = fighter.fury_damage
+		status_message = "%s prepara %s!" % [fighter.display_name, str(fighter.monster.get("fury_name", "Fúria")).to_upper()]
+	else:
+		fighter.weapon.damage = fighter.base_damage
+		status_message = "%s está calculando seu ataque…" % fighter.display_name
+	# Rei das Máscaras: calls more masks every few turns (at most 3 minions alive).
+	if "summon" in mechanics(fighter) and fighter.turns_taken > 0 and fighter.turns_taken % 3 == 0:
+		var minions: int = fighters.filter(func(f: TankFighter) -> bool: return f.team == fighter.team and f.hp > 0 and f.rank == "minion").size()
+		if minions < 3 and not fighter.summon_entry.is_empty():
+			var entry: Dictionary = fighter.summon_entry.duplicate()
+			entry.team = fighter.team
+			entry.x = clampf(fighter.position.x - fighter.facing * rng.randf_range(90, 160), 40, terrain.world_size.x - 40)
+			var minion: TankFighter = spawn_fighter(entry, 0, 1, true)
+			minion.delay = fighter.delay + 50.0
+			announce.emit("%s invoca %s!" % [fighter.display_name, minion.display_name], Color("ff8a4a"))
+			effect.emit("summon", minion.position, {})
+
+func monster_freezes(fighter: TankFighter) -> bool:
+	# Rainha da Nevasca: every second attack freezes whoever it hits (they lose a turn).
+	return "freeze" in mechanics(fighter) and fighter.turns_taken % 2 == 1
+
+func after_pve_turn(fighter: TankFighter) -> void:
+	if fighter.team == 0 and fighter.player_id == local_id:
+		survived += 1
+	# Grifo da Tempestade: flies to another spot after every attack.
+	if fighter.is_monster and fighter.hp > 0 and "teleport" in mechanics(fighter) and not skip_turn and not passed:
+		var old: Vector2 = fighter.position
+		var span: Array = map.spawns[fighter.team]
+		var x: float = old.x
+		for attempt in range(8):
+			x = find_ground(rng.randf_range(float(span[0]), float(span[1])))
+			if absf(x - old.x) > 160:
+				break
+		fighter.position = Vector2(x, maxf(-200.0, terrain.surface_y(x) - 260.0))
+		fighter.settled = false
+		effect.emit("warp", old + Vector2(0, -fighter.monster_height * 0.5), {"to": fighter.position})
+		announce.emit("%s voa para outra posição!" % fighter.display_name, Color("a8e8ff"))
 
 func keyboard_axis(negative: Key, positive: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

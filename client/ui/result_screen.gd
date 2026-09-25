@@ -1,7 +1,10 @@
 class_name ResultScreen
 extends Control
 
-# End of battle: "meus result." breakdown, then the reward card draw.
+# End of battle: "meus result." breakdown, then the reward card draw. After an instance
+# (0.9) it also shows the run (map level, phases, maps found, the boss chest) and the
+# cards come from InstanceRun: more picks from the boss chest, instance weapons with a
+# quality roll and map cards.
 
 var app: Node
 var game: LocalMatch
@@ -67,7 +70,12 @@ func show_results() -> void:
 	stamp(panel, Vector2(574, 62), won)
 	var y: float = 72
 	y = section(panel, y, "exp. de luta", Color("ff6a5c"), [["exp. de matar", summary.get("kill_exp", 0)], ["exp. de ferir", summary.get("hurt_exp", 0)], ["result. de luta", summary.get("result_exp", 0)], ["exp. de instância", summary.get("bonus_exp", 0)]])
-	y = section(panel, y, "adição de exp.", Color("ff6a5c"), [["privil. VIP", 0], ["guerra assoc.", 0], ["equip. casal", 0], ["exp. servidor", 0], ["mest. aluno", 0], ["cart. dob. exp", 0]])
+	if summary.has("instance"):
+		# After an instance the run takes the place of the (empty) EXP bonus section.
+		instance_box(panel, Rect2(16, y, 620, 118), summary.instance)
+		y += 128
+	else:
+		y = section(panel, y, "adição de exp.", Color("ff6a5c"), [["privil. VIP", 0], ["guerra assoc.", 0], ["equip. casal", 0], ["exp. servidor", 0], ["mest. aluno", 0], ["cart. dob. exp", 0]])
 	y = section(panel, y, "mérito de luta", Color("7aff5a"), [["mérito de luta", summary.get("merit", 0)], ["cart. dob. mérito", 0], ["privil. VIP", 0], ["mérito servidor", 0]])
 	UiKit.label(panel, "total", Rect2(20, 470, 200, 80), 54, Color("ffd04a"), Color("5a2408"))
 	total_row(panel, Rect2(250, 470, 380, 40), "exp. total", int(summary.get("exp", 0)), Color("c0302a"))
@@ -77,6 +85,29 @@ func show_results() -> void:
 		up.add_theme_constant_override("outline_size", 10)
 	continue_button = UiKit.button(stage, "Continuar ▶", Rect2(1080, 652, 170, 40), show_cards, "button_green", 17)
 	continue_button.name = "Continue"
+
+func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
+	var box: Panel = UiKit.panel(parent, rect, "dark")
+	box.name = "InstanceBox"
+	UiKit.label(box, "%s  •  %s  •  Fases %d/%d" % [str(info.name), "Nível %d" % int(info.level) if int(info.level) > 0 else "Entrada livre", int(info.phases), int(info.count)], Rect2(10, 2, 600, 28), 18, Color("ffd04a"), UiKit.INK)
+	UiKit.art(box, "res://assets/items/moeda.png", Rect2(10, 36, 22, 22))
+	UiKit.label(box, "+%d moedas" % int(info.gold), Rect2(36, 34, 160, 26), 16, Color("ffd46b"), UiKit.INK)
+	var found: Array = info.get("chest", []) + info.get("drops", [])
+	if found.is_empty():
+		UiKit.label(box, "Nenhum mapa ou Super Verdadeira desta vez.", Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
+	if not found.is_empty():
+		UiKit.label(box, "Baú do chefe e mapas das fases (já na Mochila)", Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
+	for i in range(mini(found.size(), 7)):
+		var entry: Dictionary = found[i]
+		var slot: Panel = UiKit.panel(box, Rect2(200 + i * 58, 32, 54, 54), "slot")
+		slot.mouse_filter = Control.MOUSE_FILTER_PASS
+		if entry.has("weapon"):
+			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
+			slot.tooltip_text = "Baú do chefe: %s" % str(entry.name)
+		else:
+			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(4, 4, 46, 46))
+			UiKit.label(slot, str(int(entry.level)), Rect2(18, 28, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+			slot.tooltip_text = "%s\n%s" % [InstanceRun.map_name(entry), "\n".join(InstanceRun.describe_map(entry))]
 
 func section(parent: Control, y: float, heading: String, color: Color, rows: Array) -> float:
 	UiKit.label(parent, heading, Rect2(220, y, 220, 26), 18, color, Color("1a0804"), HORIZONTAL_ALIGNMENT_CENTER)
@@ -166,15 +197,19 @@ func show_cards() -> void:
 	clear_stage()
 	rays = null
 	picks_left = 2 if summary.get("won", false) else 1
+	var loot: Dictionary = summary.get("loot", {})
+	if not loot.is_empty():
+		picks_left = int(loot.picks)
 	UiKit.panel(stage, Rect2(340, 30, 600, 60), "plate")
 	UiKit.title(stage, "Escolha %d carta%s!" % [picks_left, "s" if picks_left > 1 else ""], Rect2(340, 30, 600, 60), 30)
 	timer_label = UiKit.label(stage, "10", Rect2(950, 30, 80, 60), 40, Color("ffb020"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
-	hint_label = UiKit.label(stage, "Vencedores escolhem 2 cartas, derrotados 1.", Rect2(340, 92, 600, 26), 15, Color("fff0d0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var hint: String = "Vencedores escolhem 2 cartas, derrotados 1."
+	if not loot.is_empty():
+		hint = "Baú do chefe: %d cartas (mapa, raridade e grupo dão mais)." % picks_left if summary.get("won", false) else "A equipe caiu: o mapa foi perdido, o que caiu nas fases fica."
+	hint_label = UiKit.label(stage, hint, Rect2(240, 92, 800, 26), 15, Color("fff0d0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	var pool: Array = app.balance.rewards.cards
-	var drop: Dictionary = super_drop()
-	var drop_slot: int = randi() % 8
 	for i in range(8):
-		rewards.append(drop if i == drop_slot and not drop.is_empty() else roll(pool))
+		rewards.append(loot.cards[i] if not loot.is_empty() else roll(pool))
 		revealed.append(false)
 		var card: Control = Control.new()
 		card.name = "Card_%d" % i
@@ -194,19 +229,6 @@ func show_cards() -> void:
 	continue_button.name = "Continue"
 	continue_button.disabled = true
 	card_time = 10.0
-
-func super_drop() -> Dictionary:
-	# Super Verdadeira weapons are never sold: only a won Instância can drop one,
-	# more often on harder difficulties.
-	if not summary.get("pve", false) or not summary.get("won", false):
-		return {}
-	var rules: Dictionary = Armory.data().drops
-	var tier: int = maxi(0, ["normal", "hard", "heroic", "nightmare"].find(str(summary.get("difficulty", "normal"))))
-	if randf() > float(rules.super_chance) + tier * float(rules.super_chance_per_difficulty):
-		return {}
-	var supers: Array = Armory.data().weapons.filter(func(def: Dictionary) -> bool: return def.get("super", false))
-	var def: Dictionary = supers[randi() % supers.size()]
-	return {"id": "super_" + str(def.id), "name": str(def.name), "weapon": str(def.id), "rarity": "legendary", "icon": Armory.weapon_icon(str(def.id))}
 
 func roll(pool: Array) -> Dictionary:
 	var total: float = 0.0
@@ -257,10 +279,16 @@ func show_front(index: int, mine: bool) -> void:
 	front.size = card.size
 	front.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(front)
-	UiKit.art(front, "res://assets/expansion/rewards/reward_card_%s.png" % reward.rarity, Rect2(Vector2.ZERO, card.size), false)
+	# Map cards (0.9) have their own rarity and card art.
+	var face: String = "res://assets/expansion/rewards/reward_card_%s.png" % reward.rarity
+	if not ResourceLoader.exists(face):
+		face = "res://assets/expansion/rewards/reward_card_legendary.png"
+	UiKit.art(front, face, Rect2(Vector2.ZERO, card.size), false)
 	UiKit.art(front, str(reward.icon), Rect2(24, 36, 80, 80))
+	if reward.has("map"):
+		UiKit.label(front, str(int(reward.map.level)), Rect2(70, 90, 40, 26), 20, InstanceRun.quality_color(str(reward.map.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	var caption: Label = UiKit.label(front, str(reward.name), Rect2(10, 118, 108, 56), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.wrap(caption, Vector2(108, 56))
 	if not mine:
 		front.modulate = Color(0.55, 0.55, 0.6)
 		return
@@ -281,5 +309,7 @@ func grant(reward: Dictionary) -> void:
 		if not profile.add_tool(str(reward.tool)):
 			profile.coins += 30
 	elif reward.has("weapon"):
-		profile.add_instance(str(reward.weapon), "super")
+		profile.add_instance(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)))
+	elif reward.has("map"):
+		profile.add_map(reward.map)
 	profile.save_profile()

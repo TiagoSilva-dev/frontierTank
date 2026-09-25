@@ -4,6 +4,8 @@ extends RefCounted
 # Single local character. This file is never an authority for an online economy.
 # v3 keeps an inventory of item instances ({uid, id, quality, level, compose}) and the
 # equipped slot -> uid map; stones and crystals stay as counters in `items`.
+# v4 (0.9) adds the instance maps ({uid, instance, level, quality, mods}), the item level
+# (`ilvl`) of dropped weapons and the Super Verdadeira guarantee counter per instance.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -22,6 +24,8 @@ var inventory: Array[Dictionary] = []
 var equipped: Dictionary = {}
 var next_uid: int = 1
 var coupons: Array[String] = []
+var maps: Array[Dictionary] = []
+var pity: Dictionary = {}
 
 func _init() -> void:
 	if path_override != "":
@@ -62,6 +66,8 @@ func load_profile() -> void:
 		for raw: Variant in saved_inventory:
 			if raw is Dictionary and Armory.kind_of(str(raw.get("id", ""))) != "":
 				var inst: Dictionary = {"uid": int(raw.get("uid", next_uid)), "id": str(raw.id), "quality": str(raw.get("quality", "normal")), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": raw.get("compose", {})}
+				if int(raw.get("ilvl", 0)) > 0:
+					inst.ilvl = clampi(int(raw.ilvl), 1, 16)
 				inventory.append(inst)
 				next_uid = maxi(next_uid, int(inst.uid) + 1)
 	var saved_equipped: Variant = data.get("equipped", {})
@@ -69,6 +75,19 @@ func load_profile() -> void:
 		for slot: String in saved_equipped:
 			if find_instance(int(saved_equipped[slot])).size() > 0:
 				equipped[slot] = int(saved_equipped[slot])
+	maps.clear()
+	var saved_maps: Variant = data.get("maps", [])
+	if saved_maps is Array:
+		for raw: Variant in saved_maps:
+			if raw is Dictionary and raw.has("instance"):
+				var item: Dictionary = {"uid": int(raw.get("uid", next_uid)), "instance": str(raw.instance), "level": clampi(int(raw.get("level", 1)), 1, 16), "quality": str(raw.get("quality", "normal")), "mods": raw.get("mods", [])}
+				maps.append(item)
+				next_uid = maxi(next_uid, int(item.uid) + 1)
+	var saved_pity: Variant = data.get("pity", {})
+	pity = {}
+	if saved_pity is Dictionary:
+		for key: String in saved_pity:
+			pity[key] = maxi(0, int(saved_pity[key]))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
 	if saved_coupons is Array:
@@ -95,7 +114,7 @@ func ensure_starter() -> void:
 func save_profile() -> void:
 	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if file != null:
-		file.store_string(JSON.stringify({"version": 3, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons}))
+		file.store_string(JSON.stringify({"version": 4, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}))
 
 static func exp_for_level(value: int) -> int:
 	return 60 * value * (value - 1)
@@ -137,12 +156,15 @@ func record_match(won: bool, exp_gain: int, merit_gain: int) -> void:
 
 # ---------- inventory ----------
 
-func add_instance(id: String, quality: String = "normal", level: int = 0) -> Dictionary:
+func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: int = 0) -> Dictionary:
 	if Armory.kind_of(id) != "weapon":
 		quality = "normal"
 	elif bool(Armory.weapon_def(id).get("super", false)):
 		quality = "super"
 	var inst: Dictionary = {"uid": next_uid, "id": id, "quality": quality, "level": clampi(level, 0, 12), "compose": {}}
+	if ilvl > 0:
+		# Item level = level of the map it dropped in (limits random bonuses in 0.10).
+		inst.ilvl = clampi(ilvl, 1, 16)
 	next_uid += 1
 	inventory.append(inst)
 	return inst
@@ -222,7 +244,9 @@ func buy(id: String, quality: String = "normal") -> String:
 	if def.is_empty():
 		return "Item desconhecido."
 	if bool(def.get("super", false)) or quality == "super":
-		return "Super armas só caem na Instância."
+		return "Super armas só caem do chefe das instâncias."
+	if quality == "verdadeira":
+		return "Armas Verdadeiras só caem nas instâncias."
 	var price: int = item_price(id, quality)
 	if coins < price:
 		return "Moedas insuficientes."
@@ -254,6 +278,36 @@ func entry(balance: Dictionary) -> Dictionary:
 	var numbers: Dictionary = stats(balance)
 	var aux: Dictionary = equipped_instance("auxiliar")
 	return {"name": player_name, "level": level(), "gender": gender, "human": true, "tools": tools.duplicate(), "agility": int(numbers.agilidade), "hp": int(numbers.vida), "arma": equipped_instance("arma").duplicate(), "look": look(), "attrs": numbers.extra.duplicate(), "aux": str(aux.get("id", ""))}
+
+# ---------- instance maps ----------
+
+func add_map(item: Dictionary) -> Dictionary:
+	var copy: Dictionary = item.duplicate(true)
+	copy.uid = next_uid
+	next_uid += 1
+	maps.append(copy)
+	return copy
+
+func find_map(uid: int) -> Dictionary:
+	for item in maps:
+		if int(item.uid) == uid:
+			return item
+	return {}
+
+func remove_map(uid: int) -> bool:
+	for i in range(maps.size()):
+		if int(maps[i].uid) == uid:
+			maps.remove_at(i)
+			return true
+	return false
+
+func maps_for(instance_id: String) -> Array[Dictionary]:
+	var list: Array[Dictionary] = []
+	for item in maps:
+		if item.instance == instance_id:
+			list.append(item)
+	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level) or (int(a.level) == int(b.level) and a.mods.size() > b.mods.size()))
+	return list
 
 # ---------- Ferreiro ----------
 
@@ -395,6 +449,14 @@ func redeem(code: String) -> String:
 	var crystals: int = int(coupon.get("crystals", 0))
 	if crystals > 0:
 		add_item(str(Armory.data().strengthen.compose.item), crystals)
+	var map_levels: Array = coupon.get("maps", [])
+	if not map_levels.is_empty():
+		var random: RandomNumberGenerator = RandomNumberGenerator.new()
+		random.randomize()
+		var qualities: Array[String] = ["normal", "excelente", "verdadeira", "verdadeira"]
+		for instance: Dictionary in InstanceRun.rules().instances:
+			for i in range(map_levels.size()):
+				add_map(InstanceRun.make_map(str(instance.id), int(map_levels[i]), random, 0.0, qualities[i % qualities.size()]))
 	coins += int(coupon.get("coins", 0))
 	save_profile()
 	return str(coupon.desc)

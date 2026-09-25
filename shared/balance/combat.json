@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "base_hp": 1500,
   "hp_per_level": 40,
   "base_agility": 120,
@@ -41,16 +41,95 @@
     {"id": "shield", "name": "Escudo", "icon": "res://assets/ui/icone_escudo.png", "price": 70, "shield": 0.5, "desc": "Reduz pela metade o próximo dano recebido."},
     {"id": "wing", "name": "Pena de Voo", "icon": "res://assets/expansion/combat/tool_teleport.png", "price": 70, "fly_reset": true, "desc": "Recarrega o avião de papel (F)."}
   ],
-  "pve": {
-    "boss_hp": 4200, "damage": 230, "enraged_damage": 320, "radius": 42, "agility": 60,
-    "think_seconds": 1.6, "power_error": 3.0,
-    "difficulties": [
-      {"id": "normal", "name": "Normal", "hp": 1.0, "damage": 1.0, "icon": "res://assets/expansion/lobby/difficulty_normal.png", "reward": 1.0},
-      {"id": "hard", "name": "Difícil", "hp": 1.4, "damage": 1.2, "icon": "res://assets/expansion/lobby/difficulty_hard.png", "reward": 1.4},
-      {"id": "heroic", "name": "Heroico", "hp": 1.9, "damage": 1.4, "icon": "res://assets/expansion/lobby/difficulty_heroic.png", "reward": 1.9},
-      {"id": "nightmare", "name": "Pesadelo", "hp": 2.6, "damage": 1.7, "icon": "res://assets/expansion/lobby/difficulty_nightmare.png", "reward": 2.6}
-    ]
+  "pve": {"think_seconds": 1.6, "power_error": 3.0, "minion_power_error": 7.0, "turn_seconds": 20, "phase_heal": 0.3, "revive_hp": 0.2, "phase_gold": [20, 30, 60], "exp": 60},
+  "enemies": [
+    {"id": "escaravelho_solar", "name": "Escaravelho Solar", "rank": "minion", "hp": 320, "damage": 70, "radius": 30, "agility": 60, "hit_radius": 20, "height": 52, "angle": [30, 70], "attack": "Ferrão Solar", "color": "ffd04a",
+     "sprite": "res://assets/enemies/escaravelho_solar/sprite.png", "idle": "res://assets/enemies/escaravelho_solar/idle", "attack_clip": "res://assets/enemies/escaravelho_solar/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18}},
+    {"id": "guardiao_templo", "name": "Guardião do Templo", "rank": "guardian", "hp": 1100, "damage": 120, "fury_damage": 155, "radius": 38, "agility": 55, "hit_radius": 30, "height": 110, "angle": [25, 75], "attack": "Lança do Sol", "fury_name": "Lança Flamejante", "color": "ffb347", "mechanics": ["fury"],
+     "sprite": "res://assets/expansion/enemies/temple_guard.png", "idle": "res://assets/enemies/guardiao_templo/idle", "attack_clip": "res://assets/enemies/guardiao_templo/attack", "projectile": {"sprite": "icon", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 24}},
+    {"id": "rei_helio", "name": "Rei Hélio", "rank": "boss", "hp": 2000, "damage": 170, "fury_damage": 235, "radius": 42, "agility": 40, "hit_radius": 55, "height": 170, "angle": [20, 80], "attack": "Fúria Solar", "fury_name": "Fúria Solar", "color": "ffd04a", "mechanics": ["fury"],
+     "sprite": "res://assets/pve/rei_sol.png", "idle": "res://assets/pve/boss_idle", "attack_clip": "res://assets/pve/boss_attack", "idle_fps": 7, "attack_fps": 7, "pingpong": false},
+    {"id": "mascara_flamejante", "name": "Máscara Flamejante", "rank": "minion", "hp": 300, "damage": 75, "radius": 30, "agility": 65, "hit_radius": 20, "height": 54, "angle": [25, 70], "attack": "Brasa", "color": "ff6a2a",
+     "sprite": "res://assets/enemies/mascara_flamejante/sprite.png", "idle": "res://assets/enemies/mascara_flamejante/idle", "attack_clip": "res://assets/enemies/mascara_flamejante/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18}},
+    {"id": "sentinela_obsidiana", "name": "Sentinela de Obsidiana", "rank": "guardian", "hp": 1150, "damage": 125, "fury_damage": 160, "radius": 40, "agility": 50, "hit_radius": 32, "height": 116, "angle": [25, 75], "attack": "Rocha Ígnea", "fury_name": "Erupção", "color": "ff5a1f", "mechanics": ["fury"],
+     "sprite": "res://assets/enemies/sentinela_obsidiana/sprite.png", "idle": "res://assets/enemies/sentinela_obsidiana/idle", "attack_clip": "res://assets/enemies/sentinela_obsidiana/attack", "projectile": {"sprite": "brick", "texture": "res://assets/projectiles/brick.png", "spin": 400, "trail": "fire", "size": 24}},
+    {"id": "rei_mascaras", "name": "Rei das Máscaras", "rank": "boss", "hp": 2100, "damage": 175, "fury_damage": 240, "radius": 42, "agility": 40, "hit_radius": 50, "height": 180, "angle": [20, 80], "attack": "Chama das Máscaras", "fury_name": "Baile das Máscaras", "color": "ff5ad0", "mechanics": ["fury", "summon"], "summon": "mascara_flamejante",
+     "sprite": "res://assets/expansion/enemies/mask_king.png", "idle": "res://assets/expansion/animations/mask_king_idle", "attack_clip": "res://assets/expansion/animations/mask_king_attack", "idle_fps": 5, "attack_fps": 8, "faces": "right"},
+    {"id": "lobo_nevasca", "name": "Lobo da Nevasca", "rank": "minion", "hp": 330, "damage": 70, "radius": 30, "agility": 70, "hit_radius": 20, "height": 50, "angle": [25, 70], "attack": "Uivo Gelado", "color": "8ad8ff",
+     "sprite": "res://assets/enemies/lobo_nevasca/sprite.png", "idle": "res://assets/enemies/lobo_nevasca/idle", "attack_clip": "res://assets/enemies/lobo_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 500, "trail": "wind", "size": 18}},
+    {"id": "cristal_glacial", "name": "Cristal Glacial", "rank": "totem", "hp": 500, "damage": 0, "radius": 0, "agility": 0, "hit_radius": 26, "height": 72, "attack": "", "color": "8ad8ff",
+     "sprite": "res://assets/expansion/objects/protection_crystal.png", "idle": "", "attack_clip": ""},
+    {"id": "golem_gelo", "name": "Golem de Gelo", "rank": "guardian", "hp": 1200, "damage": 115, "fury_damage": 150, "radius": 42, "agility": 45, "hit_radius": 34, "height": 120, "angle": [30, 75], "attack": "Bloco de Gelo", "fury_name": "Avalanche", "color": "c8f0ff", "mechanics": ["fury"],
+     "sprite": "res://assets/enemies/golem_gelo/sprite.png", "idle": "res://assets/enemies/golem_gelo/idle", "attack_clip": "res://assets/enemies/golem_gelo/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 300, "trail": "wind", "size": 24}},
+    {"id": "rainha_nevasca", "name": "Rainha da Nevasca", "rank": "boss", "hp": 2050, "damage": 165, "fury_damage": 230, "radius": 42, "agility": 42, "hit_radius": 50, "height": 180, "angle": [20, 80], "attack": "Sopro Glacial", "fury_name": "Nevasca Eterna", "color": "a8ecff", "mechanics": ["fury", "freeze"],
+     "sprite": "res://assets/enemies/rainha_nevasca/sprite.png", "idle": "res://assets/enemies/rainha_nevasca/idle", "attack_clip": "res://assets/enemies/rainha_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 600, "trail": "wind", "size": 28}},
+    {"id": "harpia_ruinas", "name": "Harpia das Ruínas", "rank": "minion", "hp": 300, "damage": 75, "radius": 30, "agility": 75, "hit_radius": 20, "height": 54, "angle": [20, 70], "attack": "Pena Cortante", "color": "c8f4ff",
+     "sprite": "res://assets/enemies/harpia_ruinas/sprite.png", "idle": "res://assets/enemies/harpia_ruinas/idle", "attack_clip": "res://assets/enemies/harpia_ruinas/attack", "projectile": {"sprite": "rainbow_orb", "texture": "res://assets/projectiles/rainbow_orb.png", "spin": 500, "trail": "wind", "size": 18}},
+    {"id": "cavaleiro_celeste", "name": "Cavaleiro Celeste", "rank": "guardian", "hp": 1100, "damage": 125, "fury_damage": 160, "radius": 40, "agility": 60, "hit_radius": 32, "height": 116, "angle": [20, 75], "attack": "Lança do Vento", "fury_name": "Tempestade", "color": "7ad8ff", "mechanics": ["fury"],
+     "sprite": "res://assets/enemies/cavaleiro_celeste/sprite.png", "idle": "res://assets/enemies/cavaleiro_celeste/idle", "attack_clip": "res://assets/enemies/cavaleiro_celeste/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 24}},
+    {"id": "grifo_tempestade", "name": "Grifo da Tempestade", "rank": "boss", "hp": 2000, "damage": 175, "fury_damage": 240, "radius": 42, "agility": 48, "hit_radius": 50, "height": 176, "angle": [15, 80], "attack": "Rajada do Grifo", "fury_name": "Olho da Tempestade", "color": "9ae8ff", "mechanics": ["fury", "teleport"],
+     "sprite": "res://assets/enemies/grifo_tempestade/sprite.png", "idle": "res://assets/enemies/grifo_tempestade/idle", "attack_clip": "res://assets/enemies/grifo_tempestade/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 28}}
+  ],
+  "instances": [
+    {"id": "templo_sol", "name": "Templo do Sol", "boss": "rei_helio", "minion": "escaravelho_solar", "color": "ffd04a", "preview": "res://assets/expansion/lobby/instance_preview.png",
+     "desc": "O Rei Hélio desperta no coração do templo. Fúria Solar abaixo de 50% de vida.",
+     "phases": [
+       {"name": "Pátio do Templo", "map": "patio_templo", "waves": [["escaravelho_solar", "escaravelho_solar"], ["escaravelho_solar", "escaravelho_solar"]]},
+       {"name": "Câmara do Guardião", "map": "camara_guardiao", "waves": [["guardiao_templo", "escaravelho_solar"]]},
+       {"name": "Rei Hélio", "map": "templo_sol", "waves": [["rei_helio"]]}
+     ],
+     "loot": {"weapons": ["quebra_tijolos", "canhao_arco_iris", "kit_medico"], "super": "lanca_antiga"}},
+    {"id": "trono_mascaras", "name": "Trono das Máscaras", "boss": "rei_mascaras", "minion": "mascara_flamejante", "color": "ff6a2a", "preview": "res://assets/maps/thumbs/trono_mascaras.png",
+     "desc": "Máscaras de fogo guardam o trono. O Rei das Máscaras invoca novas máscaras a cada 3 turnos.",
+     "phases": [
+       {"name": "Portões de Brasa", "map": "portoes_brasa", "waves": [["mascara_flamejante", "mascara_flamejante"], ["mascara_flamejante", "mascara_flamejante"]]},
+       {"name": "Salão das Máscaras", "map": "salao_mascaras", "waves": [["sentinela_obsidiana", "mascara_flamejante"]]},
+       {"name": "Rei das Máscaras", "map": "trono_mascaras", "waves": [["rei_mascaras"]]}
+     ],
+     "loot": {"weapons": ["fogo_intenso", "eletrodomestico", "desentupidor"], "super": "cabeca_de_boi"}},
+    {"id": "picos_gelados", "name": "Picos Gelados", "boss": "rainha_nevasca", "minion": "lobo_nevasca", "color": "8ad8ff", "preview": "res://assets/maps/thumbs/pico_nevasca.png",
+     "desc": "Destrua os cristais que protegem a caverna. O Sopro Glacial da Rainha congela quem acerta: a vítima perde a vez.",
+     "phases": [
+       {"name": "Trilha Congelada", "map": "trilha_gelada", "waves": [["lobo_nevasca", "lobo_nevasca"], ["lobo_nevasca", "lobo_nevasca"]]},
+       {"name": "Caverna de Cristal", "map": "caverna_cristal", "objective": "totems", "waves": [["golem_gelo", "cristal_glacial", "cristal_glacial", "cristal_glacial"]]},
+       {"name": "Rainha da Nevasca", "map": "pico_nevasca", "waves": [["rainha_nevasca"]]}
+     ],
+     "loot": {"weapons": ["vento_de_deus", "trovao", "eletrodomestico"], "super": "bumerangue_amor"}},
+    {"id": "ilha_ruinas", "name": "Ilha Celeste em Ruínas", "boss": "grifo_tempestade", "minion": "harpia_ruinas", "color": "9ae8ff", "preview": "res://assets/maps/thumbs/santuario_ventos.png",
+     "desc": "Resista à tempestade nas ruínas flutuantes. O Grifo voa para outra posição depois de cada ataque.",
+     "phases": [
+       {"name": "Margem das Nuvens", "map": "ilha_celeste", "waves": [["harpia_ruinas", "harpia_ruinas"], ["harpia_ruinas", "harpia_ruinas"]]},
+       {"name": "Ruínas Flutuantes", "map": "ruinas_flutuantes", "objective": "survive", "turns": 5, "waves": [["cavaleiro_celeste", "harpia_ruinas", "harpia_ruinas"]]},
+       {"name": "Grifo da Tempestade", "map": "santuario_ventos", "waves": [["grifo_tempestade"]]}
+     ],
+     "loot": {"weapons": ["vento_de_deus", "cesto_newton", "canhao_arco_iris"], "super": "bumerangue_amor"}}
+  ],
+  "map_items": {
+    "max_level": 16, "hp_per_level": 1.12, "damage_per_level": 1.07, "reward_per_level": 0.1,
+    "free_reward": 0.5, "drop_chance": [0.15, 0.2, 0.55], "drop_level": [0.7, 0.25, 0.05], "other_instance": 0.2,
+    "qualities": [{"id": "normal", "weight": 70, "mods": [0, 0]}, {"id": "excelente", "weight": 25, "mods": [1, 2]}, {"id": "verdadeira", "weight": 5, "mods": [3, 4]}],
+    "threat_quantity": 0.1,
+    "mods": [
+      {"id": "enemy_hp", "kind": "threat", "text": "Inimigos com +%d%% de vida", "range": [20, 40]},
+      {"id": "enemy_damage", "kind": "threat", "text": "Inimigos com +%d%% de dano", "range": [15, 30]},
+      {"id": "extra_minions", "kind": "threat", "text": "+1 lacaio em cada fase"},
+      {"id": "boss_enraged", "kind": "threat", "text": "O chefe começa em fúria"},
+      {"id": "strong_wind", "kind": "threat", "text": "Vento sempre forte"},
+      {"id": "low_energy", "kind": "threat", "text": "Jogadores com -%d%% de energia", "range": [15, 25]},
+      {"id": "short_turn", "kind": "threat", "text": "Turno 25% mais curto (15 s em vez de 20 s)"},
+      {"id": "no_plane", "kind": "threat", "text": "Sem avião de papel"},
+      {"id": "enemy_shield", "kind": "threat", "text": "Inimigos com escudo no primeiro golpe"},
+      {"id": "map_chance", "kind": "reward", "text": "+%d%% de chance de mapa", "range": [20, 50]},
+      {"id": "xp", "kind": "reward", "text": "+%d%% de XP", "range": [20, 50]},
+      {"id": "gold", "kind": "reward", "text": "+%d%% de ouro", "range": [20, 50]},
+      {"id": "quantity", "kind": "reward", "text": "+%d%% de quantidade de itens", "range": [10, 30]},
+      {"id": "rarity", "kind": "reward", "text": "+%d%% de raridade", "range": [15, 40]},
+      {"id": "boss_card", "kind": "reward", "text": "+1 carta no baú do chefe"},
+      {"id": "super_chance", "kind": "reward", "text": "+%d%% de chance de Super Verdadeira", "range": [25, 75]}
+    ],
+    "loot": {"boss_picks": 3, "true_chance": 0.05, "true_per_level": 0.02, "excellent_chance": 0.35, "super_chance": 0.04, "super_per_level": 0.01, "free_super_chance": 0.02, "pity": 20, "weapon_weight": 10, "map_weight": 4}
   },
+  "party_scaling": {"hp": [1.0, 1.8, 2.5, 3.2], "damage": [1.0, 1.1, 1.2, 1.3], "extra_minions": [0, 1, 2, 3], "reward": [1.0, 1.15, 1.3, 1.5], "bonus_cards": [0, 1, 1, 2], "rarity": [0.0, 0.0, 0.25, 0.5], "boss_area_from": 3},
   "bots": {"think_min": 1.2, "think_max": 2.4, "power_error_min": 3.5, "power_error_max": 9.0, "item_chance": 0.45},
   "maps": [
     {"id": "ilha_celeste", "name": "Ilha Celeste", "bg": "res://assets/maps/bg/ilha_celeste.png", "size": [2000, 1100], "palette": "meadow", "rim": "3a2418", "dim": 0.08, "ambience": "sky",
@@ -67,11 +146,32 @@
      "islands": [[80, 640, 520, 170], [720, 1380, 640, 210], [1460, 2020, 520, 170]], "spawns": [[170, 500], [1600, 1930]]},
     {"id": "templo_sol", "name": "Templo do Sol", "bg": "res://assets/maps/bg/templo_sol.png", "size": [1600, 900], "palette": "temple", "rim": "4a3020", "dim": 0.26, "ambience": "motes", "pve_only": true,
      "terrain": [{"art": "res://assets/maps/terrain/temple_a.png", "x": 0, "y": 500}, {"art": "res://assets/maps/terrain/temple_a.png", "x": 800, "y": 500, "flip": true}],
-     "islands": [[0, 1600, 500, 190]], "spawns": [[120, 620], [1300, 1400]]}
+     "islands": [[0, 1600, 500, 190]], "spawns": [[120, 620], [1300, 1400]]},
+    {"id": "portoes_brasa", "name": "Portões de Brasa", "bg": "res://assets/maps/bg/portoes_brasa.png", "size": [2100, 1100], "palette": "obsidian", "rim": "16121f", "dim": 0.32, "ambience": "embers",
+     "terrain": [{"art": "res://assets/maps/terrain/brasa_a.png", "x": 60, "y": 580}, {"art": "res://assets/maps/terrain/throne_b.png", "x": 540, "y": 640}, {"art": "res://assets/maps/terrain/brasa_a.png", "x": 1220, "y": 590, "flip": true}, {"art": "res://assets/maps/terrain/brasa_a.png", "x": 1640, "y": 560}],
+     "islands": [[60, 508, 580, 200], [540, 1172, 640, 230], [1220, 2088, 570, 200]], "spawns": [[120, 460], [1300, 2000]]},
+    {"id": "salao_mascaras", "name": "Salão das Máscaras", "bg": "res://assets/maps/bg/salao_mascaras.png", "size": [2000, 1050], "palette": "obsidian", "rim": "16121f", "dim": 0.32, "ambience": "embers",
+     "terrain": [{"art": "res://assets/maps/terrain/mascaras_a.png", "x": 40, "y": 600}, {"art": "res://assets/maps/terrain/throne_a.png", "x": 860, "y": 520}, {"art": "res://assets/maps/terrain/mascaras_a.png", "x": 1140, "y": 600, "flip": true}],
+     "islands": [[40, 864, 600, 160], [860, 1294, 520, 200], [1140, 1964, 600, 160]], "spawns": [[100, 700], [1250, 1900]]},
+    {"id": "trilha_gelada", "name": "Trilha Congelada", "bg": "res://assets/maps/bg/trilha_gelada.png", "size": [2100, 1100], "palette": "frost", "rim": "1e2a44", "dim": 0.18, "ambience": "snow",
+     "terrain": [{"art": "res://assets/maps/terrain/trilha_a.png", "x": 20, "y": 580}, {"art": "res://assets/maps/terrain/frost_b.png", "x": 880, "y": 650}, {"art": "res://assets/maps/terrain/trilha_a.png", "x": 1240, "y": 590, "flip": true}],
+     "islands": [[20, 860, 580, 220], [880, 1544, 650, 230], [1240, 2080, 590, 220]], "spawns": [[80, 700], [1350, 2020]]},
+    {"id": "caverna_cristal", "name": "Caverna de Cristal", "bg": "res://assets/maps/bg/caverna_cristal.png", "size": [2000, 1050], "palette": "frost", "rim": "1e2a44", "dim": 0.22, "ambience": "snow",
+     "terrain": [{"art": "res://assets/maps/terrain/cristal_a.png", "x": 30, "y": 580}, {"art": "res://assets/maps/terrain/frost_a.png", "x": 1150, "y": 570}],
+     "islands": [[30, 852, 580, 210], [1150, 1958, 570, 180]], "spawns": [[90, 780], [1220, 1900]]},
+    {"id": "pico_nevasca", "name": "Pico da Nevasca", "bg": "res://assets/maps/bg/pico_nevasca.png", "size": [1700, 950], "palette": "frost", "rim": "1e2a44", "dim": 0.28, "ambience": "snow", "pve_only": true,
+     "terrain": [{"art": "res://assets/maps/terrain/pico_a.png", "x": 0, "y": 560}, {"art": "res://assets/maps/terrain/pico_a.png", "x": 850, "y": 560, "flip": true}],
+     "islands": [[0, 1690, 560, 170]], "spawns": [[100, 600], [1150, 1600]]},
+    {"id": "ruinas_flutuantes", "name": "Ruínas Flutuantes", "bg": "res://assets/maps/bg/ruinas_flutuantes.png", "size": [2200, 1150], "palette": "meadow", "rim": "3a2418", "dim": 0.12, "ambience": "sky",
+     "terrain": [{"art": "res://assets/maps/terrain/ruina_a.png", "x": 60, "y": 560}, {"art": "res://assets/maps/terrain/celeste_b.png", "x": 1330, "y": 470}, {"art": "res://assets/maps/terrain/ruina_a.png", "x": 820, "y": 650, "flip": true}, {"art": "res://assets/maps/terrain/ruina_a.png", "x": 1590, "y": 570}],
+     "islands": [[60, 608, 560, 220], [820, 1368, 650, 220], [1590, 2138, 570, 220]], "spawns": [[100, 560], [1640, 2100]]},
+    {"id": "santuario_ventos", "name": "Santuário dos Ventos", "bg": "res://assets/maps/bg/santuario_ventos.png", "size": [2000, 1050], "palette": "meadow", "rim": "3a2418", "dim": 0.15, "ambience": "sky",
+     "terrain": [{"art": "res://assets/maps/terrain/santuario_a.png", "x": 40, "y": 600}, {"art": "res://assets/maps/terrain/celeste_b.png", "x": 860, "y": 540}, {"art": "res://assets/maps/terrain/santuario_a.png", "x": 1180, "y": 600, "flip": true}],
+     "islands": [[40, 824, 600, 180], [860, 1130, 540, 130], [1180, 1964, 600, 180]], "spawns": [[100, 760], [1150, 1920]]}
   ],
   "rewards": {
     "win_exp": 40, "loss_exp": 12, "exp_per_damage": 0.04, "exp_per_kill": 15,
-    "merit_win": 10, "merit_loss": 2, "merit_per_kill": 2, "pve_exp": 60,
+    "merit_win": 10, "merit_loss": 2, "merit_per_kill": 2,
     "cards": [
       {"id": "coins_s", "name": "80 Moedas", "coins": 80, "weight": 34, "rarity": "common", "icon": "res://assets/items/moeda.png"},
       {"id": "coins_l", "name": "200 Moedas", "coins": 200, "weight": 12, "rarity": "rare", "icon": "res://assets/items/moeda.png"},

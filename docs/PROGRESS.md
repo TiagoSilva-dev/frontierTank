@@ -1,6 +1,19 @@
 # Progresso
 
-## Atual — 0.7: sons, POW, habilidades e tracejado
+## Atual — 0.9: instâncias de 3 fases e mapas
+- **Quatro instâncias** com 3 fases e o chefão na última: Templo do Sol, Trono das Máscaras, Picos Gelados e Ilha Celeste em Ruínas. Fase 1 com ondas de lacaios (a segunda onda cai do céu), fase 2 com guardião ou objetivo (destruir cristais, sobreviver 5 turnos), fase 3 com o chefe e mecânica própria (fúria, invocar máscaras, congelar a vez, trocar de posição).
+- Entre as fases: tela de transição, +30% de vida, POW mantido e quem caiu volta com 20%. Moedas e mapas das fases ficam mesmo se a equipe cair.
+- **Mapas no lugar das dificuldades**: itens de nível 1 a 16 com qualidade (Normal, Excelente, Verdadeira) e atributos de ameaça e recompensa, consumidos ao entrar. Caem das fases (cerca de 0,9 por partida sem atributos). Espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS`.
+- **Loot**: baú do chefe com 3+ cartas, armas da instância em Normal/Excelente/Verdadeira com nível do item, cartas de mapa (carta esmeralda) e a Super Verdadeira com garantia depois de 20 chefões. A Loja agora vende só Normal e Excelente.
+- Escala por grupo pronta e testada (vale quando houver grupos online).
+- Arte PixelLab: 9 inimigos com repouso e ataque, animação do Guardião do Templo, 7 mapas novos e ícones de mapa (`PIXELLAB_0_9.md`).
+
+## 0.8: POW em fases, arma e projétil maiores
+- POW em fases: preparação (recuo e arma brilhando), carga (aura cresce, partículas puxadas para a arma), disparo (clarão, recuo e arte animada do POW de cada arma), voo (halo e rastro de partículas) e impacto (hit-stop de 80 ms, tremor, ondas e fumaça).
+- Impacto próprio para cada uma das 12 armas e partículas de verdade (`CPUParticles2D`).
+- Arma nas costas e projéteis 1,5× maiores em toda a batalha (POW mais 1,6×), sem mudar acerto, cratera ou dano (teste de regressão em `tests/pow_tests.gd`).
+
+## 0.7: sons, POW, habilidades e tracejado
 - **Som de disparo próprio para cada uma das 12 armas** (tijolo girando, bola de fogo, canhão com arpejo mágico, shuriken e vento, maçã com apito, cápsula com sino de cura, TV com chiado, orbe elétrico com trovão, desentupidor com "plop" e bolhas, mugido do touro, bumerangue girando com sininhos, lança de bronze) e uma camada de impacto por arma; explosões em três tamanhos.
 - **Músicas épicas** em loop: tema heroico da entrada/cidade/salas, tema de batalha (taikos e cordas galopando) e tema sombrio da Instância (coro, alaúde e escala "egípcia"). Fanfarra de vitória e tema de derrota. Tecla **M** e botões na pausa ligam/desligam música e efeitos.
 - **Consumir habilidade como no DDTank**: ícone da habilidade salta sobre a cabeça de quem usou (você ou bots), mostra o nome e mergulha no personagem, que brilha na cor da habilidade. Vale para 1–9, ferramentas, item auxiliar, avião e POW.

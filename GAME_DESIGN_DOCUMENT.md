@@ -1,7 +1,10 @@
 # Frontier Tank: Nova Era
 
+## Entregas 0.8 e 0.9 — POW e instâncias
+POW em fases com impacto próprio por arma, arma e projétil maiores só no desenho. Quatro instâncias de 3 fases (lacaios, guardião ou objetivo, chefão com mecânica própria); a dificuldade vem de **mapas** de nível 1 a 16 com atributos aleatórios, no lugar das dificuldades. Regras e números em `docs/ROADMAP.md` (itens 1 e 2) e `shared/balance/combat.json` (`enemies`, `instances`, `map_items`, `party_scaling`).
+
 ## Entrega 0.4 — fluxo DDTank
-Cidade → Salão de Jogos → Sala → Partida → Resultado → Cartas, contra bots. Combate por equipes (até 4v4) com ordem por Delay, energia 240 por turno, itens 1–8, ferramentas Z/X/C, POW por arma, avião de papel, PASS e Confiar. Instância do Templo do Sol com 4 dificuldades. Regras, fontes e interpretações em `docs/DDTANK_RESEARCH.md`; números em `shared/balance/combat.json`. As seções abaixo descrevem a entrega 0.1 e ficam como histórico.
+Cidade → Salão de Jogos → Sala → Partida → Resultado → Cartas, contra bots. Combate por equipes (até 4v4) com ordem por Delay, energia 240 por turno, itens 1–8, ferramentas Z/X/C, POW por arma, avião de papel, PASS e Confiar. Instância do Templo do Sol com 4 dificuldades (substituídas pelos mapas na 0.9). Regras, fontes e interpretações em `docs/DDTANK_RESEARCH.md`; números em `shared/balance/combat.json`. As seções abaixo descrevem a entrega 0.1 e ficam como histórico.
 
 ## Entrega 0.1 — duelo na Ilha Celeste
 Dois jogadores compartilham teclado ou mouse, alternando turnos de 20 segundos. Cada um começa com 150 PV, uma cura e um escudo. Vence quem eliminar o rival por dano ou queda. Empate se ambos caírem no mesmo impacto.

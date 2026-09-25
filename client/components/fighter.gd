@@ -10,7 +10,20 @@ var rank_title: String = "Recruta"
 var level: int = 1
 var gender: String = "m"
 var human: bool = false
-var is_boss: bool = false
+# PvE enemies (0.9): lacaio, guardião, chefe or totem (an objective that never acts).
+var is_monster: bool = false
+var rank: String = ""
+var monster: Dictionary = {}
+var monster_height: float = 0.0
+var art_faces_left: bool = true
+var always_enraged: bool = false
+var base_damage: int = 0
+var fury_damage: int = 0
+var summon_entry: Dictionary = {}
+var turns_taken: int = 0
+var is_boss: bool:
+	get:
+		return rank == "boss"
 var hp: int = 1000
 var max_hp: int = 1000
 var agility: int = 120
@@ -167,37 +180,66 @@ func show_animation(animation: PixelAnimation) -> void:
 			clip.visible = clip == chosen and not clip.frames.is_empty()
 	body.visible = chosen == null or chosen.frames.is_empty()
 
-func setup_boss(entry: Dictionary, damage: int, radius: int) -> void:
-	is_boss = true
-	display_name = str(entry.get("name", "Rei Hélio"))
-	rank_title = "Chefe"
-	hit_radius = 55.0
-	weapon = {"id": "boss", "name": "Fúria Solar", "damage": damage, "radius": radius, "angle": [20, 80]}
-	angle_range = Vector2(20, 80)
-	body.texture = load("res://assets/pve/rei_sol.png")
-	body.region_enabled = false
-	body.scale = Vector2.ONE * 1.5
-	body.position = Vector2(0, -96)
-	body.show()
-	if is_instance_valid(rig):
-		rig.source = Callable()
-		rig.back.queue_free()
-		rig.queue_free()
-		rig = null
-	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
-		if is_instance_valid(clip):
-			clip.queue_free()
-	walk_animation = null
+func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Dictionary) -> void:
+	# A PvE enemy drawn from its PixelLab art (sprite + idle/attack clips), standing on
+	# the ground instead of lying prone, with no equipment rig. Stats come already scaled
+	# by the map level and party size (InstanceRun).
+	player_id = id
+	team = int(entry.get("team", 1))
+	is_monster = true
+	monster = def
+	rank = str(def.get("rank", "minion"))
+	display_name = str(entry.get("name", def.get("name", "Inimigo")))
+	rank_title = {"minion": "Lacaio", "guardian": "Guardião", "boss": "Chefe", "totem": "Objetivo"}.get(rank, "Inimigo")
+	level = int(entry.get("level", 1))
+	max_hp = int(entry.get("hp", def.get("hp", 500)))
+	hp = max_hp
+	agility = int(def.get("agility", 80))
+	max_energy = int(balance.energy)
+	hit_radius = float(def.get("hit_radius", 28))
+	monster_height = float(def.get("height", 80))
+	art_faces_left = str(def.get("faces", "left")) == "left"
+	always_enraged = bool(entry.get("enraged", false))
+	shield = float(entry.get("shield", 1.0))
+	var limits: Array = def.get("angle", [25, 75])
+	angle_range = Vector2(limits[0], limits[1])
+	angle = clampf(45.0, angle_range.x, angle_range.y)
+	facing = -1 if team == 1 else 1
+	weapon = {"id": str(def.id), "name": str(def.get("attack", "Ataque")), "damage": int(entry.get("damage", def.get("damage", 100))), "radius": float(def.get("radius", 34)), "angle": limits, "color": str(def.get("color", "ffd04a"))}
+	if def.has("projectile"):
+		weapon.projectile = def.projectile
+	base_damage = int(weapon.damage)
+	fury_damage = int(entry.get("fury_damage", base_damage))
+	summon_entry = entry.get("summon", {})
+	visual = Node2D.new()
+	add_child(visual)
+	body = Sprite2D.new()
+	var sprite_path: String = str(def.get("sprite", ""))
+	if not ResourceLoader.exists(sprite_path):
+		sprite_path = "res://assets/expansion/enemies/temple_guard.png"
+	body.texture = load(sprite_path)
+	var used: Rect2i = body.texture.get_image().get_used_rect()
+	var k: float = monster_height / maxf(1.0, used.size.y)
+	body_size = Vector2(used.size) * k
+	visual.add_child(body)
+	south_texture = body.texture
+	# The clips share the sprite's pixel size (their canvases may be bigger); every layer
+	# is scaled by the same factor with the crisp pixel shader and stands on the ground.
 	idle_animation = PixelAnimation.new()
-	idle_animation.load_frames("res://assets/pve/boss_idle", 5, 192)
+	idle_animation.load_frames(str(def.get("idle", "")), 16, monster_height)
+	idle_animation.fps = float(def.get("idle_fps", 6.0))
+	idle_animation.pingpong = bool(def.get("pingpong", true))
 	visual.add_child(idle_animation)
-	if not idle_animation.frames.is_empty():
-		body.hide()
 	attack_animation = PixelAnimation.new()
-	attack_animation.load_frames("res://assets/pve/boss_attack", 9, 192)
+	attack_animation.load_frames(str(def.get("attack_clip", "")), 16, monster_height)
+	attack_animation.fps = float(def.get("attack_fps", 9.0))
 	attack_animation.hide()
 	visual.add_child(attack_animation)
-	south_texture = load("res://assets/pve/rei_sol.png")
+	for layer: Sprite2D in [body, idle_animation, attack_animation]:
+		fit_monster_layer(layer, k)
+	walk_animation = null
+	body.visible = idle_animation.frames.is_empty()
+	update_pose()
 
 static func rank_for(value: int) -> String:
 	var ranks: Array[String] = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]
@@ -207,8 +249,9 @@ func alive() -> bool:
 	return hp > 0
 
 func animate_attack() -> void:
+	turns_taken += 1
 	if is_instance_valid(attack_animation) and not attack_animation.frames.is_empty():
-		attack_time = 1.2 if is_boss else attack_animation.frames.size() / attack_animation.fps
+		attack_time = maxf(0.8, attack_animation.frames.size() / attack_animation.fps)
 		attack_animation.elapsed = 0
 		show_animation(attack_animation)
 	elif is_instance_valid(visual):
@@ -216,18 +259,52 @@ func animate_attack() -> void:
 		tween.tween_property(visual, "position:x", -facing * 5.0, 0.06)
 		tween.tween_property(visual, "position:x", 0.0, 0.18)
 
+func fit_monster_layer(layer: Sprite2D, k: float) -> void:
+	if layer.texture == null:
+		return
+	layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	layer.material = UiKit.smooth_material()
+	layer.scale = Vector2.ONE * k
+	var bottom: float = layer.texture.get_image().get_used_rect().end.y
+	layer.position = Vector2(0, layer.texture.get_height() * k * 0.5 - bottom * k)
+
+func weapon_point() -> Vector2:
+	# Where the weapon is (on the back when lying down), in world coordinates.
+	if is_instance_valid(rig) and rig.back_weapon != null and rig.back_weapon.is_inside_tree():
+		return rig.back_weapon.global_position
+	return muzzle()
+
+func set_pow_armed(value: bool) -> void:
+	# POW preparation: the fighter pulls back and the weapon on the back lights up.
+	if is_instance_valid(rig):
+		rig.weapon_glow = 1.0 if value else 0.0
+	if value:
+		recoil(6.0, 0.45)
+
+func recoil(amount: float, seconds: float = 0.3) -> void:
+	if not is_instance_valid(visual):
+		return
+	var tween: Tween = create_tween()
+	tween.tween_property(visual, "position:x", -facing * amount, seconds * 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(visual, "position:x", 0.0, seconds * 0.75).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func acts() -> bool:
+	# Totems are objectives: they never take a turn.
+	return hp > 0 and rank != "totem"
+
 func effective_angle() -> float:
 	return angle + tilt * facing
 
 func update_pose() -> void:
 	if body == null:
 		return
-	visual.rotation = 0.0 if is_boss else -deg_to_rad(tilt)
-	if is_boss:
-		if is_instance_valid(idle_animation):
-			idle_animation.flip_h = facing > 0
-		if is_instance_valid(attack_animation):
-			attack_animation.flip_h = facing > 0
+	visual.rotation = 0.0 if is_monster else -deg_to_rad(tilt)
+	if is_monster:
+		var mirrored: bool = (facing > 0) == art_faces_left
+		for clip: Sprite2D in [body, idle_animation, attack_animation]:
+			if is_instance_valid(clip):
+				clip.flip_h = mirrored
+		modulate = Color("b8e8ff") if frozen > 0 else Color.WHITE
 		queue_redraw()
 		return
 	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
@@ -249,15 +326,15 @@ func hands() -> Vector2:
 	return Vector2(facing * 14, -28)
 
 func pivot() -> Vector2:
-	if is_boss:
-		return Vector2(-60 * -facing, -95)
+	if is_monster:
+		return Vector2(facing * body_size.x * 0.3, -monster_height * 0.55)
 	if prone:
 		return hands().rotated(-deg_to_rad(tilt))
 	return Vector2(0, -30).rotated(-deg_to_rad(tilt))
 
 func muzzle_at(relative_angle: float) -> Vector2:
-	if is_boss:
-		return position + Vector2(60 * facing, -95)
+	if is_monster:
+		return position + pivot()
 	var a: float = deg_to_rad(relative_angle)
 	var local: Vector2 = Vector2(facing * (16.0 + cos(a) * 22.0), -30.0 - sin(a) * 22.0)
 	if prone:
@@ -268,8 +345,8 @@ func muzzle() -> Vector2:
 	return muzzle_at(angle)
 
 func center() -> Vector2:
-	if is_boss:
-		return position + Vector2(0, -85)
+	if is_monster:
+		return position + Vector2(0, -monster_height * 0.45)
 	return position + Vector2(0, -18 if prone else -32)
 
 func step_fall(delta: float, terrain: DestructibleTerrain, gravity: float) -> void:
@@ -288,7 +365,7 @@ func step_fall(delta: float, terrain: DestructibleTerrain, gravity: float) -> vo
 		velocity_y = 0
 		if not settled:
 			settled = true
-			tilt = 0.0 if is_boss else terrain.slope_degrees(position.x, position.y)
+			tilt = 0.0 if is_monster else terrain.slope_degrees(position.x, position.y)
 	else:
 		settled = false
 		velocity_y += gravity * delta
@@ -298,7 +375,7 @@ func step_fall(delta: float, terrain: DestructibleTerrain, gravity: float) -> vo
 			if terrain.solid(position + Vector2(0, travel / steps + 1)):
 				velocity_y = 0
 				settled = true
-				tilt = 0.0 if is_boss else terrain.slope_degrees(position.x, position.y)
+				tilt = 0.0 if is_monster else terrain.slope_degrees(position.x, position.y)
 				break
 			position.y += travel / steps
 	if position.y > terrain.world_size.y + 40:
@@ -363,7 +440,7 @@ func _draw() -> void:
 		draw_rect(Rect2(-6, -18, 12, 4), Color("5d6272"))
 		return
 	var color: Color = TEAM_COLORS[team]
-	if active and not is_boss:
+	if active and not is_monster:
 		var origin: Vector2 = pivot()
 		var lo: float = angle_range.x + tilt * facing
 		var hi: float = angle_range.y + tilt * facing
@@ -375,7 +452,7 @@ func _draw() -> void:
 			if i % 2 == 0:
 				draw_line(origin + Vector2.from_angle(aim) * (i * 6), origin + Vector2.from_angle(aim) * (i * 6 + 5), Color("ffe95a"), 2)
 	if active:
-		var top: float = -120.0 if is_boss else -body_size.y - 18.0
+		var top: float = -monster_height - 20.0 if is_monster else -body_size.y - 18.0
 		var bob: float = sin(pulse * 5.0) * 3.0
 		draw_colored_polygon(PackedVector2Array([Vector2(-8, top + bob), Vector2(8, top + bob), Vector2(0, top + 10 + bob)]), Color("4aa8ff"))
 		draw_polyline(PackedVector2Array([Vector2(-8, top + bob), Vector2(8, top + bob), Vector2(0, top + 10 + bob), Vector2(-8, top + bob)]), Color("0f2a5a"), 2)

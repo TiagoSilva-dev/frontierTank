@@ -8,7 +8,7 @@ const CITY_ART: String = "res://assets/city/city_bg.png"
 # Hotspots over the old hub painting (buildings are part of the background).
 const BUILDINGS: Array[Dictionary] = [
 	{"id": "hall", "name": "Salão de Jogos", "rect": [245, 165, 260, 290], "label": [375, 250], "tip": "Salão de Jogos! Clique para entrar"},
-	{"id": "instance", "name": "Instância", "rect": [790, 20, 250, 210], "label": [915, 70], "tip": "Instância: enfrente o Rei Hélio"},
+	{"id": "instance", "name": "Instância", "rect": [790, 20, 250, 210], "label": [915, 70], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16"},
 	{"id": "smith", "name": "Ferreiro", "rect": [100, 300, 190, 180], "label": [196, 330], "tip": "Ferreiro: fortaleça suas armas"},
 	{"id": "auction", "name": "Leilão", "rect": [1040, 60, 200, 330], "label": [1140, 175], "tip": "Leilão: compre e venda itens"},
 	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},
@@ -21,7 +21,7 @@ const BUILDINGS: Array[Dictionary] = [
 const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},
 	{"id": "smith", "name": "Ferreiro", "rect": [235, 65, 192, 192], "hot": [243, 88, 175, 148], "label": [330, 92], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},
-	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: enfrente o Rei Hélio", "fx": {"portal": [89, 110]}},
+	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},
 	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},
 	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},
 	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},

@@ -27,6 +27,9 @@ var wing_b: Sprite2D
 var wing_root: Vector2 = Vector2(100, 100)
 var wing_tilt: float = 0.0
 var back_weapon: Sprite2D
+# Additive copy of the weapon that lights up while a POW is armed (0..1).
+var weapon_glow: float = 0.0
+var weapon_shine: Sprite2D
 var glasses: Sprite2D
 var hat: Sprite2D
 var glow_color: Color = Color.TRANSPARENT
@@ -67,6 +70,15 @@ func setup(look_data: Dictionary, pose: String) -> void:
 	var weapon_id: String = str(look.get("weapon", ""))
 	if weapon_id != "" and prone:
 		back_weapon = make_layer(back, Armory.weapon_icon(weapon_id, int(look.get("weapon_level", 0))))
+		if back_weapon != null:
+			weapon_shine = Sprite2D.new()
+			weapon_shine.texture = back_weapon.texture
+			weapon_shine.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			var additive: CanvasItemMaterial = CanvasItemMaterial.new()
+			additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+			weapon_shine.material = additive
+			weapon_shine.visible = false
+			back_weapon.add_child(weapon_shine)
 	if str(look.get("glasses", "")) != "":
 		glasses = make_layer(self, Armory.cosmetic_art(str(look.glasses), art_view))
 	if str(look.get("hat", "")) != "":
@@ -199,13 +211,22 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 			pin_wing(wing_a, false, shoulder + Vector2(-head_w * 0.1, 0), s)
 			pin_wing(wing_b, true, shoulder + Vector2(head_w * 0.1, 0), s)
 	if back_weapon != null:
-		var size: float = head_w * (1.15 if not prone else 0.95)
+		# In battle the weapon is drawn bigger (0.8: `back_weapon_scale`); it is only art,
+		# the hitbox stays the fighter's hit_radius. The extra size grows away from the
+		# head so it never covers the face or the name plate below the fighter.
+		var grow: float = Armory.visual("back_weapon_scale") if prone else 1.0
+		var size: float = head_w * (1.15 if not prone else 0.95) * grow
 		var s: float = size / maxf(back_weapon.texture.get_width(), back_weapon.texture.get_height())
 		back_weapon.scale = Vector2(s, s)
 		back_weapon.flip_h = flip
 		back_weapon.rotation = -dir * 0.35
 		# Along the back, behind the wings' shoulders.
-		back_weapon.position = back + Vector2(-dir * head_w * 0.85, -head_w * 0.12)
+		back_weapon.position = back + Vector2(-dir * head_w * (0.85 + (grow - 1.0) * 0.3), -head_w * (0.12 + (grow - 1.0) * 0.9))
+		if weapon_shine != null:
+			weapon_shine.flip_h = flip
+			weapon_shine.visible = weapon_glow > 0.0
+			weapon_shine.scale = Vector2.ONE * (1.08 + 0.06 * sin(time * 12.0))
+			weapon_shine.modulate = Color(1.0, 0.9, 0.55, weapon_glow * (0.65 + 0.35 * sin(time * 9.0)))
 	body_rect = Rect2(Vector2(top.x - head_w, top.y), Vector2(head_w * 2.0, bottom - top.y))
 	if aura != null:
 		# Like the DDTank profile: the circle sits behind the head and shoulders.

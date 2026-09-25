@@ -34,6 +34,8 @@ var banner: Label
 var outcome: TextureRect
 var pause_box: Control
 var portraits: Dictionary = {}
+var phase_label: Label
+var goal_label: Label
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -158,10 +160,37 @@ func build() -> void:
 	life_bar = UiKit.bar(self, Rect2(1000, 690, 214, 26), Color("e0302a"))
 	life_value = UiKit.label(self, "0", Rect2(1000, 690, 214, 26), 18, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.label(self, "Vida", Rect2(1216, 690, 64, 26), 16, Color("ffb0a0"), UiKit.INK)
+	if game.pve and not game.phase.is_empty():
+		build_phase()
 	banner = UiKit.label(self, "", Rect2(340, 250, 600, 90), 56, Color("9aff7a"), Color("0a2a04"), HORIZONTAL_ALIGNMENT_CENTER)
 	banner.add_theme_constant_override("outline_size", 12)
 	banner.modulate.a = 0
 	refresh_log()
+
+func build_phase() -> void:
+	# Instance progress: phase x/3, its name, the map level and the phase objective.
+	var box: Panel = UiKit.panel(self, Rect2(722, 66, 304, 64), "glass")
+	box.name = "PhasePanel"
+	var level: int = int(game.phase.get("level", 0))
+	var level_text: String = "Nível %d" % level if level > 0 else "Entrada livre"
+	phase_label = UiKit.label(box, "Fase %d/%d  •  %s" % [int(game.phase.index) + 1, int(game.phase.count), game.phase.name], Rect2(8, 2, 292, 26), 15, Color("ffd04a"), UiKit.INK)
+	phase_label.clip_text = true
+	goal_label = UiKit.label(box, "", Rect2(8, 30, 200, 26), 13, Color("fff0d0"), UiKit.INK)
+	UiKit.label(box, level_text, Rect2(200, 30, 98, 26), 13, Color("c99bff") if level >= 10 else Color("9adcff"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	if game.threats.get("no_plane", false):
+		fly_button.tooltip_text = "Sem avião de papel neste mapa."
+
+func phase_goal() -> String:
+	match str(game.phase.get("objective", "defeat")):
+		"totems":
+			var totems: Array[TankFighter] = game.fighters.filter(func(f: TankFighter) -> bool: return f.rank == "totem")
+			var broken: int = totems.filter(func(f: TankFighter) -> bool: return f.hp <= 0).size()
+			return "Cristais: %d/%d" % [broken, totems.size()]
+		"survive":
+			return "Sobreviva: %d/%d turnos" % [mini(game.survived, int(game.phase.turns)), int(game.phase.turns)]
+	var enemies: int = game.fighters.filter(func(f: TankFighter) -> bool: return f.team != game.local().team and f.hp > 0).size()
+	var waves: int = game.waves.size()
+	return "Inimigos: %d%s" % [enemies, "  (+%d onda)" % waves if waves > 0 else ""]
 
 func slot_button(rect: Rect2, icon: Texture2D, key: String, action: Callable) -> Button:
 	var button: Button = UiKit.button(self, "", rect, action, "slot")
@@ -269,7 +298,9 @@ func _process(_delta: float) -> void:
 	for i in range(item_buttons.size()):
 		var item: Dictionary = game.balance.items[i]
 		item_buttons[i].disabled = not acting or game.energy < float(item.energy) or game.turn_fly
-	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty()
+	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty() or game.threats.get("no_plane", false)
+	if is_instance_valid(goal_label):
+		goal_label.text = phase_goal()
 	fly_button.modulate = Color(0.7, 1.3, 1.0) if game.turn_fly and mine else Color.WHITE
 	aux_button.disabled = not acting or me.aux_uses <= 0
 	aux_count.text = str(me.aux_uses) if me.aux_id != "" else ""
@@ -308,7 +339,7 @@ func refresh_used(mine: bool) -> void:
 
 func portrait_for(fighter: TankFighter) -> Texture2D:
 	if not portraits.has(fighter.player_id):
-		portraits[fighter.player_id] = UiKit.head_crop(fighter.portrait(), 0.62 if fighter.is_boss else 0.5)
+		portraits[fighter.player_id] = UiKit.head_crop(fighter.portrait(), (0.62 if fighter.is_boss else 0.75) if fighter.is_monster else 0.5)
 	return portraits[fighter.player_id]
 
 func draw_queue() -> void:

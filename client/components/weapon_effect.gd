@@ -2,7 +2,9 @@ class_name WeaponEffect
 extends Node2D
 
 # Short-lived POW visuals: rainbow beam, lightning bolts, healing crosses, hearts,
-# the spectral bull and the divine tornado. Drawn procedurally, then freed.
+# the spectral bull and the divine tornado; in instances also the boss summoning a
+# minion ("summon"), the flying boss changing place ("warp") and a new wave ("wave").
+# Drawn procedurally, then freed.
 
 const RAINBOW: Array[Color] = [Color("ff4a4a"), Color("ffa13a"), Color("ffe84a"), Color("5ce65c"), Color("4ab8ff"), Color("8a5cff")]
 
@@ -14,7 +16,11 @@ var life: float = 1.0
 var bull: Sprite2D
 
 func _ready() -> void:
-	life = {"beam": 1.1, "lightning": 0.6, "heal": 1.2, "hearts": 1.2, "bull": 0.9, "tornado": 1.0}.get(kind, 1.0)
+	life = {"beam": 1.1, "lightning": 0.6, "heal": 1.2, "hearts": 1.2, "bull": 0.9, "tornado": 1.0, "summon": 0.9, "warp": 0.9, "wave": 0.1}.get(kind, 1.0)
+	if kind == "summon":
+		FxParticles.burst(self, Vector2(0, -10), {"amount": 30, "lifetime": 0.8, "speed": [60.0, 200.0], "direction": Vector2.UP, "spread": 60.0, "gravity": Vector2(0, -60), "size": [2.0, 4.0], "colors": ["fff26a", "ff7a1f", "b8250f"]})
+	elif kind == "warp":
+		FxParticles.burst(self, Vector2.ZERO, {"amount": 26, "lifetime": 0.9, "speed": [80.0, 220.0], "gravity": Vector2(0, 80), "size": [3.0, 5.0], "colors": ["ffffff", "c8f4ff", "7ad8ff"], "additive": false, "tangential": 200.0})
 	if kind == "bull" and ResourceLoader.exists("res://assets/projectiles/bull_spirit.png"):
 		bull = Sprite2D.new()
 		bull.texture = load("res://assets/projectiles/bull_spirit.png")
@@ -83,6 +89,19 @@ func _draw() -> void:
 				draw_circle(p + Vector2(-s * 0.5, 0), s * 0.6, c)
 				draw_circle(p + Vector2(s * 0.5, 0), s * 0.6, c)
 				draw_colored_polygon(PackedVector2Array([p + Vector2(-s * 1.05, s * 0.2), p + Vector2(s * 1.05, s * 0.2), p + Vector2(0, s * 1.4)]), c)
+		"summon":
+			draw_set_transform(Vector2(0, 2), 0, Vector2(1.0, 0.3))
+			draw_arc(Vector2.ZERO, 30.0 + t * 50.0, 0, TAU, 32, Color(1.0, 0.5, 0.15, fade), 6.0)
+			draw_circle(Vector2.ZERO, 26.0 + t * 30.0, Color(1.0, 0.8, 0.3, 0.3 * fade))
+			draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+			draw_rect(Rect2(-14.0 * fade, -140.0, 28.0 * fade, 140.0), Color(1.0, 0.6, 0.2, 0.35 * fade))
+		"warp":
+			var target: Vector2 = (data.get("to", global_position) as Vector2) - global_position
+			for i in range(6):
+				var a: float = age * 12.0 + i * TAU / 6.0
+				draw_arc(Vector2(0, -i * 10.0), 18.0 + i * 8.0, a, a + PI, 12, Color(0.85, 0.97, 1.0, 0.8 * fade), 3.0)
+			draw_line(Vector2.ZERO, target, Color(0.8, 0.95, 1.0, 0.35 * fade), 6.0)
+			draw_circle(target + Vector2(0, -60), 30.0 * fade + 6.0, Color(0.8, 0.95, 1.0, 0.45 * fade))
 		"tornado":
 			for i in range(9):
 				var y: float = -i * 16.0 - t * 30.0

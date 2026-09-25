@@ -74,7 +74,7 @@ func run_tests() -> void:
 	check(hall.grid.get_child_count() == 8, "room list shows eight cards per page")
 	var open: Dictionary = app.lobby.open_room()
 	if open.is_empty():
-		app.lobby.rooms.append({"id": 777, "title": "teste", "mode": "pvp", "capacity": 4, "members": [app.lobby.random_bot()], "playing": false, "map": "", "turn_seconds": 10, "difficulty": "normal"})
+		app.lobby.rooms.append({"id": 777, "title": "teste", "mode": "pvp", "capacity": 4, "members": [app.lobby.random_bot()], "playing": false, "map": "", "turn_seconds": 10})
 		open = app.lobby.rooms[-1]
 	var members_before: int = open.members.size()
 	hall.try_join(open)
@@ -199,23 +199,66 @@ func run_tests() -> void:
 	app.close_bag()
 	await process_frame
 	check(not is_instance_valid(app.bag), "Mochila closes")
-	# Instância
+	# Instância (0.9): instance choice, map slot, 3 phases
 	app.create_room("pve")
 	app.show_room()
 	await process_frame
-	app.screen.pick_difficulty("hard")
-	check(app.room.difficulty == "hard", "instance difficulty can be chosen")
+	check(app.screen.find_child("MapSlot", true, false) != null and app.screen.find_child("Difficulty_hard", true, false) == null, "the difficulty list became a map slot")
+	app.profile.redeem("MAPAS")
+	app.screen.choose_instance()
+	await process_frame
+	var picker: Node = app.screen.find_child("Instance_picos_gelados", true, false)
+	check(picker != null, "Local lists the four instances")
+	picker.pressed.emit()
+	await process_frame
+	check(app.room.instance == "picos_gelados" and app.room.map_uid == -1, "the instance can be chosen")
+	app.screen.pick_instance("templo_sol", Control.new())
+	await process_frame
+	var owned: Array[Dictionary] = app.profile.maps_for("templo_sol")
+	check(owned.size() == 4 and int(owned[0].level) == 16, "the MAPAS coupon gives maps of levels 1 to 16")
+	var chosen: Dictionary = owned[-1]
+	app.screen.choose_map_item()
+	await process_frame
+	var slot_button: Node = app.screen.find_child("MapItem_%d" % int(chosen.uid), true, false)
+	check(slot_button != null, "the map picker lists the player's maps")
+	slot_button.pressed.emit()
+	await process_frame
+	check(int(app.room.map_uid) == int(chosen.uid), "a map is placed in the room")
 	app.start_battle()
 	await process_frame
 	game = app.screen.game
-	check(game.pve and game.fighters[-1].is_boss and game.map.id == "templo_sol", "Instância starts the boss battle")
+	check(app.profile.find_map(int(chosen.uid)).is_empty(), "the map is consumed on entry")
+	check(game.pve and game.phase.index == 0 and int(game.phase.level) == int(chosen.level) and game.fighters.any(func(f: TankFighter) -> bool: return f.rank == "minion"), "the Instância starts at phase 1 with minions")
+	check(app.screen.hud.find_child("PhasePanel", true, false) != null, "the HUD shows the phase and its objective")
 	check(app.audio.music_track == "instance", "the Instância plays its own theme")
+	game.waves.clear()
+	for fighter in game.fighters:
+		if fighter.team == 1:
+			fighter.hp = 0
+	game.evaluate_winner()
+	await create_timer(1.9).timeout
+	var between: PhaseTransition = app.screen.transition
+	check(is_instance_valid(between) and between.find_child("Advance", true, false) != null, "a transition screen follows each phase")
+	between.advance()
+	await process_frame
+	game = app.screen.game
+	check(game.phase.index == 1 and game.fighters.any(func(f: TankFighter) -> bool: return f.rank == "guardian"), "phase 2 (guardian) follows")
 	app.screen.toggle_pause()
 	check(game.paused, "battle can be paused")
 	check(app.screen.hud.pause_box.find_child("MusicToggle", true, false) != null and app.screen.hud.pause_box.find_child("SfxToggle", true, false) != null, "pause menu switches music and effects")
 	app.screen.forfeit()
 	await process_frame
 	check(not game.running and not app.last_summary.won, "forfeit counts as defeat")
+	check(app.last_summary.has("instance") and int(app.last_summary.instance.phases) == 1, "the result keeps the phases won")
+	app.screen.show_results()
+	await process_frame
+	check(app.screen.results.find_child("InstanceBox", true, false) != null, "the result shows the instance run")
+	app.open_bag()
+	await process_frame
+	app.bag.filter_items("Mapas")
+	await process_frame
+	check(app.bag.entries().size() >= 12 and app.bag.entries().all(func(e: Dictionary) -> bool: return e.has("map")), "the Mochila has a Mapas tab")
+	app.close_bag()
 	app.shortcut("help")
 	app.show_city()
 	await process_frame

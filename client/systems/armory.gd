@@ -20,6 +20,11 @@ static func data() -> Dictionary:
 		_data = JSON.parse_string(FileAccess.get_file_as_string(PATH))
 	return _data
 
+# Battle art sizes (0.8): projectiles and the weapon on the back are drawn bigger. Only
+# the drawing changes; hit_radius, crater radius and damage never read these.
+static func visual(key: String) -> float:
+	return float(data().get("visual", {}).get(key, 1.0))
+
 static func _find(list: String, id: String) -> Dictionary:
 	for entry: Dictionary in data()[list]:
 		if entry.id == id:

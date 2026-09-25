@@ -65,7 +65,7 @@ func build_preview() -> void:
 	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, Color("a86a10"), Color.TRANSPARENT)
-	UiKit.label(contents, "Clique num item para provar.\nSuper armas só caem na Instância.", Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, "Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias.", Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, "CUPOM", Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
 
 func items() -> Array:
@@ -94,15 +94,17 @@ func card(def: Dictionary, rect: Rect2) -> void:
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if tab == "arma":
 		if def.get("super", false):
-			UiKit.label(box, "SUPER VERDADEIRA\nSó por drop na Instância", Rect2(4, 146, 180, 60), 13, Color("ffb347"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(box, "SUPER VERDADEIRA\nSó no baú do chefe", Rect2(4, 146, 180, 60), 13, Color("ffb347"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 			UiKit.label(box, "Você tem" if app.profile.has_item(def.id) else "", Rect2(4, 204, 180, 28), 14, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 			return
-		for q in range(3):
-			var quality: String = ["normal", "excelente", "verdadeira"][q]
+		# 0.9: the shop sells Normal and Excelente only; Verdadeira comes from instances.
+		for q in range(2):
+			var quality: String = ["normal", "excelente"][q]
 			var price: int = PlayerProfile.item_price(str(def.id), quality)
-			var label_text: String = "%s  %d" % [["Normal", "Excelente", "Verdadeira"][q], price]
-			var buy: Button = UiKit.button(box, label_text, Rect2(8, 146 + q * 30, 172, 28), buy_item.bind(str(def.id), quality), ["button", "button_blue", "button_green"][q], 13)
+			var label_text: String = "%s  %d" % [["Normal", "Excelente"][q], price]
+			var buy: Button = UiKit.button(box, label_text, Rect2(8, 146 + q * 30, 172, 28), buy_item.bind(str(def.id), quality), ["button", "button_blue"][q], 13)
 			buy.disabled = app.profile.coins < price
+		UiKit.label(box, "Verdadeira: instâncias", Rect2(4, 208, 180, 24), 12, Color("c99bff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	var price_value: int = int(def.get("price", 0))
 	UiKit.label(box, "%d moedas" % price_value, Rect2(4, 148, 180, 28), 16, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
