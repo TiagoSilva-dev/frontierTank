@@ -1,4 +1,4 @@
-# Frontier Tank: Nova Era — 0.10 (atributos aleatórios, moedas e craft)
+# Frontier Tank: Nova Era — 0.10 (atributos aleatórios, moedas, craft e inglês)
 
 Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou importe **project.godot** no Godot 4.7 e pressione F5. Em outro computador, configure `GODOT_BIN` com o caminho do executável Godot.
 
@@ -6,7 +6,7 @@ Réplica em pixel art do fluxo clássico do DDTank, contra bots (modo offline):
 
 | Tela | O que tem |
 |---|---|
-| **Entrada** (`docs/screens/title.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, escolha de servidor (simulada) e **ENTRAR** (ou Enter). |
+| **Entrada** (`docs/screens/title.png`, `title_en.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, escolha de servidor (simulada), **ENTRAR** (ou Enter) e o idioma do jogo (**Português** ou **English**) no canto. |
 | **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro** e **Centro Comercial** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
 | **Mochila** (`bag.png`) | Informações Pessoais como no DDTank: slots Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta do personagem, que veste tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros. Ataque, Agilidade, Defesa, Sorte, Dano, Proteção, Vida e Força física. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**; equipar, remover e vender. |
 | **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Composição** com Cristal Dourado, **Fusão** de 4 pedras iguais, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
@@ -76,6 +76,11 @@ Cada bônus tem faixas **F1** (melhor) a **F5**. O **nível do item** é o níve
 
 Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não poderão ir ao leilão.
 
+## Idiomas (português e inglês)
+O jogo inteiro está em **português e inglês** (`title_en.png`, `city_en.png`, `bag_en.png`): telas, mensagens da partida, chat simulado, nomes de armas, itens, moedas, inimigos, instâncias, mapas e atributos. O idioma é escolhido na tela de entrada e fica salvo; na primeira vez, segue o idioma do sistema (português para quem usa o sistema em português, inglês para os demais). Os nomes em inglês têm versão própria (Quebra Tijolos → *Brickbreaker*, Instância → *Dungeon*, Brasa → *Ember*, Espelho Celeste → *Sky Mirror*), não tradução literal.
+
+Como funciona: o português é o idioma-fonte e cada texto é a própria chave (estilo gettext). O código usa `tr("...")` nas telas e `Lang.t("...")` nas regras; os nomes dos JSON de balanceamento também são chaves. `python tools/i18n.py` junta tudo em `locale/messages.pot` e atualiza `locale/en.po` (as chaves novas aparecem vazias para traduzir; `--missing` lista as que faltam, `--check` falha se algo ficou sem inglês). Para um terceiro idioma (espanhol, por exemplo), basta um `locale/es.po` com as mesmas chaves e o código em `Lang.LOCALES`; a fonte Pixel Operator já cobre os acentos de português, espanhol e francês.
+
 ## Cupons para teste
 Na cidade (botão **CUPOM**), na Mochila ou na Loja:
 - `TESTARTUDO`: todas as armas em todas as qualidades, as três super armas, auxiliares, todas as roupas, chapéus, óculos, asas e cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.
@@ -90,9 +95,9 @@ Os outros cupons valem uma vez por conta.
 ← → andar (gasta energia) · ↑ ↓ ângulo · segurar/soltar **Espaço** força · **1–9** habilidades · **Z X C** ferramentas · **B** POW · **F** avião · **V** item auxiliar · **P** passar · **Q** virar · **Esc** pausa · **M** música · botão direito arrasta a câmera · clique no minimapa move a câmera.
 
 ## Verificação
-Execute: `powershell -File tools/run.ps1 -Test` — 358 verificações (combate 54, instâncias e mapas 66, interface 75, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43, atributos aleatórios e moedas 64).
+Execute: `powershell -File tools/run.ps1 -Test` — 382 verificações (combate 54, instâncias e mapas 66, interface 75, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43, atributos aleatórios e moedas 64, idiomas 24).
 
-Capturas: `godot --path . -- --screen=<title|city|hall|room|pve|battle|pve_battle|result|cards|bag|shop|smith> --out=arquivo.png` (`--profile=user://outro.json` evita mexer no seu save; `--demo=1` resgata o TESTARTUDO e o MOEDAS e veste um conjunto de vitrine com bônus; em `smith`, `--tab=Moedas` abre a aba de moedas e `--craft=map` mostra os mapas; em `bag`, `--tab=Atributos` abre os atributos; `--zoom=2` aproxima a câmera da partida; `--map=<id>` escolhe o mapa da partida; em `pve` e `pve_battle`, `--instance=<id>`, `--level=<1..16>` coloca um mapa daquele nível e `--phase=<1..3>` começa na fase pedida).
+Capturas: `godot --path . -- --screen=<title|city|hall|room|pve|battle|pve_battle|result|cards|bag|shop|smith> --out=arquivo.png` (`--lang=en` captura em inglês; `--profile=user://outro.json` evita mexer no seu save; `--demo=1` resgata o TESTARTUDO e o MOEDAS e veste um conjunto de vitrine com bônus; em `smith`, `--tab=Moedas` abre a aba de moedas e `--craft=map` mostra os mapas; em `bag`, `--tab=Atributos` abre os atributos; `--zoom=2` aproxima a câmera da partida; `--map=<id>` escolhe o mapa da partida; em `pve` e `pve_battle`, `--instance=<id>`, `--level=<1..16>` coloca um mapa daquele nível e `--phase=<1..3>` começa na fase pedida).
 
 ## Mapas
 Como no DDTank, o chão de cada mapa é uma pintura: ilhas geradas no PixelLab cujo contorno é a colisão, destruídas pixel a pixel. **Ilha Celeste** (ilhas de grama sobre um mar de nuvens), **Pátio do Templo** (ruínas de areia), **Câmara do Guardião** (gelo, com neve caindo), **Trono das Máscaras** (rocha vulcânica, com brasas) e **Templo do Sol** (piso do templo, Instância). Na 0.9 entraram **Portões de Brasa**, **Salão das Máscaras**, **Trilha Congelada**, **Caverna de Cristal**, **Pico da Nevasca** (só na Instância), **Ruínas Flutuantes** e **Santuário dos Ventos**. As explosões têm fogo animado, clarão, onda de choque, fumaça e pedaços do chão voando; a cratera fica com a borda queimada.

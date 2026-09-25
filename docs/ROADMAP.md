@@ -7,7 +7,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 — **feito** |
 | 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo) |
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito** (offline); 0.11 (leilão) |
-| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes |
+| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito** |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -267,9 +267,13 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
   - Os termos de uso proíbem vender moedas e itens por dinheiro fora do jogo; os registros do leilão ajudam a achar quem faz isso.
 
 ### 4.3 Público internacional — decidido
-- [ ] **Tradução desde já**: todo texto do jogo sai do código para tabelas de tradução do Godot (`TranslationServer`, CSV ou PO). Começar com português e inglês; espanhol é um bom terceiro idioma (a América Latina conhece o DDTank). Quanto mais tarde, mais texto para migrar, então isso deve entrar já na 0.8.
-- [ ] A fonte Pixel Operator precisa cobrir os acentos de todos os idiomas escolhidos (testar espanhol e francês, por exemplo).
-- [ ] Nomes de itens, moedas e mapas com versão própria em cada idioma, não tradução literal.
+- [x] **Tradução desde já**: todo texto do jogo sai do código para tabelas de tradução do Godot (`TranslationServer`, CSV ou PO). Começar com português e inglês; espanhol é um bom terceiro idioma (a América Latina conhece o DDTank). Quanto mais tarde, mais texto para migrar, então isso deve entrar já na 0.8.
+- [x] A fonte Pixel Operator precisa cobrir os acentos de todos os idiomas escolhidos (testar espanhol e francês, por exemplo).
+- [x] Nomes de itens, moedas e mapas com versão própria em cada idioma, não tradução literal.
+
+**Feito na 0.10 (25/09/2026):** gettext com PO (`locale/en.po`, 717 textos), português como idioma-fonte e cada texto como chave; `Lang` (`client/systems/lang.gd`), seletor Português/English na tela de entrada (fica salvo; a primeira abertura segue o sistema), `--lang=en` nas capturas, extrator `tools/i18n.py` e `tests/i18n_tests.gd`. A fonte cobre todas as letras de português, espanhol, francês, alemão e italiano; só as setas decorativas (▶ ◀ → ⇄ ↵) vêm da fonte do sistema. Nomes em inglês próprios: *Brickbreaker*, *Blazing Fire*, *Divine Wind*, *Home Appliance*, *Plunger*, *Super Bull Head*; Instância → *Dungeon*, Mochila → *Bag*, Ferreiro → *Blacksmith*, mapa-item → *Map* e local da partida → *Arena*, moedas de ouro → *gold*, Verdadeira → *True*; moedas *Ember, Crown, Star, Storm, Solar, Eclipse, Sky Mirror*.
+
+**Decidido provisoriamente:** o nome da marca continua *Frontier Tank: Nova Era* nos dois idiomas (é o que está no logotipo). Os nomes em inglês já evitam os do DDTank; em português a revisão de nomes do checklist abaixo continua pendente.
 - [ ] **Servidor**: uma região no começo (Estados Unidos, com latência razoável para Brasil e Europa) e mais regiões se o público crescer. O turno de 20 s tolera bem a latência.
 - [ ] **Pagamentos**: a Steam cuida de moedas locais e impostos na versão Steam. Na web, Stripe cobre o exterior e o Mercado Pago cobre PIX.
 - [ ] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas.
@@ -288,7 +292,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 
 ## Ordem sugerida
 
-1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo (**feito**) e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto (**falta**).
+1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo (**feito**) e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto (**feito** junto com a 0.10).
 2. **0.9 — Instâncias e mapas** (item 2, **feito**): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **Backend**: contas, grupos reais, partida com autoridade do servidor, e drops, rolagens e moedas no servidor.

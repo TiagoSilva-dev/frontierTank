@@ -63,7 +63,8 @@ static func allowed_tiers(ilvl: int) -> Array[int]:
 	return list
 
 static func tier_name(tier: int) -> String:
-	return "F%d" % tier
+	# "F" is the Portuguese faixa; English shows T1–T5 (tiers).
+	return Lang.t("F%d") % tier
 
 static func roll_value(def: Dictionary, tier: int, rng: RandomNumberGenerator) -> int:
 	var span: Array = def.values[clampi(tier, 1, def.values.size()) - 1]
@@ -108,9 +109,15 @@ static func roll_mods(inst: Dictionary, rng: RandomNumberGenerator, rarity: floa
 		shaped.mods.append(mod)
 	return shaped.mods
 
+static func currency_name(id: String) -> String:
+	return Lang.t(str(currency_def(id).get("name", id)))
+
+static func currency_desc(id: String) -> String:
+	return Lang.t(str(currency_def(id).get("desc", "")))
+
 static func mod_text(mod: Dictionary) -> String:
 	var def: Dictionary = affix_def(str(mod.get("id", "")))
-	var text: String = str(def.get("text", mod.get("id", "")))
+	var text: String = Lang.t(str(def.get("text", mod.get("id", ""))))
 	return text % int(mod.get("value", 0)) if text.contains("%d") else text
 
 static func describe(inst: Dictionary) -> Array[String]:
@@ -142,35 +149,35 @@ static func check(currency: String, inst: Dictionary) -> String:
 	# Why this currency cannot be used on this item ("" when it can).
 	var id: String = str(inst.get("id", ""))
 	if inst.is_empty():
-		return "Escolha um item."
+		return Lang.t("Escolha um item.")
 	if not can_have_mods(id):
-		return "Só armas, roupas, chapéus, óculos e asas recebem bônus."
+		return Lang.t("Só armas, roupas, chapéus, óculos e asas recebem bônus.")
 	if bool(inst.get("mirrored", false)):
-		return "Itens espelhados não podem ser modificados."
+		return Lang.t("Itens espelhados não podem ser modificados.")
 	var quality: String = str(inst.get("quality", "normal"))
 	var mods: Array = inst.get("mods", [])
 	match currency:
 		"brasa":
 			if quality != "normal":
-				return "A Brasa só funciona em itens Normais."
+				return Lang.t("A Brasa só funciona em itens Normais.")
 		"coroa":
 			if quality != "excelente":
-				return "A Coroa só funciona em itens Excelentes."
+				return Lang.t("A Coroa só funciona em itens Excelentes.")
 		"estrela":
 			if quality == "normal":
-				return "A Estrela precisa de um item Excelente ou melhor."
+				return Lang.t("A Estrela precisa de um item Excelente ou melhor.")
 			if mods.size() >= max_mods(quality):
-				return "Este item já tem o máximo de bônus da sua qualidade."
+				return Lang.t("Este item já tem o máximo de bônus da sua qualidade.")
 		"tormenta":
 			if quality == "normal":
-				return "A Tormenta precisa de um item Excelente ou melhor."
+				return Lang.t("A Tormenta precisa de um item Excelente ou melhor.")
 		"solar", "eclipse":
 			if mods.is_empty():
-				return "Este item não tem bônus."
+				return Lang.t("Este item não tem bônus.")
 		"espelho":
 			pass
 		_:
-			return "Moeda desconhecida."
+			return Lang.t("Moeda desconhecida.")
 	return ""
 
 static func apply(currency: String, inst: Dictionary, rng: RandomNumberGenerator) -> String:
@@ -224,32 +231,32 @@ static func map_value(def: Dictionary, rng: RandomNumberGenerator) -> int:
 
 static func check_map(currency: String, item: Dictionary) -> String:
 	if item.is_empty():
-		return "Escolha um mapa."
+		return Lang.t("Escolha um mapa.")
 	if not currency in MAP_CURRENCIES:
-		return "O Espelho Celeste só duplica equipamentos." if currency == "espelho" else "Moeda desconhecida."
+		return Lang.t("O Espelho Celeste só duplica equipamentos.") if currency == "espelho" else Lang.t("Moeda desconhecida.")
 	var quality: String = str(item.get("quality", "normal"))
 	var mods: Array = item.get("mods", [])
 	match currency:
 		"brasa":
 			if quality != "normal":
-				return "A Brasa só funciona em mapas Normais."
+				return Lang.t("A Brasa só funciona em mapas Normais.")
 		"coroa":
 			if quality != "excelente":
-				return "A Coroa só funciona em mapas Excelentes."
+				return Lang.t("A Coroa só funciona em mapas Excelentes.")
 		"estrela":
 			if quality == "normal":
-				return "A Estrela precisa de um mapa Excelente ou melhor."
+				return Lang.t("A Estrela precisa de um mapa Excelente ou melhor.")
 			if mods.size() >= int(map_count(quality)[1]):
-				return "Este mapa já tem o máximo de atributos da sua qualidade."
+				return Lang.t("Este mapa já tem o máximo de atributos da sua qualidade.")
 		"tormenta":
 			if quality == "normal":
-				return "A Tormenta precisa de um mapa Excelente ou melhor."
+				return Lang.t("A Tormenta precisa de um mapa Excelente ou melhor.")
 		"solar":
 			if not mods.any(func(mod: Dictionary) -> bool: return InstanceRun.mod_def(str(mod.id)).has("range")):
-				return "Este mapa não tem valores para rerolar."
+				return Lang.t("Este mapa não tem valores para rerolar.")
 		"eclipse":
 			if mods.is_empty():
-				return "Este mapa não tem atributos."
+				return Lang.t("Este mapa não tem atributos.")
 	return ""
 
 static func apply_map(currency: String, item: Dictionary, rng: RandomNumberGenerator) -> String:

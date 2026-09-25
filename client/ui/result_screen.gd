@@ -49,8 +49,8 @@ func show_results() -> void:
 		AvatarView.create(stage, me.look, Rect2(110, 40, 340, 360))
 	# Team table
 	var table: Panel = UiKit.panel(stage, Rect2(24, 450, 560, 250), "wood_dark")
-	UiKit.title(table, "Resultado", Rect2(0, 4, 560, 32), 22)
-	var headers: Array[String] = ["Nome", "EXP", "mérito"]
+	UiKit.title(table, tr("Resultado"), Rect2(0, 4, 560, 32), 22)
+	var headers: Array[String] = [tr("Nome"), tr("EXP"), tr("mérito")]
 	for i in range(3):
 		UiKit.panel(table, Rect2(14 + i * 180, 40, 172, 30), "card")
 		UiKit.label(table, headers[i], Rect2(14 + i * 180, 40, 172, 30), 15, Color("5a2e10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
@@ -66,47 +66,47 @@ func show_results() -> void:
 	# Breakdown panel
 	var panel: Panel = UiKit.panel(stage, Rect2(612, 16, 652, 684), "glass")
 	UiKit.panel(panel, Rect2(150, 12, 340, 44), "plate")
-	UiKit.label(panel, "meus result.", Rect2(150, 10, 340, 46), 30, Color("ffe6a0"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(panel, tr("meus result."), Rect2(150, 10, 340, 46), 30, Color("ffe6a0"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 	stamp(panel, Vector2(574, 62), won)
 	var y: float = 72
-	y = section(panel, y, "exp. de luta", Color("ff6a5c"), [["exp. de matar", summary.get("kill_exp", 0)], ["exp. de ferir", summary.get("hurt_exp", 0)], ["result. de luta", summary.get("result_exp", 0)], ["exp. de instância", summary.get("bonus_exp", 0)]])
+	y = section(panel, y, tr("exp. de luta"), Color("ff6a5c"), [[tr("exp. de matar"), summary.get("kill_exp", 0)], [tr("exp. de ferir"), summary.get("hurt_exp", 0)], [tr("result. de luta"), summary.get("result_exp", 0)], [tr("exp. de instância"), summary.get("bonus_exp", 0)]])
 	if summary.has("instance"):
 		# After an instance the run takes the place of the (empty) EXP bonus section.
 		instance_box(panel, Rect2(16, y, 620, 118), summary.instance)
 		y += 128
 	else:
-		y = section(panel, y, "adição de exp.", Color("ff6a5c"), [["privil. VIP", 0], ["guerra assoc.", 0], ["equip. casal", 0], ["exp. servidor", 0], ["mest. aluno", 0], ["cart. dob. exp", 0]])
-	y = section(panel, y, "mérito de luta", Color("7aff5a"), [["mérito de luta", summary.get("merit", 0)], ["cart. dob. mérito", 0], ["privil. VIP", 0], ["mérito servidor", 0]])
-	UiKit.label(panel, "total", Rect2(20, 470, 200, 80), 54, Color("ffd04a"), Color("5a2408"))
-	total_row(panel, Rect2(250, 470, 380, 40), "exp. total", int(summary.get("exp", 0)), Color("c0302a"))
-	total_row(panel, Rect2(250, 518, 380, 40), "valor de mérito total", int(summary.get("merit", 0)), Color("2f8a1f"))
+		y = section(panel, y, tr("adição de exp."), Color("ff6a5c"), [[tr("privil. VIP"), 0], [tr("guerra assoc."), 0], [tr("equip. casal"), 0], [tr("exp. servidor"), 0], [tr("mest. aluno"), 0], [tr("cart. dob. exp"), 0]])
+	y = section(panel, y, tr("mérito de luta"), Color("7aff5a"), [[tr("mérito de luta"), summary.get("merit", 0)], [tr("cart. dob. mérito"), 0], [tr("privil. VIP"), 0], [tr("mérito servidor"), 0]])
+	UiKit.label(panel, tr("total"), Rect2(20, 470, 200, 80), 54, Color("ffd04a"), Color("5a2408"))
+	total_row(panel, Rect2(250, 470, 380, 40), tr("exp. total"), int(summary.get("exp", 0)), Color("c0302a"))
+	total_row(panel, Rect2(250, 518, 380, 40), tr("valor de mérito total"), int(summary.get("merit", 0)), Color("2f8a1f"))
 	if int(summary.get("level_after", 1)) > int(summary.get("level_before", 1)):
-		var up: Label = UiKit.label(stage, "SUBIU PARA O NÍVEL %d!" % int(summary.level_after), Rect2(40, 390, 520, 50), 30, Color("9aff7a"), Color("0a2a04"), HORIZONTAL_ALIGNMENT_CENTER)
+		var up: Label = UiKit.label(stage, tr("SUBIU PARA O NÍVEL %d!") % int(summary.level_after), Rect2(40, 390, 520, 50), 30, Color("9aff7a"), Color("0a2a04"), HORIZONTAL_ALIGNMENT_CENTER)
 		up.add_theme_constant_override("outline_size", 10)
-	continue_button = UiKit.button(stage, "Continuar ▶", Rect2(1080, 652, 170, 40), show_cards, "button_green", 17)
+	continue_button = UiKit.button(stage, tr("Continuar ▶"), Rect2(1080, 652, 170, 40), show_cards, "button_green", 17)
 	continue_button.name = "Continue"
 
 func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
 	var box: Panel = UiKit.panel(parent, rect, "dark")
 	box.name = "InstanceBox"
-	UiKit.label(box, "%s  •  %s  •  Fases %d/%d" % [str(info.name), "Nível %d" % int(info.level) if int(info.level) > 0 else "Entrada livre", int(info.phases), int(info.count)], Rect2(10, 2, 600, 28), 18, Color("ffd04a"), UiKit.INK)
+	UiKit.label(box, tr("%s  •  %s  •  Fases %d/%d") % [tr(str(info.name)), tr("Nível %d") % int(info.level) if int(info.level) > 0 else tr("Entrada livre"), int(info.phases), int(info.count)], Rect2(10, 2, 600, 28), 18, Color("ffd04a"), UiKit.INK)
 	UiKit.art(box, "res://assets/items/moeda.png", Rect2(10, 36, 22, 22))
-	UiKit.label(box, "+%d moedas" % int(info.gold), Rect2(36, 34, 160, 26), 16, Color("ffd46b"), UiKit.INK)
+	UiKit.label(box, tr("+%d moedas") % int(info.gold), Rect2(36, 34, 160, 26), 16, Color("ffd46b"), UiKit.INK)
 	var found: Array = info.get("chest", []) + info.get("currency", []) + info.get("drops", [])
 	if found.is_empty():
-		UiKit.label(box, "Nenhum mapa, moeda ou Super Verdadeira desta vez.", Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
+		UiKit.label(box, tr("Nenhum mapa, moeda ou Super Verdadeira desta vez."), Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
 	if not found.is_empty():
-		UiKit.label(box, "Baú do chefe, moedas e mapas das fases (já na Mochila)", Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
+		UiKit.label(box, tr("Baú do chefe, moedas e mapas das fases (já na Mochila)"), Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
 	for i in range(mini(found.size(), 7)):
 		var entry: Dictionary = found[i]
 		var slot: Panel = UiKit.panel(box, Rect2(200 + i * 58, 32, 54, 54), "slot")
 		slot.mouse_filter = Control.MOUSE_FILTER_PASS
 		if entry.has("weapon"):
 			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
-			slot.tooltip_text = "Baú do chefe: %s\n%s" % [str(entry.name), "\n".join(Crafting.describe(entry))]
+			slot.tooltip_text = tr("Baú do chefe: %s\n%s") % [tr(str(entry.name)), "\n".join(Crafting.describe(entry))]
 		elif entry.has("currency"):
 			UiKit.art(slot, str(entry.icon), Rect2(6, 6, 42, 42))
-			slot.tooltip_text = "%s: %s" % [str(entry.name), str(Crafting.currency_def(str(entry.currency)).get("desc", ""))]
+			slot.tooltip_text = "%s: %s" % [Crafting.currency_name(str(entry.currency)), Crafting.currency_desc(str(entry.currency))]
 		else:
 			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(4, 4, 46, 46))
 			UiKit.label(slot, str(int(entry.level)), Rect2(18, 28, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -156,7 +156,7 @@ func stamp(parent: Control, center: Vector2, won: bool) -> void:
 		seal.draw_circle(Vector2(56, 56), 44, tone)
 		seal.draw_arc(Vector2(56, 56), 38, 0, TAU, 32, tone.darkened(0.4), 2))
 	parent.add_child(seal)
-	var words: Label = UiKit.label(seal, "excelente!" if won else "esforce-se\nmais", Rect2(0, 20, 112, 72), 17, Color.WHITE, tone.darkened(0.6), HORIZONTAL_ALIGNMENT_CENTER)
+	var words: Label = UiKit.label(seal, tr("excelente!") if won else tr("esforce-se\nmais"), Rect2(0, 20, 112, 72), 17, Color.WHITE, tone.darkened(0.6), HORIZONTAL_ALIGNMENT_CENTER)
 	words.autowrap_mode = TextServer.AUTOWRAP_OFF
 
 func draw_rays(canvas: Control) -> void:
@@ -204,11 +204,11 @@ func show_cards() -> void:
 	if not loot.is_empty():
 		picks_left = int(loot.picks)
 	UiKit.panel(stage, Rect2(340, 30, 600, 60), "plate")
-	UiKit.title(stage, "Escolha %d carta%s!" % [picks_left, "s" if picks_left > 1 else ""], Rect2(340, 30, 600, 60), 30)
+	UiKit.title(stage, tr("Escolha %d cartas!") % picks_left if picks_left > 1 else tr("Escolha 1 carta!"), Rect2(340, 30, 600, 60), 30)
 	timer_label = UiKit.label(stage, "10", Rect2(950, 30, 80, 60), 40, Color("ffb020"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
-	var hint: String = "Vencedores escolhem 2 cartas, derrotados 1."
+	var hint: String = tr("Vencedores escolhem 2 cartas, derrotados 1.")
 	if not loot.is_empty():
-		hint = "Baú do chefe: %d cartas (mapa, raridade e grupo dão mais)." % picks_left if summary.get("won", false) else "A equipe caiu: o mapa foi perdido, o que caiu nas fases fica."
+		hint = tr("Baú do chefe: %d cartas (mapa, raridade e grupo dão mais).") % picks_left if summary.get("won", false) else tr("A equipe caiu: o mapa foi perdido, o que caiu nas fases fica.")
 	hint_label = UiKit.label(stage, hint, Rect2(240, 92, 800, 26), 15, Color("fff0d0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	# PvP cards (0.10) include a little currency: Brasa and Coroa.
 	var pool: Array = app.balance.rewards.cards + app.balance.rewards.get("pvp_cards", [])
@@ -229,7 +229,7 @@ func show_cards() -> void:
 		back.mouse_entered.connect(func() -> void: card.scale = Vector2.ONE * 1.06 if not revealed[i] else Vector2.ONE)
 		back.mouse_exited.connect(func() -> void: card.scale = Vector2.ONE)
 		cards.append(card)
-	continue_button = UiKit.button(stage, "Continuar ▶", Rect2(1080, 652, 170, 40), app.return_to_room, "button_green", 17)
+	continue_button = UiKit.button(stage, tr("Continuar ▶"), Rect2(1080, 652, 170, 40), app.return_to_room, "button_green", 17)
 	continue_button.name = "Continue"
 	continue_button.disabled = true
 	card_time = 10.0
@@ -265,7 +265,7 @@ func reveal_rest() -> void:
 		if not revealed[i]:
 			flip(i, false)
 	continue_button.disabled = false
-	hint_label.text = "Recompensas adicionadas à sua mochila."
+	hint_label.text = tr("Recompensas adicionadas à sua mochila.")
 
 func flip(index: int, mine: bool) -> void:
 	revealed[index] = true
@@ -294,9 +294,9 @@ func show_front(index: int, mine: bool) -> void:
 	if not (reward.get("mods", []) as Array).is_empty():
 		# Dropped gear shows how many random bonuses it rolled (details in the Mochila).
 		var count: int = reward.mods.size()
-		UiKit.label(front, "%d bônus" % count, Rect2(10, 14, 108, 22), 13, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-		card.tooltip_text = "%s\n%s" % [str(reward.name), "\n".join(Crafting.describe(reward))]
-	var caption: Label = UiKit.label(front, str(reward.name), Rect2(10, 118, 108, 56), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(front, tr("%d bônus") % count, Rect2(10, 14, 108, 22), 13, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		card.tooltip_text = "%s\n%s" % [tr(str(reward.name)), "\n".join(Crafting.describe(reward))]
+	var caption: Label = UiKit.label(front, tr(str(reward.name)), Rect2(10, 118, 108, 56), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.wrap(caption, Vector2(108, 56))
 	if not mine:
 		front.modulate = Color(0.55, 0.55, 0.6)

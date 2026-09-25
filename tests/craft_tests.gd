@@ -25,6 +25,9 @@ func tier_ok(mod: Dictionary, ilvl: int) -> bool:
 	return int(mod.value) >= int(span[0]) and int(mod.value) <= int(span[1]) and Crafting.allowed_tiers(ilvl).has(int(mod.tier))
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	PlayerProfile.path_override = "user://craft_test_profile.json"
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
@@ -35,7 +38,7 @@ func run_tests() -> void:
 	# --- Data
 	var ids: Array = Crafting.currencies().map(func(def: Dictionary) -> String: return str(def.id))
 	check(ids == ["brasa", "coroa", "estrela", "tormenta", "solar", "eclipse", "espelho"], "seven currencies with their own names")
-	check(Crafting.currencies().all(func(def: Dictionary) -> bool: return ResourceLoader.exists(str(def.icon)) and str(def.en) != ""), "every currency has an icon and an English name")
+	check(Crafting.currencies().all(func(def: Dictionary) -> bool: return ResourceLoader.exists(str(def.icon))), "every currency has an icon")
 	check(Crafting.rules().tiers.size() == 5 and Crafting.allowed_tiers(1) == [5] and Crafting.allowed_tiers(16) == [1, 2, 3, 4, 5], "tiers F1–F5: level 1 items only roll F5, level 13+ can roll F1")
 	var weapon_ids: Array = Crafting.rules().weapon.map(func(d: Dictionary) -> String: return str(d.id))
 	var armor_ids: Array = Crafting.rules().armor.map(func(d: Dictionary) -> String: return str(d.id))

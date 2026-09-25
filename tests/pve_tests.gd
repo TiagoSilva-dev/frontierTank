@@ -51,6 +51,9 @@ func enemy(id: String) -> Dictionary:
 	return {}
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	PlayerProfile.path_override = "user://test_pve_profile.json"
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	var game: LocalMatch = LocalMatch.new()

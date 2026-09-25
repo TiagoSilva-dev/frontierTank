@@ -8,6 +8,9 @@ func _initialize() -> void:
 	call_deferred("go")
 
 func go() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	var balance: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	var game: LocalMatch = LocalMatch.new()
 	root.add_child(game)

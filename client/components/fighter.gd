@@ -194,7 +194,7 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 	monster = def
 	rank = str(def.get("rank", "minion"))
 	display_name = str(entry.get("name", def.get("name", "Inimigo")))
-	rank_title = {"minion": "Lacaio", "guardian": "Guardião", "boss": "Chefe", "totem": "Objetivo"}.get(rank, "Inimigo")
+	rank_title = tr({"minion": "Lacaio", "guardian": "Guardião", "boss": "Chefe", "totem": "Objetivo"}.get(rank, "Inimigo"))  # i18n
 	level = int(entry.get("level", 1))
 	max_hp = int(entry.get("hp", def.get("hp", 500)))
 	hp = max_hp
@@ -209,7 +209,7 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 	angle_range = Vector2(limits[0], limits[1])
 	angle = clampf(45.0, angle_range.x, angle_range.y)
 	facing = -1 if team == 1 else 1
-	weapon = {"id": str(def.id), "name": str(def.get("attack", "Ataque")), "damage": int(entry.get("damage", def.get("damage", 100))), "radius": float(def.get("radius", 34)), "angle": limits, "color": str(def.get("color", "ffd04a"))}
+	weapon = {"id": str(def.id), "name": tr(str(def.get("attack", "Ataque"))), "damage": int(entry.get("damage", def.get("damage", 100))), "radius": float(def.get("radius", 34)), "angle": limits, "color": str(def.get("color", "ffd04a"))}
 	if def.has("projectile"):
 		weapon.projectile = def.projectile
 	base_damage = int(weapon.damage)
@@ -246,8 +246,8 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 	update_pose()
 
 static func rank_for(value: int) -> String:
-	var ranks: Array[String] = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]
-	return ranks[clampi((value - 1) / 4, 0, ranks.size() - 1)]
+	var ranks: Array[String] = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]  # i18n
+	return Lang.t(ranks[clampi((value - 1) / 4, 0, ranks.size() - 1)])
 
 func alive() -> bool:
 	return hp > 0

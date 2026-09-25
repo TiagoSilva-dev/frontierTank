@@ -1,6 +1,7 @@
 # Progresso
 
-## Atual — 0.10: atributos aleatórios, moedas e craft
+## Atual — 0.10: atributos aleatórios, moedas, craft e inglês
+- **Português e inglês** (item 4.3, que faltava da 0.8): todas as telas, mensagens, chat simulado e nomes (armas, roupas, moedas, inimigos, instâncias, mapas, atributos) nos dois idiomas, com nomes próprios em inglês. Escolha na tela de entrada, salva em `user://settings.cfg`; a primeira abertura segue o idioma do sistema. `locale/en.po` com 717 textos, extrator `tools/i18n.py` e teste que falha se faltar tradução, se um texto em português ficar fora de `tr()` ou se a fonte não tiver uma letra. A fonte cobre português, espanhol e francês.
 - **Atributos bônus aleatórios**: Normal 0, Excelente 1–2, Verdadeira 3–4 e Super Verdadeira sempre 4. Arma: +Ataque, +% dano, +% dano crítico, +% dano do POW, POW inicial e chance de não gastar a habilidade 1–9. Roupa, chapéu, óculos e asas: +Defesa, +vida máxima, +Agilidade, +Sorte, +energia por turno, −Delay, −% efeito do vento e +% cura recebida. Cada bônus tem faixas F1 (melhor) a F5; F1 só em itens de nível 13+, e o nível do item é o nível do mapa. Nada muda o raio da explosão ou o hitbox. O fortalecimento continua aumentando só os atributos base.
 - **Moedas** (Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste) com a mesma função das do PoE 2, em itens e em mapas, na nova aba **Moedas** do Ferreiro. A Coroa é o outro caminho para a Verdadeira (a Loja vende só Normal e Excelente). O Espelho Celeste cria uma cópia vinculada que não pode ser modificada.
 - **Drops**: cada fase vencida pode dar uma moeda e o chefão sempre dá; cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero) no baú; Solar só a partir do mapa nível 5 e Espelho do 10; a entrada livre dá só Brasas; um pouco de Brasa e Coroa no PvP.
@@ -63,7 +64,7 @@ Fundação Godot e combate local: física, vento, destruição, queda, turnos, v
 Uma conta corresponde a um personagem. Sem lista de personagens nem troca. No futuro banco, `characters.account_id` terá restrição UNIQUE; criação de conta e personagem será transacional.
 
 ## Próxima entrega
-Lista completa e decisões em aberto em `ROADMAP.md`: base de tradução pt/en (pendente da 0.8), backend e o leilão (0.11).
+Lista completa e decisões em aberto em `ROADMAP.md`: backend (contas, grupos reais, autoridade do servidor) e o leilão (0.11).
 
 1. Slots de rosto e olhos e mais roupas no PixelLab; mais mapas seguindo a receita de `PIXELLAB_0_6.md`.
 2. PET, Leilão e missões.

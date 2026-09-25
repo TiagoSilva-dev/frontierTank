@@ -353,5 +353,5 @@ static func modal(parent: Node, heading: String, body: String, size: Vector2 = V
 static func notice(parent: Node, heading: String, body: String) -> Control:
 	var root: Control = modal(parent, heading, body)
 	var rect: Rect2 = root.get_meta("rect")
-	button(root, "OK", Rect2(rect.position.x + rect.size.x / 2 - 70, rect.end.y - 58, 140, 40), root.queue_free)
+	button(root, Lang.t("OK"), Rect2(rect.position.x + rect.size.x / 2 - 70, rect.end.y - 58, 140, 40), root.queue_free)
 	return root

@@ -9,9 +9,9 @@ const PATH: String = "res://shared/balance/items.json"
 # Old saves, bots and tests pick weapons by index; indexes map onto the classic arsenal.
 const LEGACY_ORDER: Array[String] = ["quebra_tijolos", "fogo_intenso", "canhao_arco_iris", "vento_de_deus", "cesto_newton", "kit_medico", "eletrodomestico", "trovao", "desentupidor"]
 const EQUIP_SLOTS: Array[String] = ["arma", "auxiliar", "roupa", "chapeu", "oculos", "cabelo", "asas"]
-const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas"}
+const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas"}  # i18n
 const ATTRS: Array[String] = ["ataque", "defesa", "agilidade", "sorte"]
-const ATTR_NAMES: Dictionary = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}
+const ATTR_NAMES: Dictionary = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}  # i18n
 
 static var _data: Dictionary = {}
 
@@ -37,6 +37,16 @@ static func weapon_def(id: String) -> Dictionary:
 static func quality_def(id: String) -> Dictionary:
 	var found: Dictionary = _find("qualities", id)
 	return found if not found.is_empty() else data().qualities[0]
+
+# Display names in the current language (Lang): slots, attributes and qualities.
+static func slot_name(slot: String) -> String:
+	return Lang.t(str(SLOT_NAMES.get(slot, slot)))
+
+static func attr_name(key: String) -> String:
+	return Lang.t(str(ATTR_NAMES.get(key, key)))
+
+static func quality_label(id: String) -> String:
+	return Lang.t(str(quality_def(id).label))
 
 static func aux_def(id: String) -> Dictionary:
 	return _find("auxiliary", id)
@@ -106,13 +116,13 @@ static func aura_color(level: int) -> Color:
 static func item_name(inst: Dictionary, with_level: bool = true) -> String:
 	var id: String = str(inst.get("id", ""))
 	var def: Dictionary = definition(id)
-	var text: String = str(def.get("name", id))
+	var text: String = Lang.t(str(def.get("name", id)))
 	if kind_of(id) == "weapon":
 		match str(inst.get("quality", "normal")):
 			"excelente":
-				text += " Excelente"
+				text = Lang.t("%s Excelente") % text
 			"verdadeira":
-				text = "Verdadeiro " + text
+				text = Lang.t("Verdadeiro %s") % text
 	var level: int = int(inst.get("level", 0))
 	if with_level and level > 0:
 		text += " +%d" % level

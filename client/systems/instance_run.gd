@@ -51,18 +51,18 @@ static func mod_def(id: String) -> Dictionary:
 
 static func map_name(item: Dictionary) -> String:
 	if item.is_empty():
-		return "Entrada livre"
-	return "Mapa: %s — Nível %d" % [instance_def(str(item.instance)).name, int(item.level)]
+		return Lang.t("Entrada livre")
+	return Lang.t("Mapa: %s — Nível %d") % [Lang.t(str(instance_def(str(item.instance)).name)), int(item.level)]
 
 static func quality_label(quality: String) -> String:
-	return {"normal": "Normal", "excelente": "Excelente", "verdadeira": "Verdadeira"}.get(quality, "Normal")
+	return Armory.quality_label(quality if quality in ["excelente", "verdadeira"] else "normal")
 
 static func quality_color(quality: String) -> Color:
 	return Color({"normal": "f4ead6", "excelente": "7ad8ff", "verdadeira": "c99bff"}.get(quality, "f4ead6"))
 
 static func mod_text(mod: Dictionary) -> String:
 	var def: Dictionary = mod_def(str(mod.id))
-	var text: String = str(def.get("text", mod.id))
+	var text: String = Lang.t(str(def.get("text", mod.id)))
 	return text % int(mod.get("value", 0)) if text.contains("%d") else text
 
 static func map_icon(item: Dictionary) -> String:
@@ -151,7 +151,7 @@ func enemy_entry(id: String) -> Dictionary:
 	for entry: Dictionary in balance.enemies:
 		if entry.id == id:
 			def = entry
-	var entry: Dictionary = {"enemy": id, "name": str(def.get("name", id)), "level": effective_level(), "team": 1}
+	var entry: Dictionary = {"enemy": id, "name": Lang.t(str(def.get("name", id))), "level": effective_level(), "team": 1}
 	entry.hp = roundi(float(def.get("hp", 500)) * hp_scale())
 	entry.damage = roundi(float(def.get("damage", 100)) * damage_scale())
 	entry.fury_damage = roundi(float(def.get("fury_damage", def.get("damage", 100))) * damage_scale())
@@ -198,7 +198,7 @@ func phase_config(team: Array) -> Dictionary:
 	var base_turn: float = float(balance.pve.get("turn_seconds", 20))
 	return {
 		"mode": "pve", "map": str(phase.map), "turn_seconds": turn_seconds(base_turn), "players": players, "threats": threats(),
-		"phase": {"index": phase_index, "count": phase_count(), "name": str(phase.name), "objective": str(phase.get("objective", "defeat")), "turns": int(phase.get("turns", 0)), "waves": waves, "level": level, "instance": str(instance.name)},
+		"phase": {"index": phase_index, "count": phase_count(), "name": Lang.t(str(phase.name)), "objective": str(phase.get("objective", "defeat")), "turns": int(phase.get("turns", 0)), "waves": waves, "level": level, "instance": Lang.t(str(instance.name))},
 		"teams": [players_team, first],
 	}
 
@@ -259,7 +259,7 @@ func roll_phase_currency(index: int) -> Array[Dictionary]:
 
 static func currency_entry(id: String) -> Dictionary:
 	var def: Dictionary = Crafting.currency_def(id)
-	return {"id": "currency_" + id, "name": str(def.get("name", id)), "currency": id, "amount": 1, "rarity": str(def.get("rarity", "rare")), "icon": str(def.get("icon", ""))}
+	return {"id": "currency_" + id, "name": Lang.t(str(def.get("name", id))), "currency": id, "amount": 1, "rarity": str(def.get("rarity", "rare")), "icon": str(def.get("icon", ""))}
 
 func drop_level() -> int:
 	if level == 0:
@@ -382,7 +382,7 @@ func roll_card() -> Dictionary:
 		var entry: Dictionary = card.duplicate()
 		if entry.has("coins"):
 			entry.coins = roundi(float(entry.coins) * gold_scale())
-			entry.name = "%d Moedas" % int(entry.coins)
+			entry.name = Lang.t("%d Moedas") % int(entry.coins)
 		entry.weight = float(card.weight) * (1.0 if str(card.rarity) == "common" else boost)
 		pool.append(entry)
 	pool.append({"kind": "weapon", "weight": float(data.weapon_weight) * boost})

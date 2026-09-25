@@ -17,6 +17,9 @@ func check(condition: bool, message: String) -> void:
 		print("PASS: " + message)
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	PlayerProfile.path_override = "user://armory_test_profile.json"
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))

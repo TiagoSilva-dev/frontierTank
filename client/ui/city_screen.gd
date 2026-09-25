@@ -7,25 +7,25 @@ extends Control
 const CITY_ART: String = "res://assets/city/city_bg.png"
 # Hotspots over the old hub painting (buildings are part of the background).
 const BUILDINGS: Array[Dictionary] = [
-	{"id": "hall", "name": "Salão de Jogos", "rect": [245, 165, 260, 290], "label": [375, 250], "tip": "Salão de Jogos! Clique para entrar"},
-	{"id": "instance", "name": "Instância", "rect": [790, 20, 250, 210], "label": [915, 70], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16"},
-	{"id": "smith", "name": "Ferreiro", "rect": [100, 300, 190, 180], "label": [196, 330], "tip": "Ferreiro: fortaleça suas armas"},
-	{"id": "auction", "name": "Leilão", "rect": [1040, 60, 200, 330], "label": [1140, 175], "tip": "Leilão: compre e venda itens"},
-	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},
-	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par"},
+	{"id": "hall", "name": "Salão de Jogos", "rect": [245, 165, 260, 290], "label": [375, 250], "tip": "Salão de Jogos! Clique para entrar"},  # i18n
+	{"id": "instance", "name": "Instância", "rect": [790, 20, 250, 210], "label": [915, 70], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16"},  # i18n
+	{"id": "smith", "name": "Ferreiro", "rect": [100, 300, 190, 180], "label": [196, 330], "tip": "Ferreiro: fortaleça suas armas"},  # i18n
+	{"id": "auction", "name": "Leilão", "rect": [1040, 60, 200, 330], "label": [1140, 175], "tip": "Leilão: compre e venda itens"},  # i18n
+	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},  # i18n
+	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par"},  # i18n
 ]
 # Layout for the PixelLab city: a 640x360 painting shown at exactly 2x with the
 # Salão on the central plaza and six paved lots around it, one 1x sprite per building.
 # "rect" is the sprite, "hot" the clickable body, "label" the name's centre and "fx"
 # the sprite pixels where the animated details (smoke, forge, portal...) sit.
 const CITY_LAYOUT: Array[Dictionary] = [
-	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},
-	{"id": "smith", "name": "Ferreiro", "rect": [235, 65, 192, 192], "hot": [243, 88, 175, 148], "label": [330, 92], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},
-	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},
-	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},
-	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},
-	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},
-	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},
+	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},  # i18n
+	{"id": "smith", "name": "Ferreiro", "rect": [235, 65, 192, 192], "hot": [243, 88, 175, 148], "label": [330, 92], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
+	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
+	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
+	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
+	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},  # i18n
+	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
 ]
 
 var app: Node
@@ -89,7 +89,7 @@ func _ready() -> void:
 		gulls.append(Vector3(randf_range(0, 1280), randf_range(430, 700), randf_range(22, 40)))
 	for building: Dictionary in buildings:
 		var pos: Array = building.label
-		var tag: Label = UiKit.label(self, building.name, Rect2(pos[0] - 130, pos[1] - 20, 260, 40), 26 if building.id == "hall" else 22, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+		var tag: Label = UiKit.label(self, tr(building.name), Rect2(pos[0] - 130, pos[1] - 20, 260, 40), 26 if building.id == "hall" else 22, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 		tag.add_theme_constant_override("outline_size", 8)
 		labels.append(tag)
 	tip_panel = UiKit.panel(self, Rect2(0, 0, 340, 40), "banner")
@@ -100,15 +100,15 @@ func _ready() -> void:
 	add_child(speaker)
 	build_player_card()
 	UiKit.panel(self, Rect2(36, 452, 130, 26), "plate")
-	UiKit.label(self, "Canal", Rect2(36, 452, 130, 26), 15, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(self, tr("Canal"), Rect2(36, 452, 130, 26), 15, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	var channel: OptionButton = OptionButton.new()
 	for i in range(3):
-		channel.add_item("Canal %d" % (i + 1))
+		channel.add_item(tr("Canal %d") % (i + 1))
 	channel.position = Vector2(40, 480)
 	channel.size = Vector2(122, 32)
 	channel.focus_mode = Control.FOCUS_NONE
 	channel.add_theme_font_override("font", UiKit.font(true))
-	channel.item_selected.connect(func(index: int) -> void: app.lobby.post("Sistema", "Você entrou no Canal %d." % (index + 1), "system"))
+	channel.item_selected.connect(func(index: int) -> void: app.lobby.post("Sistema", tr("Você entrou no Canal %d.") % (index + 1), "system"))
 	add_child(channel)
 	var chat: ChatBox = ChatBox.new()
 	chat.app = app
@@ -132,10 +132,10 @@ func build_player_card() -> void:
 	UiKit.label(card, TankFighter.rank_for(app.profile.level()), Rect2(126, 32, 126, 26), 13, Color("9aff7a"), UiKit.INK)
 	UiKit.art(card, "res://assets/items/moeda.png", Rect2(86, 58, 22, 22))
 	UiKit.label(card, str(app.profile.coins), Rect2(112, 58, 140, 22), 15, Color("ffd46b"), UiKit.INK)
-	var coupon: Button = UiKit.button(self, "CUPOM", Rect2(1016, 126, 124, 34), func() -> void: CouponDialog.open(self, app, app.show_city), "button", 15)
+	var coupon: Button = UiKit.button(self, tr("CUPOM"), Rect2(1016, 126, 124, 34), func() -> void: CouponDialog.open(self, app, app.show_city), "button", 15)
 	coupon.name = "CouponButton"
-	coupon.tooltip_text = "Resgatar cupom (TESTARTUDO libera tudo para testes)"
-	UiKit.button(self, "MOCHILA", Rect2(1146, 126, 126, 34), app.open_bag, "button_green", 15)
+	coupon.tooltip_text = tr("Resgatar cupom (TESTARTUDO libera tudo para testes)")
+	UiKit.button(self, tr("MOCHILA"), Rect2(1146, 126, 126, 34), app.open_bag, "button_green", 15)
 
 func set_hover(index: int) -> void:
 	hovered = index
@@ -149,7 +149,7 @@ func set_hover(index: int) -> void:
 		tip_panel.hide()
 	else:
 		var building: Dictionary = buildings[index]
-		tip_label.text = building.tip
+		tip_label.text = tr(building.tip)
 		var pos: Array = building.label
 		tip_panel.position = Vector2(clampf(pos[0] - 170, 8, 932), clampf(pos[1] + 40, 40, 640))
 		tip_panel.show()
@@ -186,16 +186,16 @@ func enter(id: String) -> void:
 			smith.closed.connect(app.show_city)
 			add_child(smith)
 		"auction":
-			UiKit.notice(self, "LEILÃO", "O leilão depende do servidor online e ainda não está disponível.")
+			UiKit.notice(self, tr("LEILÃO"), tr("O leilão depende do servidor online e ainda não está disponível."))
 		"mall":
 			var shop: ShopScreen = ShopScreen.new()
 			shop.app = app
 			shop.closed.connect(app.show_city)
 			add_child(shop)
 		"dating":
-			UiKit.notice(self, "NAMORO", "Casamento e equipamentos de casal ainda não estão disponíveis.")
+			UiKit.notice(self, tr("NAMORO"), tr("Casamento e equipamentos de casal ainda não estão disponíveis."))
 		"pet":
-			UiKit.notice(self, "PET", "A Casa dos Mascotes ainda não está disponível nesta versão offline.")
+			UiKit.notice(self, tr("PET"), tr("A Casa dos Mascotes ainda não está disponível nesta versão offline."))
 
 func _process(delta: float) -> void:
 	time += delta
@@ -283,15 +283,15 @@ func build_creation() -> void:
 	UiKit.dim(creation, 0.65)
 	UiKit.panel(creation, Rect2(330, 110, 620, 470), "wood")
 	UiKit.panel(creation, Rect2(346, 160, 588, 404), "paper")
-	UiKit.title(creation, "CRIE SEU PERSONAGEM", Rect2(330, 116, 620, 40), 26)
-	UiKit.label(creation, "Uma conta, um personagem. Escolha a aparência e o nome.", Rect2(346, 168, 588, 26), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.title(creation, tr("CRIE SEU PERSONAGEM"), Rect2(330, 116, 620, 40), 26)
+	UiKit.label(creation, tr("Uma conta, um personagem. Escolha a aparência e o nome."), Rect2(346, 168, 588, 26), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	for i in range(2):
 		var gender: String = "m" if i == 0 else "f"
 		var frame: Button = UiKit.button(creation, "", Rect2(430 + i * 230, 204, 190, 220), func() -> void: pick_gender(gender), "card")
 		frame.name = "Gender_" + gender
 		UiKit.art(frame, UiKit.character_path({"gender": gender}), Rect2(10, 6, 170, 180))
-		UiKit.label(frame, "Masculino" if gender == "m" else "Feminino", Rect2(0, 186, 190, 28), 17, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(creation, "Nome:", Rect2(430, 440, 80, 36), 18, UiKit.TEXT_DARK)
+		UiKit.label(frame, tr("Masculino") if gender == "m" else tr("Feminino"), Rect2(0, 186, 190, 28), 17, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(creation, tr("Nome:"), Rect2(430, 440, 80, 36), 18, UiKit.TEXT_DARK)
 	name_input = LineEdit.new()
 	name_input.position = Vector2(510, 440)
 	name_input.size = Vector2(340, 36)
@@ -300,7 +300,7 @@ func build_creation() -> void:
 	name_input.add_theme_font_override("font", UiKit.font(true))
 	name_input.add_theme_font_size_override("font_size", UiKit.fs(18))
 	creation.add_child(name_input)
-	UiKit.button(creation, "CRIAR PERSONAGEM", Rect2(520, 500, 240, 48), confirm_creation, "button_green", 18)
+	UiKit.button(creation, tr("CRIAR PERSONAGEM"), Rect2(520, 500, 240, 48), confirm_creation, "button_green", 18)
 	pick_gender(app.profile.gender)
 
 func pick_gender(gender: String) -> void:
@@ -312,7 +312,7 @@ func pick_gender(gender: String) -> void:
 func confirm_creation() -> void:
 	var chosen: String = name_input.text.strip_edges()
 	if chosen.length() < 3:
-		UiKit.notice(self, "NOME", "O nome precisa ter pelo menos 3 letras.")
+		UiKit.notice(self, tr("NOME"), tr("O nome precisa ter pelo menos 3 letras."))
 		return
 	app.profile.player_name = chosen
 	app.profile.gender = chosen_gender

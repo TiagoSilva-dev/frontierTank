@@ -33,6 +33,9 @@ func settle(game: LocalMatch, frames: int = 1200) -> void:
 			return
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	var game: LocalMatch = LocalMatch.new()
 	root.add_child(game)
 	game.set_physics_process(false)

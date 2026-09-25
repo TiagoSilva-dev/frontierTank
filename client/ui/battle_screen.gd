@@ -288,7 +288,7 @@ func show_special(point: Vector2, _path: String) -> void:
 	var shooter: TankFighter = game.active()
 	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
 	app.audio.play("pow_fire")
-	hud.pow_banner(str(shooter.weapon.get("pow", {}).get("name", "")), tint)
+	hud.pow_banner(tr(str(shooter.weapon.get("pow", {}).get("name", ""))), tint)
 	# The weapon's own animated POW art (assets/effects/pow/<weapon>/) bursts behind it.
 	var burst: PowFx = PowFx.new()
 	burst.mode = "burst"
@@ -332,7 +332,7 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 			shake = 0.7
 
 func show_damage(point: Vector2, text: String, color: Color) -> void:
-	if text.begins_with("CRÍTICO"):
+	if text.begins_with(tr("CRÍTICO")):
 		app.audio.play("critical", -1.0, 1.0, 150)
 	var label: Label = Label.new()
 	label.text = text
@@ -357,13 +357,13 @@ func on_turn(fighter: TankFighter) -> void:
 		app.audio.play("special_freeze")
 	elif fighter.player_id == game.local_id and not game.auto_play:
 		app.audio.play("your_turn", -3.0)
-		hud.flash("SUA VEZ!", Color("9aff7a"))
+		hud.flash(tr("SUA VEZ!"), Color("9aff7a"))
 
 func on_finished(winner: int) -> void:
 	if game.pve and app.run != null and winner == game.local().team and app.run.has_next_phase():
 		# Instance phase won: drops now, a transition screen, then the next phase.
 		var report: Dictionary = app.phase_cleared(game)
-		hud.flash("FASE CONCLUÍDA!", Color("ffd04a"))
+		hud.flash(tr("FASE CONCLUÍDA!"), Color("ffd04a"))
 		app.audio.set_charge(false, 0.0)
 		app.audio.play("victory", -4.0)
 		get_tree().create_timer(1.6).timeout.connect(show_transition.bind(report))

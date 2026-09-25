@@ -20,6 +20,8 @@ var capture_frames: int = -1
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	args = parse_args()
+	# Language (roadmap 4.3): saved choice or the system language; --lang=en for captures.
+	Lang.setup(str(args.get("lang", "")))
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	profile = PlayerProfile.new()
 	if args.has("profile"):
@@ -36,6 +38,10 @@ func _ready() -> void:
 	ui.size = Vector2(1280, 720)
 	ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.theme = UiKit.make_theme()
+	# Every text is translated explicitly (tr/Lang.t); Godot's automatic translation of
+	# Control texts is off so an English text that is also a Portuguese key is never
+	# translated twice.
+	ui.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	layer.add_child(ui)
 	if args.has("out"):
 		capture_frames = int(args.get("frames", "30"))
@@ -191,13 +197,13 @@ func player_entry() -> Dictionary:
 	return profile.entry(balance)
 
 func create_room(mode: String) -> void:
-	room = {"id": lobby.rng.randi_range(100, 999), "title": "Guerra de equipes, diversão sem limite", "mode": mode, "capacity": 4, "members": [player_entry()], "owner": 0, "map": "", "turn_seconds": int(balance.turn_seconds), "ready": true}
+	room = {"id": lobby.rng.randi_range(100, 999), "title": tr("Guerra de equipes, diversão sem limite"), "mode": mode, "capacity": 4, "members": [player_entry()], "owner": 0, "map": "", "turn_seconds": int(balance.turn_seconds), "ready": true}
 	if mode == "pve":
 		# Instance rooms: which instance and which map item (-1 = free entry) go in.
 		room.instance = "templo_sol"
 		room.map_uid = -1
 		room.turn_seconds = int(balance.pve.get("turn_seconds", 20))
-		room.title = "Expedição: %s" % InstanceRun.instance_def(room.instance).name
+		room.title = tr("Expedição: %s") % tr(str(InstanceRun.instance_def(room.instance).name))
 
 func join_room(source: Dictionary) -> bool:
 	if source.is_empty() or source.playing or source.members.size() >= int(source.capacity):
@@ -299,14 +305,14 @@ func battle_finished(game: LocalMatch) -> Dictionary:
 	last_summary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
 	if game.pve and run != null:
 		last_summary.loot = loot
-		last_summary.instance = {"name": str(run.instance.name), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
+		last_summary.instance = {"name": tr(str(run.instance.name)), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
 	return last_summary
 
 func phase_cleared(game: LocalMatch) -> Dictionary:
 	# A phase before the boss was won: drops are kept even if the party falls later.
 	var cleared: Dictionary = run.current_phase()
 	var report: Dictionary = run.complete_phase(game)
-	report.cleared = str(cleared.name)
+	report.cleared = tr(str(cleared.name))
 	report.next = run.current_phase()
 	report.index = run.phase_index
 	report.count = run.phase_count()
@@ -350,13 +356,13 @@ func shortcut(id: String) -> void:
 		"bag":
 			open_bag()
 		"help":
-			UiKit.notice(ui, "AJUDA", "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música")
+			UiKit.notice(ui, tr("AJUDA"), tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"))
 		"exit":
 			if screen_name == "city":
-				var dialog: Control = UiKit.modal(ui, "SAIR", "Deseja fechar o Frontier Tank?")
+				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Deseja fechar o Frontier Tank?"))
 				var rect: Rect2 = dialog.get_meta("rect")
-				UiKit.button(dialog, "SAIR", Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), quit_game)
-				UiKit.button(dialog, "FICAR", Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)
+				UiKit.button(dialog, tr("SAIR"), Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), quit_game)
+				UiKit.button(dialog, tr("FICAR"), Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)
 			elif screen_name == "room":
 				show_hall()
 			else:
@@ -373,8 +379,8 @@ func shortcut(id: String) -> void:
 		"coupon":
 			CouponDialog.open(ui, self)
 		"pet", "mail", "mission":
-			var names: Dictionary = {"pet": "PET", "mail": "CORREIO", "mission": "MISSÃO"}
-			UiKit.notice(ui, names[id], "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala.")
+			var names: Dictionary = {"pet": "PET", "mail": "CORREIO", "mission": "MISSÃO"}  # i18n
+			UiKit.notice(ui, tr(names[id]), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
 
 func quit_game() -> void:
 	audio.stop_all()
@@ -384,7 +390,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	# M switches the music on any screen (text fields keep their own keys).
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_M:
 		audio.set_music_on(not audio.music_on)
-		toast("Música ligada" if audio.music_on else "Música desligada")
+		toast(tr("Música ligada") if audio.music_on else tr("Música desligada"))
 
 func toast(text: String) -> void:
 	var note: Label = UiKit.label(ui, text, Rect2(490, 96, 300, 36), 18, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)

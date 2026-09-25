@@ -23,7 +23,7 @@ func _ready() -> void:
 	add_child(clip)
 	text_label = UiKit.label(clip, "", Rect2(1162, 2, 1400, 28), 15, Color("6fe8ff"), Color("08131c"))
 	UiKit.art(self, PixelIcons.get_icon("speaker"), Rect2(6, 3, 26, 26))
-	UiKit.label(self, "Alto-falante", Rect2(36, 0, 84, 32), 12, Color("bfe8ff"), Color("08131c"))
+	UiKit.label(self, tr("Alto-falante"), Rect2(36, 0, 84, 32), 12, Color("bfe8ff"), Color("08131c"))
 
 func _process(delta: float) -> void:
 	if app == null:

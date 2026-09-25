@@ -63,6 +63,9 @@ func shoot(game: LocalMatch, use_pow: bool) -> Dictionary:
 	return {"rival_hp": rival.hp, "my_hp": me.hp, "hit": first_hit[0] if not first_hit.is_empty() else Vector2.INF, "mask": game.terrain.mask.get_data(), "size": sizes[0] if not sizes.is_empty() else 0.0, "hit_radius": rival.hit_radius, "dealt": int(me.stats.damage)}
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	var game: LocalMatch = LocalMatch.new()
 	root.add_child(game)
 	game.set_physics_process(false)

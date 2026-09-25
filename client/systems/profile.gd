@@ -223,18 +223,18 @@ func is_equipped(uid: int) -> bool:
 func equip(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty():
-		return "Item não encontrado."
+		return tr("Item não encontrado.")
 	var id: String = str(inst.id)
 	if Armory.kind_of(id) == "cosmetic":
 		var wanted: String = str(Armory.cosmetic_def(id).gender)
 		if wanted != "u" and wanted != gender:
-			return "Esta roupa é do outro gênero."
+			return tr("Esta roupa é do outro gênero.")
 	equipped[Armory.slot_of(id)] = uid
 	return ""
 
 func unequip(slot: String) -> String:
 	if slot == "arma":
-		return "Você precisa ter uma arma equipada."
+		return tr("Você precisa ter uma arma equipada.")
 	equipped.erase(slot)
 	return ""
 
@@ -267,14 +267,14 @@ static func item_price(id: String, quality: String = "normal") -> int:
 func buy(id: String, quality: String = "normal") -> String:
 	var def: Dictionary = Armory.definition(id)
 	if def.is_empty():
-		return "Item desconhecido."
+		return tr("Item desconhecido.")
 	if bool(def.get("super", false)) or quality == "super":
-		return "Super armas só caem do chefe das instâncias."
+		return tr("Super armas só caem do chefe das instâncias.")
 	if quality == "verdadeira":
-		return "Armas Verdadeiras só caem nas instâncias."
+		return tr("Armas Verdadeiras só caem nas instâncias.")
 	var price: int = item_price(id, quality)
 	if coins < price:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= price
 	# Shop items come without bonuses and are bound (never go to the auction).
 	var bought: Dictionary = add_instance(id, quality)
@@ -285,10 +285,10 @@ func buy(id: String, quality: String = "normal") -> String:
 func buy_stone(id: String, amount: int = 1) -> String:
 	var stone: Dictionary = Armory.stone_def(id)
 	if stone.is_empty():
-		return "Item desconhecido."
+		return tr("Item desconhecido.")
 	var price: int = int(stone.price) * amount
 	if coins < price:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= price
 	add_item(id, amount)
 	save_profile()
@@ -354,14 +354,14 @@ func strengthen_cost(inst: Dictionary) -> Dictionary:
 func strengthen(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or not Armory.can_strengthen(str(inst.id)):
-		return "Só armas, roupas e chapéus podem ser fortalecidos."
+		return tr("Só armas, roupas e chapéus podem ser fortalecidos.")
 	var cost: Dictionary = strengthen_cost(inst)
 	if cost.is_empty():
-		return "Este item já está no +12."
+		return tr("Este item já está no +12.")
 	if stone_points() < int(cost.points):
-		return "Pedras insuficientes: precisa de %d pontos de pedra, você tem %d." % [int(cost.points), stone_points()]
+		return tr("Pedras insuficientes: precisa de %d pontos de pedra, você tem %d.") % [int(cost.points), stone_points()]
 	if coins < int(cost.coins):
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= int(cost.coins)
 	# Spend the smallest stones first; a bigger stone breaks into points when needed.
 	var needed: int = int(cost.points)
@@ -387,26 +387,26 @@ func fuse(stone_id: String) -> String:
 	for i in range(stones.size() - 1):
 		if stones[i].id == stone_id:
 			if int(items.get(stone_id, 0)) < int(rules.fusion_count):
-				return "Precisa de %d pedras iguais." % int(rules.fusion_count)
+				return tr("Precisa de %d pedras iguais.") % int(rules.fusion_count)
 			if coins < int(rules.fusion_coins):
-				return "Moedas insuficientes."
+				return tr("Moedas insuficientes.")
 			coins -= int(rules.fusion_coins)
 			items[stone_id] = int(items[stone_id]) - int(rules.fusion_count)
 			add_item(str(stones[i + 1].id))
 			save_profile()
 			return ""
-	return "Esta pedra já é do nível máximo."
+	return tr("Esta pedra já é do nível máximo.")
 
 func transfer(source_uid: int, target_uid: int) -> String:
 	var source: Dictionary = find_instance(source_uid)
 	var target: Dictionary = find_instance(target_uid)
 	if source.is_empty() or target.is_empty() or source_uid == target_uid:
-		return "Escolha dois itens diferentes."
+		return tr("Escolha dois itens diferentes.")
 	if Armory.slot_of(str(source.id)) != Armory.slot_of(str(target.id)):
-		return "A transferência só funciona entre itens do mesmo tipo."
+		return tr("A transferência só funciona entre itens do mesmo tipo.")
 	var cost: int = int(Armory.data().strengthen.transfer_coins)
 	if coins < cost:
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= cost
 	var level: int = int(source.level)
 	var composed: Dictionary = source.get("compose", {}).duplicate()
@@ -421,17 +421,17 @@ func compose(uid: int, attr: String) -> String:
 	var rules: Dictionary = Armory.data().strengthen.compose
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or not attr in Armory.ATTRS:
-		return "Escolha um item e um atributo."
+		return tr("Escolha um item e um atributo.")
 	var composed: Dictionary = inst.get("compose", {})
 	var total: int = 0
 	for key: String in composed:
 		total += int(composed[key])
 	if total / int(rules.amount) >= int(rules.max):
-		return "Este item já recebeu %d composições." % int(rules.max)
+		return tr("Este item já recebeu %d composições.") % int(rules.max)
 	if int(items.get(rules.item, 0)) <= 0:
-		return "Você precisa de um Cristal Dourado."
+		return tr("Você precisa de um Cristal Dourado.")
 	if coins < int(rules.coins):
-		return "Moedas insuficientes."
+		return tr("Moedas insuficientes.")
 	coins -= int(rules.coins)
 	items[rules.item] = int(items[rules.item]) - 1
 	composed[attr] = int(composed.get(attr, 0)) + int(rules.amount)
@@ -448,12 +448,12 @@ func craft(currency: String, uid: int) -> String:
 	# Uses one currency on a piece of gear; the Espelho Celeste adds a bound copy.
 	var inst: Dictionary = find_instance(uid)
 	if not Crafting.is_currency(currency):
-		return "Moeda desconhecida."
+		return tr("Moeda desconhecida.")
 	var error: String = Crafting.check(currency, inst)
 	if error != "":
 		return error
 	if currency_count(currency) <= 0:
-		return "Você não tem %s." % Crafting.currency_def(currency).name
+		return tr("Você não tem %s.") % Crafting.currency_name(currency)
 	if currency == "espelho":
 		var copy: Dictionary = inst.duplicate(true)
 		copy.uid = next_uid
@@ -472,12 +472,12 @@ func craft(currency: String, uid: int) -> String:
 func craft_map(currency: String, uid: int) -> String:
 	var item: Dictionary = find_map(uid)
 	if not Crafting.is_currency(currency):
-		return "Moeda desconhecida."
+		return tr("Moeda desconhecida.")
 	var error: String = Crafting.check_map(currency, item)
 	if error != "":
 		return error
 	if currency_count(currency) <= 0:
-		return "Você não tem %s." % Crafting.currency_def(currency).name
+		return tr("Você não tem %s.") % Crafting.currency_name(currency)
 	error = Crafting.apply_map(currency, item, rng)
 	if error != "":
 		return error
@@ -494,9 +494,9 @@ func redeem(code: String) -> String:
 		if entry.code == code:
 			coupon = entry
 	if coupon.is_empty():
-		return "Cupom inválido."
+		return tr("Cupom inválido.")
 	if coupons.has(code) and not bool(coupon.get("repeat", false)):
-		return "Este cupom já foi usado nesta conta."
+		return tr("Este cupom já foi usado nesta conta.")
 	coupons.append(code)
 	var before: int = next_uid
 	if bool(coupon.get("all", false)):
@@ -543,4 +543,4 @@ func redeem(code: String) -> String:
 			item.bound = true
 	coins += int(coupon.get("coins", 0))
 	save_profile()
-	return str(coupon.desc)
+	return tr(str(coupon.desc))

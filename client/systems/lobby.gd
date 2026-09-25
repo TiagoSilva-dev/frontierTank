@@ -8,24 +8,24 @@ signal chat_added(message: Dictionary)
 signal rooms_changed
 
 const NAMES: Array[String] = ["Scorpio", "BRZ", "TonicoXD", "Sifrao", "RealTiny", "PinkPanda", "Barkus", "Enzinho", "Lontrinha", "Mariah", "xBruna", "NeyRJ", "M4ch4do", "MagicMika", "Whinny", "Raposinha", "Kaiser", "DarkLuz", "Pipoca", "Tiroteio", "Zezinho", "Nuvem", "Canhonito", "Faisca", "Brisa", "Trovoada", "Juju", "Mestre", "Pingo", "Vulcan"]
-const ROOM_TITLES: Array[String] = ["Guerra de equipes, diversão sem limite", "Desafie e divirta-se!", "A mais valente aventura", "Só tiro de 30 graus", "x1 valendo honra", "Treino de vento forte", "Chega mais, sala amigável"]
+const ROOM_TITLES: Array[String] = ["Guerra de equipes, diversão sem limite", "Desafie e divirta-se!", "A mais valente aventura", "Só tiro de 30 graus", "x1 valendo honra", "Treino de vento forte", "Chega mais, sala amigável"]  # i18n
 const CHAT_LINES: Array[String] = [
-	"V> pedra de fortalecimento lvl 5, 30 moedas cada",
-	"alguém x1 no Pátio do Templo?",
-	"C> Cristal Dourado, pago bem",
-	"procuro sociedade ativa, sou nível %d",
-	"quem vai no Templo do Sol comigo?",
-	"dica: 65 de força com vento a favor chega longe",
-	"V> Poção de Energia 12 moedas",
-	"bora sala 4x4!!",
-	"GG pessoal, boa partida",
-	"alguém sabe a força pra meia tela no ângulo 50?",
+	"V> pedra de fortalecimento lvl 5, 30 moedas cada",  # i18n
+	"alguém x1 no Pátio do Templo?",  # i18n
+	"C> Cristal Dourado, pago bem",  # i18n
+	"procuro sociedade ativa, sou nível %d",  # i18n
+	"quem vai no Templo do Sol comigo?",  # i18n
+	"dica: 65 de força com vento a favor chega longe",  # i18n
+	"V> Poção de Energia 12 moedas",  # i18n
+	"bora sala 4x4!!",  # i18n
+	"GG pessoal, boa partida",  # i18n
+	"alguém sabe a força pra meia tela no ângulo 50?",  # i18n
 ]
 const SPEAKER_LINES: Array[String] = [
-	"Parabéns [%s] por abrir o Baú do Templo e ganhar um Ovo de Mascote!",
-	"Parabéns! [%s] ganhou [Cristal Dourado] através de Instância.",
-	"[%s] alcançou o nível %d! Que fera!",
-	"Evento: dobro de mérito no Salão de Jogos neste fim de semana!",
+	"Parabéns [%s] por abrir o Baú do Templo e ganhar um Ovo de Mascote!",  # i18n
+	"Parabéns! [%s] ganhou [Cristal Dourado] através de Instância.",  # i18n
+	"[%s] alcançou o nível %d! Que fera!",  # i18n
+	"Evento: dobro de mérito no Salão de Jogos neste fim de semana!",  # i18n
 ]
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -51,8 +51,8 @@ func populate() -> void:
 	for i in range(14):
 		rooms.append(make_room())
 	history.clear()
-	post("Sistema", "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA.", "system")
-	speaker = SPEAKER_LINES[0] % random_bot().name
+	post("Sistema", tr("Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."), "system")
+	speaker = tr(SPEAKER_LINES[0]) % random_bot().name
 
 func make_bot(nick: String, level: int) -> Dictionary:
 	var bot: Dictionary = {"name": nick, "level": level, "gender": "f" if rng.randf() < 0.4 else "m", "human": false, "agility": 120 + level * 8 + rng.randi_range(-20, 20)}
@@ -105,7 +105,7 @@ func make_room() -> Dictionary:
 	var id: int = rng.randi_range(100, 999)
 	while find_room(id).size() > 0:
 		id = rng.randi_range(100, 999)
-	return {"id": id, "title": ROOM_TITLES[rng.randi() % ROOM_TITLES.size()], "mode": "pvp", "capacity": capacity, "members": members, "playing": rng.randf() < 0.3, "map": "", "turn_seconds": 10}
+	return {"id": id, "title": tr(ROOM_TITLES[rng.randi() % ROOM_TITLES.size()]), "mode": "pvp", "capacity": capacity, "members": members, "playing": rng.randf() < 0.3, "map": "", "turn_seconds": 10}
 
 func find_room(id: int) -> Dictionary:
 	for room in rooms:
@@ -130,12 +130,13 @@ func _process(delta: float) -> void:
 	chat_timer -= delta
 	if chat_timer <= 0:
 		chat_timer = rng.randf_range(5.0, 11.0)
-		var line: String = CHAT_LINES[rng.randi() % CHAT_LINES.size()]
+		# Simulated players chat in the game's language.
+		var line: String = tr(CHAT_LINES[rng.randi() % CHAT_LINES.size()])
 		if line.contains("%d"):
 			line = line % rng.randi_range(5, 30)
 		post(random_bot().name, line, "Atual" if rng.randf() < 0.8 else "alto-falante")
 		if rng.randf() < 0.3:
-			var shout: String = SPEAKER_LINES[rng.randi() % SPEAKER_LINES.size()]
+			var shout: String = tr(SPEAKER_LINES[rng.randi() % SPEAKER_LINES.size()])
 			if shout.count("%") == 2:
 				speaker = shout % [random_bot().name, rng.randi_range(10, 40)]
 			elif shout.count("%") == 1:

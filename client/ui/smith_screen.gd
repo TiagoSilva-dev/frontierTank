@@ -10,7 +10,7 @@ extends Control
 
 signal closed
 
-const TABS: Array[String] = ["Fortalecer", "Composição", "Fusão", "Transferência", "Moedas"]
+const TABS: Array[String] = ["Fortalecer", "Composição", "Fusão", "Transferência", "Moedas"]  # i18n
 const CRAFT_PER_PAGE: int = 36
 
 var app: Node
@@ -40,12 +40,12 @@ func build() -> void:
 	move_child(contents, 0)
 	UiKit.dim(contents, 0.75)
 	UiKit.panel(contents, Rect2(40, 24, 1200, 672), "wood")
-	UiKit.title(contents, "FERREIRO", Rect2(40, 30, 1200, 44), 32)
-	UiKit.button(contents, "FECHAR", Rect2(1086, 34, 140, 42), close)
+	UiKit.title(contents, tr("FERREIRO"), Rect2(40, 30, 1200, 44), 32)
+	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(64, 36, 32, 32))
 	UiKit.label(contents, str(app.profile.coins), Rect2(100, 32, 200, 40), 22, Color("ffd46b"), UiKit.INK)
 	for i in range(TABS.size()):
-		UiKit.button(contents, TABS[i], Rect2(60 + i * 180, 84, 172, 40), select_tab.bind(TABS[i]), "tab_active" if tab == TABS[i] else "tab", 16)
+		UiKit.button(contents, tr(TABS[i]), Rect2(60 + i * 180, 84, 172, 40), select_tab.bind(TABS[i]), "tab_active" if tab == TABS[i] else "tab", 16)
 	UiKit.panel(contents, Rect2(56, 130, 520, 550), "paper")
 	UiKit.panel(contents, Rect2(588, 130, 636, 550), "paper")
 	if tab == "Fusão":
@@ -78,7 +78,7 @@ func eligible() -> Array[Dictionary]:
 	return list
 
 func build_item_list() -> void:
-	UiKit.label(contents, "Escolha o item" if tab != "Transferência" else "Escolha a origem e depois o destino", Rect2(72, 136, 490, 30), 17, UiKit.TEXT_DARK)
+	UiKit.label(contents, tr("Escolha o item") if tab != "Transferência" else tr("Escolha a origem e depois o destino"), Rect2(72, 136, 490, 30), 17, UiKit.TEXT_DARK)
 	var list: Array[Dictionary] = eligible()
 	for i in range(mini(list.size(), 42)):
 		var inst: Dictionary = list[i]
@@ -95,7 +95,7 @@ func build_item_list() -> void:
 		if app.profile.is_equipped(uid):
 			UiKit.label(slot, "E", Rect2(60, 46, 16, 20), 13, Color("9aff7a"), UiKit.INK)
 	if list.is_empty():
-		UiKit.label(contents, "Nenhum item disponível.", Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
+		UiKit.label(contents, tr("Nenhum item disponível."), Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
 
 func item_card(inst: Dictionary, rect: Rect2, level_shown: int) -> void:
 	# Item with its aura ring behind, at a given strengthen level.
@@ -115,7 +115,7 @@ func item_card(inst: Dictionary, rect: Rect2, level_shown: int) -> void:
 func build_strengthen() -> void:
 	var inst: Dictionary = app.profile.find_instance(selected_uid)
 	if inst.is_empty():
-		UiKit.label(contents, "Selecione uma arma, roupa ou chapéu.", Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Selecione uma arma, roupa ou chapéu."), Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	var level: int = int(inst.level)
 	var maxed: bool = level >= int(Armory.data().strengthen.max)
@@ -129,15 +129,15 @@ func build_strengthen() -> void:
 	# Every level raises the item's attributes (and the weapon damage).
 	var rows: Array = []
 	if Armory.slot_of(str(inst.id)) == "arma":
-		rows.append(["Dano", int(Armory.build_weapon(inst).damage), int(Armory.build_weapon(next_inst).damage)])
+		rows.append([tr("Dano"), int(Armory.build_weapon(inst).damage), int(Armory.build_weapon(next_inst).damage)])
 	var now: Dictionary = Armory.item_attrs(inst)
 	var then: Dictionary = Armory.item_attrs(next_inst)
 	for key: String in Armory.ATTRS:
 		if int(now[key]) > 0 or int(then[key]) > 0:
-			rows.append([Armory.ATTR_NAMES[key], int(now[key]), int(then[key])])
+			rows.append([Armory.attr_name(key), int(now[key]), int(then[key])])
 	if Armory.slot_of(str(inst.id)) != "arma":
 		var hp: int = int(Armory.data().strengthen.hp_per_level)
-		rows.append(["Vida", level * hp, next_inst.level * hp])
+		rows.append([tr("Vida"), level * hp, next_inst.level * hp])
 	var table: Panel = UiKit.panel(contents, Rect2(606, 330, 600, 118), "dark")
 	for i in range(rows.size()):
 		var row: Array = rows[i]
@@ -148,12 +148,12 @@ func build_strengthen() -> void:
 		UiKit.label(table, "%d%s" % [int(row[1]), after], Rect2(x + 110, y, 180, 32), 17, Color("9aff7a") if not maxed else Color.WHITE, UiKit.INK)
 	var notes: Array[String] = []
 	if Armory.slot_of(str(inst.id)) == "arma" and not maxed and Armory.tier_for_level(level + 1) != Armory.tier_for_level(level):
-		notes.append("No +%d a arma muda de visual!" % (level + 1))
+		notes.append(tr("No +%d a arma muda de visual!") % (level + 1))
 	var next_aura: Dictionary = Armory.aura(level + 1)
 	if not maxed and Armory.aura(level).get("name", "") != next_aura.get("name", ""):
-		notes.append("Nova aura: %s" % next_aura.name)
+		notes.append(tr("Nova aura: %s") % tr(str(next_aura.name)))
 	if maxed:
-		notes = ["Nível máximo +12: aura vermelha!"]
+		notes = [tr("Nível máximo +12: aura vermelha!")]
 	UiKit.label(contents, "   •   ".join(notes), Rect2(600, 450, 612, 26), 16, Color("8a3a10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var stones: Array = Armory.data().strengthen.stones
 	for i in range(stones.size()):
@@ -161,18 +161,18 @@ func build_strengthen() -> void:
 		var slot: Panel = UiKit.panel(contents, Rect2(620 + i * 148, 478, 140, 60), "slot_light")
 		UiKit.art(slot, str(stone.icon), Rect2(6, 6, 48, 48))
 		UiKit.label(slot, "x%d" % int(app.profile.items.get(stone.id, 0)), Rect2(58, 2, 80, 28), 18, UiKit.TEXT_DARK)
-		UiKit.label(slot, "%d pt" % int(stone.points), Rect2(58, 30, 80, 26), 14, Color("8a5a2a"))
+		UiKit.label(slot, tr("%d pt") % int(stone.points), Rect2(58, 30, 80, 26), 14, Color("8a5a2a"))
 	if not maxed:
 		var enough: bool = app.profile.stone_points() >= int(cost.points)
-		UiKit.label(contents, "Pedras: %d / %d pontos   •   Moedas: %d" % [app.profile.stone_points(), int(cost.points), int(cost.coins)], Rect2(600, 542, 612, 28), 17, Color("2f7a1f") if enough else Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		var button: Button = UiKit.button(contents, "FORTALECER", Rect2(806, 576, 220, 50), do_strengthen, "button_green", 22)
+		UiKit.label(contents, tr("Pedras: %d / %d pontos   •   Moedas: %d") % [app.profile.stone_points(), int(cost.points), int(cost.coins)], Rect2(600, 542, 612, 28), 17, Color("2f7a1f") if enough else Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var button: Button = UiKit.button(contents, tr("FORTALECER"), Rect2(806, 576, 220, 50), do_strengthen, "button_green", 22)
 		button.name = "StrengthenButton"
 
 func build_compose() -> void:
 	var inst: Dictionary = app.profile.find_instance(selected_uid)
 	var rules: Dictionary = Armory.data().strengthen.compose
-	UiKit.label(contents, "COMPOSIÇÃO", Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(contents, "Cada Cristal Dourado soma +%d ao atributo escolhido (até %d vezes por item)." % [int(rules.amount), int(rules.max)], Rect2(610, 170, 592, 50), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.label(contents, tr("COMPOSIÇÃO"), Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Cada Cristal Dourado soma +%d ao atributo escolhido (até %d vezes por item).") % [int(rules.amount), int(rules.max)], Rect2(610, 170, 592, 50), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if inst.is_empty():
 		return
 	item_card(inst, Rect2(820, 224, 170, 170), int(inst.level))
@@ -180,17 +180,17 @@ func build_compose() -> void:
 	var composed: Dictionary = inst.get("compose", {})
 	for i in range(Armory.ATTRS.size()):
 		var attr: String = Armory.ATTRS[i]
-		UiKit.button(contents, "%s +%d" % [Armory.ATTR_NAMES[attr], int(composed.get(attr, 0))], Rect2(612 + i * 150, 440, 142, 48), do_compose.bind(attr), "button_blue", 15)
+		UiKit.button(contents, "%s +%d" % [Armory.attr_name(attr), int(composed.get(attr, 0))], Rect2(612 + i * 150, 440, 142, 48), do_compose.bind(attr), "button_blue", 15)
 	var slot: Panel = UiKit.panel(contents, Rect2(810, 500, 190, 64), "slot_light")
 	UiKit.art(slot, "res://assets/expansion/items/golden_crystal.png", Rect2(6, 6, 52, 52))
 	UiKit.label(slot, "x%d" % int(app.profile.items.get(rules.item, 0)), Rect2(64, 6, 120, 52), 20, UiKit.TEXT_DARK)
-	UiKit.label(contents, "Custo: 1 cristal + %d moedas" % int(rules.coins), Rect2(600, 572, 612, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Custo: 1 cristal + %d moedas") % int(rules.coins), Rect2(600, 572, 612, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 
 func build_fusion() -> void:
 	var rules: Dictionary = Armory.data().strengthen
 	var stones: Array = rules.stones
-	UiKit.label(contents, "FUSÃO DE PEDRAS", Rect2(56, 140, 520, 34), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var info: Label = UiKit.label(contents, "Junte %d pedras do mesmo nível para criar uma do nível seguinte (%d moedas).\n\nAs pedras dão pontos de fortalecimento: I = 1, II = 5, III = 25, IV = 125.\nDo +1 ao +12 são necessários 1, 5, 15, 35, 70, 150, 230, 330, 450, 600, 750 e 900 pontos." % [int(rules.fusion_count), int(rules.fusion_coins)], Rect2(76, 190, 480, 300), 17, UiKit.TEXT_DARK)
+	UiKit.label(contents, tr("FUSÃO DE PEDRAS"), Rect2(56, 140, 520, 34), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var info: Label = UiKit.label(contents, tr("Junte %d pedras do mesmo nível para criar uma do nível seguinte (%d moedas).\n\nAs pedras dão pontos de fortalecimento: I = 1, II = 5, III = 25, IV = 125.\nDo +1 ao +12 são necessários 1, 5, 15, 35, 70, 150, 230, 330, 450, 600, 750 e 900 pontos.") % [int(rules.fusion_count), int(rules.fusion_coins)], Rect2(76, 190, 480, 300), 17, UiKit.TEXT_DARK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	for i in range(stones.size() - 1):
 		var y: float = 160 + i * 150
@@ -198,22 +198,22 @@ func build_fusion() -> void:
 		var into: Dictionary = stones[i + 1]
 		var left: Panel = UiKit.panel(contents, Rect2(620, y, 150, 110), "slot_light")
 		UiKit.art(left, str(from.icon), Rect2(40, 6, 70, 70))
-		UiKit.label(left, "%d x %s" % [int(rules.fusion_count), from.name.get_slice(" ", 3)], Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(left, "%d x %s" % [int(rules.fusion_count), roman(str(from.name))], Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.label(contents, "►", Rect2(772, y + 20, 80, 60), 36, Color("a8642a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var right: Panel = UiKit.panel(contents, Rect2(854, y, 150, 110), "slot_light")
 		UiKit.art(right, str(into.icon), Rect2(40, 6, 70, 70))
-		UiKit.label(right, "1 x %s" % into.name.get_slice(" ", 3), Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(contents, "Você tem %d" % int(app.profile.items.get(from.id, 0)), Rect2(1014, y + 6, 200, 30), 16, UiKit.TEXT_DARK)
-		UiKit.button(contents, "FUNDIR", Rect2(1020, y + 44, 170, 48), do_fuse.bind(str(from.id)), "button_green", 18)
+		UiKit.label(right, "1 x %s" % roman(str(into.name)), Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Você tem %d") % int(app.profile.items.get(from.id, 0)), Rect2(1014, y + 6, 200, 30), 16, UiKit.TEXT_DARK)
+		UiKit.button(contents, tr("FUNDIR"), Rect2(1020, y + 44, 170, 48), do_fuse.bind(str(from.id)), "button_green", 18)
 
 func build_transfer() -> void:
 	var source: Dictionary = app.profile.find_instance(selected_uid)
 	var target: Dictionary = app.profile.find_instance(target_uid)
-	UiKit.label(contents, "TRANSFERÊNCIA", Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var info: Label = UiKit.label(contents, "Troca o nível de fortalecimento e a composição entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas." % int(Armory.data().strengthen.transfer_coins), Rect2(620, 170, 572, 70), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("TRANSFERÊNCIA"), Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var info: Label = UiKit.label(contents, tr("Troca o nível de fortalecimento e a composição entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas.") % int(Armory.data().strengthen.transfer_coins), Rect2(620, 170, 572, 70), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UiKit.label(contents, "Origem", Rect2(650, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(contents, "Destino", Rect2(990, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Origem"), Rect2(650, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Destino"), Rect2(990, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	if not source.is_empty():
 		item_card(source, Rect2(650, 282, 190, 190), int(source.level))
 		UiKit.label(contents, Armory.item_name(source), Rect2(610, 476, 270, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -221,7 +221,7 @@ func build_transfer() -> void:
 	if not target.is_empty():
 		item_card(target, Rect2(990, 282, 190, 190), int(target.level))
 		UiKit.label(contents, Armory.item_name(target), Rect2(950, 476, 270, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UiKit.button(contents, "TRANSFERIR", Rect2(806, 560, 220, 54), do_transfer, "button_green", 20)
+	UiKit.button(contents, tr("TRANSFERIR"), Rect2(806, 560, 220, 54), do_transfer, "button_green", 20)
 
 # ---------- Moedas (0.10) ----------
 
@@ -242,7 +242,7 @@ func craft_maps() -> Array[Dictionary]:
 func build_craft_list() -> void:
 	for i in range(2):
 		var kind: String = ["item", "map"][i]
-		var toggle: Button = UiKit.button(contents, ["Equipamentos", "Mapas"][i], Rect2(70 + i * 170, 136, 164, 34), select_target.bind(kind), "tab_active" if craft_target == kind else "tab", 15)
+		var toggle: Button = UiKit.button(contents, tr(["Equipamentos", "Mapas"][i]), Rect2(70 + i * 170, 136, 164, 34), select_target.bind(kind), "tab_active" if craft_target == kind else "tab", 15)  # i18n
 		toggle.name = "Target_" + kind
 	var list: Array[Dictionary] = craft_items() if craft_target == "item" else craft_maps()
 	if craft_target == "item" and (list.is_empty() or not list.any(func(inst: Dictionary) -> bool: return int(inst.uid) == selected_uid)):
@@ -280,11 +280,11 @@ func build_craft_list() -> void:
 			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(12, 6, 52, 52))
 			UiKit.label(slot, str(int(entry.level)), Rect2(40, 42, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	if list.is_empty():
-		UiKit.label(contents, "Nenhum equipamento que aceite bônus." if craft_target == "item" else "Nenhum mapa na mochila.", Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
+		UiKit.label(contents, tr("Nenhum equipamento que aceite bônus.") if craft_target == "item" else tr("Nenhum mapa na mochila."), Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
 	UiKit.button(contents, "<", Rect2(380, 626, 40, 32), turn_page.bind(-1), "tab", 14)
 	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(420, 626, 80, 32), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(500, 626, 40, 32), turn_page.bind(1), "tab", 14)
-	UiKit.label(contents, "%d %s" % [list.size(), "itens" if craft_target == "item" else "mapas"], Rect2(72, 626, 200, 32), 15, UiKit.TEXT_DARK)
+	UiKit.label(contents, (tr("%d itens") if craft_target == "item" else tr("%d mapas")) % list.size(), Rect2(72, 626, 200, 32), 15, UiKit.TEXT_DARK)
 
 func quality_frame(rect: Rect2, color: Color) -> Panel:
 	var frame: Panel = Panel.new()
@@ -300,7 +300,7 @@ func craft_subject() -> Dictionary:
 func build_craft() -> void:
 	var subject: Dictionary = craft_subject()
 	if subject.is_empty():
-		UiKit.label(contents, "Escolha um equipamento ou um mapa.", Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Escolha um equipamento ou um mapa."), Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		build_currency_buttons(subject)
 		return
 	var lines: Array[String] = []
@@ -310,11 +310,11 @@ func build_craft() -> void:
 	if craft_target == "item":
 		var quality: String = str(subject.quality)
 		UiKit.label(contents, Armory.item_name(subject), Rect2(600, 138, 612, 32), 22, Armory.quality_color(subject).darkened(0.35), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		var facts: Array[String] = [str(Armory.quality_def(quality).label), "Nível do item %d" % Crafting.item_level(subject), "%d/%d bônus" % [(subject.get("mods", []) as Array).size(), Crafting.max_mods(quality)]]
+		var facts: Array[String] = [Armory.quality_label(quality), tr("Nível do item %d") % Crafting.item_level(subject), tr("%d/%d bônus") % [(subject.get("mods", []) as Array).size(), Crafting.max_mods(quality)]]
 		if bool(subject.get("mirrored", false)):
-			facts.append("Espelhado")
+			facts.append(tr("Espelhado"))
 		elif bool(subject.get("bound", false)):
-			facts.append("Vinculado")
+			facts.append(tr("Vinculado"))
 		UiKit.label(contents, "  •  ".join(facts), Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var picture: TextureRect = UiKit.art(box, Armory.load_icon(subject), Rect2(14, 14, 92, 92))
 		picture.modulate = Armory.icon_tint(subject)
@@ -323,12 +323,12 @@ func build_craft() -> void:
 		for line in lines:
 			colors.append(Color("9ae8ff"))
 		if lines.is_empty():
-			lines.append("Sem bônus. Use uma Brasa para torná-lo Excelente." if quality == "normal" else "Sem bônus.")
+			lines.append(tr("Sem bônus. Use uma Brasa para torná-lo Excelente.") if quality == "normal" else tr("Sem bônus."))
 			colors.append(Color("c8b8a0"))
 	else:
 		UiKit.label(contents, InstanceRun.map_name(subject), Rect2(600, 138, 612, 32), 22, InstanceRun.quality_color(str(subject.quality)).darkened(0.35), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var count: Array = Crafting.map_count(str(subject.quality))
-		UiKit.label(contents, "%s  •  %d/%d atributos  •  consumido ao entrar" % [InstanceRun.quality_label(str(subject.quality)), (subject.get("mods", []) as Array).size(), int(count[1])], Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("%s  •  %d/%d atributos  •  consumido ao entrar") % [InstanceRun.quality_label(str(subject.quality)), (subject.get("mods", []) as Array).size(), int(count[1])], Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.art(box, InstanceRun.map_icon(subject), Rect2(14, 14, 92, 92))
 		UiKit.label(box, str(int(subject.level)), Rect2(60, 80, 54, 34), 26, InstanceRun.quality_color(str(subject.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		for kind: String in ["threat", "reward"]:
@@ -337,7 +337,7 @@ func build_craft() -> void:
 					lines.append(InstanceRun.mod_text(mod))
 					colors.append(Color("ff8a6a") if kind == "threat" else Color("9aff7a"))
 		if lines.is_empty():
-			lines.append("Sem atributos. Use uma Brasa para torná-lo Excelente.")
+			lines.append(tr("Sem atributos. Use uma Brasa para torná-lo Excelente."))
 			colors.append(Color("c8b8a0"))
 	var list: Panel = UiKit.panel(contents, Rect2(736, 206, 472, 120), "dark")
 	list.name = "CraftBonuses"
@@ -346,7 +346,7 @@ func build_craft() -> void:
 	build_currency_buttons(subject)
 
 func build_currency_buttons(subject: Dictionary) -> void:
-	UiKit.label(contents, "Clique numa moeda para usá-la. Usar gasta a moeda.", Rect2(600, 332, 612, 26), 16, Color("8a3a10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Clique numa moeda para usá-la. Usar gasta a moeda."), Rect2(600, 332, 612, 26), 16, Color("8a3a10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var list: Array = Crafting.currencies()
 	for i in range(list.size()):
 		var def: Dictionary = list[i]
@@ -354,19 +354,19 @@ func build_currency_buttons(subject: Dictionary) -> void:
 		var count: int = app.profile.currency_count(id)
 		var reason: String = ""
 		if subject.is_empty():
-			reason = "Escolha um equipamento ou um mapa."
+			reason = tr("Escolha um equipamento ou um mapa.")
 		else:
 			reason = Crafting.check(id, subject) if craft_target == "item" else Crafting.check_map(id, subject)
 		if reason == "" and count <= 0:
-			reason = "Você não tem %s." % def.name
+			reason = tr("Você não tem %s.") % Crafting.currency_name(id)
 		var rect: Rect2 = Rect2(606 + (i % 4) * 152, 362 + (i / 4 as int) * 132, 144, 124)
 		var button: Button = UiKit.button(contents, "", rect, do_craft.bind(id), "slot_light")
 		button.name = "Currency_" + id
 		button.disabled = reason != ""
 		button.add_theme_stylebox_override("disabled", UiKit.frame("card_busy"))
-		button.tooltip_text = "%s (%s)\n%s%s" % [def.name, def.en, def.desc, "\n\n" + reason if reason != "" else ""]
+		button.tooltip_text = "%s\n%s%s" % [Crafting.currency_name(id), Crafting.currency_desc(id), "\n\n" + reason if reason != "" else ""]
 		var icon: TextureRect = UiKit.art(button, str(def.icon), Rect2(44, 8, 56, 56))
-		UiKit.label(button, str(def.name), Rect2(0, 64, 144, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(button, Crafting.currency_name(id), Rect2(0, 64, 144, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.label(button, "x%d" % count, Rect2(0, 90, 144, 26), 16, Color("2f7a1f") if count > 0 else Color("8a7a6a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		if button.disabled:
 			icon.modulate = Color(0.55, 0.52, 0.5)
@@ -396,12 +396,16 @@ func do_craft(currency: String) -> void:
 	var done: String = ""
 	if error == "":
 		if currency == "espelho":
-			done = "Espelho Celeste usado: uma cópia vinculada de %s foi para a Mochila." % Armory.item_name(subject)
+			done = tr("Espelho Celeste usado: uma cópia vinculada de %s foi para a Mochila.") % Armory.item_name(subject)
 		elif craft_target == "item":
-			done = "%s usada: %s agora tem %d bônus." % [def.name, Armory.item_name(subject), (subject.get("mods", []) as Array).size()]
+			done = tr("Usou %s: %s agora tem %d bônus.") % [Crafting.currency_name(currency), Armory.item_name(subject), (subject.get("mods", []) as Array).size()]
 		else:
-			done = "%s usada: o mapa agora tem %d atributos." % [def.name, (subject.get("mods", []) as Array).size()]
+			done = tr("Usou %s: o mapa agora tem %d atributos.") % [Crafting.currency_name(currency), (subject.get("mods", []) as Array).size()]
 	report(error, done)
+
+static func roman(stone_name: String) -> String:
+	# "Pedra de Fortalecimento III" -> "III" (the numeral reads the same in every language).
+	return stone_name.get_slice(" ", stone_name.get_slice_count(" ") - 1)
 
 func pick(uid: int) -> void:
 	if tab == "Transferência" and selected_uid >= 0 and uid != selected_uid:
@@ -428,16 +432,16 @@ func do_strengthen() -> void:
 	var before: Dictionary = app.profile.find_instance(selected_uid).duplicate()
 	var error: String = app.profile.strengthen(selected_uid)
 	var inst: Dictionary = app.profile.find_instance(selected_uid)
-	report(error, "Sucesso! %s agora é +%d." % [Armory.item_name(before, false), int(inst.get("level", 0))])
+	report(error, tr("Sucesso! %s agora é +%d.") % [Armory.item_name(before, false), int(inst.get("level", 0))])
 
 func do_compose(attr: String) -> void:
-	report(app.profile.compose(selected_uid, attr), "Composição feita: %s +%d." % [Armory.ATTR_NAMES[attr], int(Armory.data().strengthen.compose.amount)])
+	report(app.profile.compose(selected_uid, attr), tr("Composição feita: %s +%d.") % [Armory.attr_name(attr), int(Armory.data().strengthen.compose.amount)])
 
 func do_fuse(stone_id: String) -> void:
-	report(app.profile.fuse(stone_id), "Fusão concluída!")
+	report(app.profile.fuse(stone_id), tr("Fusão concluída!"))
 
 func do_transfer() -> void:
-	report(app.profile.transfer(selected_uid, target_uid), "Transferência concluída!")
+	report(app.profile.transfer(selected_uid, target_uid), tr("Transferência concluída!"))
 
 func close() -> void:
 	closed.emit()

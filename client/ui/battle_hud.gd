@@ -83,40 +83,40 @@ func build() -> void:
 	add_child(leaf)
 	countdown = UiKit.label(self, "10", Rect2(580, 86, 120, 80), 60, Color("ffb020"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 	countdown.add_theme_constant_override("outline_size", 10)
-	pass_button = UiKit.button(self, "PASS", Rect2(604, 168, 72, 28), game.pass_turn, "button_blue", 15)
-	pass_button.tooltip_text = "Passar a vez (P). Gera menos atraso."
+	pass_button = UiKit.button(self, tr("PASS"), Rect2(604, 168, 72, 28), game.pass_turn, "button_blue", 15)
+	pass_button.tooltip_text = tr("Passar a vez (P). Gera menos atraso.")
 	# --- top-right: minimap with settings and exit
 	UiKit.panel(self, Rect2(1034, 2, 242, 24), "mode_green")
-	UiKit.icon_button(self, PixelIcons.get_icon("gear"), Rect2(1214, 3, 22, 22), screen.toggle_pause, "Pausa / opções (Esc)")
-	UiKit.icon_button(self, PixelIcons.get_icon("power"), Rect2(1244, 3, 22, 22), screen.toggle_pause, "Sair da batalha")
-	UiKit.label(self, game.map.name, Rect2(1040, 2, 170, 24), 13, Color("d8ffb0"), UiKit.INK)
+	UiKit.icon_button(self, PixelIcons.get_icon("gear"), Rect2(1214, 3, 22, 22), screen.toggle_pause, tr("Pausa / opções (Esc)"))
+	UiKit.icon_button(self, PixelIcons.get_icon("power"), Rect2(1244, 3, 22, 22), screen.toggle_pause, tr("Sair da batalha"))
+	UiKit.label(self, tr(str(game.map.name)), Rect2(1040, 2, 170, 24), 13, Color("d8ffb0"), UiKit.INK)
 	minimap = Control.new()
 	minimap.position = Vector2(1034, 26)
 	minimap.size = Vector2(242, 132)
 	minimap.draw.connect(draw_minimap)
 	minimap.gui_input.connect(minimap_input)
-	minimap.tooltip_text = "Clique para mover a câmera. Cada marca = 1/10 de tela."
+	minimap.tooltip_text = tr("Clique para mover a câmera. Cada marca = 1/10 de tela.")
 	add_child(minimap)
 	# --- right column: skills 1–9 like DDTank (+2, x3, +1, POW 50%…10%, POW máx);
 	# the plane (F) and the auxiliary item (V) sit by the angle dial
 	UiKit.panel(self, Rect2(1222, 186, 54, 420), "glass")
 	UiKit.panel(self, Rect2(138, 600, 54, 52), "glass")
 	fly_button = slot_button(Rect2(142, 604, 46, 44), PixelIcons.get_icon("plane"), "F", game.toggle_fly)
-	fly_button.tooltip_text = "Avião de papel (F): voe até onde o disparo cair. %d de energia." % int(game.balance.fly.energy)
+	fly_button.tooltip_text = tr("Avião de papel (F): voe até onde o disparo cair. %d de energia.") % int(game.balance.fly.energy)
 	# Item auxiliar (V): Dom de Anjo heals, the shields halve the next hit.
 	var aux: Dictionary = Armory.aux_def(me.aux_id)
 	UiKit.panel(self, Rect2(138, 546, 54, 52), "glass")
 	aux_button = slot_button(Rect2(142, 550, 46, 44), load(str(aux.icon)) if not aux.is_empty() else null, "V", game.use_aux)
-	aux_button.tooltip_text = "%s (V)\n%s" % [aux.name, aux.desc] if not aux.is_empty() else "Sem item auxiliar. Equipe um na Mochila (Dom de Anjo ou escudo)."
+	aux_button.tooltip_text = tr("%s (V)\n%s") % [tr(str(aux.name)), tr(str(aux.desc))] if not aux.is_empty() else tr("Sem item auxiliar. Equipe um na Mochila (Dom de Anjo ou escudo).")
 	aux_count = UiKit.label(aux_button, "", Rect2(20, 26, 26, 18), 12, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	for i in range(game.balance.items.size()):
 		var item: Dictionary = game.balance.items[i]
 		var button: Button = slot_button(Rect2(1226, 190 + i * 46, 46, 45), load(str(item.icon)), str(item.key), func() -> void: game.use_item(str(item.id)))
-		button.tooltip_text = "%s  (tecla %s)\n%s\nEnergia: %d" % [item.name, item.key, item.desc, int(item.energy)]
+		button.tooltip_text = tr("%s  (tecla %s)\n%s\nEnergia: %d") % [tr(str(item.name)), item.key, tr(str(item.desc)), int(item.energy)]
 		item_buttons.append(button)
 	# --- bottom-left: trust, angle dial
-	trust_button = UiKit.button(self, "Confiar", Rect2(8, 546, 112, 34), toggle_trust, "button", 15)
-	trust_button.tooltip_text = "Confiar: a IA joga os seus turnos."
+	trust_button = UiKit.button(self, tr("Confiar"), Rect2(8, 546, 112, 34), toggle_trust, "button", 15)
+	trust_button.tooltip_text = tr("Confiar: a IA joga os seus turnos.")
 	dial = Control.new()
 	dial.position = Vector2(2, 584)
 	dial.size = Vector2(134, 134)
@@ -124,7 +124,7 @@ func build() -> void:
 	dial.draw.connect(draw_dial)
 	add_child(dial)
 	# --- bottom-center: force bar with tick labels and last-shot marker
-	UiKit.label(self, "Força", Rect2(140, 690, 70, 26), 16, Color("ffe6a0"), UiKit.INK)
+	UiKit.label(self, tr("Força"), Rect2(140, 690, 70, 26), 16, Color("ffe6a0"), UiKit.INK)
 	force = Control.new()
 	force.position = Vector2(206, 652)
 	force.size = Vector2(620, 62)
@@ -140,26 +140,26 @@ func build() -> void:
 	for i in range(3):
 		var tool_id: String = me.tools[i] if i < me.tools.size() else ""
 		var icon: Texture2D = null
-		var tip: String = "Sem ferramenta. Compre na sala."
+		var tip: String = tr("Sem ferramenta. Compre na sala.")
 		if tool_id != "":
 			var tool: Dictionary = game.tool_def(tool_id)
 			icon = load(str(tool.icon))
-			tip = "%s (%s)\n%s" % [tool.name, ["Z", "X", "C"][i], tool.desc]
+			tip = "%s (%s)\n%s" % [tr(str(tool.name)), ["Z", "X", "C"][i], tr(str(tool.desc))]
 		var button: Button = slot_button(Rect2(836 + i * 52, 664, 48, 48), icon, ["Z", "X", "C"][i], func() -> void: game.use_tool(i))
 		button.tooltip_text = tip
 		tool_buttons.append(button)
 	pow_button = slot_button(Rect2(996, 612, 44, 44), PixelIcons.get_icon("pow"), "B", game.activate_pow)
-	pow_button.tooltip_text = "POW (B): %s. Enche causando e recebendo dano." % str(me.weapon.get("pow", {}).get("name", "especial"))
+	pow_button.tooltip_text = tr("POW (B): %s. Enche causando e recebendo dano.") % tr(str(me.weapon.get("pow", {}).get("name", "especial")))
 	pow_bar = UiKit.bar(self, Rect2(1046, 628, 170, 14), Color("c060ff"))
 	pow_bar.max_value = float(game.balance.pow_max)
-	UiKit.label(self, "POW", Rect2(1046, 606, 60, 22), 13, Color("e0b0ff"), UiKit.INK)
+	UiKit.label(self, tr("POW"), Rect2(1046, 606, 60, 22), 13, Color("e0b0ff"), UiKit.INK)
 	# --- energy and life
 	energy_bar = UiKit.bar(self, Rect2(1000, 662, 214, 22), Color("b8e030"))
 	energy_value = UiKit.label(self, "240", Rect2(1000, 660, 214, 26), 16, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(self, "Energia", Rect2(1216, 660, 64, 26), 14, Color("e8ff9a"), UiKit.INK)
+	UiKit.label(self, tr("Energia"), Rect2(1216, 660, 64, 26), 14, Color("e8ff9a"), UiKit.INK)
 	life_bar = UiKit.bar(self, Rect2(1000, 690, 214, 26), Color("e0302a"))
 	life_value = UiKit.label(self, "0", Rect2(1000, 690, 214, 26), 18, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(self, "Vida", Rect2(1216, 690, 64, 26), 16, Color("ffb0a0"), UiKit.INK)
+	UiKit.label(self, tr("Vida"), Rect2(1216, 690, 64, 26), 16, Color("ffb0a0"), UiKit.INK)
 	if game.pve and not game.phase.is_empty():
 		build_phase()
 	banner = UiKit.label(self, "", Rect2(340, 250, 600, 90), 56, Color("9aff7a"), Color("0a2a04"), HORIZONTAL_ALIGNMENT_CENTER)
@@ -172,25 +172,25 @@ func build_phase() -> void:
 	var box: Panel = UiKit.panel(self, Rect2(722, 66, 304, 64), "glass")
 	box.name = "PhasePanel"
 	var level: int = int(game.phase.get("level", 0))
-	var level_text: String = "Nível %d" % level if level > 0 else "Entrada livre"
-	phase_label = UiKit.label(box, "Fase %d/%d  •  %s" % [int(game.phase.index) + 1, int(game.phase.count), game.phase.name], Rect2(8, 2, 292, 26), 15, Color("ffd04a"), UiKit.INK)
+	var level_text: String = tr("Nível %d") % level if level > 0 else tr("Entrada livre")
+	phase_label = UiKit.label(box, tr("Fase %d/%d  •  %s") % [int(game.phase.index) + 1, int(game.phase.count), game.phase.name], Rect2(8, 2, 292, 26), 15, Color("ffd04a"), UiKit.INK)
 	phase_label.clip_text = true
 	goal_label = UiKit.label(box, "", Rect2(8, 30, 200, 26), 13, Color("fff0d0"), UiKit.INK)
 	UiKit.label(box, level_text, Rect2(200, 30, 98, 26), 13, Color("c99bff") if level >= 10 else Color("9adcff"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	if game.threats.get("no_plane", false):
-		fly_button.tooltip_text = "Sem avião de papel neste mapa."
+		fly_button.tooltip_text = tr("Sem avião de papel neste mapa.")
 
 func phase_goal() -> String:
 	match str(game.phase.get("objective", "defeat")):
 		"totems":
 			var totems: Array[TankFighter] = game.fighters.filter(func(f: TankFighter) -> bool: return f.rank == "totem")
 			var broken: int = totems.filter(func(f: TankFighter) -> bool: return f.hp <= 0).size()
-			return "Cristais: %d/%d" % [broken, totems.size()]
+			return tr("Cristais: %d/%d") % [broken, totems.size()]
 		"survive":
-			return "Sobreviva: %d/%d turnos" % [mini(game.survived, int(game.phase.turns)), int(game.phase.turns)]
+			return tr("Sobreviva: %d/%d turnos") % [mini(game.survived, int(game.phase.turns)), int(game.phase.turns)]
 	var enemies: int = game.fighters.filter(func(f: TankFighter) -> bool: return f.team != game.local().team and f.hp > 0).size()
 	var waves: int = game.waves.size()
-	return "Inimigos: %d%s" % [enemies, "  (+%d onda)" % waves if waves > 0 else ""]
+	return tr("Inimigos: %d%s") % [enemies, tr("  (+%d onda)") % waves if waves > 0 else ""]
 
 func slot_button(rect: Rect2, icon: Texture2D, key: String, action: Callable) -> Button:
 	var button: Button = UiKit.button(self, "", rect, action, "slot")
@@ -245,14 +245,14 @@ func show_outcome(won: bool, draw: bool) -> void:
 	outcome.scale = Vector2.ONE * 0.2
 	create_tween().tween_property(outcome, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK)
 	if draw:
-		flash("EMPATE", Color("fff0c0"))
+		flash(tr("EMPATE"), Color("fff0c0"))
 
 func set_paused(value: bool) -> void:
 	if is_instance_valid(pause_box):
 		pause_box.queue_free()
 	if not value:
 		return
-	pause_box = UiKit.modal(self, "BATALHA PAUSADA", "Partida local contra IA. Desistir conta como derrota.", Vector2(520, 300))
+	pause_box = UiKit.modal(self, tr("BATALHA PAUSADA"), tr("Partida local contra IA. Desistir conta como derrota."), Vector2(520, 300))
 	var rect: Rect2 = pause_box.get_meta("rect")
 	var audio: GameAudio = screen.app.audio
 	var music: Button = UiKit.button(pause_box, "", Rect2(rect.position.x + 60, rect.end.y - 124, 180, 40), Callable(), "button_blue", 15)
@@ -260,8 +260,8 @@ func set_paused(value: bool) -> void:
 	music.name = "MusicToggle"
 	sfx.name = "SfxToggle"
 	var label_audio: Callable = func() -> void:
-		music.text = "Música: %s" % ("LIGADA" if audio.music_on else "DESLIGADA")
-		sfx.text = "Efeitos: %s" % ("LIGADOS" if audio.enabled else "DESLIGADOS")
+		music.text = tr("Música: %s") % (tr("LIGADA") if audio.music_on else tr("DESLIGADA"))
+		sfx.text = tr("Efeitos: %s") % (tr("LIGADOS") if audio.enabled else tr("DESLIGADOS"))
 	label_audio.call()
 	music.pressed.connect(func() -> void:
 		audio.set_music_on(not audio.music_on)
@@ -269,8 +269,8 @@ func set_paused(value: bool) -> void:
 	sfx.pressed.connect(func() -> void:
 		audio.set_sfx_on(not audio.enabled)
 		label_audio.call())
-	UiKit.button(pause_box, "CONTINUAR", Rect2(rect.position.x + 60, rect.end.y - 64, 180, 44), screen.toggle_pause, "button_green")
-	UiKit.button(pause_box, "DESISTIR", Rect2(rect.end.x - 240, rect.end.y - 64, 180, 44), screen.forfeit)
+	UiKit.button(pause_box, tr("CONTINUAR"), Rect2(rect.position.x + 60, rect.end.y - 64, 180, 44), screen.toggle_pause, "button_green")
+	UiKit.button(pause_box, tr("DESISTIR"), Rect2(rect.end.x - 240, rect.end.y - 64, 180, 44), screen.forfeit)
 
 func _process(_delta: float) -> void:
 	if game == null or game.fighters.is_empty() or not is_instance_valid(countdown):
@@ -308,7 +308,7 @@ func _process(_delta: float) -> void:
 		tool_buttons[i].disabled = not acting or i >= me.tools.size() or me.tools[i] == ""
 		if tool_buttons[i].has_node("Icon") and (i >= me.tools.size() or me.tools[i] == ""):
 			tool_buttons[i].get_node("Icon").modulate.a = 0.25
-	trust_button.text = "Confiar ✓" if game.auto_play else "Confiar"
+	trust_button.text = tr("Confiar ✓") if game.auto_play else tr("Confiar")
 	trust_button.add_theme_stylebox_override("normal", UiKit.frame("button_green" if game.auto_play else "button"))
 	refresh_used(mine)
 	queue_box.queue_redraw()
@@ -357,8 +357,8 @@ func draw_queue() -> void:
 		queue_box.draw_rect(Rect2(rect.position.x, rect.end.y + 2, 48, 6), Color("1a0f08"))
 		queue_box.draw_rect(Rect2(rect.position.x + 1, rect.end.y + 3, 46.0 * fighter.hp / maxf(1, fighter.max_hp), 4), TankFighter.TEAM_COLORS[fighter.team])
 		if fighter.player_id == game.local_id:
-			queue_box.draw_string_outline(font, rect.position + Vector2(2, 12), "EU", HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), 3, Color("2a1608"))
-			queue_box.draw_string(font, rect.position + Vector2(2, 12), "EU", HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), Color("ffe24a"))
+			queue_box.draw_string_outline(font, rect.position + Vector2(2, 12), tr("EU"), HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), 3, Color("2a1608"))
+			queue_box.draw_string(font, rect.position + Vector2(2, 12), tr("EU"), HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), Color("ffe24a"))
 
 func draw_minimap() -> void:
 	var box: Rect2 = Rect2(Vector2.ZERO, minimap.size)
@@ -445,6 +445,6 @@ func draw_force() -> void:
 		var mark: float = bar.size.x * last / 100.0
 		force.draw_colored_polygon(PackedVector2Array([Vector2(mark - 7, 12), Vector2(mark + 7, 12), Vector2(mark, 24)]), Color("e0302a"))
 	if value <= 0:
-		var tip: String = "Pressione Espaço com força total e realize um ataque" if mine else "Aguarde a sua vez…"
+		var tip: String = tr("Pressione Espaço com força total e realize um ataque") if mine else tr("Aguarde a sua vez…")
 		force.draw_string_outline(font, Vector2(0, bar.position.y + 22), tip, HORIZONTAL_ALIGNMENT_CENTER, bar.size.x, UiKit.fs(15), 4, Color("10141f"))
 		force.draw_string(font, Vector2(0, bar.position.y + 22), tip, HORIZONTAL_ALIGNMENT_CENTER, bar.size.x, UiKit.fs(15), Color("fff0d0"))

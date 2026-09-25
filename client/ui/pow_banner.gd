@@ -73,9 +73,9 @@ func _draw() -> void:
 	draw_colored_polygon(core, Color(yellow.r, yellow.g, yellow.b, alpha))
 	var font: Font = UiKit.font(true)
 	var big: int = UiKit.fs(92)
-	draw_string_outline(font, Vector2(-200, 32), "POW!", HORIZONTAL_ALIGNMENT_CENTER, 400, big, 22, Color(0.23, 0.07, 0.01, alpha))
-	draw_string(font, Vector2(-200, 32), "POW!", HORIZONTAL_ALIGNMENT_CENTER, 400, big, Color(1, 1, 1, alpha))
-	draw_string(font, Vector2(-200, 38), "POW!", HORIZONTAL_ALIGNMENT_CENTER, 400, big, Color(1.0, 0.85, 0.2, alpha * 0.35))
+	draw_string_outline(font, Vector2(-200, 32), tr("POW!"), HORIZONTAL_ALIGNMENT_CENTER, 400, big, 22, Color(0.23, 0.07, 0.01, alpha))
+	draw_string(font, Vector2(-200, 32), tr("POW!"), HORIZONTAL_ALIGNMENT_CENTER, 400, big, Color(1, 1, 1, alpha))
+	draw_string(font, Vector2(-200, 38), tr("POW!"), HORIZONTAL_ALIGNMENT_CENTER, 400, big, Color(1.0, 0.85, 0.2, alpha * 0.35))
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 	# Ribbon with the special's name.
 	if title != "":

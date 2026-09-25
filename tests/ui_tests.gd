@@ -15,6 +15,9 @@ func check(value: bool, message: String) -> void:
 		push_error(message)
 
 func run_tests() -> void:
+	# Messages are checked in Portuguese, the source language.
+	Lang.override = "pt_BR"
+	Lang.setup()
 	PlayerProfile.path_override = "user://test_profile.json"
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
@@ -203,7 +206,7 @@ func run_tests() -> void:
 	var coroa_button: Button = smith.find_child("Currency_coroa", true, false)
 	check(brasa_button != null and not brasa_button.disabled and coroa_button.disabled, "the Moedas tab only enables the currencies that fit the item")
 	brasa_button.pressed.emit()
-	check(crown.quality == "excelente" and crown.mods.size() == 1 and smith.message.begins_with("Brasa usada"), "a Brasa makes a hat Excelente with one bonus")
+	check(crown.quality == "excelente" and crown.mods.size() == 1 and smith.message.begins_with("Usou Brasa"), "a Brasa makes a hat Excelente with one bonus")
 	var loose_map: Dictionary = app.profile.add_map(InstanceRun.make_map("ilha_ruinas", 3, RandomNumberGenerator.new(), 0.0, "normal"))
 	smith.select_target("map")
 	smith.pick_craft(int(loose_map.uid))
