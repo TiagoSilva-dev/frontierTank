@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "about": "Loja paga pela carteira Steam (ISteamMicroTxn). Só aparência e conveniências, nunca poder: os itens daqui não têm atributos, chegam vinculados pelo Correio e não vão ao leilão. steam_item_id é o número do item no pedido da Steam; os preços são em centavos da moeda da carteira do jogador (a API recusa as moedas sem preço).",
+  "products": [
+    {"sku": "tintura_rosa_neon", "steam_item_id": 1001, "name": "Cabelo Rosa Neon", "desc": "Tintura de cabelo exclusiva. Só aparência: não muda atributos.", "items": ["cabelo_rosa_neon"],
+     "prices": {"USD": 99, "EUR": 99, "GBP": 89, "BRL": 499, "CAD": 129, "AUD": 145, "MXN": 1900, "PLN": 449}},
+    {"sku": "tintura_branco_gelo", "steam_item_id": 1002, "name": "Cabelo Branco Gelo", "desc": "Tintura de cabelo exclusiva. Só aparência: não muda atributos.", "items": ["cabelo_branco_gelo"],
+     "prices": {"USD": 99, "EUR": 99, "GBP": 89, "BRL": 499, "CAD": 129, "AUD": 145, "MXN": 1900, "PLN": 449}},
+    {"sku": "tintura_chama", "steam_item_id": 1003, "name": "Cabelo Chama", "desc": "Tintura de cabelo exclusiva. Só aparência: não muda atributos.", "items": ["cabelo_chama"],
+     "prices": {"USD": 99, "EUR": 99, "GBP": 89, "BRL": 499, "CAD": 129, "AUD": 145, "MXN": 1900, "PLN": 449}},
+    {"sku": "tintura_aurora", "steam_item_id": 1004, "name": "Cabelo Aurora", "desc": "Tintura de cabelo exclusiva. Só aparência: não muda atributos.", "items": ["cabelo_aurora"],
+     "prices": {"USD": 99, "EUR": 99, "GBP": 89, "BRL": 499, "CAD": 129, "AUD": 145, "MXN": 1900, "PLN": 449}},
+    {"sku": "pacote_tinturas", "steam_item_id": 1100, "name": "Pacote de Tinturas", "desc": "As quatro tinturas exclusivas de uma vez, mais barato. Só aparência.", "items": ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"],
+     "prices": {"USD": 299, "EUR": 299, "GBP": 259, "BRL": 1499, "CAD": 399, "AUD": 445, "MXN": 5900, "PLN": 1349}}
+  ]
+}

@@ -8,7 +8,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo); grupos online na 0.11 — **feito** |
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) — **feito** |
 | — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
-| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito** |
+| 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito**; preparação do lançamento (web, nomes, privacidade, denúncia, Steam) na 0.13 — **feito**, faltam as pendências externas do checklist |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -289,24 +289,55 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - [x] A fonte Pixel Operator precisa cobrir os acentos de todos os idiomas escolhidos (testar espanhol e francês, por exemplo).
 - [x] Nomes de itens, moedas e mapas com versão própria em cada idioma, não tradução literal.
 
-**Feito na 0.10 (25/09/2026):** gettext com PO (`locale/en.po`, 717 textos), português como idioma-fonte e cada texto como chave; `Lang` (`client/systems/lang.gd`), seletor Português/English na tela de entrada (fica salvo; a primeira abertura segue o sistema), `--lang=en` nas capturas, extrator `tools/i18n.py` e `tests/i18n_tests.gd`. A fonte cobre todas as letras de português, espanhol, francês, alemão e italiano; só as setas decorativas (▶ ◀ → ⇄ ↵) vêm da fonte do sistema. Nomes em inglês próprios: *Brickbreaker*, *Blazing Fire*, *Divine Wind*, *Home Appliance*, *Plunger*, *Super Bull Head*; Instância → *Dungeon*, Mochila → *Bag*, Ferreiro → *Blacksmith*, mapa-item → *Map* e local da partida → *Arena*, moedas de ouro → *gold*, Verdadeira → *True*; moedas *Ember, Crown, Star, Storm, Solar, Eclipse, Sky Mirror*.
+**Feito na 0.10 (25/09/2026):** gettext com PO (`locale/en.po`, 717 textos), português como idioma-fonte e cada texto como chave; `Lang` (`client/systems/lang.gd`), seletor Português/English na tela de entrada (fica salvo; a primeira abertura segue o sistema), `--lang=en` nas capturas, extrator `tools/i18n.py` e `tests/i18n_tests.gd`. A fonte cobre todas as letras de português, espanhol, francês, alemão e italiano; só as setas decorativas (▶ ◀ → ⇄ ↵) vêm da fonte do sistema. Nomes em inglês próprios (os das armas foram trocados de novo na revisão de nomes do checklist); Instância → *Dungeon*, Mochila → *Bag*, Ferreiro → *Blacksmith*, mapa-item → *Map* e local da partida → *Arena*, moedas de ouro → *gold*, Verdadeira → *True*; moedas *Ember, Crown, Star, Storm, Solar, Eclipse, Sky Mirror*.
 
-**Decidido provisoriamente:** o nome da marca continua *Frontier Tank: Nova Era* nos dois idiomas (é o que está no logotipo). Os nomes em inglês já evitam os do DDTank; em português a revisão de nomes do checklist abaixo continua pendente.
+**Decidido provisoriamente:** o nome da marca continua *Frontier Tank: Nova Era* nos dois idiomas (é o que está no logotipo). A revisão de nomes do checklist abaixo (25/09/2026) trocou os nomes nos dois idiomas; o subtítulo "Nova Era" continua em aberto.
 - [ ] **Servidor**: uma região no começo (Estados Unidos, com latência razoável para Brasil e Europa) e mais regiões se o público crescer. O turno de 20 s tolera bem a latência.
 - [ ] **Pagamentos**: a Steam cuida de moedas locais e impostos na versão Steam. Na web, Stripe cobre o exterior e o Mercado Pago cobre PIX.
-- [ ] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas. *(0.11: a API já apaga a conta e todos os dados — `DELETE /v1/me` com a senha; falta o botão no jogo, o consentimento e a política.)*
-- [ ] Chat moderado: filtro de palavrões e denúncia, já que o jogo terá chat público e jogadores de vários países. *(0.11: filtro de palavrões e limite de mensagens no servidor, e tudo fica no registro de auditoria; falta a denúncia.)*
+- [x] **Privacidade**: seguir a LGPD (Brasil) e o GDPR (Europa): consentimento, exclusão de conta e dados, política de privacidade nos dois idiomas. *(25/09/2026: Termos de Uso e Política de Privacidade em pt e en (`legal/`), consentimento no cadastro com versão guardada na API e novo aceite quando os textos mudam, AJUDA → Minha conta com a cópia dos dados e a exclusão pelo servidor de jogo, prazos de retenção e os registros de acesso do Marco Civil. Falta: preencher `legal/controller.json`, revisão jurídica dos textos e das exigências do ECA Digital (verificação de idade e ferramentas para os responsáveis).)*
+- [x] Chat moderado: filtro de palavrões e denúncia, já que o jogo terá chat público e jogadores de vários países. *(0.11: filtro de palavrões e limite de mensagens no servidor, e tudo fica no registro de auditoria. 25/09/2026: denúncia pelo nome do jogador no chat, com contexto, limites, silêncio automático por várias denúncias, análise com `tools/moderate.py` e suspensão que desconecta na hora. Falta quem modere: definir a equipe e o prazo de resposta antes do lançamento.)*
 
 ### Checklist de preparação
 - [x] **Backend** (ver "Dependência: servidor"): 0.11.
-- [ ] Export web de teste (sem threads, sem cabeçalhos COOP/COEP) e medir o FPS na batalha.
-- [ ] **Revisão de nomes e identidade antes de publicar**: armas, itens e textos com o mesmo nome do DDTank (Quebra Tijolos, Canhão Arco-Íris, Cesto de Frutas de Newton…) e qualquer menção a "DDTank" no material público. A mecânica pode ser parecida, mas nomes e marcas iguais são um risco numa loja comercial.
-- [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês.
-- [ ] Integração com a Steam (GodotSteam): login por ticket, microtransações, conquistas.
-- [ ] Política de privacidade e termos de uso (obrigatórios com contas, pagamentos e dados de jogadores).
+- [x] Export web de teste (sem threads, sem cabeçalhos COOP/COEP) e medir o FPS na batalha. *(25/09/2026: preset Web, `tools/web_build.py`, teste de desempenho `?bench=30` e `tools/web_bench.cjs`; números no README, seção "Versão web para testes fechados". Falta medir numa máquina com placa de vídeo: o contêiner de testes só tem desenho em software.)*
+- [x] **Revisão de nomes e identidade antes de publicar**: armas, itens e textos com o mesmo nome do DDTank (Quebra Tijolos, Canhão Arco-Íris, Cesto de Frutas de Newton…) e qualquer menção a "DDTank" no material público. A mecânica pode ser parecida, mas nomes e marcas iguais são um risco numa loja comercial. *(Feito em 25/09/2026, tabela abaixo.)*
+
+**Revisão de nomes (25/09/2026).** Os nomes em inglês antigos eram traduções literais dos do DDTank, então os dois idiomas mudaram. As ids internas (`quebra_tijolos`, `escudo_bugou`...) ficaram iguais: estão nos saves, no PostgreSQL e nos anúncios do leilão, e o jogador não as vê. Em português os nomes novos são masculinos, para o modelo "Verdadeiro %s" continuar certo.
+
+| id | Antes | Agora (pt) | Agora (en) |
+|---|---|---|---|
+| `quebra_tijolos` | Quebra Tijolos / Brickbreaker | Tijolaço | Bricklayer |
+| `fogo_intenso` | Fogo Intenso / Blazing Fire | Braseiro | Brazier |
+| `canhao_arco_iris` | Canhão Arco-Íris / Rainbow Cannon (POW Raio Arco-Íris) | Prisma (POW Raio Prismático) | Prism (Prismatic Ray) |
+| `vento_de_deus` | Vento de Deus / Divine Wind (POW Furacão Divino) | Cata-Vento (POW Olho do Furacão) | Pinwheel (Eye of the Storm) |
+| `cesto_newton` | Cesto de Frutas de Newton (POW Lei da Gravidade) | Pomar (POW Chuva de Frutas) | Orchard (Fruit Shower) |
+| `kit_medico` | Kit Médico / Medic Kit | Tônico | Tonic |
+| `eletrodomestico` | Eletrodoméstico / Home Appliance | Bota-Fora | Clear-Out |
+| `trovao` | Trovão / Thunder | Para-Raios | Lightning Rod |
+| `desentupidor` | Desentupidor / Plunger | Sugador | Suction Gun |
+| `cabeca_de_boi` | Super Cabeça de Boi (POW Estouro do Touro) | Super Minotauro (POW Estouro da Manada) | Super Minotaur (Stampede) |
+| `bumerangue_amor` | Super Bumerangue do Amor | Super Cupido | Super Cupid |
+| `lanca_antiga` | Super Lança | Super Lança de Jade | Super Jade Spear |
+| `dom_de_anjo`, `dom_de_anjo_v` | Dom de Anjo, Verdadeiro Dom de Anjo | Bálsamo, Grande Bálsamo | Balm, Grand Balm |
+| `escudo_bugou`, `escudo_barao` | Escudo de Bugou, Escudo do Barão | Broquel de Latão, Égide de Aço | Brass Buckler, Steel Aegis |
+
+- "DDTank" não aparece em nenhum texto do jogo, dos arquivos de balanceamento, das traduções, dos textos legais nem da página da Steam; nos scripts só em comentários, que o export deixa de fora (o `.pck` da web foi conferido). `tests/launch_tests.gd` falha se uma marca ou um nome antigo voltar.
+- Os documentos internos (`docs/DDTANK_RESEARCH.md`, `docs/ddtank_references*`, este roadmap, `ARCHITECTURE.md`, `GAME_DESIGN_DOCUMENT.md`) continuam citando o DDTank como referência de desenvolvimento e **não devem ser publicados**; o README foi limpo. Se o repositório ficar público, tirar esses arquivos antes.
+- **Continuam genéricos e ficaram**: Pedra de Fortalecimento, Cristal Dourado, POW, avião de papel, Salão de Jogos, Centro Comercial, Ferreiro, qualidades Normal/Excelente/Verdadeira.
+- **Decisão pendente, a marca**: "Nova Era" também é o nome de uma edição brasileira do DDTank (ver `docs/DDTANK_RESEARCH.md`, complemento 0.4). O subtítulo aparece no logotipo, na janela, no nome do servidor padrão ("S1 · Nova Era") e na página da Steam. Antes da página "em breve", vale trocar o subtítulo (e redesenhar o logotipo) ou confirmar com um advogado que não há risco.
+- [ ] Página "em breve" na Steam **meses antes** do lançamento, para juntar listas de desejos: cápsulas, capturas, trailer e descrição em pt-BR e inglês. *(25/09/2026: textos em pt e en, cápsulas em todos os tamanhos, capturas nos dois idiomas, ícones e tabela das conquistas e modelos do SteamPipe em `store/steam/`, com `tools/steam_store.py`. Faltam: o trailer, a decisão sobre o subtítulo "Nova Era", pagar a taxa e enviar a página na Steamworks — passo a passo em `docs/STEAM.md`.)*
+- [x] Integração com a Steam (GodotSteam): login por ticket, microtransações, conquistas. *(25/09/2026: `SteamService` com GodotSteam opcional, ENTRAR COM A STEAM e Vincular à Steam, loja Premium paga pela carteira Steam com entrega pelo Correio, 11 conquistas pelo perfil online, presets Windows e Linux. Falta instalar a extensão e o App ID; estornos via `GetReport`.)*
+- [x] Política de privacidade e termos de uso (obrigatórios com contas, pagamentos e dados de jogadores). *(Modelos prontos em `legal/`; precisam dos dados da empresa e de revisão jurídica.)*
 
 
 ---
+
+### Pendências externas (não dá para resolver no código)
+- Preencher `legal/controller.json` (empresa, CNPJ, e-mail, encarregado) e fazer a **revisão jurídica** dos Termos, da Política e do ECA Digital.
+- Decidir o **subtítulo** do jogo ("Nova Era") antes da página da Steam.
+- **Medir o FPS da web numa máquina com placa de vídeo** (`node tools/web_bench.cjs --headed` ou `?bench=30`).
+- Definir quem **modera** as denúncias e em quanto tempo.
+- Steamworks: taxa, App ID, chave de publicador, conquistas, microtransações e envio da página.
 
 ## Ordem sugerida
 

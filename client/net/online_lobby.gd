@@ -13,12 +13,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	pass
 
-func post(author: String, text: String, channel: String = "Atual") -> void:
-	if author == my_name and channel in ["Atual", "Privado"]:
+func post(author: String, text: String, channel: String = "Atual", extra: Dictionary = {}) -> void:
+	if author == my_name and channel in ["Atual", "Privado"] and extra.is_empty():
 		# The server sends it back to everyone (us included), filtered.
 		net.send_kind("chat", {"text": text})
 		return
-	super.post(author, text, channel)
+	super.post(author, text, channel, extra)
 
 # Lines from the server itself (joins, drops, the alto-falante) come as a Portuguese key
 # with arguments and are translated here; what players write is shown as written.
@@ -33,7 +33,10 @@ static func text_of(entry: Dictionary) -> String:
 	return text % args if not args.is_empty() and text.count("%s") + text.count("%d") == args.size() else text
 
 func add(entry: Dictionary) -> void:
-	super.post(str(entry.get("author", "")), text_of(entry), str(entry.get("channel", "Atual")))
+	var extra: Dictionary = {}
+	if entry.has("id") and entry.has("account"):
+		extra = {"id": int(entry.id), "account": int(entry.account)}
+	super.post(str(entry.get("author", "")), text_of(entry), str(entry.get("channel", "Atual")), extra)
 
 func receive(message: Dictionary) -> void:
 	match str(message.get("t", "")):

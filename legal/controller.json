@@ -1,0 +1,8 @@
+{
+	"EMPRESA": "[preencher: razão social]",
+	"CNPJ": "[preencher: CNPJ]",
+	"ENDERECO": "[preencher: endereço]",
+	"EMAIL": "[preencher: e-mail de privacidade e suporte]",
+	"ENCARREGADO": "[preencher: nome do encarregado (DPO)]",
+	"FORO": "[preencher: cidade/UF da sede]"
+}

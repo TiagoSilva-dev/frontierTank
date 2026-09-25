@@ -3,7 +3,8 @@ extends Node
 
 # The public API (Go): create an account, log in, log out and the list of game servers.
 # The address comes from --api=..., then user://online.cfg, then DEFAULT_API; the session
-# token is remembered in user://online.cfg when the player asks.
+# token is remembered in user://online.cfg when the player asks. On the web the default is
+# the page's own address (the proxy in front sends /v1/... to the API; ?api=... overrides).
 
 const DEFAULT_API: String = "http://localhost:8080"
 # Tests point this at a scratch file so they never touch the player's saved login.
@@ -13,13 +14,27 @@ var base_url: String = DEFAULT_API
 var token: String = ""
 var username: String = ""
 var remember: bool = true
+# The account is linked to Steam; no_password: it was made by the Steam login (deleting
+# it is confirmed with a Steam ticket instead of a password).
+var steam_linked: bool = false
+var no_password: bool = false
 
 func _init() -> void:
+	base_url = default_api()
 	var config: ConfigFile = ConfigFile.new()
 	if config.load(config_path) == OK:
-		base_url = str(config.get_value("online", "api", DEFAULT_API))
+		base_url = str(config.get_value("online", "api", base_url))
 		token = str(config.get_value("session", "token", ""))
 		username = str(config.get_value("session", "username", ""))
+		steam_linked = bool(config.get_value("session", "steam", false))
+		no_password = bool(config.get_value("session", "no_password", false))
+
+static func default_api() -> String:
+	if OS.has_feature("web"):
+		var origin: String = str(JavaScriptBridge.eval("window.location.origin", true))
+		if origin.begins_with("http"):
+			return origin
+	return DEFAULT_API
 
 func save_session() -> void:
 	var config: ConfigFile = ConfigFile.new()
@@ -27,6 +42,8 @@ func save_session() -> void:
 	config.set_value("online", "api", base_url)
 	config.set_value("session", "token", token if remember else "")
 	config.set_value("session", "username", username)
+	config.set_value("session", "steam", steam_linked)
+	config.set_value("session", "no_password", no_password)
 	config.save(config_path)
 
 func request_json(method: HTTPClient.Method, path: String, body: Variant = null) -> Dictionary:
@@ -43,23 +60,90 @@ func request_json(method: HTTPClient.Method, path: String, body: Variant = null)
 	request.queue_free()
 	if int(result[0]) != HTTPRequest.RESULT_SUCCESS:
 		return {"status": 0, "body": null}
-	var text: String = (result[3] as PackedByteArray).get_string_from_utf8()
-	return {"status": int(result[1]), "body": JSON.parse_string(text) if text != "" else null}
+	return {"status": int(result[1]), "body": parse_body((result[3] as PackedByteArray).get_string_from_utf8())}
+
+# The body as JSON, or null (a proxy or static host may answer with an HTML page).
+static func parse_body(text: String) -> Variant:
+	var json: JSON = JSON.new()
+	return json.data if text != "" and json.parse(text) == OK else null
 
 static func error_of(reply: Dictionary) -> String:
 	if int(reply.status) == 0:
 		return "api_unavailable"
 	return str(reply.body.get("error", "internal")) if reply.body is Dictionary else "internal"
 
-# "" or an error code; on success `token` and `username` are set.
-func login(user: String, password: String, create: bool = false) -> String:
-	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/register" if create else "/v1/auth/login", {"username": user, "password": password})
+# "" or an error code; on success `token` and `username` are set. A new account carries
+# the version of the Terms of Use and Privacy Policy the player accepted (consent).
+func login(user: String, password: String, create: bool = false, terms: String = "") -> String:
+	var body: Dictionary = {"username": user, "password": password}
+	if create:
+		body.accept_terms = terms
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/register" if create else "/v1/auth/login", body)
 	if int(reply.status) != 200 and int(reply.status) != 201:
 		return error_of(reply)
-	token = str(reply.body.token)
-	username = str(reply.body.account.username)
+	take_session(reply.body)
+	return ""
+
+func take_session(body: Dictionary) -> void:
+	token = str(body.token)
+	username = str(body.account.username)
+	steam_linked = bool(body.account.get("steam", false))
+	no_password = bool(body.account.get("no_password", false))
+	save_session()
+
+# Steam login (launch checklist): the ticket from SteamService.web_ticket(). A SteamID
+# without an account gets one only with the consent: "terms_required" means ask and try
+# again with the version. "" or an error code.
+func login_steam(ticket: String, terms: String = "") -> String:
+	var body: Dictionary = {"ticket": ticket}
+	if terms != "":
+		body.accept_terms = terms
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/auth/steam", body)
+	if int(reply.status) != 200 and int(reply.status) != 201:
+		return error_of(reply)
+	take_session(reply.body)
+	return ""
+
+# Links Steam to the account that is logged in (players from the web tests).
+func link_steam(ticket: String) -> String:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/me/steam", {"ticket": ticket})
+	if int(reply.status) != 200:
+		return error_of(reply)
+	steam_linked = true
 	save_session()
 	return ""
+
+# Accepts the current Terms of Use and Privacy Policy (after they changed). "" or a code.
+func accept_terms() -> String:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/v1/me/terms", {"version": Legal.VERSION})
+	return "" if int(reply.status) == 200 else error_of(reply)
+
+# Everything the API keeps about the account, as JSON text ({"text"} or {"error"}).
+func export_data() -> Dictionary:
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_GET, "/v1/me/export")
+	if int(reply.status) != 200 or not reply.body is Dictionary:
+		return {"error": error_of(reply)}
+	return {"text": JSON.stringify(reply.body, "\t")}
+
+# Deletes the account and its data with the password (when not connected to a game
+# server; in the game the server does it, see GameServer.account_delete). "" or a code.
+func delete_account(password: String, steam_ticket: String = "") -> String:
+	var body: Dictionary = {"password": password}
+	if steam_ticket != "":
+		body.steam_ticket = steam_ticket
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_DELETE, "/v1/me", body)
+	if int(reply.status) != 204:
+		return error_of(reply)
+	forget()
+	return ""
+
+# The account is gone (deleted): nothing of it stays remembered on this computer.
+func forget() -> void:
+	token = ""
+	username = ""
+	steam_linked = false
+	no_password = false
+	save_session()
 
 func logout() -> void:
 	if token != "":
@@ -109,4 +193,16 @@ static func message_for(code: String) -> String:
 			return Lang.t("O servidor não respondeu a tempo.")
 		"connection_lost", "closed", "offline":
 			return Lang.t("A conexão com o servidor caiu.")
+		"terms_required":
+			return Lang.t("Para jogar online, aceite os Termos de Uso e a Política de Privacidade.")
+		"terms_outdated":
+			return Lang.t("Os Termos de Uso mudaram. Atualize o jogo para ver a versão nova.")
+		"account_deleted":
+			return Lang.t("Sua conta e os seus dados foram excluídos.")
+		"steam_unavailable", "steam_error":
+			return Lang.t("A Steam não respondeu. Abra o jogo pela Steam e tente de novo.")
+		"steam_invalid":
+			return Lang.t("A Steam não confirmou a sua conta. Tente de novo.")
+		"steam_taken":
+			return Lang.t("Esta conta Steam já está ligada a outra conta do jogo.")
 	return Lang.t("Erro do servidor: %s") % code

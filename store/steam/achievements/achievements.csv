@@ -1,0 +1,12 @@
+api_name,name_ptbr,name_en,desc_ptbr,desc_en,icon,icon_locked
+FIRST_VICTORY,Primeira Vitória,First Victory,Vença uma partida.,Win a match.,FIRST_VICTORY.png,FIRST_VICTORY_locked.png
+TEN_VICTORIES,Artilheiro,Gunner,Vença 10 partidas.,Win 10 matches.,TEN_VICTORIES.png,TEN_VICTORIES_locked.png
+HUNDRED_VICTORIES,Lenda da Artilharia,Artillery Legend,Vença 100 partidas.,Win 100 matches.,HUNDRED_VICTORIES.png,HUNDRED_VICTORIES_locked.png
+VETERAN,Veterano,Veteran,Jogue 50 partidas.,Play 50 matches.,VETERAN.png,VETERAN_locked.png
+LEVEL_10,Recruta Promissor,Promising Recruit,Chegue ao nível 10.,Reach level 10.,LEVEL_10.png,LEVEL_10_locked.png
+LEVEL_30,Comandante,Commander,Chegue ao nível 30.,Reach level 30.,LEVEL_30.png,LEVEL_30_locked.png
+FORGE_12,Forja Máxima,Maximum Forge,Fortaleça um equipamento até +12.,Strengthen a piece of gear to +12.,FORGE_12.png,FORGE_12_locked.png
+TRUE_WEAPON,Arma Verdadeira,True Weapon,Consiga uma arma Verdadeira.,Get a True weapon.,TRUE_WEAPON.png,TRUE_WEAPON_locked.png
+SUPER_WEAPON,Tesouro do Chefe,Boss Treasure,Consiga uma Super Verdadeira no baú de um chefe.,Get a Super True weapon from a boss chest.,SUPER_WEAPON.png,SUPER_WEAPON_locked.png
+MAP_16,Mapa Lendário,Legendary Map,Tenha um mapa de nível 16.,Own a level 16 map.,MAP_16.png,MAP_16_locked.png
+COLLECTOR,Colecionador,Collector,Tenha 15 cosméticos diferentes.,Own 15 different cosmetics.,COLLECTOR.png,COLLECTOR_locked.png

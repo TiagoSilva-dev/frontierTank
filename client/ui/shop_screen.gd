@@ -4,10 +4,12 @@ extends Control
 # Centro Comercial / SHOP: weapons in three qualities (Normal, Excelente, Verdadeira),
 # outfits, hats, glasses, wings, hair colours, auxiliary items and stones. Clicking an
 # item tries it on the provador (preview) on the left. Super weapons are drop-only.
+# Premium (launch checklist): products paid with the Steam Wallet (PremiumStore), only
+# looks, delivered by the Correio.
 
 signal closed
 
-const TABS: Array = [["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Cabelos", "cabelo"], ["Auxiliar", "auxiliar"], ["Pedras", "pedras"]]  # i18n
+const TABS: Array = [["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Cabelos", "cabelo"], ["Auxiliar", "auxiliar"], ["Pedras", "pedras"], ["Premium", "premium"]]  # i18n
 const PER_PAGE: int = 8
 
 var app: Node
@@ -35,7 +37,8 @@ func build() -> void:
 	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	build_preview()
 	for i in range(TABS.size()):
-		UiKit.button(contents, tr(TABS[i][0]), Rect2(432 + i * 99, 84, 95, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
+		var tab_button: Button = UiKit.button(contents, tr(TABS[i][0]), Rect2(432 + i * 88, 84, 85, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
+		tab_button.name = "Tab_" + str(TABS[i][1])
 	UiKit.panel(contents, Rect2(430, 126, 794, 554), "paper")
 	var list: Array = items()
 	var pages: int = maxi(1, ceili(list.size() / float(PER_PAGE)))
@@ -65,7 +68,8 @@ func build_preview() -> void:
 	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, Color("a86a10"), Color.TRANSPARENT)
-	UiKit.label(contents, tr("Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias."), Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var hint: String = tr("Só aparência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam.") if tab == "premium" else tr("Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias.")
+	UiKit.label(contents, hint, Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
 
 func items() -> Array:
@@ -77,13 +81,18 @@ func items() -> Array:
 			list = Armory.data().auxiliary.duplicate()
 		"pedras":
 			list = Armory.data().strengthen.stones.duplicate()
+		"premium":
+			list = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return PremiumStore.valid(entry))
 		_:
 			for def: Dictionary in Armory.data().cosmetics:
-				if def.slot == tab and (def.gender == "u" or def.gender == app.profile.gender):
+				if def.slot == tab and (def.gender == "u" or def.gender == app.profile.gender) and not bool(def.get("premium", false)):
 					list.append(def)
 	return list
 
 func card(def: Dictionary, rect: Rect2) -> void:
+	if tab == "premium":
+		premium_card(def, rect)
+		return
 	var box: Button = UiKit.button(contents, "", rect, try_on.bind(def), "card")
 	box.name = "Shop_" + str(def.id)
 	var inst: Dictionary = {"id": def.id, "quality": "super" if def.get("super", false) else "normal", "level": 0}
@@ -116,6 +125,35 @@ func card(def: Dictionary, rect: Rect2) -> void:
 	var owned: bool = app.profile.has_item(def.id)
 	var buy_button: Button = UiKit.button(box, tr("COMPRADO") if owned and tab != "auxiliar" else tr("COMPRAR"), Rect2(24, 190, 140, 38), buy_item.bind(str(def.id), "normal"), "button_green", 16)
 	buy_button.disabled = (owned and tab != "auxiliar") or app.profile.coins < price_value
+
+# A product of the Steam shop: its first item on the card, the reference price and the
+# purchase through the Steam overlay (only in the Steam build, online).
+func premium_card(entry: Dictionary, rect: Rect2) -> void:
+	var first: Dictionary = Armory.definition(str(entry.items[0]))
+	var box: Button = UiKit.button(contents, "", rect, try_on.bind(first), "card")
+	box.name = "Premium_" + str(entry.sku)
+	var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
+	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 8, 100, 92))
+	picture.modulate = Armory.icon_tint(inst)
+	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var count: int = (entry.items as Array).size()
+	UiKit.label(box, PremiumStore.price_text(entry) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var owned: bool = PremiumStore.owns_all(app.profile, entry)
+	var ready: bool = bool(app.online) and app.steam.available
+	var buy: Button = UiKit.button(box, tr("VOCÊ TEM") if owned else tr("COMPRAR NA STEAM"), Rect2(14, 190, 160, 38), buy_premium.bind(str(entry.sku)), "button_blue", 14)
+	buy.name = "Buy_" + str(entry.sku)
+	buy.disabled = owned or not ready
+	if not ready and not owned:
+		buy.tooltip_text = tr("Compras só na versão Steam, com a conta ligada à Steam.")
+		UiKit.label(box, tr("Só na versão Steam"), Rect2(4, 170, 180, 20), 12, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+
+func buy_premium(sku: String) -> void:
+	message = tr("Aprove a compra na janela da Steam…")
+	build()
+	message = await app.buy_premium(sku)
+	if is_inside_tree():
+		build()
 
 func try_on(def: Dictionary) -> void:
 	if tab in ["pedras"]:

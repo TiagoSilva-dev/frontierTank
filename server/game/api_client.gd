@@ -12,6 +12,8 @@ var server_id: String = "s1"
 var memory_accounts: Dictionary = {}
 var memory_profiles: Dictionary = {}
 var memory_presence: Dictionary = {}
+# Ids are never reused, even after an account is deleted.
+var memory_next_id: int = 1
 
 func is_memory() -> bool:
 	return base_url == "memory"
@@ -46,7 +48,8 @@ func verify(token: String) -> Dictionary:
 			return {"error": "unauthorized"}
 		var username: String = token.substr(4, 16)
 		if not memory_accounts.has(username.to_lower()):
-			memory_accounts[username.to_lower()] = memory_accounts.size() + 1
+			memory_accounts[username.to_lower()] = memory_next_id
+			memory_next_id += 1
 		return {"id": int(memory_accounts[username.to_lower()]), "username": username}
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/sessions/verify", {"token": token})
 	if int(reply.status) != 200:
@@ -110,11 +113,110 @@ func release(account: int) -> void:
 		return
 	await request_json(HTTPClient.METHOD_POST, "/internal/presence/release", {"account_id": account, "server_id": server_id})
 
-func heartbeat(info: Dictionary, players: Array) -> bool:
+# Deletes the account and all its data (LGPD/GDPR), with the password the player typed
+# (or, for an account made by the Steam login, a fresh Steam ticket).
+# {} or {"error": "invalid_credentials" | "rate_limited" | ...}
+func delete_account(account: int, password: String, steam_ticket: String = "") -> Dictionary:
 	if is_memory():
-		return true
+		# Memory accounts have no password: any one that was typed counts.
+		if password == "" and steam_ticket == "":
+			return {"error": "invalid_credentials"}
+		memory_profiles.erase(account)
+		memory_presence.erase(account)
+		for username: String in memory_accounts.keys():
+			if int(memory_accounts[username]) == account:
+				memory_accounts.erase(username)
+		# As in the API: the items on sale go with the account; past sales stay nameless.
+		memory_listings = memory_listings.filter(func(listing: Dictionary) -> bool: return not (int(listing.seller_id) == account and listing.status == "active"))
+		for listing: Dictionary in memory_listings:
+			if int(listing.seller_id) == account:
+				listing.seller_name = ""
+		memory_mail = memory_mail.filter(func(letter: Dictionary) -> bool: return int(letter.account) != account)
+		return {}
+	var body: Dictionary = {"password": password}
+	if steam_ticket != "":
+		body.steam_ticket = steam_ticket
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/accounts/%d/delete" % account, body)
+	return {} if int(reply.status) == 204 else {"error": error_code(reply)}
+
+# A chat report (launch checklist) for the team to review. {"id"} or {"error"}
+var memory_reports: Array[Dictionary] = []
+
+func report(entry: Dictionary) -> Dictionary:
+	if is_memory():
+		var stored: Dictionary = copy(entry)
+		stored.id = memory_reports.size() + 1
+		stored.status = "open"
+		memory_reports.append(stored)
+		return {"id": stored.id}
+	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/reports", entry)
+	if int(reply.status) != 201 or not reply.body is Dictionary:
+		return {"error": error_code(reply)}
+	return {"id": int(reply.body.id)}
+
+# Announces the server and its players; returns the players banned meanwhile.
+var memory_banned: Dictionary = {}
+
+# ---------- Steam shop (launch checklist) ----------
+# The API opens the order with Steam (InitTxn), charges it once the player approves it in
+# the overlay (FinalizeTxn) and puts the items in the Correio in the same transaction.
+# In memory there is no Steam: every account can buy, in US dollars, and the approval is
+# whatever the game reports.
+
+var memory_orders: Dictionary = {}
+var next_order: int = 100000
+
+func store_init(account: int, entry: Dictionary, locale: String) -> Dictionary:
+	# Prices go as whole cents (the JSON parser reads numbers as floats; the API wants ints).
+	var prices: Dictionary = {}
+	for currency: Variant in entry.prices:
+		prices[str(currency)] = int(entry.prices[currency])
+	var body: Dictionary = {"account_id": account, "sku": str(entry.sku), "steam_item_id": int(entry.steam_item_id), "description": PremiumStore.description(entry, locale), "items": PremiumStore.mail_items(entry), "prices": prices, "language": "en" if locale.begins_with("en") else "pt"}
+	if is_memory():
+		var order: Dictionary = {"order_id": next_order, "account": account, "sku": body.sku, "items": body.items, "amount": int(entry.prices.get("USD", 0)), "currency": "USD", "status": "init", "description": body.description}
+		next_order += 1
+		memory_orders[int(order.order_id)] = order
+		return copy({"order_id": order.order_id, "amount": order.amount, "currency": order.currency})
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/init", body))
+
+func store_finalize(account: int, order_id: int) -> Dictionary:
+	if is_memory():
+		var order: Dictionary = memory_orders.get(order_id, {})
+		if order.is_empty() or int(order.account) != account:
+			return {"error": "not_found"}
+		if order.status == "init":
+			order.status = "paid"
+			for item: Dictionary in order.items:
+				memory_add_mail(account, "store", {"id": 0, "kind": "item"}, item, {}, {"sku": order.sku, "order_id": order_id, "description": order.description})
+		elif order.status != "paid":
+			return {"error": "order_state"}
+		return copy({"order": {"order_id": order_id, "sku": order.sku, "status": order.status}})
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/finalize", {"server_id": server_id, "account_id": account, "order_id": order_id}))
+
+func store_cancel(account: int, order_id: int) -> Dictionary:
+	if is_memory():
+		var order: Dictionary = memory_orders.get(order_id, {})
+		if order.is_empty() or int(order.account) != account:
+			return {"error": "not_found"}
+		if order.status != "init":
+			return {"error": "order_state"}
+		order.status = "cancelled"
+		return copy({"order": {"order_id": order_id, "status": "cancelled"}})
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/cancel", {"server_id": server_id, "account_id": account, "order_id": order_id}))
+
+# Orders approved on Steam whose confirmation was lost: delivered now ({"delivered"}).
+func store_reconcile(account: int) -> Dictionary:
+	if is_memory():
+		return {"delivered": []}
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/reconcile", {"server_id": server_id, "account_id": account}))
+
+func heartbeat(info: Dictionary, players: Array) -> Array:
+	if is_memory():
+		return players.filter(func(account: int) -> bool: return memory_banned.has(account))
 	var reply: Dictionary = await request_json(HTTPClient.METHOD_POST, "/internal/heartbeat", {"server": info, "players": players})
-	return int(reply.status) == 204
+	if int(reply.status) != 200 or not reply.body is Dictionary:
+		return []
+	return (reply.body.get("banned", []) as Array).map(func(id: Variant) -> int: return int(id))
 
 func audit(entries: Array) -> bool:
 	if is_memory() or entries.is_empty():

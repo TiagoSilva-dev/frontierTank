@@ -83,6 +83,9 @@ func TestRateLimiter(t *testing.T) {
 
 // ---------- integration (needs PostgreSQL: TEST_DATABASE_URL) ----------
 
+// The version of the Terms of Use and Privacy Policy the test API asks for.
+const testTerms = "2026-09-25"
+
 type harness struct {
 	t        *testing.T
 	public   *httptest.Server
@@ -91,7 +94,7 @@ type harness struct {
 	store    *Store
 }
 
-func newHarness(t *testing.T) *harness {
+func newHarness(t *testing.T, options ...func(*Config)) *harness {
 	url := os.Getenv("TEST_DATABASE_URL")
 	if url == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -101,14 +104,17 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE`)
+	_, err = store.pool.Exec(ctx, `DROP TABLE IF EXISTS store_orders, chat_reports, access_log, auction_ops, mail, auction_listings, presence, game_servers, audit_log, profiles, sessions, accounts, schema_migrations CASCADE; DROP SEQUENCE IF EXISTS store_order_seq`)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err := store.migrate(ctx); err != nil {
 		t.Fatal(err)
 	}
-	cfg := Config{InternalKey: "test-internal-key-123", SessionTTL: time.Hour, PBKDF2Iterations: 1000, AllowOrigin: "*", AuthPerMinute: 1000}
+	cfg := Config{InternalKey: "test-internal-key-123", SessionTTL: time.Hour, PBKDF2Iterations: 1000, AllowOrigin: "*", AuthPerMinute: 1000, LegalVersion: testTerms}
+	for _, option := range options {
+		option(&cfg)
+	}
 	api, err := newAPI(store, cfg, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	if err != nil {
 		t.Fatal(err)
@@ -149,17 +155,17 @@ func (h *harness) internalCall(method, path string, body any) (int, map[string]a
 
 func TestAccountsAndProfiles(t *testing.T) {
 	h := newHarness(t)
-	status, reply := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "nilo", "password": "canhao-forte"}, nil)
+	status, reply := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "nilo", "password": "canhao-forte", "accept_terms": testTerms}, nil)
 	if status != http.StatusCreated || reply["token"] == nil {
 		t.Fatalf("register: %d %v", status, reply)
 	}
 	token := reply["token"].(string)
 	account := reply["account"].(map[string]any)
 	id := int64(account["id"].(float64))
-	if status, reply = h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "NILO", "password": "outra-senha"}, nil); status != http.StatusConflict || reply["error"] != codeTaken {
+	if status, reply = h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "NILO", "password": "outra-senha", "accept_terms": testTerms}, nil); status != http.StatusConflict || reply["error"] != codeTaken {
 		t.Fatalf("usernames are unique regardless of case: %d %v", status, reply)
 	}
-	if status, reply = h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "lia", "password": "curta"}, nil); reply["error"] != codePassword {
+	if status, reply = h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "lia", "password": "curta", "accept_terms": testTerms}, nil); reply["error"] != codePassword {
 		t.Fatalf("short passwords are rejected: %v", reply)
 	}
 	if status, reply = h.call(h.public, "POST", "/v1/auth/login", map[string]string{"username": "nilo", "password": "errada-123"}, nil); status != http.StatusUnauthorized || reply["error"] != codeCredentials {
@@ -216,7 +222,7 @@ func TestAccountsAndProfiles(t *testing.T) {
 	}
 
 	// Character names are unique.
-	_, lia := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "lia", "password": "arco-iris-99"}, nil)
+	_, lia := h.call(h.public, "POST", "/v1/auth/register", map[string]string{"username": "lia", "password": "arco-iris-99", "accept_terms": testTerms}, nil)
 	liaID := int64(lia["account"].(map[string]any)["id"].(float64))
 	liaPath := "/internal/profiles/" + strconv.FormatInt(liaID, 10)
 	if status, reply = h.internalCall("PUT", liaPath, map[string]any{"name": "nilo", "data": data, "version": 0}); reply["error"] != codeNameTaken {

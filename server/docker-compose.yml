@@ -34,6 +34,19 @@ services:
       INTERNAL_KEY: ${INTERNAL_KEY:?set INTERNAL_KEY in .env}
       ALLOW_ORIGIN: ${ALLOW_ORIGIN:-*}
       TRUST_PROXY: ${TRUST_PROXY:-0}
+      # Privacy (launch checklist): the version of legal/*.md players must accept and how
+      # long the logs are kept (see the Privacy Policy).
+      LEGAL_VERSION: ${LEGAL_VERSION:-2026-09-25}
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
+      CHAT_RETENTION_DAYS: ${CHAT_RETENTION_DAYS:-90}
+      ACCESS_LOG_DAYS: ${ACCESS_LOG_DAYS:-183}
+      REPORT_RETENTION_DAYS: ${REPORT_RETENTION_DAYS:-180}
+      # Steam (docs/STEAM.md): without the app id and the publisher key, Steam is off.
+      STEAM_APP_ID: ${STEAM_APP_ID:-0}
+      STEAM_WEB_API_KEY: ${STEAM_WEB_API_KEY:-}
+      STEAM_IDENTITY: ${STEAM_IDENTITY:-frontiertank}
+      STEAM_MICROTXN_SANDBOX: ${STEAM_MICROTXN_SANDBOX:-1}
+      ORDER_RETENTION_DAYS: ${ORDER_RETENTION_DAYS:-1826}
     ports:
       # Only the public API is published; 8081 (internal) stays inside the network.
       - "${API_PORT:-8080}:8080"
@@ -60,6 +73,8 @@ services:
       FT_CAPACITY: ${GAME_CAPACITY:-500}
       FT_TEST_COUPONS: ${TEST_COUPONS:-0}
       FT_BOT_FILL: ${BOT_FILL_SECONDS:-20}
+      # Different players reporting someone in 10 minutes that mute them for 10 minutes.
+      FT_REPORT_MUTE: ${REPORT_MUTE:-3}
       FT_STOP_FILE: /tmp/frontier-stop
     ports:
       - "${GAME_PORT:-7350}:7350"

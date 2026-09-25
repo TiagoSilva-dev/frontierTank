@@ -338,7 +338,7 @@ static func random_loadout(rng: RandomNumberGenerator, level: int, gender: Strin
 		if rng.randf() < 0.3 + level * 0.01:
 			var pool: Array = []
 			for def: Dictionary in data().cosmetics:
-				if def.slot == slot:
+				if def.slot == slot and not bool(def.get("premium", false)):
 					pool.append(def.id)
 			equipped.append({"id": pool[rng.randi() % pool.size()], "level": 0})
 	var look: Dictionary = look_for(gender, equipped)

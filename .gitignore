@@ -7,3 +7,6 @@ __pycache__/
 
 # Secrets of the online stack (server/.env.example is the template)
 server/.env
+
+# Exports (tools/web_build.py export)
+build/

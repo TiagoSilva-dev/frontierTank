@@ -29,6 +29,9 @@ var status_label: Label
 var enter_button: Button
 var busy: bool = false
 var searching: bool = true
+# Running from Steam: the account box offers the Steam login; the player may switch to
+# an account and password instead.
+var use_password: bool = false
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -61,8 +64,15 @@ func _ready() -> void:
 	enter_button = UiKit.button(box, tr("ENTRAR"), Rect2(150, 380, 180, 46), enter, "button_green", 24)
 	enter_button.name = "EnterButton"
 	UiKit.label(self, tr("Frontier Tank: Nova Era %s") % VERSION, Rect2(12, 690, 400, 26), 15, Color("fff4d6"), UiKit.INK)
-	var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
-	quit.name = "QuitButton"
+	if not OS.has_feature("web"):
+		# A browser tab cannot close itself (web build for closed tests).
+		var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
+		quit.name = "QuitButton"
+	# The legal texts can be read before creating an account (LGPD/GDPR).
+	var terms: Button = UiKit.button(self, Legal.title("terms"), Rect2(890, 676, 136, 34), func() -> void: LegalScreen.open(self, "terms"), "tab", 14)
+	terms.name = "TermsLink"
+	var privacy: Button = UiKit.button(self, tr("Privacidade"), Rect2(1030, 676, 130, 34), func() -> void: LegalScreen.open(self, "privacy"), "tab", 14)
+	privacy.name = "PrivacyLink"
 	for i in range(Lang.LOCALES.size()):
 		var code: String = Lang.LOCALES[i]
 		var language: Button = UiKit.button(self, Lang.LABELS[code], Rect2(1000 + i * 138, 12, 130, 36), choose_language.bind(code), "tab_active" if Lang.locale() == code else "tab", 15)
@@ -106,8 +116,21 @@ func build_account() -> void:
 	if auth.token != "":
 		UiKit.label(account_box, tr("Conta"), Rect2(16, 16, 424, 26), 15, Color("7a5a3a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.label(account_box, auth.username, Rect2(16, 42, 424, 34), 24, Color("5a2408"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		var other: Button = UiKit.button(account_box, tr("Trocar de conta"), Rect2(148, 92, 160, 38), switch_account, "button", 15)
+		var other: Button = UiKit.button(account_box, tr("Trocar de conta"), Rect2(44, 92, 176, 38), switch_account, "button", 15)
 		other.name = "SwitchAccount"
+		# Download the data or delete the account without entering a server.
+		var mine: Button = UiKit.button(account_box, tr("Minha conta"), Rect2(236, 92, 176, 38), func() -> void: AccountScreen.open(self, app), "button", 15)
+		mine.name = "MyAccount"
+		return
+	if steam_mode():
+		var who: Label = UiKit.label(account_box, tr("Steam: %s") % app.steam.persona, Rect2(16, 12, 424, 30), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		who.name = "SteamPersona"
+		var steam_login: Button = UiKit.button(account_box, tr("ENTRAR COM A STEAM"), Rect2(88, 46, 280, 46), login_steam, "button_blue", 18)
+		steam_login.name = "SteamLogin"
+		var classic: Button = UiKit.button(account_box, tr("Usar conta e senha"), Rect2(138, 104, 180, 34), func() -> void:
+			use_password = true
+			build_account(), "tab", 14)
+		classic.name = "UsePassword"
 		return
 	UiKit.label(account_box, tr("Conta"), Rect2(14, 12, 90, 34), 16, UiKit.TEXT_DARK)
 	user_field = field(Rect2(104, 12, 340, 34), tr("nome da conta"), false)
@@ -117,21 +140,7 @@ func build_account() -> void:
 	password_field = field(Rect2(104, 54, 340, 34), tr("sua senha"), true)
 	password_field.name = "Password"
 	password_field.text_submitted.connect(func(_text: String) -> void: enter())
-	remember_box = CheckBox.new()
-	remember_box.text = tr("Lembrar")
-	remember_box.button_pressed = auth.remember
-	remember_box.position = Vector2(14, 100)
-	remember_box.size = Vector2(150, 36)
-	remember_box.add_theme_font_override("font", UiKit.font(true))
-	remember_box.add_theme_font_size_override("font_size", UiKit.fs(15))
-	remember_box.add_theme_color_override("font_color", UiKit.TEXT_DARK)
-	remember_box.add_theme_color_override("font_hover_color", UiKit.TEXT_DARK)
-	remember_box.add_theme_color_override("font_pressed_color", UiKit.TEXT_DARK)
-	remember_box.add_theme_color_override("font_hover_pressed_color", UiKit.TEXT_DARK)
-	remember_box.add_theme_color_override("font_focus_color", UiKit.TEXT_DARK)
-	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
-		remember_box.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	account_box.add_child(remember_box)
+	remember_box = UiKit.check_box(account_box, tr("Lembrar"), Rect2(14, 100, 150, 36), auth.remember)
 	var create: Button = UiKit.button(account_box, tr("CRIAR CONTA"), Rect2(254, 100, 190, 38), create_account, "button_blue", 15)
 	create.name = "CreateAccount"
 	if user_field.text == "":
@@ -206,7 +215,36 @@ func enter() -> void:
 		app.lobby.post("Sistema", tr("Bem-vindo ao modo offline!"), "system")
 		app.show_city()
 		return
+	if steam_mode():
+		await login_steam()
+		return
 	await login(false)
+
+func steam_mode() -> bool:
+	return app.steam.available and app.auth.token == "" and not use_password
+
+# Steam login (launch checklist): a ticket from GodotSteam goes to the API; a SteamID
+# without an account gets one after the consent, like any new account.
+func login_steam() -> void:
+	if busy:
+		return
+	var server: Dictionary = servers[chosen]
+	if server.get("offline", false):
+		return
+	var auth: AuthClient = app.auth
+	busy = true
+	enter_button.disabled = true
+	set_status(tr("Conectando à Steam…"))
+	var error: String = await auth.login_steam(await app.steam.web_ticket())
+	if error == "terms_required":
+		if not await ask_consent("create"):
+			finish(tr("Para criar a conta, aceite os Termos de Uso e a Política de Privacidade."))
+			return
+		error = await auth.login_steam(await app.steam.web_ticket(), Legal.VERSION)
+	if error != "":
+		finish(AuthClient.message_for(error))
+		return
+	await join_server(server)
 
 func login(create: bool) -> void:
 	if busy:
@@ -224,13 +262,33 @@ func login(create: bool) -> void:
 			finish(tr("Digite a conta e a senha."))
 			return
 		auth.remember = remember_box.button_pressed if remember_box != null else true
+		if create and not await ask_consent("create"):
+			# Without the consent there is no account (LGPD/GDPR).
+			finish(tr("Para criar a conta, aceite os Termos de Uso e a Política de Privacidade."))
+			return
 		set_status(tr("Criando a conta…") if create else tr("Entrando…"))
-		var error: String = await auth.login(user, password, create)
+		var error: String = await auth.login(user, password, create, Legal.VERSION)
 		if error != "":
 			finish(AuthClient.message_for(error))
 			return
+	await join_server(server)
+
+# With a session token: connects to the game server (asking again for the consent when
+# the Terms or the Privacy Policy changed) and goes online.
+func join_server(server: Dictionary) -> void:
+	var auth: AuthClient = app.auth
 	set_status(tr("Conectando a %s…") % tr(str(server.name)))
 	var code: String = await app.net.connect_to(str(server.url), auth.token)
+	if code == "terms_required":
+		# The texts changed since this account accepted them: show and ask again.
+		if not await ask_consent("update"):
+			finish(AuthClient.message_for(code))
+			return
+		var accepted: String = await auth.accept_terms()
+		if accepted != "":
+			finish(AuthClient.message_for(accepted))
+			return
+		code = await app.net.connect_to(str(server.url), auth.token)
 	if code == "unauthorized":
 		auth.token = ""
 		auth.save_session()
@@ -240,6 +298,12 @@ func login(create: bool) -> void:
 		return
 	busy = false
 	app.go_online(app.net.welcome())
+
+# Shows the consent dialog and waits: true when the player accepted.
+func ask_consent(mode: String) -> bool:
+	var dialog: ConsentDialog = ConsentDialog.open(self, mode)
+	var accepted: bool = await dialog.decided
+	return accepted
 
 func finish(message: String) -> void:
 	busy = false

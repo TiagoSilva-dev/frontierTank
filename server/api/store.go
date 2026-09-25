@@ -32,6 +32,12 @@ type Account struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
 	Banned   bool   `json:"banned,omitempty"`
+	// Version of the Terms of Use and Privacy Policy the player accepted ("" = none).
+	TermsVersion string `json:"terms_version"`
+	// Linked to a SteamID; NoPassword: created by the Steam login (no password to type:
+	// deleting it is confirmed with a Steam ticket).
+	Steam      bool `json:"steam,omitempty"`
+	NoPassword bool `json:"no_password,omitempty"`
 }
 
 type Profile struct {
@@ -122,9 +128,9 @@ func isUnique(err error) bool {
 	return errors.As(err, &pgErr) && pgErr.Code == errUniqueViolation
 }
 
-func (s *Store) CreateAccount(ctx context.Context, username, hash string) (Account, error) {
-	account := Account{Username: username}
-	err := s.pool.QueryRow(ctx, `INSERT INTO accounts (username, password_hash, last_login) VALUES ($1, $2, now()) RETURNING id`, username, hash).Scan(&account.ID)
+func (s *Store) CreateAccount(ctx context.Context, username, hash, terms string) (Account, error) {
+	account := Account{Username: username, TermsVersion: terms}
+	err := s.pool.QueryRow(ctx, `INSERT INTO accounts (username, password_hash, last_login, terms_version, terms_accepted_at) VALUES ($1, $2, now(), $3, now()) RETURNING id`, username, hash, terms).Scan(&account.ID)
 	if isUnique(err) {
 		return account, ErrTaken
 	}
@@ -134,7 +140,7 @@ func (s *Store) CreateAccount(ctx context.Context, username, hash string) (Accou
 func (s *Store) AccountByUsername(ctx context.Context, username string) (Account, string, error) {
 	var account Account
 	var hash string
-	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned)
+	err := s.pool.QueryRow(ctx, `SELECT id, username, password_hash, banned, terms_version, steam_id IS NOT NULL FROM accounts WHERE lower(username) = lower($1)`, username).Scan(&account.ID, &account.Username, &hash, &account.Banned, &account.TermsVersion, &account.Steam)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, "", ErrNotFound
 	}
@@ -161,10 +167,20 @@ func (s *Store) TouchLogin(ctx context.Context, id int64) error {
 }
 
 // DeleteAccount erases the account (LGPD/GDPR). Its items on sale go with it; the sales
-// it took part in stay in the price history without the name.
+// it took part in stay in the price history without the name. What the player wrote
+// (chat) and the character name (op.create) leave the audit log; the rest of it stays
+// without the account (anonymous economy records, kept until the retention period).
 func (s *Store) DeleteAccount(ctx context.Context, id int64) error {
 	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
 		if _, err := tx.Exec(ctx, `DELETE FROM auction_listings WHERE seller_id = $1 AND status = 'active'`, id); err != nil {
+			return err
+		}
+		if _, err := tx.Exec(ctx, `DELETE FROM audit_log WHERE account_id = $1 AND kind IN ('chat', 'op.create')`, id); err != nil {
+			return err
+		}
+		// Reports this player made lose the name; reports about them stay (moderation
+		// evidence) until reviewed and the retention period ends.
+		if _, err := tx.Exec(ctx, `UPDATE chat_reports SET reporter_name = '' WHERE reporter_id = $1`, id); err != nil {
 			return err
 		}
 		if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
@@ -182,7 +198,7 @@ func (s *Store) CreateSession(ctx context.Context, accountID int64, tokenHash []
 
 func (s *Store) SessionAccount(ctx context.Context, tokenHash []byte) (Account, error) {
 	var account Account
-	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned)
+	err := s.pool.QueryRow(ctx, `SELECT a.id, a.username, a.banned, a.terms_version, a.steam_id IS NOT NULL, a.password_hash = '' FROM sessions s JOIN accounts a ON a.id = s.account_id WHERE s.token_hash = $1 AND s.expires_at > now()`, tokenHash).Scan(&account.ID, &account.Username, &account.Banned, &account.TermsVersion, &account.Steam, &account.NoPassword)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return account, ErrNotFound
 	}
@@ -264,14 +280,17 @@ func (s *Store) AddAudit(ctx context.Context, serverID string, entries []AuditEn
 		if len(detail) == 0 {
 			detail = json.RawMessage("{}")
 		}
-		batch.Queue(`INSERT INTO audit_log (account_id, server_id, kind, detail) VALUES ($1, $2, $3, $4)`, entry.AccountID, serverID, entry.Kind, detail)
+		// An account deleted meanwhile is recorded as no account (the batch never fails).
+		batch.Queue(`INSERT INTO audit_log (account_id, server_id, kind, detail) VALUES ((SELECT id FROM accounts WHERE id = $1), $2, $3, $4)`, entry.AccountID, serverID, entry.Kind, detail)
 	}
 	return s.pool.SendBatch(ctx, batch).Close()
 }
 
-// Heartbeat records a game server and renews the presence of its players.
-func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int64) error {
-	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
+// Heartbeat records a game server, renews the presence of its players and says which
+// of them are banned.
+func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int64) ([]int64, error) {
+	banned := []int64{}
+	err := pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
 		_, err := tx.Exec(ctx, `INSERT INTO game_servers (id, name, url, online, capacity, updated_at) VALUES ($1, $2, $3, $4, $5, now())
 			ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, url = EXCLUDED.url, online = EXCLUDED.online, capacity = EXCLUDED.capacity, updated_at = now()`,
 			server.ID, server.Name, server.URL, server.Online, server.Capacity)
@@ -279,8 +298,20 @@ func (s *Store) Heartbeat(ctx context.Context, server GameServer, players []int6
 			return err
 		}
 		_, err = tx.Exec(ctx, `UPDATE presence SET expires_at = now() + interval '90 seconds' WHERE server_id = $1 AND account_id = ANY($2)`, server.ID, players)
+		if err != nil {
+			return err
+		}
+		rows, err := tx.Query(ctx, `SELECT id FROM accounts WHERE banned AND id = ANY($1)`, players)
+		if err != nil {
+			return err
+		}
+		banned, err = pgx.CollectRows(rows, pgx.RowTo[int64])
 		return err
 	})
+	if banned == nil {
+		banned = []int64{}
+	}
+	return banned, err
 }
 
 func (s *Store) Servers(ctx context.Context, maxAge time.Duration) ([]GameServer, error) {

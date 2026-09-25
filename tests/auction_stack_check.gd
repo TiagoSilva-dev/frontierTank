@@ -40,7 +40,7 @@ func player(api: String, user: String) -> Node:
 	await process_frame
 	app.auth.base_url = api
 	app.auth.remember = false
-	check(await app.auth.login(user, "senha-do-leilao-1", true) == "", "%s has an account" % user)
+	check(await app.auth.login(user, "senha-do-leilao-1", true, Legal.VERSION) == "", "%s has an account" % user)
 	check(await app.net.connect_to("ws://127.0.0.1:%d" % PORT, app.auth.token) == "", "%s joins the game server" % user)
 	app.go_online(app.net.welcome())
 	check((await app.do_op("create", [user.capitalize().substr(0, 14), "f"])).error == "", "%s creates the character" % user)

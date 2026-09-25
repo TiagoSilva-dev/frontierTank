@@ -36,6 +36,8 @@ var speaker: String = ""
 var chat_timer: float = 4.0
 var room_timer: float = 9.0
 var player_level: int = 1
+# Players whose lines this player hid (report dialog), by account; only this session.
+var ignored: Dictionary = {}
 
 func _ready() -> void:
 	rng.randomize()
@@ -119,12 +121,18 @@ func open_room() -> Dictionary:
 			return room
 	return {}
 
-func post(author: String, text: String, channel: String = "Atual") -> void:
+# `extra`: online lines carry the message id and the author's account (to report them).
+func post(author: String, text: String, channel: String = "Atual", extra: Dictionary = {}) -> void:
 	var message: Dictionary = {"author": author, "text": text, "channel": channel}
+	message.merge(extra)
 	history.append(message)
 	if history.size() > 60:
 		history.remove_at(0)
 	chat_added.emit(message)
+
+func ignore(account: int) -> void:
+	ignored[account] = true
+	chat_added.emit({})
 
 func _process(delta: float) -> void:
 	chat_timer -= delta

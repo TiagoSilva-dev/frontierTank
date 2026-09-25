@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "about": "Conquistas da Steam. O id é o nome da API na Steamworks (Stats & Achievements) e precisa ser cadastrado igual lá (tools/steam_store.py achievements gera a lista). O jogo só libera conquistas com o perfil online, que o servidor decide; no modo offline, não.",
+  "achievements": [
+    {"id": "FIRST_VICTORY", "name": "Primeira Vitória", "desc": "Vença uma partida.", "stat": "victories", "at_least": 1, "icon": "res://assets/ui/icons/crown.png"},
+    {"id": "TEN_VICTORIES", "name": "Artilheiro", "desc": "Vença 10 partidas.", "stat": "victories", "at_least": 10, "icon": "res://assets/weapons/quebra_tijolos/tier1.png"},
+    {"id": "HUNDRED_VICTORIES", "name": "Lenda da Artilharia", "desc": "Vença 100 partidas.", "stat": "victories", "at_least": 100, "icon": "res://assets/weapons/quebra_tijolos/tier3.png"},
+    {"id": "VETERAN", "name": "Veterano", "desc": "Jogue 50 partidas.", "stat": "matches", "at_least": 50, "icon": "res://assets/ui/icons/play.png"},
+    {"id": "LEVEL_10", "name": "Recruta Promissor", "desc": "Chegue ao nível 10.", "stat": "level", "at_least": 10, "icon": "res://assets/ui/icons/power.png"},
+    {"id": "LEVEL_30", "name": "Comandante", "desc": "Chegue ao nível 30.", "stat": "level", "at_least": 30, "icon": "res://assets/ui/icons/pow.png"},
+    {"id": "FORGE_12", "name": "Forja Máxima", "desc": "Fortaleça um equipamento até +12.", "stat": "max_strengthen", "at_least": 12, "icon": "res://assets/items/pedra_iv.png"},
+    {"id": "TRUE_WEAPON", "name": "Arma Verdadeira", "desc": "Consiga uma arma Verdadeira.", "stat": "true_weapons", "at_least": 1, "icon": "res://assets/weapons/trovao/tier2.png"},
+    {"id": "SUPER_WEAPON", "name": "Tesouro do Chefe", "desc": "Consiga uma Super Verdadeira no baú de um chefe.", "stat": "super_weapons", "at_least": 1, "icon": "res://assets/weapons/lanca_antiga/tier3.png"},
+    {"id": "MAP_16", "name": "Mapa Lendário", "desc": "Tenha um mapa de nível 16.", "stat": "max_map_level", "at_least": 16, "icon": "res://assets/items/maps/templo_sol.png"},
+    {"id": "COLLECTOR", "name": "Colecionador", "desc": "Tenha 15 cosméticos diferentes.", "stat": "cosmetics", "at_least": 15, "icon": "res://assets/cosmetics/asas_fenix/icon.png"}
+  ]
+}

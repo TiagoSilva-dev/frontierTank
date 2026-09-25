@@ -31,6 +31,10 @@ var result: Dictionary = {}
 var busy: bool = false
 var discard: bool = false
 var last_search: float = 0.0
+# Attempts to delete the account (wrong passwords are limited).
+var delete_tries: Array[float] = []
+# The player's game language ("pt_BR" or "en"), told in hello: the Steam order text.
+var locale: String = "pt_BR"
 
 func is_open() -> bool:
 	return peer != null and peer.get_ready_state() == WebSocketPeer.STATE_OPEN

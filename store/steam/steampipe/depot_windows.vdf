@@ -1,0 +1,15 @@
+"DepotBuild"
+{
+	// Windows 64-bit: the "Windows Desktop" preset (build/windows), with the GodotSteam
+	// libraries the export copies next to the executable.
+	"DepotID" "DEPOT_WINDOWS"
+	"ContentRoot" "windows/"
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+	"FileExclusion" "*.pdb"
+	"FileExclusion" "steam_appid.txt"
+}

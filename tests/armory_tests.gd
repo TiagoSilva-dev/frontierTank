@@ -36,10 +36,10 @@ func run_tests() -> void:
 	var true_weapon: Dictionary = Armory.build_weapon({"id": "trovao", "quality": "verdadeira", "level": 0})
 	var maxed: Dictionary = Armory.build_weapon({"id": "trovao", "quality": "verdadeira", "level": 12})
 	check(true_weapon.damage > normal.damage and maxed.damage > true_weapon.damage, "Verdadeira beats Normal and +12 beats +0")
-	check(Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "Verdadeiro Kit Médico +5", "DDTank style item names")
+	check(Armory.item_name({"id": "kit_medico", "quality": "verdadeira", "level": 5}) == "Verdadeiro Tônico +5", "item names with quality and level")
 	# Profile: starter, shop, equip.
 	var profile: PlayerProfile = PlayerProfile.new()
-	check(profile.equipped_instance("arma").id == "quebra_tijolos", "new account starts with a Quebra Tijolos")
+	check(profile.equipped_instance("arma").id == "quebra_tijolos", "new account starts with a Tijolaço")
 	check(profile.look().skin == "base_m" and profile.look().hat == "", "default look: t-shirt and shorts, nothing else")
 	profile.coins = 10000
 	check(profile.buy("kit_medico", "excelente") == "" and profile.coins == 10000 - 400 * 3, "weapons are bought by quality")

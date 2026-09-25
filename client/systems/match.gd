@@ -600,7 +600,7 @@ func apply_tool(fighter: TankFighter, slot: int) -> bool:
 	return true
 
 func use_aux() -> bool:
-	# Item auxiliar (Dom de Anjo, escudos): limited uses per battle, key V.
+	# Item auxiliar (Bálsamo, escudos): limited uses per battle, key V.
 	if not can_act():
 		return false
 	if send_intent("aux"):
