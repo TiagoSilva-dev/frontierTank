@@ -127,7 +127,7 @@
       {"id": "boss_card", "kind": "reward", "text": "+1 carta no baú do chefe"},
       {"id": "super_chance", "kind": "reward", "text": "+%d%% de chance de Super Verdadeira", "range": [25, 75]}
     ],
-    "loot": {"boss_picks": 3, "true_chance": 0.05, "true_per_level": 0.02, "excellent_chance": 0.35, "super_chance": 0.04, "super_per_level": 0.01, "free_super_chance": 0.02, "pity": 20, "weapon_weight": 10, "map_weight": 4}
+    "loot": {"boss_picks": 3, "true_chance": 0.05, "true_per_level": 0.02, "excellent_chance": 0.35, "super_chance": 0.04, "super_per_level": 0.01, "free_super_chance": 0.02, "pity": 20, "weapon_weight": 10, "gear_weight": 7, "map_weight": 4, "currency_weight": 12, "currency_chance": [0.35, 0.45, 1.0]}
   },
   "party_scaling": {"hp": [1.0, 1.8, 2.5, 3.2], "damage": [1.0, 1.1, 1.2, 1.3], "extra_minions": [0, 1, 2, 3], "reward": [1.0, 1.15, 1.3, 1.5], "bonus_cards": [0, 1, 1, 2], "rarity": [0.0, 0.0, 0.25, 0.5], "boss_area_from": 3},
   "bots": {"think_min": 1.2, "think_max": 2.4, "power_error_min": 3.5, "power_error_max": 9.0, "item_chance": 0.45},
@@ -181,6 +181,10 @@
       {"id": "crystal", "name": "Cristal Dourado", "item": "golden_crystal", "weight": 5, "rarity": "epic", "icon": "res://assets/expansion/items/golden_crystal.png"},
       {"id": "egg", "name": "Ovo de Mascote", "item": "pet_egg", "weight": 2, "rarity": "legendary", "icon": "res://assets/expansion/items/pet_egg.png"},
       {"id": "potion", "name": "Poção de Vida", "tool": "hp", "weight": 14, "rarity": "common", "icon": "res://assets/expansion/combat/tool_hp.png"}
+    ],
+    "pvp_cards": [
+      {"id": "brasa", "name": "Brasa", "currency": "brasa", "weight": 5, "rarity": "rare", "icon": "res://assets/items/currency/brasa.png"},
+      {"id": "coroa", "name": "Coroa", "currency": "coroa", "weight": 2, "rarity": "rare", "icon": "res://assets/items/currency/coroa.png"}
     ]
   }
 }

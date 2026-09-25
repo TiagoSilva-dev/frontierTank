@@ -43,6 +43,8 @@ var tools: Array[String] = []
 var weapon: Dictionary = {}
 var look: Dictionary = {}
 var attrs: Dictionary = {}
+# Battle bonuses from the gear's random attributes (0.10), see Armory.character_stats.
+var bonus: Dictionary = {}
 var aux_id: String = ""
 var aux_uses: int = 0
 var rig: LookRig
@@ -77,7 +79,9 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	agility = int(entry.get("agility", int(balance.base_agility) + level * int(balance.agility_per_level)))
 	max_hp = int(entry.get("hp", int(balance.base_hp) + level * int(balance.hp_per_level)))
 	hp = max_hp
-	max_energy = int(balance.energy) + agility / 30
+	bonus = entry.get("bonus", {}).duplicate()
+	max_energy = int(balance.energy) + agility / 30 + int(bonus.get("energia", 0))
+	pow_gauge = minf(float(balance.pow_max), float(bonus.get("pow_inicial", 0)))
 	weapon = weapon_data.duplicate(true)
 	var limits: Array = weapon.get("angle", [0, 90])
 	angle_range = Vector2(limits[0], limits[1])

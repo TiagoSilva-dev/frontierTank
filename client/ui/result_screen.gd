@@ -92,18 +92,21 @@ func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
 	UiKit.label(box, "%s  •  %s  •  Fases %d/%d" % [str(info.name), "Nível %d" % int(info.level) if int(info.level) > 0 else "Entrada livre", int(info.phases), int(info.count)], Rect2(10, 2, 600, 28), 18, Color("ffd04a"), UiKit.INK)
 	UiKit.art(box, "res://assets/items/moeda.png", Rect2(10, 36, 22, 22))
 	UiKit.label(box, "+%d moedas" % int(info.gold), Rect2(36, 34, 160, 26), 16, Color("ffd46b"), UiKit.INK)
-	var found: Array = info.get("chest", []) + info.get("drops", [])
+	var found: Array = info.get("chest", []) + info.get("currency", []) + info.get("drops", [])
 	if found.is_empty():
-		UiKit.label(box, "Nenhum mapa ou Super Verdadeira desta vez.", Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
+		UiKit.label(box, "Nenhum mapa, moeda ou Super Verdadeira desta vez.", Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
 	if not found.is_empty():
-		UiKit.label(box, "Baú do chefe e mapas das fases (já na Mochila)", Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
+		UiKit.label(box, "Baú do chefe, moedas e mapas das fases (já na Mochila)", Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
 	for i in range(mini(found.size(), 7)):
 		var entry: Dictionary = found[i]
 		var slot: Panel = UiKit.panel(box, Rect2(200 + i * 58, 32, 54, 54), "slot")
 		slot.mouse_filter = Control.MOUSE_FILTER_PASS
 		if entry.has("weapon"):
 			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
-			slot.tooltip_text = "Baú do chefe: %s" % str(entry.name)
+			slot.tooltip_text = "Baú do chefe: %s\n%s" % [str(entry.name), "\n".join(Crafting.describe(entry))]
+		elif entry.has("currency"):
+			UiKit.art(slot, str(entry.icon), Rect2(6, 6, 42, 42))
+			slot.tooltip_text = "%s: %s" % [str(entry.name), str(Crafting.currency_def(str(entry.currency)).get("desc", ""))]
 		else:
 			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(4, 4, 46, 46))
 			UiKit.label(slot, str(int(entry.level)), Rect2(18, 28, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -207,7 +210,8 @@ func show_cards() -> void:
 	if not loot.is_empty():
 		hint = "Baú do chefe: %d cartas (mapa, raridade e grupo dão mais)." % picks_left if summary.get("won", false) else "A equipe caiu: o mapa foi perdido, o que caiu nas fases fica."
 	hint_label = UiKit.label(stage, hint, Rect2(240, 92, 800, 26), 15, Color("fff0d0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	var pool: Array = app.balance.rewards.cards
+	# PvP cards (0.10) include a little currency: Brasa and Coroa.
+	var pool: Array = app.balance.rewards.cards + app.balance.rewards.get("pvp_cards", [])
 	for i in range(8):
 		rewards.append(loot.cards[i] if not loot.is_empty() else roll(pool))
 		revealed.append(false)
@@ -287,6 +291,11 @@ func show_front(index: int, mine: bool) -> void:
 	UiKit.art(front, str(reward.icon), Rect2(24, 36, 80, 80))
 	if reward.has("map"):
 		UiKit.label(front, str(int(reward.map.level)), Rect2(70, 90, 40, 26), 20, InstanceRun.quality_color(str(reward.map.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	if not (reward.get("mods", []) as Array).is_empty():
+		# Dropped gear shows how many random bonuses it rolled (details in the Mochila).
+		var count: int = reward.mods.size()
+		UiKit.label(front, "%d bônus" % count, Rect2(10, 14, 108, 22), 13, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		card.tooltip_text = "%s\n%s" % [str(reward.name), "\n".join(Crafting.describe(reward))]
 	var caption: Label = UiKit.label(front, str(reward.name), Rect2(10, 118, 108, 56), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.wrap(caption, Vector2(108, 56))
 	if not mine:
@@ -308,8 +317,12 @@ func grant(reward: Dictionary) -> void:
 	elif reward.has("tool"):
 		if not profile.add_tool(str(reward.tool)):
 			profile.coins += 30
+	elif reward.has("currency"):
+		profile.add_item(str(reward.currency), int(reward.get("amount", 1)))
 	elif reward.has("weapon"):
-		profile.add_instance(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)))
+		profile.add_instance(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
+	elif reward.has("gear"):
+		profile.add_instance(str(reward.gear), str(reward.get("quality", "normal")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
 	elif reward.has("map"):
 		profile.add_map(reward.map)
 	profile.save_profile()

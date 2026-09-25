@@ -311,6 +311,9 @@ func finish_turn() -> void:
 		if turn_fly:
 			added += float(balance.fly.delay)
 		added += moved_distance * float(delay_rules.move_per_px) + tools_used * float(delay_rules.tool)
+		if fighter.bonus.has("delay"):
+			# "-Delay" bonus from gear (0.10); a turn always adds some delay.
+			added = maxf(100.0, added - float(fighter.bonus.delay))
 	fighter.delay += added
 	fighter.fly_cooldown = maxi(0, fighter.fly_cooldown - 1)
 	fighter.active = false
@@ -376,7 +379,8 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 	if turn_pow and weapon.has("pow"):
 		var pow_rules: Dictionary = weapon.pow
 		pow_plan = pow_rules
-		scale *= float(pow_rules.get("damage_scale", 1.0))
+		# "+% dano do POW" (0.10) also reaches the POW's fragments, drops and bolts.
+		scale *= float(pow_rules.get("damage_scale", 1.0)) * (1.0 + float(fighter.bonus.get("pow", 0)) / 100.0)
 		radius_scale = float(pow_rules.get("radius_scale", 1.0))
 		extra += int(pow_rules.get("extra_shots", 0))
 		freeze = bool(pow_rules.get("freeze", false))
@@ -387,7 +391,7 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		if heal > 0:
 			for ally in fighters:
 				if ally.team == fighter.team and ally.hp > 0:
-					var recovered: int = mini(heal, ally.max_hp - ally.hp)
+					var recovered: int = mini(healing(ally, heal), ally.max_hp - ally.hp)
 					ally.hp += recovered
 					if recovered > 0:
 						damage_text.emit(ally.center(), "+%d" % recovered, Color("9aff7a"))
@@ -428,7 +432,7 @@ func make_projectile(fighter: TankFighter, from: Vector2, velocity: Vector2, dam
 	var projectile: TankProjectile = TankProjectile.new()
 	projectile.position = from
 	projectile.velocity = velocity
-	projectile.wind = wind * float(balance.wind_accel) * float(style.get("wind_scale", 1.0))
+	projectile.wind = wind * float(balance.wind_accel) * float(style.get("wind_scale", 1.0)) * wind_factor(fighter)
 	projectile.gravity = float(balance.gravity)
 	projectile.terrain = terrain
 	projectile.fighters = fighters
@@ -482,7 +486,12 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 	var fill: bool = bool(item.get("pow_fill", false))
 	if fill and (fighter.pow_gauge >= float(balance.pow_max) or turn_pow):
 		return false
-	energy -= float(item.energy)
+	var free: float = Armory.bonus_limit(fighter.bonus, "poupar")
+	if free > 0.0 and rng.randf() < free:
+		# Weapon bonus (0.10): a chance that the skill costs no energy.
+		damage_text.emit(fighter.center() + Vector2(0, -26), "GRÁTIS!", Color("9ae8ff"))
+	else:
+		energy -= float(item.energy)
 	turn_items.append(id)
 	if fill:
 		# POW Máx (item 9): the bar fills now, so B can release the special this turn.
@@ -502,13 +511,13 @@ func use_tool(slot: int) -> bool:
 	if tool.has("heal"):
 		if fighter.hp >= fighter.max_hp:
 			return false
-		var recovered: int = mini(int(tool.heal), fighter.max_hp - fighter.hp)
+		var recovered: int = mini(healing(fighter, int(tool.heal)), fighter.max_hp - fighter.hp)
 		fighter.hp += recovered
 		damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
 	elif tool.has("team_heal"):
 		for ally in fighters:
 			if ally.team == fighter.team and ally.hp > 0 and ally.hp < ally.max_hp:
-				var healed: int = mini(int(tool.team_heal), ally.max_hp - ally.hp)
+				var healed: int = mini(healing(ally, int(tool.team_heal)), ally.max_hp - ally.hp)
 				ally.hp += healed
 				damage_text.emit(ally.center(), "+%d" % healed, Color("9aff7a"))
 	elif tool.has("energy"):
@@ -712,7 +721,8 @@ func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: fl
 		damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
 		var critical: bool = false
 		if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
-			damage = roundi(damage * 1.5)
+			# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
+			damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
 			critical = true
 		target.shield = 1.0
 		target.take_damage(damage)
@@ -744,10 +754,18 @@ func shove(target: TankFighter, amount: float) -> void:
 	target.settled = false
 	target.update_pose()
 
+func healing(fighter: TankFighter, amount: int) -> int:
+	# "+% cura recebida" (0.10) raises every heal the fighter receives.
+	return roundi(amount * (1.0 + float(fighter.bonus.get("cura", 0)) / 100.0))
+
+func wind_factor(fighter: TankFighter) -> float:
+	# "-% efeito do vento" (0.10), capped at 50%.
+	return 1.0 - Armory.bonus_limit(fighter.bonus, "vento")
+
 func heal_fighter(fighter: TankFighter, amount: int) -> void:
 	if fighter.hp <= 0 or amount <= 0:
 		return
-	var recovered: int = mini(amount, fighter.max_hp - fighter.hp)
+	var recovered: int = mini(healing(fighter, amount), fighter.max_hp - fighter.hp)
 	if recovered > 0:
 		fighter.hp += recovered
 		damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
@@ -886,7 +904,7 @@ func plan_ai(fighter: TankFighter) -> void:
 	if fighter.is_monster:
 		plan_monster(fighter)
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
-	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale, balance)
+	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter), balance)
 	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
 	if not fighter.is_monster:
 		spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))

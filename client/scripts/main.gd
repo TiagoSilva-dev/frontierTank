@@ -56,6 +56,14 @@ func demo_loadout(kind: String) -> void:
 				profile.equip(int(inst.uid))
 				break
 	profile.add_item("strength_stone_iv", 20)
+	# 0.10 showcase: currencies and the equipped gear as high level drops with bonuses.
+	profile.redeem("MOEDAS")
+	for inst: Dictionary in profile.equipped_list():
+		if Crafting.can_have_mods(str(inst.id)):
+			inst.ilvl = 16
+			if inst.quality == "normal" and Armory.slot_of(str(inst.id)) != "arma":
+				inst.quality = "verdadeira" if Armory.slot_of(str(inst.id)) == "roupa" else "excelente"
+			inst.mods = Crafting.roll_mods(inst, profile.rng, 1.0)
 
 func parse_args() -> Dictionary:
 	var result: Dictionary = {}
@@ -130,12 +138,23 @@ func open_named(target: String) -> void:
 		"bag":
 			show_city()
 			open_bag()
+			if args.has("tab"):
+				bag.select_tab(str(args.tab))
 		"shop":
 			show_city()
 			shortcut("shop")
 		"smith":
 			show_city()
 			shortcut("smith")
+			if args.has("tab"):
+				# Capture helper: --tab=Moedas opens another Ferreiro tab.
+				var smith: SmithScreen = ui.get_children().filter(func(node: Node) -> bool: return node is SmithScreen).back()
+				smith.tab = str(args.tab)
+				if args.has("craft"):
+					# --craft=map shows the maps in the Moedas tab.
+					profile.redeem("MAPAS")
+					smith.craft_target = str(args.craft)
+				smith.build()
 		"title":
 			show_title()
 		_:
@@ -280,7 +299,7 @@ func battle_finished(game: LocalMatch) -> Dictionary:
 	last_summary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
 	if game.pve and run != null:
 		last_summary.loot = loot
-		last_summary.instance = {"name": str(run.instance.name), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
+		last_summary.instance = {"name": str(run.instance.name), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
 	return last_summary
 
 func phase_cleared(game: LocalMatch) -> Dictionary:

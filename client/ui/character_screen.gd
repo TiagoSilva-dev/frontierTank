@@ -16,7 +16,8 @@ const ITEM_NAMES: Dictionary = {
 const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]
 const LEFT_SLOTS: Array[String] = ["chapeu", "oculos", "cabelo", "roupa"]
 const RIGHT_SLOTS: Array[String] = ["asas", "arma", "auxiliar"]
-const PER_PAGE: int = 42
+# Five rows leave room for the item's random bonuses (0.10) in the info box.
+const PER_PAGE: int = 35
 
 var app: Node
 var contents: Control
@@ -114,7 +115,7 @@ func item_art(parent: Control, inst: Dictionary, rect: Rect2) -> void:
 	var picture: TextureRect = UiKit.art(parent, Armory.load_icon(inst), rect)
 	picture.modulate = Armory.icon_tint(inst)
 	var quality: String = str(inst.get("quality", "normal"))
-	if Armory.kind_of(str(inst.id)) == "weapon" and quality != "normal":
+	if quality != "normal":
 		var frame: Panel = UiKit.panel(parent, Rect2(rect.position - Vector2(3, 3), rect.size + Vector2(6, 6)), Color(0, 0, 0, 0), Armory.quality_color(inst))
 		frame.add_theme_stylebox_override("panel", UiKit.box(Color(0, 0, 0, 0), Armory.quality_color(inst), 3))
 	if int(inst.get("level", 0)) > 0:
@@ -153,9 +154,24 @@ func build_attributes() -> void:
 		"Vida %d  •  Força física %d por turno" % [int(numbers.vida), int(numbers.energia)],
 		"Avião de papel: %d de energia, recarga %d turnos" % [int(app.balance.fly.energy), int(app.balance.fly.cooldown)],
 	]
+	# Battle bonuses from the random attributes (0.10), summed over the equipment.
+	var bonus: Dictionary = numbers.bonus
+	var parts: Array[String] = []
+	for key: String in ["dano", "critico", "pow", "pow_inicial", "poupar", "vida", "energia", "delay", "vento", "cura"]:
+		if int(bonus.get(key, 0)) > 0:
+			parts.append(Crafting.mod_text({"id": key, "value": int(bonus[key])}))
+	rows.append("Bônus: %s" % (" • ".join(parts) if not parts.is_empty() else "nenhum (use moedas no Ferreiro)"))
 	for i in range(rows.size()):
-		var row: Panel = UiKit.panel(contents, Rect2(52, 236 + i * 54, 556, 48), "dark")
-		UiKit.label(row, rows[i], Rect2(14, 0, 534, 48), 15, Color.WHITE, UiKit.INK)
+		var last: bool = i == rows.size() - 1
+		var row: Panel = UiKit.panel(contents, Rect2(52, 236 + i * 50, 556, 56 if last else 44), "dark")
+		var text: Label = UiKit.label(row, rows[i], Rect2(14, 0, 534, 56 if last else 44), 15, Color.WHITE, UiKit.INK)
+		if last:
+			# The bonus summary wraps (up to 3 lines); the tooltip lists every bonus.
+			text.max_lines_visible = 3
+			text.add_theme_constant_override("line_spacing", -3)
+			UiKit.wrap(text, Vector2(534, 56))
+			row.tooltip_text = "\n".join(parts)
+			row.mouse_filter = Control.MOUSE_FILTER_PASS
 
 func build_history() -> void:
 	UiKit.label(contents, "SUA JORNADA", Rect2(60, 200, 485, 41), 27, Color("67452a"))
@@ -172,6 +188,10 @@ func entries() -> Array[Dictionary]:
 		if category == "Todos" or category == group:
 			list.append({"key": "uid:%d" % int(inst.uid), "inst": inst, "name": Armory.item_name(inst), "sort": group + str(inst.id)})
 	if category in ["Todos", "Materiais"]:
+		# Currencies (0.10) first, in the order of the table, then stones and crystals.
+		for def: Dictionary in Crafting.currencies():
+			if app.profile.currency_count(str(def.id)) > 0:
+				list.append({"key": "item:" + str(def.id), "name": str(def.name), "icon": str(def.icon), "count": app.profile.currency_count(str(def.id))})
 		for id: String in app.profile.items:
 			if int(app.profile.items[id]) > 0 and ITEM_NAMES.has(id):
 				list.append({"key": "item:" + id, "name": ITEM_NAMES[id][0], "icon": ITEM_NAMES[id][1], "count": int(app.profile.items[id]), "sort": "z" + id})
@@ -219,15 +239,16 @@ func build_inventory() -> void:
 			UiKit.art(slot, str(entry.icon), Rect2(14, 4, 48, 50))
 			if int(entry.count) > 1:
 				UiKit.label(slot, str(entry.count), Rect2(30, 36, 44, 20), 14, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	UiKit.button(contents, "<", Rect2(1060, 538, 40, 30), turn_page.bind(-1), "tab", 14)
-	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(1100, 538, 90, 30), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.button(contents, ">", Rect2(1190, 538, 40, 30), turn_page.bind(1), "tab", 14)
-	UiKit.label(contents, "%d itens" % list.size(), Rect2(672, 538, 200, 30), 15, UiKit.TEXT_DARK)
-	var info: Panel = UiKit.panel(contents, Rect2(670, 572, 564, 76), "dark")
+	UiKit.button(contents, "<", Rect2(1060, 474, 40, 30), turn_page.bind(-1), "tab", 14)
+	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(1100, 474, 90, 30), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.button(contents, ">", Rect2(1190, 474, 40, 30), turn_page.bind(1), "tab", 14)
+	UiKit.label(contents, "%d itens" % list.size(), Rect2(672, 474, 200, 30), 15, UiKit.TEXT_DARK)
+	var info: Panel = UiKit.panel(contents, Rect2(670, 508, 564, 140), "dark")
 	selected_label = RichTextLabel.new()
 	selected_label.bbcode_enabled = true
+	selected_label.scroll_active = false
 	selected_label.position = Vector2(10, 4)
-	selected_label.size = Vector2(546, 70)
+	selected_label.size = Vector2(546, 134)
 	selected_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	selected_label.add_theme_font_override("normal_font", UiKit.font())
 	selected_label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
@@ -256,7 +277,18 @@ func describe(inst: Dictionary) -> String:
 		"cosmetic":
 			var def: Dictionary = Armory.cosmetic_def(id)
 			var gender: String = {"m": " (masculino)", "f": " (feminino)"}.get(str(def.gender), "")
-			text += "  [color=#ffd46b]%s%s[/color]\n%s" % [Armory.SLOT_NAMES[def.slot], gender, " • ".join(parts)]
+			var quality: String = "" if str(inst.get("quality", "normal")) == "normal" else " %s" % Armory.quality_def(str(inst.quality)).label
+			text += "  [color=#ffd46b]%s%s%s[/color]\n%s" % [Armory.SLOT_NAMES[def.slot], quality, gender, " • ".join(parts)]
+	if Crafting.can_have_mods(id):
+		# Random bonuses (0.10) with their tier, the item level and the trade flags.
+		var facts: Array[String] = ["Nível do item %d" % Crafting.item_level(inst)]
+		if bool(inst.get("mirrored", false)):
+			facts.append("Espelhado")
+		elif bool(inst.get("bound", false)):
+			facts.append("Vinculado")
+		text += "\n[color=#c8b8a0]%s[/color]" % " • ".join(facts)
+		for line in Crafting.describe(inst):
+			text += "\n[color=#9ae8ff]%s[/color]" % line
 	return text
 
 func refresh_selection(list: Array[Dictionary]) -> void:
@@ -285,7 +317,10 @@ func refresh_selection(list: Array[Dictionary]) -> void:
 		elif entry.key == selected:
 			selected_label.text = "%s  x%d" % [entry.name, int(entry.get("count", 1))]
 			var stone: Dictionary = Armory.stone_def(selected.substr(5))
-			if not stone.is_empty():
+			var currency: Dictionary = Crafting.currency_def(selected.substr(5))
+			if not currency.is_empty():
+				selected_label.text += "  [color=#ffd46b]%s[/color]\n%s\nUse no Ferreiro, aba Moedas, em equipamentos e mapas." % [currency.en, currency.desc]
+			elif not stone.is_empty():
 				selected_label.text += "\nVale %d ponto(s) de fortalecimento no Ferreiro." % int(stone.points)
 			elif selected.begins_with("tool:"):
 				selected_label.text += "\nFerramenta de batalha (Z/X/C)."

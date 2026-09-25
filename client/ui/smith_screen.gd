@@ -5,15 +5,21 @@ extends Control
 # Cristal Dourado, Fusão of 4 equal stones into the next level and Transferência of the
 # strengthen level between two items of the same kind. Weapon art evolves at +9/+10/+12
 # and the aura follows the level: +1-5 green, +6-8 blue, +9-11 purple, +12 red.
+# Moedas (0.10): the currencies (Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse and
+# Espelho Celeste) used on gear and on instance maps to change quality and bonuses.
 
 signal closed
 
-const TABS: Array[String] = ["Fortalecer", "Composição", "Fusão", "Transferência"]
+const TABS: Array[String] = ["Fortalecer", "Composição", "Fusão", "Transferência", "Moedas"]
+const CRAFT_PER_PAGE: int = 36
 
 var app: Node
 var tab: String = "Fortalecer"
 var selected_uid: int = -1
 var target_uid: int = -1
+var craft_target: String = "item"
+var map_uid: int = -1
+var page: int = 0
 var contents: Control
 var flash_time: float = 0.0
 var message: String = ""
@@ -44,6 +50,9 @@ func build() -> void:
 	UiKit.panel(contents, Rect2(588, 130, 636, 550), "paper")
 	if tab == "Fusão":
 		build_fusion()
+	elif tab == "Moedas":
+		build_craft_list()
+		build_craft()
 	else:
 		build_item_list()
 		match tab:
@@ -214,6 +223,186 @@ func build_transfer() -> void:
 		UiKit.label(contents, Armory.item_name(target), Rect2(950, 476, 270, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	UiKit.button(contents, "TRANSFERIR", Rect2(806, 560, 220, 54), do_transfer, "button_green", 20)
 
+# ---------- Moedas (0.10) ----------
+
+func craft_items() -> Array[Dictionary]:
+	var list: Array[Dictionary] = []
+	for inst: Dictionary in app.profile.inventory:
+		if Crafting.can_have_mods(str(inst.id)):
+			list.append(inst)
+	var rank: Dictionary = {"super": 0, "verdadeira": 1, "excelente": 2, "normal": 3}
+	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(rank.get(a.quality, 3)) < int(rank.get(b.quality, 3)) if a.quality != b.quality else (Armory.slot_of(str(a.id)) + str(a.id) < Armory.slot_of(str(b.id)) + str(b.id)))
+	return list
+
+func craft_maps() -> Array[Dictionary]:
+	var list: Array[Dictionary] = app.profile.maps.duplicate()
+	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level) if a.level != b.level else str(a.instance) < str(b.instance))
+	return list
+
+func build_craft_list() -> void:
+	for i in range(2):
+		var kind: String = ["item", "map"][i]
+		var toggle: Button = UiKit.button(contents, ["Equipamentos", "Mapas"][i], Rect2(70 + i * 170, 136, 164, 34), select_target.bind(kind), "tab_active" if craft_target == kind else "tab", 15)
+		toggle.name = "Target_" + kind
+	var list: Array[Dictionary] = craft_items() if craft_target == "item" else craft_maps()
+	if craft_target == "item" and (list.is_empty() or not list.any(func(inst: Dictionary) -> bool: return int(inst.uid) == selected_uid)):
+		selected_uid = int(list[0].uid) if not list.is_empty() else -1
+	if craft_target == "map" and not list.any(func(item: Dictionary) -> bool: return int(item.uid) == map_uid):
+		map_uid = int(list[0].uid) if not list.is_empty() else -1
+	var pages: int = maxi(1, ceili(list.size() / float(CRAFT_PER_PAGE)))
+	page = clampi(page, 0, pages - 1)
+	for i in range(CRAFT_PER_PAGE):
+		var index: int = page * CRAFT_PER_PAGE + i
+		if index >= list.size():
+			break
+		var entry: Dictionary = list[index]
+		var uid: int = int(entry.uid)
+		var chosen: bool = uid == (selected_uid if craft_target == "item" else map_uid)
+		var rect: Rect2 = Rect2(70 + (i % 6) * 82, 176 + (i / 6 as int) * 72, 76, 66)
+		var slot: Button = UiKit.button(contents, "", rect, pick_craft.bind(uid), "card_hover" if chosen else "slot")
+		if craft_target == "item":
+			slot.name = "Craft_%d" % uid
+			slot.tooltip_text = "%s\n%s" % [Armory.item_name(entry), "\n".join(Crafting.describe(entry))]
+			var picture: TextureRect = UiKit.art(slot, Armory.load_icon(entry), Rect2(12, 6, 52, 52))
+			picture.modulate = Armory.icon_tint(entry)
+			if str(entry.quality) != "normal":
+				slot.add_child(quality_frame(Rect2(8, 3, 60, 60), Armory.quality_color(entry)))
+			if int(entry.level) > 0:
+				UiKit.label(slot, "+%d" % int(entry.level), Rect2(2, 0, 40, 20), 14, Armory.aura_color(int(entry.level)).lightened(0.3), UiKit.INK)
+			var mods: int = (entry.get("mods", []) as Array).size()
+			if mods > 0:
+				UiKit.label(slot, str(mods), Rect2(56, 44, 18, 20), 14, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+			if app.profile.is_equipped(uid):
+				UiKit.label(slot, "E", Rect2(4, 44, 16, 20), 13, Color("9aff7a"), UiKit.INK)
+		else:
+			slot.name = "CraftMap_%d" % uid
+			slot.tooltip_text = "%s\n%s" % [InstanceRun.map_name(entry), "\n".join(InstanceRun.describe_map(entry))]
+			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(12, 6, 52, 52))
+			UiKit.label(slot, str(int(entry.level)), Rect2(40, 42, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	if list.is_empty():
+		UiKit.label(contents, "Nenhum equipamento que aceite bônus." if craft_target == "item" else "Nenhum mapa na mochila.", Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
+	UiKit.button(contents, "<", Rect2(380, 626, 40, 32), turn_page.bind(-1), "tab", 14)
+	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(420, 626, 80, 32), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.button(contents, ">", Rect2(500, 626, 40, 32), turn_page.bind(1), "tab", 14)
+	UiKit.label(contents, "%d %s" % [list.size(), "itens" if craft_target == "item" else "mapas"], Rect2(72, 626, 200, 32), 15, UiKit.TEXT_DARK)
+
+func quality_frame(rect: Rect2, color: Color) -> Panel:
+	var frame: Panel = Panel.new()
+	frame.position = rect.position
+	frame.size = rect.size
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.add_theme_stylebox_override("panel", UiKit.box(Color(0, 0, 0, 0), color, 3))
+	return frame
+
+func craft_subject() -> Dictionary:
+	return app.profile.find_instance(selected_uid) if craft_target == "item" else app.profile.find_map(map_uid)
+
+func build_craft() -> void:
+	var subject: Dictionary = craft_subject()
+	if subject.is_empty():
+		UiKit.label(contents, "Escolha um equipamento ou um mapa.", Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		build_currency_buttons(subject)
+		return
+	var lines: Array[String] = []
+	var colors: Array[Color] = []
+	var box: Panel = UiKit.panel(contents, Rect2(604, 206, 120, 120), "dark")
+	box.clip_contents = true
+	if craft_target == "item":
+		var quality: String = str(subject.quality)
+		UiKit.label(contents, Armory.item_name(subject), Rect2(600, 138, 612, 32), 22, Armory.quality_color(subject).darkened(0.35), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var facts: Array[String] = [str(Armory.quality_def(quality).label), "Nível do item %d" % Crafting.item_level(subject), "%d/%d bônus" % [(subject.get("mods", []) as Array).size(), Crafting.max_mods(quality)]]
+		if bool(subject.get("mirrored", false)):
+			facts.append("Espelhado")
+		elif bool(subject.get("bound", false)):
+			facts.append("Vinculado")
+		UiKit.label(contents, "  •  ".join(facts), Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var picture: TextureRect = UiKit.art(box, Armory.load_icon(subject), Rect2(14, 14, 92, 92))
+		picture.modulate = Armory.icon_tint(subject)
+		box.add_child(quality_frame(Rect2(4, 4, 112, 112), Armory.quality_color(subject)))
+		lines = Crafting.describe(subject)
+		for line in lines:
+			colors.append(Color("9ae8ff"))
+		if lines.is_empty():
+			lines.append("Sem bônus. Use uma Brasa para torná-lo Excelente." if quality == "normal" else "Sem bônus.")
+			colors.append(Color("c8b8a0"))
+	else:
+		UiKit.label(contents, InstanceRun.map_name(subject), Rect2(600, 138, 612, 32), 22, InstanceRun.quality_color(str(subject.quality)).darkened(0.35), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var count: Array = Crafting.map_count(str(subject.quality))
+		UiKit.label(contents, "%s  •  %d/%d atributos  •  consumido ao entrar" % [InstanceRun.quality_label(str(subject.quality)), (subject.get("mods", []) as Array).size(), int(count[1])], Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.art(box, InstanceRun.map_icon(subject), Rect2(14, 14, 92, 92))
+		UiKit.label(box, str(int(subject.level)), Rect2(60, 80, 54, 34), 26, InstanceRun.quality_color(str(subject.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+		for kind: String in ["threat", "reward"]:
+			for mod: Dictionary in subject.get("mods", []):
+				if str(InstanceRun.mod_def(str(mod.id)).get("kind", "")) == kind:
+					lines.append(InstanceRun.mod_text(mod))
+					colors.append(Color("ff8a6a") if kind == "threat" else Color("9aff7a"))
+		if lines.is_empty():
+			lines.append("Sem atributos. Use uma Brasa para torná-lo Excelente.")
+			colors.append(Color("c8b8a0"))
+	var list: Panel = UiKit.panel(contents, Rect2(736, 206, 472, 120), "dark")
+	list.name = "CraftBonuses"
+	for i in range(mini(lines.size(), 4)):
+		UiKit.label(list, lines[i], Rect2(12, 4 + i * 28, 452, 28), 16, colors[i], UiKit.INK)
+	build_currency_buttons(subject)
+
+func build_currency_buttons(subject: Dictionary) -> void:
+	UiKit.label(contents, "Clique numa moeda para usá-la. Usar gasta a moeda.", Rect2(600, 332, 612, 26), 16, Color("8a3a10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var list: Array = Crafting.currencies()
+	for i in range(list.size()):
+		var def: Dictionary = list[i]
+		var id: String = str(def.id)
+		var count: int = app.profile.currency_count(id)
+		var reason: String = ""
+		if subject.is_empty():
+			reason = "Escolha um equipamento ou um mapa."
+		else:
+			reason = Crafting.check(id, subject) if craft_target == "item" else Crafting.check_map(id, subject)
+		if reason == "" and count <= 0:
+			reason = "Você não tem %s." % def.name
+		var rect: Rect2 = Rect2(606 + (i % 4) * 152, 362 + (i / 4 as int) * 132, 144, 124)
+		var button: Button = UiKit.button(contents, "", rect, do_craft.bind(id), "slot_light")
+		button.name = "Currency_" + id
+		button.disabled = reason != ""
+		button.add_theme_stylebox_override("disabled", UiKit.frame("card_busy"))
+		button.tooltip_text = "%s (%s)\n%s%s" % [def.name, def.en, def.desc, "\n\n" + reason if reason != "" else ""]
+		var icon: TextureRect = UiKit.art(button, str(def.icon), Rect2(44, 8, 56, 56))
+		UiKit.label(button, str(def.name), Rect2(0, 64, 144, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(button, "x%d" % count, Rect2(0, 90, 144, 26), 16, Color("2f7a1f") if count > 0 else Color("8a7a6a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		if button.disabled:
+			icon.modulate = Color(0.55, 0.52, 0.5)
+
+func select_target(kind: String) -> void:
+	craft_target = kind
+	page = 0
+	message = ""
+	build()
+
+func pick_craft(uid: int) -> void:
+	if craft_target == "item":
+		selected_uid = uid
+	else:
+		map_uid = uid
+	message = ""
+	build()
+
+func turn_page(step: int) -> void:
+	page += step
+	build()
+
+func do_craft(currency: String) -> void:
+	var def: Dictionary = Crafting.currency_def(currency)
+	var error: String = app.profile.craft(currency, selected_uid) if craft_target == "item" else app.profile.craft_map(currency, map_uid)
+	var subject: Dictionary = craft_subject()
+	var done: String = ""
+	if error == "":
+		if currency == "espelho":
+			done = "Espelho Celeste usado: uma cópia vinculada de %s foi para a Mochila." % Armory.item_name(subject)
+		elif craft_target == "item":
+			done = "%s usada: %s agora tem %d bônus." % [def.name, Armory.item_name(subject), (subject.get("mods", []) as Array).size()]
+		else:
+			done = "%s usada: o mapa agora tem %d atributos." % [def.name, (subject.get("mods", []) as Array).size()]
+	report(error, done)
+
 func pick(uid: int) -> void:
 	if tab == "Transferência" and selected_uid >= 0 and uid != selected_uid:
 		target_uid = uid
@@ -226,6 +415,7 @@ func pick(uid: int) -> void:
 func select_tab(value: String) -> void:
 	tab = value
 	target_uid = -1
+	page = 0
 	message = ""
 	build()
 

@@ -6,7 +6,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 |---|------|----------------------|---------|
 | 1 | POW mais bonito, arma e projétil maiores | Não | 0.8 — **feito** |
 | 2 | Instâncias de 3 fases e **sistema de mapas** (no lugar das dificuldades) | Não para desenvolver e jogar solo; sim para grupos | 0.9 — **feito** (offline e solo) |
-| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft), 0.11 (leilão) |
+| 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito** (offline); 0.11 (leilão) |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes |
 
 ## Decisões tomadas (25/09/2026)
@@ -127,7 +127,7 @@ Cada chefe novo precisa de arte PixelLab (pose, repouso e ataque). Temos um limi
   - +X% chance de Super Verdadeira
 - As moedas do item 3 funcionam também nos mapas: Brasa e Coroa sobem a qualidade, Estrela acrescenta um atributo, Tormenta rerola tudo. **Os mapas são o principal gasto de moedas**, e isso é o que mantém o valor delas.
 
-**Feito na 0.9:** mapas com nível, qualidade e atributos (`combat.json` → `map_items`, `InstanceRun`), consumidos ao entrar, espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS` para teste. **Falta:** negociar no leilão (item 3.3), Solar e moedas raras (item 3) e usar as moedas nos mapas (item 3.2).
+**Feito na 0.9:** mapas com nível, qualidade e atributos (`combat.json` → `map_items`, `InstanceRun`), consumidos ao entrar, espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS` para teste. **Feito na 0.10:** Solar e moedas raras nos mapas altos e as moedas usadas nos mapas (aba Moedas do Ferreiro). **Falta:** negociar no leilão (item 3.3).
 
 **Depois (opcional):** um "Atlas", com árvore de pontos ganhos ao completar mapas, para personalizar os drops (como no PoE 2).
 
@@ -146,10 +146,10 @@ Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. 
 **Feito na 0.9:** `combat.json` → `party_scaling`, aplicado por `InstanceRun` (conta só jogadores humanos) e coberto por `tests/pve_tests.gd`.
 
 ### 2.4 Loot
-- [x] Armas Verdadeiras e as Super Verdadeiras no loot das instâncias (com nível do item = nível do mapa); os **atributos bônus aleatórios** entram com o item 3. Uma Verdadeira com bons bônus é o item mais cobiçado.
+- [x] Armas Verdadeiras e as Super Verdadeiras no loot das instâncias (com nível do item = nível do mapa); os **atributos bônus aleatórios** entraram na 0.10. Uma Verdadeira com bons bônus é o item mais cobiçado.
 - [x] **Garantia** de Super Verdadeira: um contador por instância que garante uma depois de N vitórias de chefão sem ela.
-- [x] Mapas no loot (as moedas entram com o item 3).
-- [x] As cartas de recompensa ganham uma raridade nova para mapas (carta esmeralda); moedas raras com o item 3.
+- [x] Mapas no loot; moedas no loot desde a 0.10.
+- [x] As cartas de recompensa ganham uma raridade nova para mapas (carta esmeralda); moedas raras desde a 0.10.
 - [x] Proposta: a Loja passa a vender só Normal e Excelente, sem bônus. A Verdadeira vem de drop ou da Coroa; se não, o ouro compra o que deveria vir das instâncias.
 
 **Decidido provisoriamente na 0.9:**
@@ -166,9 +166,9 @@ Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. 
 **Por que as moedas do PoE funcionam:** toda moeda tem um **uso**, e usar gasta a moeda. Isso cria demanda e tira moedas do jogo, por isso elas mantêm valor e viram dinheiro entre os jogadores. Aqui, o uso é mexer nos atributos aleatórios de itens e mapas.
 
 ### 3.1 Atributos bônus aleatórios nos itens
-- **Quantos**, pela qualidade: Normal 0; Excelente 1–2; Verdadeira 3–4; Super Verdadeira sempre 4.
-- **Nível do item** = nível do mapa onde caiu. Cada bônus tem faixas (F1 é a melhor), e as faixas altas só aparecem em itens de nível alto.
-- **Bônus por tipo de peça.**
+- [x] **Quantos**, pela qualidade: Normal 0; Excelente 1–2; Verdadeira 3–4; Super Verdadeira sempre 4.
+- [x] **Nível do item** = nível do mapa onde caiu. Cada bônus tem faixas (F1 é a melhor), e as faixas altas só aparecem em itens de nível alto.
+- [x] **Bônus por tipo de peça.**
   - Arma:
     - +Ataque
     - +% dano
@@ -185,9 +185,18 @@ Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. 
     - −Delay
     - −% efeito do vento
     - +% cura recebida
-- Nada de bônus que mude o raio da explosão ou o hitbox.
-- **Fortalecimento** (+1 a +12) continua aumentando só os atributos base; os bônus não mudam. **Composição** (Cristal Dourado) continua como está.
-- Itens da Loja e de cupons vêm sem bônus.
+- [x] Nada de bônus que mude o raio da explosão ou o hitbox.
+- [x] **Fortalecimento** (+1 a +12) continua aumentando só os atributos base; os bônus não mudam. **Composição** (Cristal Dourado) continua como está.
+- [x] Itens da Loja e de cupons vêm sem bônus.
+
+**Feito na 0.10 (25/09/2026):** `items.json` → `affixes` e `crafting.gd` (`Crafting`); bônus aplicados em `Armory.character_stats` e na partida (`TankFighter.bonus`, `LocalMatch`); rolados no drop das armas, da Super Verdadeira e dos equipamentos; Mochila mostra bônus, faixa e nível do item; save v5 (drops antigos ganham bônus uma vez ao carregar); teste `tests/craft_tests.gd`.
+
+**Decidido provisoriamente na 0.10:**
+- Faixas pelo nível do item: F5 a partir do nível 1, F4 do 4, F3 do 7, F2 do 10 e F1 do 13 (pesos 100/70/45/25/12; a raridade do mapa favorece as faixas melhores).
+- Chapéus, óculos, asas e roupas (do gênero do personagem) também caem no baú das instâncias, com nível do item; sem isso só existiriam equipamentos de nível 1, que só rolam F5.
+- Qualidade em roupas, chapéus, óculos e asas só define a quantidade de bônus e a cor; o multiplicador de dano e atributos da qualidade continua só nas armas.
+- Limites: −% efeito do vento até 50% e chance de habilidade grátis até 40%; o −Delay deixa pelo menos 100 de Delay por turno.
+- Itens da Loja, de cupons e cópias do Espelho Celeste ficam marcados como **vinculados** no save, já pensando no leilão.
 
 ### 3.2 Moedas
 Nomes próprios, escolhidos para funcionar em português e em inglês e combinar com o tema do jogo (sol, céu, forja). São a proposta inicial; dá para trocar qualquer um.
@@ -205,8 +214,16 @@ Nomes próprios, escolhidos para funcionar em português e em inglês e combinar
 Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 
 - As **moedas de ouro** que já existem continuam para NPC, Loja e Ferreiro.
-- [ ] Novas abas do Ferreiro para usar as moedas em itens e mapas.
-- [ ] Onde caem: cartas e baús das instâncias (as raras só em mapas de nível alto) e um pouco no PvP.
+- [x] Novas abas do Ferreiro para usar as moedas em itens e mapas.
+- [x] Onde caem: cartas e baús das instâncias (as raras só em mapas de nível alto) e um pouco no PvP.
+
+**Feito na 0.10:** `items.json` → `currencies`, `Crafting.apply`/`apply_map`, `PlayerProfile.craft`/`craft_map`, aba **Moedas** no Ferreiro (equipamentos e mapas), moedas por fase e cartas de moeda (`InstanceRun`), Brasa e Coroa nas cartas do PvP (`rewards.pvp_cards`), ícones provisórios (`tools/currency_icons.py`), cupom `MOEDAS`.
+
+**Decidido provisoriamente na 0.10:**
+- Chance de moeda por fase vencida: 35% (fase 1), 45% (fase 2) e 100% no chefão, vezes (1 + quantidade de itens do mapa); mais cartas de moeda no baú (peso 12, como as outras cartas raras).
+- Peso de cada moeda (mais o ganho por nível do mapa) e nível mínimo: Brasa 40 (entrada livre), Coroa 18 (1+), Eclipse 6 +0,5/nível (2+), Estrela 5 +0,5 (3+), Tormenta 5 +0,4 (3+), Solar 1 +0,3 (5+), Espelho Celeste 0,05 +0,02 (10+). No nível 16 o Solar é cerca de 5,6% das moedas e o Espelho 0,4%.
+- O Espelho Celeste só duplica equipamentos (não mapas). As outras seis funcionam nos mapas.
+- Estrela e Tormenta precisam de item Excelente ou melhor; Brasa só em Normal e Coroa só em Excelente, como no PoE.
 
 ### 3.3 Leilão (precisa do servidor)
 - [ ] Prédio do Leilão na cidade, com busca e filtros (tipo, qualidade, nível do item, fortalecimento, bônus, nível do mapa e faixa de preço).
@@ -273,7 +290,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 
 1. **0.8 — POW e tradução** (item 1 e 4.3): o POW novo (**feito**) e a base de tradução (português e inglês), antes que o jogo tenha ainda mais texto (**falta**).
 2. **0.9 — Instâncias e mapas** (item 2, **feito**): 3 fases, mapas com nível e atributos no lugar das dificuldades, escala por grupo pronta, loot com Verdadeiras e Super Verdadeiras. Offline e solo.
-3. **0.10 — Atributos e moedas** (item 3.1 e 3.2): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
+3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **Backend**: contas, grupos reais, partida com autoridade do servidor, e drops, rolagens e moedas no servidor.
 5. **0.11 — Leilão** (item 3.3) em cima do backend.
 6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam.

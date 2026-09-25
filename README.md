@@ -1,4 +1,4 @@
-# Frontier Tank: Nova Era — 0.9 (POW novo, instâncias de 3 fases e mapas)
+# Frontier Tank: Nova Era — 0.10 (atributos aleatórios, moedas e craft)
 
 Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou importe **project.godot** no Godot 4.7 e pressione F5. Em outro computador, configure `GODOT_BIN` com o caminho do executável Godot.
 
@@ -9,7 +9,7 @@ Réplica em pixel art do fluxo clássico do DDTank, contra bots (modo offline):
 | **Entrada** (`docs/screens/title.png`) | Como o login do DDTank: arte com os heróis e dirigíveis, logotipo **FRONTIER TANK · NOVA ERA** com brilho passando, escolha de servidor (simulada) e **ENTRAR** (ou Enter). |
 | **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro** e **Centro Comercial** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
 | **Mochila** (`bag.png`) | Informações Pessoais como no DDTank: slots Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta do personagem, que veste tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros. Ataque, Agilidade, Defesa, Sorte, Dano, Proteção, Vida e Força física. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**; equipar, remover e vender. |
-| **Ferreiro** (`smith.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Composição** com Cristal Dourado, **Fusão** de 4 pedras iguais e **Transferência** do nível entre dois itens do mesmo tipo. |
+| **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Composição** com Cristal Dourado, **Fusão** de 4 pedras iguais, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
 | **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); roupas, chapéus, óculos, asas, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
 | **Salão de Jogos** (`hall.png`) | Lista de salas, filtro, informações do usuário com o personagem equipado, lista de jogadores, **Equipe**, **Buscar** e **Jogar**. |
 | **Sala** (`room.png`, `pve.png`) | 4 vagas com cada jogador vestido (roupa, chapéu, asas e auras), VS, modos, mapa, tempo do turno, ferramentas Z/X/C, Convide, Local e Início. Na Instância, **Local** escolhe uma das 4 instâncias e o **espaço de mapa** recebe um mapa da mochila (nível, qualidade e atributos) ou fica na entrada livre. |
@@ -52,12 +52,37 @@ Entre as fases: tela de transição, +30% de vida, o POW continua e quem caiu vo
 
 **Grupo**: a escala por número de jogadores (vida 1,8×/2,5×/3,2×, dano, lacaios extras, recompensa e cartas; ataque em área do chefe com 3–4 jogadores) está pronta e testada, e passa a valer quando houver grupos online; bots na sala não contam.
 
+## Atributos aleatórios e moedas (0.10)
+Como no PoE 2, armas, roupas, chapéus, óculos e asas têm **atributos bônus aleatórios**: Normal 0, Excelente 1–2, Verdadeira 3–4 e Super Verdadeira sempre 4 (`bag_bonus.png`).
+
+| Peça | Bônus possíveis |
+|---|---|
+| Arma | +Ataque · +% dano · +% dano crítico · +% dano do POW · POW inicial · chance de não gastar a habilidade 1–9 |
+| Roupa, chapéu, óculos e asas | +Defesa · +vida máxima · +Agilidade · +Sorte · +energia por turno · −Delay · −% efeito do vento (até 50%) · +% cura recebida |
+
+Cada bônus tem faixas **F1** (melhor) a **F5**. O **nível do item** é o nível do mapa onde ele caiu e libera as faixas: F5 no nível 1, F4 no 4, F3 no 7, F2 no 10 e F1 no 13. Por isso mapas altos dão itens melhores, e não só mais itens. Nenhum bônus muda o raio da explosão ou o hitbox, e o fortalecimento continua aumentando só os atributos base.
+
+**Moedas** (aba **Moedas** do Ferreiro, `smith_moedas.png` e `smith_moedas_mapas.png`). Usar gasta a moeda; se não der para usar, o botão fica apagado e a dica explica o motivo.
+
+| Moeda | Uso em itens e mapas | Cai em |
+|---|---|---|
+| **Brasa** (Ember) | Normal → Excelente, com 1 bônus | qualquer mapa e a entrada livre; um pouco no PvP |
+| **Coroa** (Crown) | Excelente → Verdadeira, com +1 bônus | mapas de nível 1+; um pouco no PvP |
+| **Estrela** (Star) | Acrescenta 1 bônus (até o limite da qualidade) | nível 3+ |
+| **Tormenta** (Storm) | Rerola todos os bônus | nível 3+ |
+| **Solar** | Rerola só os valores, mantendo quais bônus são | nível 5+ (moeda principal do futuro leilão) |
+| **Eclipse** | Remove 1 bônus | nível 2+ |
+| **Espelho Celeste** (Sky Mirror) | Duplica um equipamento; a cópia fica vinculada e não pode ser modificada | nível 10+, muito rara |
+
+Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não poderão ir ao leilão.
+
 ## Cupons para teste
 Na cidade (botão **CUPOM**), na Mochila ou na Loja:
 - `TESTARTUDO`: todas as armas em todas as qualidades, as três super armas, auxiliares, todas as roupas, chapéus, óculos, asas e cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.
 - `AURAS`: quatro Quebra Tijolos Verdadeiros em +3, +7, +10 e +12, para ver as quatro auras.
 - `PEDRAS`: 50 pedras de cada nível.
 - `MAPAS`: mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas (pode ser usado de novo).
+- `MOEDAS`: 30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste (pode ser usado de novo).
 
 Os outros cupons valem uma vez por conta.
 
@@ -65,9 +90,9 @@ Os outros cupons valem uma vez por conta.
 ← → andar (gasta energia) · ↑ ↓ ângulo · segurar/soltar **Espaço** força · **1–9** habilidades · **Z X C** ferramentas · **B** POW · **F** avião · **V** item auxiliar · **P** passar · **Q** virar · **Esc** pausa · **M** música · botão direito arrasta a câmera · clique no minimapa move a câmera.
 
 ## Verificação
-Execute: `powershell -File tools/run.ps1 -Test` — 287 verificações (combate 54, instâncias e mapas 66, interface 68, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43).
+Execute: `powershell -File tools/run.ps1 -Test` — 358 verificações (combate 54, instâncias e mapas 66, interface 75, armas/Ferreiro/cupons/especiais 56, POW e escala visual 43, atributos aleatórios e moedas 64).
 
-Capturas: `godot --path . -- --screen=<title|city|hall|room|pve|battle|pve_battle|result|cards|bag|shop|smith> --out=arquivo.png` (`--profile=user://outro.json` evita mexer no seu save; `--demo=1` resgata o TESTARTUDO e veste um conjunto de vitrine; `--zoom=2` aproxima a câmera da partida; `--map=<id>` escolhe o mapa da partida; em `pve` e `pve_battle`, `--instance=<id>`, `--level=<1..16>` coloca um mapa daquele nível e `--phase=<1..3>` começa na fase pedida).
+Capturas: `godot --path . -- --screen=<title|city|hall|room|pve|battle|pve_battle|result|cards|bag|shop|smith> --out=arquivo.png` (`--profile=user://outro.json` evita mexer no seu save; `--demo=1` resgata o TESTARTUDO e o MOEDAS e veste um conjunto de vitrine com bônus; em `smith`, `--tab=Moedas` abre a aba de moedas e `--craft=map` mostra os mapas; em `bag`, `--tab=Atributos` abre os atributos; `--zoom=2` aproxima a câmera da partida; `--map=<id>` escolhe o mapa da partida; em `pve` e `pve_battle`, `--instance=<id>`, `--level=<1..16>` coloca um mapa daquele nível e `--phase=<1..3>` começa na fase pedida).
 
 ## Mapas
 Como no DDTank, o chão de cada mapa é uma pintura: ilhas geradas no PixelLab cujo contorno é a colisão, destruídas pixel a pixel. **Ilha Celeste** (ilhas de grama sobre um mar de nuvens), **Pátio do Templo** (ruínas de areia), **Câmara do Guardião** (gelo, com neve caindo), **Trono das Máscaras** (rocha vulcânica, com brasas) e **Templo do Sol** (piso do templo, Instância). Na 0.9 entraram **Portões de Brasa**, **Salão das Máscaras**, **Trilha Congelada**, **Caverna de Cristal**, **Pico da Nevasca** (só na Instância), **Ruínas Flutuantes** e **Santuário dos Ventos**. As explosões têm fogo animado, clarão, onda de choque, fumaça e pedaços do chão voando; a cratera fica com a borda queimada.
@@ -79,4 +104,4 @@ Toda a arte é do PixelLab: a entrada e o logotipo, a cidade e os prédios, os f
 Todo o áudio é original e gerado por código (`tools/synth.py`, um pequeno sintetizador em numpy): os efeitos por `tools/make_sfx.py` e as três músicas por `tools/make_music.py` (orquestra sintetizada: metais, cordas, coro, harpa, tímpanos e taikos, com reverb de sala). Arquivos em `assets/audio/sfx` e `assets/audio/music` (Ogg Vorbis, cerca de 6 MB no total). Para trocar por outra música, basta substituir `lobby.ogg`, `battle.ogg` ou `instance.ogg`. Detalhes em [docs/AUDIO_0_7.md](docs/AUDIO_0_7.md).
 
 ## Limites
-Não há servidor: salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat. Leilão, Namoro, PET (e a Casa dos Mascotes), Correio e Missão mostram aviso de "ainda não disponível". Moedas e itens ficam em `user://profile.json` e não valem como economia online. Rosto e olhos ainda não são slots separados.
+Não há servidor: salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat. Leilão, Namoro, PET (e a Casa dos Mascotes), Correio e Missão mostram aviso de "ainda não disponível". Moedas e itens ficam em `user://profile.json` e não valem como economia online. Rosto e olhos ainda não são slots separados. Os ícones das sete moedas da 0.10 são provisórios, desenhados por `tools/currency_icons.py`, até a arte PixelLab (`docs/PIXELLAB_0_10.md`).
