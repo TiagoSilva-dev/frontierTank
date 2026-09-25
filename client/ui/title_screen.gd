@@ -61,8 +61,10 @@ func _ready() -> void:
 	enter_button = UiKit.button(box, tr("ENTRAR"), Rect2(150, 380, 180, 46), enter, "button_green", 24)
 	enter_button.name = "EnterButton"
 	UiKit.label(self, tr("Frontier Tank: Nova Era %s") % VERSION, Rect2(12, 690, 400, 26), 15, Color("fff4d6"), UiKit.INK)
-	var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
-	quit.name = "QuitButton"
+	if not OS.has_feature("web"):
+		# A browser tab cannot close itself (web build for closed tests).
+		var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
+		quit.name = "QuitButton"
 	for i in range(Lang.LOCALES.size()):
 		var code: String = Lang.LOCALES[i]
 		var language: Button = UiKit.button(self, Lang.LABELS[code], Rect2(1000 + i * 138, 12, 130, 36), choose_language.bind(code), "tab_active" if Lang.locale() == code else "tab", 15)

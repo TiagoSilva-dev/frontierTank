@@ -62,159 +62,163 @@ msgstr ""
 msgid "Veterano"
 msgstr ""
 
-#: client/net/auth_client.gd:101
-msgid "Sua conta entrou em outro lugar."
-msgstr ""
-
-#: client/net/auth_client.gd:103
-msgid "O servidor está cheio. Tente outro servidor."
-msgstr ""
-
-#: client/net/auth_client.gd:105
-msgid "O servidor está reiniciando. Entre de novo em instantes."
-msgstr ""
-
-#: client/net/auth_client.gd:107
-msgid "Seu perfil mudou em outro lugar. Entre de novo."
-msgstr ""
-
-#: client/net/auth_client.gd:109
-msgid "O servidor não respondeu a tempo."
-msgstr ""
-
-#: client/net/auth_client.gd:111
-msgid "A conexão com o servidor caiu."
-msgstr ""
-
-#: client/net/auth_client.gd:112
-msgid "Erro do servidor: %s"
-msgstr ""
-
-#: client/net/auth_client.gd:81
-msgid "Não foi possível conectar ao servidor. Verifique a internet e tente de novo."
-msgstr ""
-
-#: client/net/auth_client.gd:83
-msgid "Conta: use de 3 a 16 letras, números ou _."
-msgstr ""
-
-#: client/net/auth_client.gd:85
-msgid "A senha precisa ter de 8 a 128 caracteres."
-msgstr ""
-
-#: client/net/auth_client.gd:87
+#: client/net/auth_client.gd:100
 msgid "Esta conta já existe. Escolha outro nome de conta."
 msgstr ""
 
-#: client/net/auth_client.gd:89
+#: client/net/auth_client.gd:102
 msgid "Conta ou senha incorreta."
 msgstr ""
 
-#: client/net/auth_client.gd:91
+#: client/net/auth_client.gd:104
 msgid "Muitas tentativas. Aguarde um minuto."
 msgstr ""
 
-#: client/net/auth_client.gd:93
+#: client/net/auth_client.gd:106
 msgid "Esta conta está suspensa."
 msgstr ""
 
-#: client/net/auth_client.gd:95
+#: client/net/auth_client.gd:108
 msgid "Sua sessão expirou. Entre de novo."
 msgstr ""
 
-#: client/net/auth_client.gd:97
+#: client/net/auth_client.gd:110
 msgid "Sua versão do jogo é diferente da do servidor. Atualize o jogo."
 msgstr ""
 
-#: client/net/auth_client.gd:99
+#: client/net/auth_client.gd:112
 msgid "Esta conta já está conectada em outro servidor."
 msgstr ""
 
-#: client/scripts/main.gd:242 client/systems/lobby.gd:11 server/game/game_server.gd:532
+#: client/net/auth_client.gd:114
+msgid "Sua conta entrou em outro lugar."
+msgstr ""
+
+#: client/net/auth_client.gd:116
+msgid "O servidor está cheio. Tente outro servidor."
+msgstr ""
+
+#: client/net/auth_client.gd:118
+msgid "O servidor está reiniciando. Entre de novo em instantes."
+msgstr ""
+
+#: client/net/auth_client.gd:120
+msgid "Seu perfil mudou em outro lugar. Entre de novo."
+msgstr ""
+
+#: client/net/auth_client.gd:122
+msgid "O servidor não respondeu a tempo."
+msgstr ""
+
+#: client/net/auth_client.gd:124
+msgid "A conexão com o servidor caiu."
+msgstr ""
+
+#: client/net/auth_client.gd:125
+msgid "Erro do servidor: %s"
+msgstr ""
+
+#: client/net/auth_client.gd:94
+msgid "Não foi possível conectar ao servidor. Verifique a internet e tente de novo."
+msgstr ""
+
+#: client/net/auth_client.gd:96
+msgid "Conta: use de 3 a 16 letras, números ou _."
+msgstr ""
+
+#: client/net/auth_client.gd:98
+msgid "A senha precisa ter de 8 a 128 caracteres."
+msgstr ""
+
+#: client/scripts/main.gd:272 client/systems/lobby.gd:11 server/game/game_server.gd:532
 msgid "Guerra de equipes, diversão sem limite"
 msgstr ""
 
-#: client/scripts/main.gd:248 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
+#: client/scripts/main.gd:278 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
 msgid "Expedição: %s"
 msgstr ""
 
-#: client/scripts/main.gd:258 client/scripts/main.gd:269 client/scripts/main.gd:328 client/scripts/main.gd:617
+#: client/scripts/main.gd:288 client/scripts/main.gd:299 client/scripts/main.gd:358 client/scripts/main.gd:656
 msgid "SALA"
 msgstr ""
 
-#: client/scripts/main.gd:450 client/ui/bottom_bar.gd:22
+#: client/scripts/main.gd:480 client/ui/bottom_bar.gd:22
 msgid "AJUDA"
 msgstr ""
 
-#: client/scripts/main.gd:450
+#: client/scripts/main.gd:480
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr ""
 
-#: client/scripts/main.gd:453
+#: client/scripts/main.gd:483
 msgid "Deseja fechar o Frontier Tank?"
 msgstr ""
 
-#: client/scripts/main.gd:453 client/scripts/main.gd:455 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:64
+#: client/scripts/main.gd:483 client/scripts/main.gd:485 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:66
 msgid "SAIR"
 msgstr ""
 
-#: client/scripts/main.gd:456
+#: client/scripts/main.gd:483
+msgid "Voltar à tela de entrada?"
+msgstr ""
+
+#: client/scripts/main.gd:486
 msgid "FICAR"
 msgstr ""
 
-#: client/scripts/main.gd:477 client/ui/bottom_bar.gd:17
+#: client/scripts/main.gd:505 client/ui/bottom_bar.gd:17
 msgid "MISSÃO"
 msgstr ""
 
-#: client/scripts/main.gd:477 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
+#: client/scripts/main.gd:505 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
 msgid "PET"
 msgstr ""
 
-#: client/scripts/main.gd:478
+#: client/scripts/main.gd:506
 msgid "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."
 msgstr ""
 
-#: client/scripts/main.gd:487 client/ui/auction_screen.gd:71
+#: client/scripts/main.gd:515 client/ui/auction_screen.gd:71
 msgid "LEILÃO"
 msgstr ""
 
-#: client/scripts/main.gd:487
+#: client/scripts/main.gd:515
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:497 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+#: client/scripts/main.gd:525 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
 msgid "CORREIO"
 msgstr ""
 
-#: client/scripts/main.gd:497
+#: client/scripts/main.gd:525
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:508
+#: client/scripts/main.gd:536
 msgid "O Leilão só funciona online."
 msgstr ""
 
-#: client/scripts/main.gd:565
+#: client/scripts/main.gd:600
 msgid "Bem-vindo ao servidor %s!"
 msgstr ""
 
-#: client/scripts/main.gd:594
+#: client/scripts/main.gd:633
 msgid "CONEXÃO"
 msgstr ""
 
-#: client/scripts/main.gd:604
+#: client/scripts/main.gd:643
 msgid "AVISO"
 msgstr ""
 
-#: client/scripts/main.gd:617
+#: client/scripts/main.gd:656
 msgid "Você foi removido da sala."
 msgstr ""
 
-#: client/scripts/main.gd:667
+#: client/scripts/main.gd:707
 msgid "Música desligada"
 msgstr ""
 
-#: client/scripts/main.gd:667
+#: client/scripts/main.gd:707
 msgid "Música ligada"
 msgstr ""
 
@@ -676,6 +680,26 @@ msgstr ""
 
 #: client/systems/match.gd:927
 msgid "%s voou para fora do mapa!"
+msgstr ""
+
+#: client/systems/perf_probe.gd:201
+msgid "Teste de desempenho: %s FPS de média, 1%% mais lentos: %s FPS\nQuadro: %s ms (95%%: %s ms)   Scripts a 60 FPS: %s ms   Desenhos: %s\n%s"
+msgstr ""
+
+#: client/systems/perf_probe.gd:203
+msgid "desenhos"
+msgstr ""
+
+#: client/systems/perf_probe.gd:203
+msgid "scripts"
+msgstr ""
+
+#: client/systems/perf_probe.gd:206
+msgid "Teste de desempenho: preparando…"
+msgstr ""
+
+#: client/systems/perf_probe.gd:208
+msgid "Teste de desempenho: medindo… %d s"
 msgstr ""
 
 #: client/systems/profile.gd:289
@@ -2510,35 +2534,35 @@ msgstr ""
 msgid "Alto-falante"
 msgstr ""
 
-#: client/ui/title_screen.gd:101
+#: client/ui/title_screen.gd:103
 msgid "Jogue sozinho: as salas e os jogadores do canal são simulados por IA e o progresso fica neste computador."
 msgstr ""
 
-#: client/ui/title_screen.gd:107 client/ui/title_screen.gd:112
+#: client/ui/title_screen.gd:109 client/ui/title_screen.gd:114
 msgid "Conta"
 msgstr ""
 
-#: client/ui/title_screen.gd:109
+#: client/ui/title_screen.gd:111
 msgid "Trocar de conta"
 msgstr ""
 
-#: client/ui/title_screen.gd:113
+#: client/ui/title_screen.gd:115
 msgid "nome da conta"
 msgstr ""
 
-#: client/ui/title_screen.gd:116
+#: client/ui/title_screen.gd:118
 msgid "Senha"
 msgstr ""
 
-#: client/ui/title_screen.gd:117
+#: client/ui/title_screen.gd:119
 msgid "sua senha"
 msgstr ""
 
-#: client/ui/title_screen.gd:121
+#: client/ui/title_screen.gd:123
 msgid "Lembrar"
 msgstr ""
 
-#: client/ui/title_screen.gd:135
+#: client/ui/title_screen.gd:137
 msgid "CRIAR CONTA"
 msgstr ""
 
@@ -2550,35 +2574,35 @@ msgstr ""
 msgid "Sozinho"
 msgstr ""
 
-#: client/ui/title_screen.gd:162
+#: client/ui/title_screen.gd:164
 msgid "%d online"
 msgstr ""
 
-#: client/ui/title_screen.gd:162
+#: client/ui/title_screen.gd:164
 msgid "Cheio"
 msgstr ""
 
-#: client/ui/title_screen.gd:170
+#: client/ui/title_screen.gd:172
 msgid "Servidores online indisponíveis agora. Você pode jogar no modo offline."
 msgstr ""
 
-#: client/ui/title_screen.gd:206
+#: client/ui/title_screen.gd:208
 msgid "Bem-vindo ao modo offline!"
 msgstr ""
 
-#: client/ui/title_screen.gd:224
+#: client/ui/title_screen.gd:226
 msgid "Digite a conta e a senha."
 msgstr ""
 
-#: client/ui/title_screen.gd:227
+#: client/ui/title_screen.gd:229
 msgid "Criando a conta…"
 msgstr ""
 
-#: client/ui/title_screen.gd:227
+#: client/ui/title_screen.gd:229
 msgid "Entrando…"
 msgstr ""
 
-#: client/ui/title_screen.gd:232
+#: client/ui/title_screen.gd:234
 msgid "Conectando a %s…"
 msgstr ""
 
@@ -2590,7 +2614,7 @@ msgstr ""
 msgid "Frontier Tank: Nova Era %s"
 msgstr ""
 
-#: client/ui/title_screen.gd:90
+#: client/ui/title_screen.gd:92
 msgid "Buscando servidores…"
 msgstr ""
 

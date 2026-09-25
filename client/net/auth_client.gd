@@ -3,7 +3,8 @@ extends Node
 
 # The public API (Go): create an account, log in, log out and the list of game servers.
 # The address comes from --api=..., then user://online.cfg, then DEFAULT_API; the session
-# token is remembered in user://online.cfg when the player asks.
+# token is remembered in user://online.cfg when the player asks. On the web the default is
+# the page's own address (the proxy in front sends /v1/... to the API; ?api=... overrides).
 
 const DEFAULT_API: String = "http://localhost:8080"
 # Tests point this at a scratch file so they never touch the player's saved login.
@@ -15,11 +16,19 @@ var username: String = ""
 var remember: bool = true
 
 func _init() -> void:
+	base_url = default_api()
 	var config: ConfigFile = ConfigFile.new()
 	if config.load(config_path) == OK:
-		base_url = str(config.get_value("online", "api", DEFAULT_API))
+		base_url = str(config.get_value("online", "api", base_url))
 		token = str(config.get_value("session", "token", ""))
 		username = str(config.get_value("session", "username", ""))
+
+static func default_api() -> String:
+	if OS.has_feature("web"):
+		var origin: String = str(JavaScriptBridge.eval("window.location.origin", true))
+		if origin.begins_with("http"):
+			return origin
+	return DEFAULT_API
 
 func save_session() -> void:
 	var config: ConfigFile = ConfigFile.new()
@@ -43,8 +52,12 @@ func request_json(method: HTTPClient.Method, path: String, body: Variant = null)
 	request.queue_free()
 	if int(result[0]) != HTTPRequest.RESULT_SUCCESS:
 		return {"status": 0, "body": null}
-	var text: String = (result[3] as PackedByteArray).get_string_from_utf8()
-	return {"status": int(result[1]), "body": JSON.parse_string(text) if text != "" else null}
+	return {"status": int(result[1]), "body": parse_body((result[3] as PackedByteArray).get_string_from_utf8())}
+
+# The body as JSON, or null (a proxy or static host may answer with an HTML page).
+static func parse_body(text: String) -> Variant:
+	var json: JSON = JSON.new()
+	return json.data if text != "" and json.parse(text) == OK else null
 
 static func error_of(reply: Dictionary) -> String:
 	if int(reply.status) == 0:

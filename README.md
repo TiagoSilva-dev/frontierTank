@@ -37,6 +37,30 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | **Correio** (`mail.png`) | Online: vendas do Leilão e itens que voltam; RECEBER e RECEBER TUDO. O ícone CORREIO da barra mostra quantas cartas esperam. |
 | **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |
 
+## Versão web para testes fechados
+A versão web roda sem threads, então não precisa de `SharedArrayBuffer` nem dos cabeçalhos COOP/COEP: qualquer hospedagem estática serve (itch.io, GitHub Pages, Netlify, nginx). Preset **Web** em `export_presets.cfg` (os documentos, testes, ferramentas e metadados do PixelLab ficam de fora do pacote).
+
+```bash
+python tools/web_build.py templates   # baixa só os modelos web do Godot 4.7.2 (~20 MB, não o pacote de 1,2 GB)
+python tools/web_build.py export      # importa e exporta para build/web (13,6 MB de .pck + 37,7 MB de .wasm; ~23 MB para baixar com gzip)
+python tools/web_build.py serve --api http://localhost:8080   # http://localhost:8060, /v1/... vai para a API
+node tools/web_bench.cjs --seconds 30 # FPS da batalha no Chromium (Playwright); --headed usa a placa de vídeo
+```
+
+- **No navegador**, o endereço aceita as mesmas opções da linha de comando: `?bench=30` (teste de desempenho), `?fps=1` (contador; **F3** liga e desliga em qualquer tela), `?lang=en`, `?api=https://...`.
+- **Teste de desempenho** (`--bench=30` no computador, `?bench=30` na web): uma batalha 4 contra 4 jogada pela IA, 3 s de aquecimento e a medição: FPS médio e dos 1% mais lentos, tempo de quadro (média, 95%, 99%), tempo dos scripts separado do desenho, chamadas de desenho e nós. O resultado aparece na tela, no log (`BENCH {...}`) e em `window.ftBench`; usa um perfil de rascunho e nunca mexe no seu save.
+- **API na web**: por padrão o jogo procura a API no próprio endereço da página (o proxy de produção manda `/v1/...` para a API, sem CORS). Numa página `https://`, o servidor de jogo precisa de `wss://` (`GAME_PUBLIC_URL`), senão o navegador bloqueia.
+- No navegador não há botão SAIR na entrada; SAIR na cidade volta para a tela de entrada.
+
+**Medição (25/09/2026, batalha 4v4, 8 lutadores, 1280×720):**
+
+| Onde | FPS | Scripts por quadro a 60 FPS | Observação |
+|---|---|---|---|
+| Chromium sem placa de vídeo (SwiftShader, desenho na CPU, contêiner de testes) | 6,3 (1% mais lentos: 1) | 1,9 ms (95%: 3,6 ms) | ~154 ms por quadro são o desenho em software; 266 chamadas de desenho por quadro |
+| Godot nativo sem tela (só lógica) | — | 0,9 ms (95%: 1,2 ms) | o mesmo código fora do navegador |
+
+A lógica do jogo usa ~2 ms dos 16,7 ms de um quadro a 60 FPS dentro do navegador, então o limite é o desenho. O número que os testadores vão ver precisa ser medido numa máquina com placa de vídeo: `node tools/web_bench.cjs --headed` ou abrir `?bench=30` no navegador. Os picos isolados (1% mais lentos) vêm da primeira compilação de shaders de cada efeito (explosão, POW), comum no WebGL.
+
 ## Armas (como no DDTank)
 Nove armas clássicas em três qualidades, **Normal**, **Excelente** e **Verdadeira**: Quebra Tijolos, Fogo Intenso, Canhão Arco-Íris, Vento de Deus, Cesto de Frutas de Newton, Kit Médico, Eletrodoméstico, Trovão e Desentupidor. E três **Super Verdadeiras**, que só caem na Instância: Super Cabeça de Boi, Super Bumerangue do Amor e Super Lança. Ângulos e tipo de POW seguem os guias do DDTank; os especiais: tijolo que se parte, rajada tripla de fogo, raio arco-íris do céu, shuriken gigante que ignora o vento, chuva de frutas, cura em área, geladeira que cai do céu, três raios, desentupidores que puxam, touro espectral que empurra, bumerangue que volta e cura, e chuva de lanças.
 

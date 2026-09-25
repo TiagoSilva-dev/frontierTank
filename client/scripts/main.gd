@@ -31,6 +31,8 @@ var pending_start: Dictionary = {}
 var waiting_phase: bool = false
 # Letters waiting in the Correio (Leilão 0.12), told by the server.
 var mail_count: int = 0
+# FPS counter (F3) and the battle benchmark (--bench=30, ?bench=30 on the web).
+var perf: PerfProbe
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -45,6 +47,10 @@ func _ready() -> void:
 	Lang.setup(str(args.get("lang", "")))
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	profile = PlayerProfile.new()
+	if args.has("bench"):
+		# Benchmark: a 4v4 battle played by the AI, on a scratch profile (the player's
+		# save is never touched).
+		args.merge({"screen": "battle", "auto": "1", "team": "4", "profile": "user://bench_profile.json"})
 	if args.has("profile"):
 		profile.save_path = str(args.profile)
 	profile.load_profile()
@@ -73,6 +79,13 @@ func _ready() -> void:
 	# translated twice.
 	ui.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	layer.add_child(ui)
+	perf = PerfProbe.new()
+	perf.app = self
+	perf.shown = args.has("fps")
+	add_child(perf)
+	if args.has("bench"):
+		profile.created = true
+		perf.start_bench(float(args.bench))
 	if args.has("out"):
 		capture_frames = int(args.get("frames", "30"))
 		profile.created = true
@@ -109,6 +122,21 @@ func parse_args() -> Dictionary:
 			result[parts[0]] = parts[1]
 		elif arg.begins_with("--"):
 			result[arg.substr(2)] = "1"
+	if OS.has_feature("web"):
+		result.merge(web_query(), true)
+	return result
+
+# On the web the options come from the page address: index.html?bench=30&lang=en&api=...
+# (the server mode and screenshots make no sense in a browser).
+static func web_query() -> Dictionary:
+	var result: Dictionary = {}
+	var query: String = str(JavaScriptBridge.eval("window.location.search", true)).trim_prefix("?")
+	for pair: String in query.split("&", false):
+		var parts: PackedStringArray = pair.split("=", true, 1)
+		var key: String = parts[0].uri_decode()
+		if key in ["server", "out", "frames"]:
+			continue
+		result[key] = parts[1].uri_decode() if parts.size() > 1 else "1"
 	return result
 
 func open_named(target: String) -> void:
@@ -149,7 +177,9 @@ func open_named(target: String) -> void:
 		"battle", "result", "cards":
 			create_room("pvp")
 			room.map = str(args.get("map", ""))
-			invite_bot()
+			# --team=4 makes a 4v4 (the benchmark); the default is 2v2.
+			for i in range(clampi(int(args.get("team", "2")) - 1, 1, 3)):
+				invite_bot()
 			start_battle()
 			if target == "battle":
 				# Capture helper: open on the local player's turn (optionally auto-played).
@@ -450,7 +480,7 @@ func shortcut(id: String) -> void:
 			UiKit.notice(ui, tr("AJUDA"), tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"))
 		"exit":
 			if screen_name == "city":
-				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Deseja fechar o Frontier Tank?"))
+				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Voltar à tela de entrada?") if OS.has_feature("web") else tr("Deseja fechar o Frontier Tank?"))
 				var rect: Rect2 = dialog.get_meta("rect")
 				UiKit.button(dialog, tr("SAIR"), Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), quit_game)
 				UiKit.button(dialog, tr("FICAR"), Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)
@@ -512,6 +542,13 @@ func trade(kind: String, data: Dictionary = {}) -> Dictionary:
 	return reply
 
 func quit_game() -> void:
+	if OS.has_feature("web"):
+		# A browser tab cannot close itself: back to the title screen.
+		if online:
+			go_offline()
+		else:
+			show_title()
+		return
 	audio.stop_all()
 	net.disconnect_now()
 	get_tree().quit()
@@ -663,10 +700,13 @@ func localize(config: Dictionary) -> Dictionary:
 	return copy
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	# M switches the music on any screen (text fields keep their own keys).
+	# M switches the music on any screen (text fields keep their own keys); F3 shows the
+	# FPS counter.
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_M:
 		audio.set_music_on(not audio.music_on)
 		toast(tr("Música ligada") if audio.music_on else tr("Música desligada"))
+	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F3:
+		perf.toggle()
 
 func toast(text: String) -> void:
 	var note: Label = UiKit.label(ui, text, Rect2(490, 96, 300, 36), 18, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
