@@ -233,10 +233,6 @@ static func item_attrs(inst: Dictionary) -> Dictionary:
 	var base: Dictionary = def.get("attrs", {})
 	for key: String in base:
 		result[key] += roundi(float(base[key]) * scale)
-	var composed: Dictionary = inst.get("compose", {})
-	for key: String in composed:
-		if result.has(key):
-			result[key] += int(composed[key])
 	# Flat bonus attributes (0.10) are added after strengthening, which only scales the base.
 	var mods: Dictionary = Crafting.item_bonus(inst)
 	for key: String in mods:

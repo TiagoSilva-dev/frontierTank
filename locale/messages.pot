@@ -282,7 +282,7 @@ msgstr ""
 msgid "Música ligada"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:209
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:208
 msgid "Arma"
 msgstr ""
 
@@ -290,7 +290,7 @@ msgstr ""
 msgid "Asas"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:22 client/ui/shop_screen.gd:12
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:21 client/ui/shop_screen.gd:12
 msgid "Auxiliar"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Chapéu"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:209
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:208
 msgid "Roupa"
 msgstr ""
 
@@ -318,19 +318,19 @@ msgstr ""
 msgid "Verdadeiro %s"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:179
 msgid "Agilidade"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:179
 msgid "Ataque"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:179
 msgid "Defesa"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:179
 msgid "Sorte"
 msgstr ""
 
@@ -434,7 +434,7 @@ msgstr ""
 msgid "Esta carta já foi recebida."
 msgstr ""
 
-#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:288 client/systems/profile.gd:680
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:285 client/systems/profile.gd:633
 msgid "Item não encontrado."
 msgstr ""
 
@@ -510,7 +510,7 @@ msgstr ""
 msgid "Este item não tem bônus."
 msgstr ""
 
-#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:546 client/systems/profile.gd:570
+#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:502 client/systems/profile.gd:526
 msgid "Moeda desconhecida."
 msgstr ""
 
@@ -778,103 +778,83 @@ msgstr ""
 msgid "Teste de desempenho: medindo… %d s"
 msgstr ""
 
-#: client/systems/profile.gd:293
+#: client/systems/profile.gd:290
 msgid "Esta roupa é do outro gênero."
 msgstr ""
 
-#: client/systems/profile.gd:302
+#: client/systems/profile.gd:299
 msgid "Você precisa ter uma arma equipada."
 msgstr ""
 
-#: client/systems/profile.gd:361 client/systems/profile.gd:367 client/systems/profile.gd:370 client/systems/profile.gd:383
+#: client/systems/profile.gd:358 client/systems/profile.gd:364 client/systems/profile.gd:367 client/systems/profile.gd:380
 msgid "Item desconhecido."
 msgstr ""
 
-#: client/systems/profile.gd:363
+#: client/systems/profile.gd:360
 msgid "Super armas só caem do chefe das instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:365
+#: client/systems/profile.gd:362
 msgid "Armas Verdadeiras só caem nas instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:372 client/systems/profile.gd:386 client/systems/profile.gd:459 client/systems/profile.gd:487
+#: client/systems/profile.gd:369 client/systems/profile.gd:383 client/systems/profile.gd:456 client/systems/profile.gd:485
 msgid "Moedas insuficientes."
 msgstr ""
 
-#: client/systems/profile.gd:452
+#: client/systems/profile.gd:449
 msgid "Só armas, roupas e chapéus podem ser fortalecidos."
 msgstr ""
 
-#: client/systems/profile.gd:455
+#: client/systems/profile.gd:452
 msgid "Este item já está no +12."
 msgstr ""
 
-#: client/systems/profile.gd:457
+#: client/systems/profile.gd:454
 msgid "Pedras insuficientes: precisa de %d pontos de pedra, você tem %d."
 msgstr ""
 
-#: client/systems/profile.gd:485
-msgid "Precisa de %d pedras iguais."
-msgstr ""
-
-#: client/systems/profile.gd:493
-msgid "Esta pedra já é do nível máximo."
-msgstr ""
-
-#: client/systems/profile.gd:499
+#: client/systems/profile.gd:480
 msgid "Escolha dois itens diferentes."
 msgstr ""
 
-#: client/systems/profile.gd:501
+#: client/systems/profile.gd:482
 msgid "A transferência só funciona entre itens do mesmo tipo."
 msgstr ""
 
-#: client/systems/profile.gd:519
-msgid "Escolha um item e um atributo."
-msgstr ""
-
-#: client/systems/profile.gd:525
-msgid "Este item já recebeu %d composições."
-msgstr ""
-
-#: client/systems/profile.gd:527
-msgid "Você precisa de um Cristal Dourado."
-msgstr ""
-
-#: client/systems/profile.gd:551 client/systems/profile.gd:575 client/ui/smith_screen.gd:361
+#: client/systems/profile.gd:507 client/systems/profile.gd:531 client/ui/smith_screen.gd:326
 msgid "Você não tem %s."
 msgstr ""
 
-#: client/systems/profile.gd:609 client/systems/profile.gd:754
+#: client/systems/profile.gd:565 client/systems/profile.gd:703
 msgid "Cupom inválido."
 msgstr ""
 
-#: client/systems/profile.gd:611 client/systems/profile.gd:756
+#: client/systems/profile.gd:567 client/systems/profile.gd:705
 msgid "Este cupom já foi usado nesta conta."
 msgstr ""
 
-#: client/systems/profile.gd:671 client/ui/room_screen.gd:324
+#: client/systems/profile.gd:624 client/ui/room_screen.gd:324
 msgid "%s custa %d moedas."
 msgstr ""
 
-#: client/systems/profile.gd:673
+#: client/systems/profile.gd:626
 msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
 msgstr ""
 
-#: client/systems/profile.gd:730 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
+#: client/systems/profile.gd:683 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
 msgid "+%d moedas"
 msgstr ""
 
-#: client/systems/profile.gd:770
+#: client/systems/profile.gd:719
 msgid "O personagem já foi criado."
 msgstr ""
 
-#: client/systems/profile.gd:772
+#: client/systems/profile.gd:721
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr ""
 
-#: client/systems/profile.gd:779 server/game/game_server.gd:451
+#: client/systems/profile.gd:728 server/game/game_server.gd:451
 msgid "Operação desconhecida."
 msgstr ""
 
@@ -1022,11 +1002,11 @@ msgstr ""
 msgid "1 bônus"
 msgstr ""
 
-#: client/ui/auction_screen.gd:177 client/ui/character_screen.gd:449 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:313
+#: client/ui/auction_screen.gd:177 client/ui/character_screen.gd:448 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:277
 msgid "Nível do item %d"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:22 client/ui/shop_screen.gd:12
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:21 client/ui/shop_screen.gd:12
 msgid "Armas"
 msgstr ""
 
@@ -1034,7 +1014,7 @@ msgstr ""
 msgid "Chapéus"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:466 client/ui/character_screen.gd:22 client/ui/smith_screen.gd:245
+#: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:466 client/ui/character_screen.gd:21 client/ui/smith_screen.gd:215
 msgid "Mapas"
 msgstr ""
 
@@ -1042,7 +1022,7 @@ msgstr ""
 msgid "Roupas"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:22
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:21
 msgid "Todos"
 msgstr ""
 
@@ -1158,7 +1138,7 @@ msgstr ""
 msgid "Sem atributos."
 msgstr ""
 
-#: client/ui/auction_screen.gd:312 client/ui/smith_screen.gd:326
+#: client/ui/auction_screen.gd:312 client/ui/smith_screen.gd:291
 msgid "Sem bônus."
 msgstr ""
 
@@ -1190,7 +1170,7 @@ msgstr ""
 msgid "Comprar %s por %s?\nO item vai direto para a sua Mochila."
 msgstr ""
 
-#: client/ui/auction_screen.gd:418 client/ui/auction_screen.gd:621 client/ui/auction_screen.gd:702 client/ui/character_screen.gd:86
+#: client/ui/auction_screen.gd:418 client/ui/auction_screen.gd:621 client/ui/auction_screen.gd:702 client/ui/character_screen.gd:85
 msgid "VOLTAR"
 msgstr ""
 
@@ -1202,15 +1182,15 @@ msgstr ""
 msgid "Comprado! O item está no seu Correio."
 msgstr ""
 
-#: client/ui/auction_screen.gd:466 client/ui/smith_screen.gd:245
+#: client/ui/auction_screen.gd:466 client/ui/smith_screen.gd:215
 msgid "Equipamentos"
 msgstr ""
 
-#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:283
+#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:255
 msgid "Nenhum equipamento que aceite bônus."
 msgstr ""
 
-#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:283
+#: client/ui/auction_screen.gd:498 client/ui/smith_screen.gd:255
 msgid "Nenhum mapa na mochila."
 msgstr ""
 
@@ -1218,7 +1198,7 @@ msgstr ""
 msgid "Só vão ao leilão itens que caíram nas instâncias e mapas, sem vínculo."
 msgstr ""
 
-#: client/ui/auction_screen.gd:508 client/ui/smith_screen.gd:303 client/ui/smith_screen.gd:357
+#: client/ui/auction_screen.gd:508 client/ui/smith_screen.gd:267 client/ui/smith_screen.gd:322
 msgid "Escolha um equipamento ou um mapa."
 msgstr ""
 
@@ -1358,7 +1338,7 @@ msgstr ""
 msgid "Energia"
 msgstr ""
 
-#: client/ui/battle_hud.gd:162 client/ui/character_screen.gd:187 client/ui/smith_screen.gd:140
+#: client/ui/battle_hud.gd:162 client/ui/character_screen.gd:186 client/ui/smith_screen.gd:148
 msgid "Vida"
 msgstr ""
 
@@ -1494,7 +1474,7 @@ msgstr ""
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:85 client/ui/character_screen.gd:637 client/ui/city_screen.gd:138
+#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:84 client/ui/character_screen.gd:636 client/ui/city_screen.gd:138
 msgid "MOCHILA"
 msgstr ""
 
@@ -1510,15 +1490,15 @@ msgstr ""
 msgid "Sair"
 msgstr ""
 
-#: client/ui/character_screen.gd:119
+#: client/ui/character_screen.gd:118
 msgid "Ranking %d"
 msgstr ""
 
-#: client/ui/character_screen.gd:133
+#: client/ui/character_screen.gd:132
 msgid "EXP  %.1f%%  •  %d / %d"
 msgstr ""
 
-#: client/ui/character_screen.gd:148
+#: client/ui/character_screen.gd:147
 msgid "Mascote"
 msgstr ""
 
@@ -1534,7 +1514,7 @@ msgstr ""
 msgid "Pedra de Fortalecimento III"
 msgstr ""
 
-#: client/ui/character_screen.gd:175 client/ui/item_tooltip.gd:182
+#: client/ui/character_screen.gd:174 client/ui/item_tooltip.gd:182
 msgid "sem aura"
 msgstr ""
 
@@ -1542,183 +1522,179 @@ msgstr ""
 msgid "Pedra de Fortalecimento IV"
 msgstr ""
 
-#: client/ui/character_screen.gd:187 client/ui/smith_screen.gd:132
+#: client/ui/character_screen.gd:186 client/ui/smith_screen.gd:140
 msgid "Dano"
 msgstr ""
 
-#: client/ui/character_screen.gd:187
+#: client/ui/character_screen.gd:186
 msgid "Força física"
 msgstr ""
 
-#: client/ui/character_screen.gd:187
+#: client/ui/character_screen.gd:186
 msgid "Proteção"
 msgstr ""
 
 #: client/ui/character_screen.gd:19 shared/balance/combat.json:rewards.cards[5].name
-msgid "Cristal Dourado"
-msgstr ""
-
-#: client/ui/character_screen.gd:198
-msgid "ATRIBUTOS DE COMBATE"
-msgstr ""
-
-#: client/ui/character_screen.gd:20 shared/balance/combat.json:rewards.cards[6].name
 msgid "Ovo de Mascote"
 msgstr ""
 
-#: client/ui/character_screen.gd:202
+#: client/ui/character_screen.gd:197
+msgid "ATRIBUTOS DE COMBATE"
+msgstr ""
+
+#: client/ui/character_screen.gd:201
 msgid "Arma: %s  •  Dano %d  •  Cratera %d"
 msgstr ""
 
-#: client/ui/character_screen.gd:203
+#: client/ui/character_screen.gd:202
 msgid "Ângulo %d° a %d°  •  POW: %s"
 msgstr ""
 
-#: client/ui/character_screen.gd:204
+#: client/ui/character_screen.gd:203
 msgid "Ataque +%d dos itens: dano x%.2f"
 msgstr ""
 
-#: client/ui/character_screen.gd:205
+#: client/ui/character_screen.gd:204
 msgid "Defesa +%d dos itens: dano recebido x%.2f"
 msgstr ""
 
-#: client/ui/character_screen.gd:206
+#: client/ui/character_screen.gd:205
 msgid "Agilidade %d: define o Delay e quem começa"
 msgstr ""
 
-#: client/ui/character_screen.gd:207
+#: client/ui/character_screen.gd:206
 msgid "Sorte +%d dos itens: %.1f%% de acerto crítico (x1,5)"
 msgstr ""
 
-#: client/ui/character_screen.gd:208
+#: client/ui/character_screen.gd:207
 msgid "Vida %d  •  Força física %d por turno"
 msgstr ""
 
-#: client/ui/character_screen.gd:217
-msgid "Bônus: %s"
-msgstr ""
-
-#: client/ui/character_screen.gd:217
-msgid "nenhum (use moedas no Ferreiro)"
-msgstr ""
-
-#: client/ui/character_screen.gd:22
+#: client/ui/character_screen.gd:21
 msgid "Materiais"
 msgstr ""
 
-#: client/ui/character_screen.gd:22
+#: client/ui/character_screen.gd:21
 msgid "Visual"
 msgstr ""
 
-#: client/ui/character_screen.gd:231
+#: client/ui/character_screen.gd:216
+msgid "Bônus: %s"
+msgstr ""
+
+#: client/ui/character_screen.gd:216
+msgid "nenhum (use moedas no Ferreiro)"
+msgstr ""
+
+#: client/ui/character_screen.gd:230
 msgid "SUA JORNADA"
 msgstr ""
 
-#: client/ui/character_screen.gd:233
+#: client/ui/character_screen.gd:232
 msgid "%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila"
 msgstr ""
 
-#: client/ui/character_screen.gd:357
+#: client/ui/character_screen.gd:356
 msgid "ORGANIZAR"
 msgstr ""
 
-#: client/ui/character_screen.gd:359
+#: client/ui/character_screen.gd:358
 msgid "Arruma a mochila por tipo, qualidade e fortalecimento."
 msgstr ""
 
-#: client/ui/character_screen.gd:384 client/ui/character_screen.gd:467 client/ui/character_screen.gd:483
+#: client/ui/character_screen.gd:383 client/ui/character_screen.gd:466 client/ui/character_screen.gd:482
 msgid "EQUIPAR"
 msgstr ""
 
-#: client/ui/character_screen.gd:385
+#: client/ui/character_screen.gd:384
 msgid "VENDER"
 msgstr ""
 
-#: client/ui/character_screen.gd:386 client/ui/smith_screen.gd:168
+#: client/ui/character_screen.gd:385 client/ui/smith_screen.gd:176
 msgid "FORTALECER"
 msgstr ""
 
-#: client/ui/character_screen.gd:423 client/ui/shop_screen.gd:141 client/ui/smith_screen.gd:287
+#: client/ui/character_screen.gd:422 client/ui/shop_screen.gd:141 client/ui/smith_screen.gd:259
 msgid "%d itens"
 msgstr ""
 
-#: client/ui/character_screen.gd:439
+#: client/ui/character_screen.gd:438
 msgid "  [color=#ffd46b]%s[/color]\nDano %d • Cratera %d • Ângulo %d°–%d° • POW: %s\n%s"
 msgstr ""
 
-#: client/ui/character_screen.gd:444 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:443 client/ui/item_tooltip.gd:150
 msgid " (feminino)"
 msgstr ""
 
-#: client/ui/character_screen.gd:444 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:443 client/ui/item_tooltip.gd:150
 msgid " (masculino)"
 msgstr ""
 
-#: client/ui/character_screen.gd:451 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:315
+#: client/ui/character_screen.gd:450 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:279
 msgid "Espelhado"
 msgstr ""
 
-#: client/ui/character_screen.gd:453 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:317
+#: client/ui/character_screen.gd:452 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:281
 msgid "Vinculado"
 msgstr ""
 
-#: client/ui/character_screen.gd:463
+#: client/ui/character_screen.gd:462
 msgid "Selecione um item da mochila ou um espaço de equipamento."
 msgstr ""
 
-#: client/ui/character_screen.gd:470
+#: client/ui/character_screen.gd:469
 msgid "%s: nenhum item equipado."
 msgstr ""
 
-#: client/ui/character_screen.gd:483
+#: client/ui/character_screen.gd:482
 msgid "REMOVER"
 msgstr ""
 
-#: client/ui/character_screen.gd:488
+#: client/ui/character_screen.gd:487
 msgid "Sem atributos. Coloque no espaço de mapa da sala da instância."
 msgstr ""
 
-#: client/ui/character_screen.gd:494 client/ui/item_tooltip.gd:245
+#: client/ui/character_screen.gd:493 client/ui/item_tooltip.gd:245
 msgid "Use no Ferreiro, aba Moedas, em equipamentos e mapas."
 msgstr ""
 
-#: client/ui/character_screen.gd:496
+#: client/ui/character_screen.gd:495
 msgid "\nVale %d ponto(s) de fortalecimento no Ferreiro."
 msgstr ""
 
-#: client/ui/character_screen.gd:498
+#: client/ui/character_screen.gd:497
 msgid "\nFerramenta de batalha (Z/X/C)."
 msgstr ""
 
-#: client/ui/character_screen.gd:87 client/ui/smith_screen.gd:43
+#: client/ui/character_screen.gd:86 client/ui/smith_screen.gd:46
 msgid "FERREIRO"
 msgstr ""
 
-#: client/ui/character_screen.gd:88
+#: client/ui/character_screen.gd:87
 msgid "LOJA"
 msgstr ""
 
-#: client/ui/character_screen.gd:89 client/ui/city_screen.gd:135 client/ui/shop_screen.gd:73
+#: client/ui/character_screen.gd:88 client/ui/city_screen.gd:135 client/ui/shop_screen.gd:73
 msgid "CUPOM"
 msgstr ""
 
-#: client/ui/character_screen.gd:92
+#: client/ui/character_screen.gd:91
 msgid "moedas"
 msgstr ""
 
-#: client/ui/character_screen.gd:94
+#: client/ui/character_screen.gd:93
 msgid "Informações Pessoais"
 msgstr ""
 
-#: client/ui/character_screen.gd:96
+#: client/ui/character_screen.gd:95
 msgid "Atributos"
 msgstr ""
 
-#: client/ui/character_screen.gd:96
+#: client/ui/character_screen.gd:95
 msgid "Histórico"
 msgstr ""
 
-#: client/ui/character_screen.gd:96
+#: client/ui/character_screen.gd:95
 msgid "Perfil"
 msgstr ""
 
@@ -2754,160 +2730,116 @@ msgstr ""
 msgid "Só aparência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam."
 msgstr ""
 
-#: client/ui/smith_screen.gd:118
+#: client/ui/smith_screen.gd:106
+msgid "Nenhum item disponível."
+msgstr ""
+
+#: client/ui/smith_screen.gd:126
 msgid "Selecione uma arma, roupa ou chapéu."
 msgstr ""
 
-#: client/ui/smith_screen.gd:13
-msgid "Composição"
-msgstr ""
-
-#: client/ui/smith_screen.gd:13
+#: client/ui/smith_screen.gd:14
 msgid "Fortalecer"
 msgstr ""
 
-#: client/ui/smith_screen.gd:13
-msgid "Fusão"
-msgstr ""
-
-#: client/ui/smith_screen.gd:13
+#: client/ui/smith_screen.gd:14
 msgid "Moedas"
 msgstr ""
 
-#: client/ui/smith_screen.gd:13
+#: client/ui/smith_screen.gd:14
 msgid "Transferência"
 msgstr ""
 
-#: client/ui/smith_screen.gd:151
+#: client/ui/smith_screen.gd:159
 msgid "No +%d a arma muda de visual!"
 msgstr ""
 
-#: client/ui/smith_screen.gd:154
+#: client/ui/smith_screen.gd:162
 msgid "Nova aura: %s"
 msgstr ""
 
-#: client/ui/smith_screen.gd:156
+#: client/ui/smith_screen.gd:164
 msgid "Nível máximo +12: aura vermelha!"
 msgstr ""
 
-#: client/ui/smith_screen.gd:164
+#: client/ui/smith_screen.gd:172
 msgid "%d pt"
 msgstr ""
 
-#: client/ui/smith_screen.gd:167
+#: client/ui/smith_screen.gd:175
 msgid "Pedras: %d / %d pontos   •   Moedas: %d"
 msgstr ""
 
-#: client/ui/smith_screen.gd:174
-msgid "COMPOSIÇÃO"
-msgstr ""
-
-#: client/ui/smith_screen.gd:175
-msgid "Cada Cristal Dourado soma +%d ao atributo escolhido (até %d vezes por item)."
-msgstr ""
-
-#: client/ui/smith_screen.gd:187
-msgid "Custo: 1 cristal + %d moedas"
-msgstr ""
-
-#: client/ui/smith_screen.gd:192
-msgid "FUSÃO DE PEDRAS"
-msgstr ""
-
-#: client/ui/smith_screen.gd:193
-msgid "Junte %d pedras do mesmo nível para criar uma do nível seguinte (%d moedas).\n\nAs pedras dão pontos de fortalecimento: I = 1, II = 5, III = 25, IV = 125.\nDo +1 ao +12 são necessários 1, 5, 15, 35, 70, 150, 230, 330, 450, 600, 750 e 900 pontos."
-msgstr ""
-
-#: client/ui/smith_screen.gd:206
-msgid "Você tem %d"
-msgstr ""
-
-#: client/ui/smith_screen.gd:207
-msgid "FUNDIR"
-msgstr ""
-
-#: client/ui/smith_screen.gd:212
+#: client/ui/smith_screen.gd:182
 msgid "TRANSFERÊNCIA"
 msgstr ""
 
-#: client/ui/smith_screen.gd:213
-msgid "Troca o nível de fortalecimento e a composição entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas."
+#: client/ui/smith_screen.gd:183
+msgid "Troca o nível de fortalecimento entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas."
 msgstr ""
 
-#: client/ui/smith_screen.gd:215
+#: client/ui/smith_screen.gd:185
 msgid "Origem"
 msgstr ""
 
-#: client/ui/smith_screen.gd:216
+#: client/ui/smith_screen.gd:186
 msgid "Destino"
 msgstr ""
 
-#: client/ui/smith_screen.gd:224
+#: client/ui/smith_screen.gd:194
 msgid "TRANSFERIR"
 msgstr ""
 
-#: client/ui/smith_screen.gd:287
+#: client/ui/smith_screen.gd:259
 msgid "%d mapas"
 msgstr ""
 
-#: client/ui/smith_screen.gd:313
+#: client/ui/smith_screen.gd:277
 msgid "%d/%d bônus"
 msgstr ""
 
-#: client/ui/smith_screen.gd:326
+#: client/ui/smith_screen.gd:291
 msgid "Sem bônus. Use uma Brasa para torná-lo Excelente."
 msgstr ""
 
-#: client/ui/smith_screen.gd:331
+#: client/ui/smith_screen.gd:296
 msgid "%s  •  %d/%d atributos  •  consumido ao entrar"
 msgstr ""
 
-#: client/ui/smith_screen.gd:340
+#: client/ui/smith_screen.gd:305
 msgid "Sem atributos. Use uma Brasa para torná-lo Excelente."
 msgstr ""
 
-#: client/ui/smith_screen.gd:349
+#: client/ui/smith_screen.gd:314
 msgid "Clique numa moeda para usá-la. Usar gasta a moeda."
 msgstr ""
 
-#: client/ui/smith_screen.gd:400
+#: client/ui/smith_screen.gd:365
 msgid "Espelho Celeste usado: uma cópia vinculada de %s foi para a Mochila."
 msgstr ""
 
-#: client/ui/smith_screen.gd:402
+#: client/ui/smith_screen.gd:367
 msgid "Usou %s: %s agora tem %d bônus."
 msgstr ""
 
-#: client/ui/smith_screen.gd:404
+#: client/ui/smith_screen.gd:369
 msgid "Usou %s: o mapa agora tem %d atributos."
 msgstr ""
 
-#: client/ui/smith_screen.gd:436
+#: client/ui/smith_screen.gd:397
 msgid "Sucesso! %s agora é +%d."
 msgstr ""
 
-#: client/ui/smith_screen.gd:439
-msgid "Composição feita: %s +%d."
-msgstr ""
-
-#: client/ui/smith_screen.gd:442
-msgid "Fusão concluída!"
-msgstr ""
-
-#: client/ui/smith_screen.gd:445
+#: client/ui/smith_screen.gd:400
 msgid "Transferência concluída!"
 msgstr ""
 
-#: client/ui/smith_screen.gd:81
+#: client/ui/smith_screen.gd:87
 msgid "Escolha a origem e depois o destino"
 msgstr ""
 
-#: client/ui/smith_screen.gd:81
+#: client/ui/smith_screen.gd:87
 msgid "Escolha o item"
-msgstr ""
-
-#: client/ui/smith_screen.gd:98
-msgid "Nenhum item disponível."
 msgstr ""
 
 #: client/ui/speaker_bar.gd:26
@@ -3002,7 +2934,7 @@ msgstr ""
 msgid "Frontier Tank: Nova Era %s"
 msgstr ""
 
-#: client/ui/ui_kit.gd:404
+#: client/ui/ui_kit.gd:405
 msgid "OK"
 msgstr ""
 
@@ -3786,7 +3718,7 @@ msgstr ""
 msgid "Recupera 300 de vida."
 msgstr ""
 
-#: shared/balance/combat.json:tools[0].name shared/balance/combat.json:rewards.cards[7].name
+#: shared/balance/combat.json:tools[0].name shared/balance/combat.json:rewards.cards[6].name
 msgid "Poção de Vida"
 msgstr ""
 
@@ -4083,7 +4015,7 @@ msgid "Cartola Mágica"
 msgstr ""
 
 #: shared/balance/items.json:coupons[0].desc
-msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas."
+msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível e 99.999 moedas."
 msgstr ""
 
 #: shared/balance/items.json:coupons[1].desc

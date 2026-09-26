@@ -67,7 +67,7 @@ func rules_tests() -> void:
 	check(bool(super_weapon.get("bound", false)) and Auction.item_reason(profile, super_weapon) != "", "equipping a Super Verdadeira binds it")
 	var reloaded: PlayerProfile = PlayerProfile.new()
 	var data: Dictionary = profile.to_data()
-	var old_super: Dictionary = {"uid": 900, "id": "cabeca_de_boi", "quality": "super", "level": 0, "compose": {}, "mods": [], "ilvl": 9}
+	var old_super: Dictionary = {"uid": 900, "id": "cabeca_de_boi", "quality": "super", "level": 0, "mods": [], "ilvl": 9}
 	data.inventory.append(old_super)
 	data.equipped.arma = 900
 	reloaded.load_data(JSON.parse_string(JSON.stringify(data)))
@@ -123,7 +123,7 @@ func mail_tests() -> void:
 	var undo: Dictionary = Auction.grant_mail(profile, mail)
 	var got: Dictionary = profile.find_instance(int(undo.uids[0]))
 	check(not got.is_empty() and int(got.uid) != 77 and got.id == "trovao" and int(got.level) == 5 and int(got.ilvl) == 13, "a bought item arrives with a new uid, its level and item level")
-	check(got.compose == {"ataque": 20} and (got.mods as Array).size() == 1, "and only valid composition and bonuses")
+	check(not got.has("compose") and (got.mods as Array).size() == 1, "and only valid bonuses (no old composition)")
 	var sale: Dictionary = {"id": 2, "kind": "sale", "currencies": {"solar": 19, "estrela": 4, "ouro_falso": 50}, "coins": 0}
 	var second: Dictionary = Auction.grant_mail(profile, sale)
 	check(profile.currency_count("solar") == 19 and profile.currency_count("estrela") == 4 and profile.currency_count("ouro_falso") == 0, "a sale pays known currencies only")

@@ -9,6 +9,7 @@
 - **Arma nas costas**: ela flutuava atrás e acima do personagem na batalha. Agora cada arma é medida (a parte visível da arte) e fica apoiada nas costas, inclinada para as pernas, com a base escondida atrás do corpo (`docs/screens/back_weapons.png`).
 - Arte: 13 gerações do PixelLab (`docs/PIXELLAB_0_15.md`). Versão 0.15 (cliente e servidor precisam da mesma).
 - **Testes**: `tests/bag_tests.gd` (27, com arrastar de verdade pelo mouse), mais 5 em `pow_tests.gd` (tiro seguro durante o *cut-in*, retrato, todas as armas apoiadas nas costas). `net_e2e_tests.gd` rodado de novo depois da 0.14: 151 verificações.
+- **Depois da 0.15 — Composição e Fusão retiradas do Ferreiro**: os atributos extras dos itens vêm só das moedas (Brasa, Coroa, Estrela…); o Ferreiro ficou com Fortalecer, Transferência e Moedas (`docs/screens/smith.png`). As pedras de todos os níveis continuam na Loja. O Cristal Dourado saiu das cartas de recompensa, da Mochila e do cupom TESTARTUDO; saves antigos perdem o bônus de composição e os cristais ao carregar, e as operações `fuse` e `compose` não existem mais (nem no servidor).
 
 ## 0.14: especiais, monstros com habilidades e Fiorde dos Vikings
 - **Especiais (POW) únicos**: cada arma tem um projétil de especial próprio (arte PixelLab), a arte entra na tela junto com o "POW!" e a animação da arma toca grande onde o especial cai (antes ela tocava atrás do banner, no atirador, e os impactos pareciam iguais).

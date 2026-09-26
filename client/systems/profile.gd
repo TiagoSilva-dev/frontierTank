@@ -4,8 +4,8 @@ extends RefCounted
 # Single character. Offline it is saved in user://; online (backend 0.11) the game server
 # keeps the authoritative copy and runs every change through `apply_op` with these same
 # rules, while the client's copy is only a mirror of what the server sends.
-# v3 keeps an inventory of item instances ({uid, id, quality, level, compose}) and the
-# equipped slot -> uid map; stones and crystals stay as counters in `items`.
+# v3 keeps an inventory of item instances ({uid, id, quality, level}) and the
+# equipped slot -> uid map; stones stay as counters in `items`.
 # v4 (0.9) adds the instance maps ({uid, instance, level, quality, mods}), the item level
 # (`ilvl`) of dropped weapons and the Super Verdadeira guarantee counter per instance.
 # v5 (0.10) adds the random bonus attributes of gear (`mods`: {id, tier, value}), a quality
@@ -14,6 +14,8 @@ extends RefCounted
 # in `items` like the stones. Drops from v4 saves get their bonuses rolled once on load.
 # 0.12 (Leilão): the starter weapon and equipped Super Verdadeiras are bound; items and
 # maps bought or returned by the auction arrive through `receive_instance`/`receive_map`.
+# Composição (Cristal Dourado) and Fusão of stones were removed: the currencies give gear
+# its extra attributes. Old saves drop their `compose` bonus and crystal counter on load.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -76,7 +78,8 @@ func load_data(data: Dictionary) -> bool:
 	items = {}
 	if saved_items is Dictionary:
 		for key: String in saved_items:
-			items[key] = maxi(0, int(saved_items[key]))
+			if key != "golden_crystal":
+				items[key] = maxi(0, int(saved_items[key]))
 	inventory.clear()
 	equipped.clear()
 	next_uid = maxi(1, int(data.get("next_uid", 1)))
@@ -209,7 +212,7 @@ static func valid_quality(id: String, quality: String) -> String:
 
 func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: int = 0, mods: Array = []) -> Dictionary:
 	quality = valid_quality(id, quality)
-	var inst: Dictionary = {"uid": next_uid, "id": id, "quality": quality, "level": clampi(level, 0, 12), "compose": {}, "mods": Crafting.valid_mods(mods, id)}
+	var inst: Dictionary = {"uid": next_uid, "id": id, "quality": quality, "level": clampi(level, 0, 12), "mods": Crafting.valid_mods(mods, id)}
 	if ilvl > 0:
 		# Item level = level of the map it dropped in: it limits the bonus tiers (0.10).
 		inst.ilvl = clampi(ilvl, 1, 16)
@@ -218,19 +221,13 @@ func add_instance(id: String, quality: String = "normal", level: int = 0, ilvl: 
 	return inst
 
 # A piece of gear read from outside the running game (the save, or the mail of the
-# auction): only known items, with valid quality, level, composition and bonuses. {}
+# auction): only known items, with valid quality, level and bonuses. {}
 # when it is not an item. The caller gives it a uid.
 static func clean_instance(raw: Variant) -> Dictionary:
 	if not raw is Dictionary or Armory.kind_of(str(raw.get("id", ""))) == "":
 		return {}
 	var id: String = str(raw.id)
-	var compose: Dictionary = {}
-	var saved_compose: Variant = raw.get("compose", {})
-	if saved_compose is Dictionary:
-		for key: Variant in saved_compose:
-			if str(key) in Armory.ATTRS:
-				compose[str(key)] = maxi(0, int(saved_compose[key]))
-	var inst: Dictionary = {"uid": 0, "id": id, "quality": valid_quality(id, str(raw.get("quality", "normal"))), "level": clampi(int(raw.get("level", 0)), 0, 12), "compose": compose, "mods": Crafting.valid_mods(raw.get("mods", []), id)}
+	var inst: Dictionary = {"uid": 0, "id": id, "quality": valid_quality(id, str(raw.get("quality", "normal"))), "level": clampi(int(raw.get("level", 0)), 0, 12), "mods": Crafting.valid_mods(raw.get("mods", []), id)}
 	if int(raw.get("ilvl", 0)) > 0:
 		inst.ilvl = clampi(int(raw.ilvl), 1, 16)
 	for flag: String in ["bound", "mirrored"]:
@@ -476,22 +473,6 @@ func strengthen(uid: int) -> String:
 	save_profile()
 	return ""
 
-func fuse(stone_id: String) -> String:
-	var rules: Dictionary = Armory.data().strengthen
-	var stones: Array = rules.stones
-	for i in range(stones.size() - 1):
-		if stones[i].id == stone_id:
-			if int(items.get(stone_id, 0)) < int(rules.fusion_count):
-				return tr("Precisa de %d pedras iguais.") % int(rules.fusion_count)
-			if coins < int(rules.fusion_coins):
-				return tr("Moedas insuficientes.")
-			coins -= int(rules.fusion_coins)
-			items[stone_id] = int(items[stone_id]) - int(rules.fusion_count)
-			add_item(str(stones[i + 1].id))
-			save_profile()
-			return ""
-	return tr("Esta pedra já é do nível máximo.")
-
 func transfer(source_uid: int, target_uid: int) -> String:
 	var source: Dictionary = find_instance(source_uid)
 	var target: Dictionary = find_instance(target_uid)
@@ -504,33 +485,8 @@ func transfer(source_uid: int, target_uid: int) -> String:
 		return tr("Moedas insuficientes.")
 	coins -= cost
 	var level: int = int(source.level)
-	var composed: Dictionary = source.get("compose", {}).duplicate()
 	source.level = int(target.level)
-	source.compose = target.get("compose", {}).duplicate()
 	target.level = level
-	target.compose = composed
-	save_profile()
-	return ""
-
-func compose(uid: int, attr: String) -> String:
-	var rules: Dictionary = Armory.data().strengthen.compose
-	var inst: Dictionary = find_instance(uid)
-	if inst.is_empty() or not attr in Armory.ATTRS:
-		return tr("Escolha um item e um atributo.")
-	var composed: Dictionary = inst.get("compose", {})
-	var total: int = 0
-	for key: String in composed:
-		total += int(composed[key])
-	if total / int(rules.amount) >= int(rules.max):
-		return tr("Este item já recebeu %d composições.") % int(rules.max)
-	if int(items.get(rules.item, 0)) <= 0:
-		return tr("Você precisa de um Cristal Dourado.")
-	if coins < int(rules.coins):
-		return tr("Moedas insuficientes.")
-	coins -= int(rules.coins)
-	items[rules.item] = int(items[rules.item]) - 1
-	composed[attr] = int(composed.get(attr, 0)) + int(rules.amount)
-	inst.compose = composed
 	save_profile()
 	return ""
 
@@ -633,9 +589,6 @@ func redeem(code: String) -> String:
 	if stones > 0:
 		for stone: Dictionary in Armory.data().strengthen.stones:
 			add_item(str(stone.id), stones)
-	var crystals: int = int(coupon.get("crystals", 0))
-	if crystals > 0:
-		add_item(str(Armory.data().strengthen.compose.item), crystals)
 	var map_levels: Array = coupon.get("maps", [])
 	if not map_levels.is_empty():
 		var random: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -690,7 +643,7 @@ func sell_tool(slot: int, balance: Dictionary) -> String:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "fuse", "transfer", "compose", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -734,12 +687,8 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			error = buy_stone(arg_str(args, 0), arg_int(args, 1))
 		"strengthen":
 			error = strengthen(arg_int(args, 0))
-		"fuse":
-			error = fuse(arg_str(args, 0))
 		"transfer":
 			error = transfer(arg_int(args, 0), arg_int(args, 1))
-		"compose":
-			error = compose(arg_int(args, 0), arg_str(args, 1))
 		"craft":
 			error = craft(arg_str(args, 0), arg_int(args, 1))
 		"craft_map":

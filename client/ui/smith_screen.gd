@@ -1,16 +1,17 @@
 class_name SmithScreen
 extends Control
 
-# Ferreiro (DDTank): Fortalecer up to +12 with Pedras de Fortalecimento, Composição with
-# Cristal Dourado, Fusão of 4 equal stones into the next level and Transferência of the
-# strengthen level between two items of the same kind. Weapon art evolves at +9/+10/+12
+# Ferreiro (DDTank): Fortalecer up to +12 with Pedras de Fortalecimento and Transferência
+# of the strengthen level between two items of the same kind. Weapon art evolves at +9/+10/+12
 # and the aura follows the level: +1-5 green, +6-8 blue, +9-11 purple, +12 red.
 # Moedas (0.10): the currencies (Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse and
 # Espelho Celeste) used on gear and on instance maps to change quality and bonuses.
+# They replaced DDTank's Composição (Cristal Dourado) and Fusão of stones, both removed;
+# every stone level is sold in the shop.
 
 signal closed
 
-const TABS: Array[String] = ["Fortalecer", "Composição", "Fusão", "Transferência", "Moedas"]  # i18n
+const TABS: Array[String] = ["Fortalecer", "Transferência", "Moedas"]  # i18n
 const CRAFT_PER_PAGE: int = 36
 
 var app: Node
@@ -50,9 +51,7 @@ func build() -> void:
 		UiKit.button(contents, tr(TABS[i]), Rect2(60 + i * 180, 84, 172, 40), select_tab.bind(TABS[i]), "tab_active" if tab == TABS[i] else "tab", 16)
 	UiKit.panel(contents, Rect2(56, 130, 520, 550), "paper")
 	UiKit.panel(contents, Rect2(588, 130, 636, 550), "paper")
-	if tab == "Fusão":
-		build_fusion()
-	elif tab == "Moedas":
+	if tab == "Moedas":
 		build_craft_list()
 		build_craft()
 	else:
@@ -60,8 +59,6 @@ func build() -> void:
 		match tab:
 			"Fortalecer":
 				build_strengthen()
-			"Composição":
-				build_compose()
 			"Transferência":
 				build_transfer()
 	if message != "":
@@ -81,10 +78,7 @@ func with_card(slot: Control, entry: Dictionary) -> void:
 func eligible() -> Array[Dictionary]:
 	var list: Array[Dictionary] = []
 	for inst: Dictionary in app.profile.inventory:
-		var id: String = str(inst.id)
-		if tab == "Composição" and Armory.kind_of(id) != "aux":
-			list.append(inst)
-		elif Armory.can_strengthen(id):
+		if Armory.can_strengthen(str(inst.id)):
 			list.append(inst)
 	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level) if a.level != b.level else str(a.id) < str(b.id))
 	return list
@@ -182,49 +176,11 @@ func build_strengthen() -> void:
 		var button: Button = UiKit.button(contents, tr("FORTALECER"), Rect2(806, 576, 220, 50), do_strengthen, "button_green", 22)
 		button.name = "StrengthenButton"
 
-func build_compose() -> void:
-	var inst: Dictionary = app.profile.find_instance(selected_uid)
-	var rules: Dictionary = Armory.data().strengthen.compose
-	UiKit.label(contents, tr("COMPOSIÇÃO"), Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(contents, tr("Cada Cristal Dourado soma +%d ao atributo escolhido (até %d vezes por item).") % [int(rules.amount), int(rules.max)], Rect2(610, 170, 592, 50), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	if inst.is_empty():
-		return
-	item_card(inst, Rect2(820, 224, 170, 170), int(inst.level))
-	UiKit.label(contents, Armory.item_name(inst), Rect2(600, 398, 612, 30), 19, Armory.quality_color(inst).darkened(0.35), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var composed: Dictionary = inst.get("compose", {})
-	for i in range(Armory.ATTRS.size()):
-		var attr: String = Armory.ATTRS[i]
-		UiKit.button(contents, "%s +%d" % [Armory.attr_name(attr), int(composed.get(attr, 0))], Rect2(612 + i * 150, 440, 142, 48), do_compose.bind(attr), "button_blue", 15)
-	var slot: Panel = UiKit.panel(contents, Rect2(810, 500, 190, 64), "slot_light")
-	UiKit.art(slot, "res://assets/expansion/items/golden_crystal.png", Rect2(6, 6, 52, 52))
-	UiKit.label(slot, "x%d" % int(app.profile.items.get(rules.item, 0)), Rect2(64, 6, 120, 52), 20, UiKit.TEXT_DARK)
-	UiKit.label(contents, tr("Custo: 1 cristal + %d moedas") % int(rules.coins), Rect2(600, 572, 612, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-
-func build_fusion() -> void:
-	var rules: Dictionary = Armory.data().strengthen
-	var stones: Array = rules.stones
-	UiKit.label(contents, tr("FUSÃO DE PEDRAS"), Rect2(56, 140, 520, 34), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var info: Label = UiKit.label(contents, tr("Junte %d pedras do mesmo nível para criar uma do nível seguinte (%d moedas).\n\nAs pedras dão pontos de fortalecimento: I = 1, II = 5, III = 25, IV = 125.\nDo +1 ao +12 são necessários 1, 5, 15, 35, 70, 150, 230, 330, 450, 600, 750 e 900 pontos.") % [int(rules.fusion_count), int(rules.fusion_coins)], Rect2(76, 190, 480, 300), 17, UiKit.TEXT_DARK)
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	for i in range(stones.size() - 1):
-		var y: float = 160 + i * 150
-		var from: Dictionary = stones[i]
-		var into: Dictionary = stones[i + 1]
-		var left: Panel = UiKit.panel(contents, Rect2(620, y, 150, 110), "slot_light")
-		UiKit.art(left, str(from.icon), Rect2(40, 6, 70, 70))
-		UiKit.label(left, "%d x %s" % [int(rules.fusion_count), roman(str(from.name))], Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(contents, "►", Rect2(772, y + 20, 80, 60), 36, Color("a8642a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		var right: Panel = UiKit.panel(contents, Rect2(854, y, 150, 110), "slot_light")
-		UiKit.art(right, str(into.icon), Rect2(40, 6, 70, 70))
-		UiKit.label(right, "1 x %s" % roman(str(into.name)), Rect2(0, 76, 150, 30), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(contents, tr("Você tem %d") % int(app.profile.items.get(from.id, 0)), Rect2(1014, y + 6, 200, 30), 16, UiKit.TEXT_DARK)
-		UiKit.button(contents, tr("FUNDIR"), Rect2(1020, y + 44, 170, 48), do_fuse.bind(str(from.id)), "button_green", 18)
-
 func build_transfer() -> void:
 	var source: Dictionary = app.profile.find_instance(selected_uid)
 	var target: Dictionary = app.profile.find_instance(target_uid)
 	UiKit.label(contents, tr("TRANSFERÊNCIA"), Rect2(600, 138, 612, 32), 22, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var info: Label = UiKit.label(contents, tr("Troca o nível de fortalecimento e a composição entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas.") % int(Armory.data().strengthen.transfer_coins), Rect2(620, 170, 572, 70), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var info: Label = UiKit.label(contents, tr("Troca o nível de fortalecimento entre dois itens do mesmo tipo — por exemplo, passe o +9 da sua arma Normal para a Verdadeira. Custa %d moedas.") % int(Armory.data().strengthen.transfer_coins), Rect2(620, 170, 572, 70), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	UiKit.label(contents, tr("Origem"), Rect2(650, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.label(contents, tr("Destino"), Rect2(990, 250, 190, 28), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
@@ -413,10 +369,6 @@ func do_craft(currency: String) -> void:
 			done = tr("Usou %s: o mapa agora tem %d atributos.") % [Crafting.currency_name(currency), (subject.get("mods", []) as Array).size()]
 	report(error, done)
 
-static func roman(stone_name: String) -> String:
-	# "Pedra de Fortalecimento III" -> "III" (the numeral reads the same in every language).
-	return stone_name.get_slice(" ", stone_name.get_slice_count(" ") - 1)
-
 func pick(uid: int) -> void:
 	if tab == "Transferência" and selected_uid >= 0 and uid != selected_uid:
 		target_uid = uid
@@ -443,12 +395,6 @@ func do_strengthen() -> void:
 	var error: String = (await app.do_op("strengthen", [selected_uid])).error
 	var inst: Dictionary = app.profile.find_instance(selected_uid)
 	report(error, tr("Sucesso! %s agora é +%d.") % [Armory.item_name(before, false), int(inst.get("level", 0))])
-
-func do_compose(attr: String) -> void:
-	report((await app.do_op("compose", [selected_uid, attr])).error, tr("Composição feita: %s +%d.") % [Armory.attr_name(attr), int(Armory.data().strengthen.compose.amount)])
-
-func do_fuse(stone_id: String) -> void:
-	report((await app.do_op("fuse", [stone_id])).error, tr("Fusão concluída!"))
 
 func do_transfer() -> void:
 	report((await app.do_op("transfer", [selected_uid, target_uid])).error, tr("Transferência concluída!"))

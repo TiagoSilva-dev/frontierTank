@@ -16,7 +16,6 @@ const ITEM_NAMES: Dictionary = {
 	"strength_stone_ii": ["Pedra de Fortalecimento II", "res://assets/items/pedra_ii.png"],  # i18n
 	"strength_stone_iii": ["Pedra de Fortalecimento III", "res://assets/items/pedra_iii.png"],  # i18n
 	"strength_stone_iv": ["Pedra de Fortalecimento IV", "res://assets/items/pedra_iv.png"],  # i18n
-	"golden_crystal": ["Cristal Dourado", "res://assets/expansion/items/golden_crystal.png"],  # i18n
 	"pet_egg": ["Ovo de Mascote", "res://assets/expansion/items/pet_egg.png"],  # i18n
 }
 const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]  # i18n

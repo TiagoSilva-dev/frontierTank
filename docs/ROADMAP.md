@@ -197,7 +197,7 @@ Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. 
     - −% efeito do vento
     - +% cura recebida
 - [x] Nada de bônus que mude o raio da explosão ou o hitbox.
-- [x] **Fortalecimento** (+1 a +12) continua aumentando só os atributos base; os bônus não mudam. **Composição** (Cristal Dourado) continua como está.
+- [x] **Fortalecimento** (+1 a +12) continua aumentando só os atributos base; os bônus não mudam. ~~**Composição** (Cristal Dourado) continua como está.~~ **Retirada depois da 0.15, junto com a Fusão de pedras**: as moedas já dão os atributos extras.
 - [x] Itens da Loja e de cupons vêm sem bônus.
 
 **Feito na 0.10 (25/09/2026):** `items.json` → `affixes` e `crafting.gd` (`Crafting`); bônus aplicados em `Armory.character_stats` e na partida (`TankFighter.bonus`, `LocalMatch`); rolados no drop das armas, da Super Verdadeira e dos equipamentos; Mochila mostra bônus, faixa e nível do item; save v5 (drops antigos ganham bônus uma vez ao carregar); teste `tests/craft_tests.gd`.
