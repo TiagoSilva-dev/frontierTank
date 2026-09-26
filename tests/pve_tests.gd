@@ -59,7 +59,6 @@ func run_tests() -> void:
 	var game: LocalMatch = LocalMatch.new()
 	root.add_child(game)
 	game.set_physics_process(false)
-	game.balance.pve.power_error = 0.0
 	check(balance.instances.size() == 4 and balance.instances.all(func(i: Dictionary) -> bool: return i.phases.size() == 3), "four instances with 3 phases each")
 	check(not balance.pve.has("difficulties"), "the Normal/Difícil/Heroico/Pesadelo difficulties are gone")
 	var art_ok: bool = true
@@ -87,14 +86,24 @@ func run_tests() -> void:
 	check(not game.evaluate_winner() and enemies(game).filter(func(f: TankFighter) -> bool: return f.hp > 0).size() == 2 and game.waves.is_empty(), "clearing a wave brings the next one")
 	var dropped: TankFighter = enemies(game)[-1]
 	check(not dropped.settled or dropped.position.y < game.terrain.surface_y(dropped.position.x), "the new wave falls from the sky")
-	# Minion AI fires by itself
+	# Minions do not shoot: they wind up an ability that cannot miss.
 	turn_of(game, dropped)
 	check(not game.can_act(), "players cannot act on a minion's turn")
+	var casts: Array = []
+	var cast_hook: Callable = func(kind: String, _point: Vector2, data: Dictionary) -> void: casts.append([kind, data])
+	game.effect.connect(cast_hook)
 	for i in range(600):
 		game._physics_process(1.0 / 60)
-		if game.state == LocalMatch.State.PROJECTILE_FLYING:
+		if game.state == LocalMatch.State.CASTING:
 			break
-	check(game.state == LocalMatch.State.PROJECTILE_FLYING, "minions calculate and fire autonomously")
+	check(game.state == LocalMatch.State.CASTING and game.projectiles.is_empty() and casts.any(func(c: Array) -> bool: return c[0] == "ability_cast"), "minions wind up an ability by themselves (no shot)")
+	var minion_hp: int = hero_fighter.hp
+	for i in range(240):
+		game._physics_process(1.0 / 60)
+		if game.state != LocalMatch.State.CASTING:
+			break
+	check(hero_fighter.hp < minion_hp and casts.any(func(c: Array) -> bool: return c[0] == "ability_hit"), "the ability lands on the hero: it cannot miss")
+	game.effect.disconnect(cast_hook)
 	for enemy in enemies(game):
 		enemy.hp = 0
 	check(game.evaluate_winner() and game.winner_team == 0, "phase 1 is won when the last wave falls")
@@ -136,15 +145,16 @@ func run_tests() -> void:
 	game.paused = false
 	for i in range(240):
 		game._physics_process(1.0 / 60)
-		if game.state == LocalMatch.State.PROJECTILE_FLYING:
+		if game.state == LocalMatch.State.CASTING:
 			break
-	check(game.state == LocalMatch.State.PROJECTILE_FLYING and boss.attack_animation.visible, "boss fires autonomously with its cast animation")
+	check(game.state == LocalMatch.State.CASTING and boss.attack_animation.visible and game.projectiles.is_empty(), "boss winds up an ability with its cast animation")
+	check(game.status_message.contains("usa"), "the ability is announced by name")
 	var hp_before: int = game.fighters[0].hp
 	for i in range(900):
 		game._physics_process(1.0 / 60)
 		if game.active_id != boss.player_id or not game.running:
 			break
-	check(game.fighters[0].hp < hp_before, "the boss hits the player using terrain and wind")
+	check(game.fighters[0].hp < hp_before, "the boss ability always hits the player")
 	boss.hp = boss.max_hp / 2
 	turn_of(game, boss)
 	check(game.boss_enraged and boss.weapon.damage == int(helio.fury_damage) and game.status_message.contains("FÚRIA"), "the boss enrages at half health")
@@ -170,7 +180,8 @@ func run_tests() -> void:
 	area_config.seed = 5
 	game.start(area_config)
 	boss = enemies(game).filter(func(f: TankFighter) -> bool: return f.is_boss).front()
-	check(int(game.compose_plan(boss).balls) == 3, "with 3-4 players the boss adds an area attack")
+	var boss_plan: Dictionary = game.plan_ability(boss, game.fighters[0])
+	check(boss_plan.targets.size() + boss_plan.splash.size() == 4, "with 3-4 players the boss ability reaches every hero")
 
 	# --- Map items: quality, modifiers, threats
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -220,7 +231,9 @@ func run_tests() -> void:
 	play_phase(game, ice)
 	var queen: TankFighter = enemies(game).front()
 	queen.turns_taken = 1
-	check(game.compose_plan(queen).freeze and not game.compose_plan(game.fighters[0]).freeze, "Rainha da Nevasca: every second attack freezes")
+	check(game.plan_ability(queen, game.fighters[0]).freeze, "Rainha da Nevasca: every second attack freezes")
+	queen.turns_taken = 0
+	check(not game.plan_ability(queen, game.fighters[0]).freeze, "... and the others do not")
 	var sky: InstanceRun = make_run("ilha_ruinas")
 	sky.phase_index = 1
 	play_phase(game, sky)
@@ -250,6 +263,63 @@ func run_tests() -> void:
 	var before: int = game.fighters.size()
 	turn_of(game, king)
 	check(game.fighters.size() == before + 1 and game.fighters[-1].rank == "minion", "Rei das Máscaras summons a mask every 3 turns")
+
+	# --- Monster abilities: their data, which one is used, chain, drain and craters
+	var abilities_ok: bool = true
+	for def: Dictionary in balance.enemies:
+		if def.rank == "totem":
+			continue
+		var list: Array = def.get("abilities", [])
+		abilities_ok = abilities_ok and not list.is_empty() and list.all(func(a: Dictionary) -> bool: return str(a.kind) in ["strike", "meteor", "area", "chain", "drain"] and float(a.scale) > 0.0 and float(a.scale) < 2.0 and str(a.get("fx", "")) != "")
+		if def.rank in ["guardian", "boss"]:
+			abilities_ok = abilities_ok and list.any(func(a: Dictionary) -> bool: return a.get("fury", false)) and list.any(func(a: Dictionary) -> bool: return int(a.get("every", 0)) > 1)
+	check(abilities_ok, "every monster has its own abilities; guardians and bosses a cycle and a fury one too")
+	king.hp = king.max_hp
+	king.turns_taken = 0
+	check(str(game.choose_ability(king).name) == "Chama das Máscaras", "the basic ability by default")
+	king.turns_taken = 1
+	check(str(game.choose_ability(king).name) == "Dança das Chamas", "the cycle ability on its turn (every 2nd attack)")
+	king.hp = king.max_hp / 2
+	check(str(game.choose_ability(king).name) == "Baile das Máscaras", "the fury ability while enraged")
+	var trio: InstanceRun = make_run("trono_mascaras", {}, 3)
+	trio.phase_index = 2
+	play_phase(game, trio)
+	king = enemies(game).filter(func(f: TankFighter) -> bool: return f.is_boss).front()
+	var party: Array[TankFighter] = game.fighters.filter(func(f: TankFighter) -> bool: return f.team == 0)
+	king.turns_taken = 1
+	var chain: Dictionary = game.plan_ability(king, party[0])
+	var distinct: Dictionary = {}
+	for id: int in chain.targets:
+		distinct[id] = true
+	check(chain.targets.size() == 3 and distinct.size() == 3 and chain.scales[1] < chain.scales[0] and chain.scales[2] < chain.scales[1], "a chain jumps across 3 different heroes, weaker at each jump")
+	var party_hp: Array = party.map(func(f: TankFighter) -> int: return f.hp)
+	game.cast_plan = chain
+	game.resolve_ability(king)
+	check(range(party.size()).all(func(i: int) -> bool: return party[i].hp < int(party_hp[i])), "... and hits all of them")
+	king.turns_taken = 0
+	king.hp = king.max_hp * 3 / 4
+	var king_hp: int = king.hp
+	game.cast_plan = game.plan_ability(king, party[0])
+	game.resolve_ability(king)
+	check(king.hp > king_hp, "Chama das Máscaras heals the king by part of the damage")
+	# Only fury meteors dig (a small crater): a crater under the hero every turn left it
+	# in a pit, shooting its own walls.
+	var temple: InstanceRun = make_run("templo_sol")
+	temple.phase_index = 1
+	play_phase(game, temple)
+	var lancer: TankFighter = enemies(game).filter(func(f: TankFighter) -> bool: return f.rank == "guardian").front()
+	var target_hero: TankFighter = game.fighters[0]
+	var ground: float = game.terrain.surface_y(target_hero.position.x)
+	var target_hp: int = target_hero.hp
+	lancer.turns_taken = 0
+	game.cast_plan = game.plan_ability(lancer, target_hero)
+	game.resolve_ability(lancer)
+	check(target_hero.hp < target_hp and is_equal_approx(game.terrain.surface_y(target_hero.position.x), ground), "the basic Lança do Sol always hits and leaves the ground whole")
+	lancer.hp = lancer.max_hp / 2
+	target_hp = target_hero.hp
+	game.cast_plan = game.plan_ability(lancer, target_hero)
+	game.resolve_ability(lancer)
+	check(str(game.cast_plan.ability.name) == "Lança Flamejante" and target_hero.hp < target_hp and game.terrain.surface_y(target_hero.position.x) > ground, "the fury Lança Flamejante digs a small crater")
 
 	# --- Drops: maps from maps, levels and the boss chest
 	var profile: PlayerProfile = PlayerProfile.new()

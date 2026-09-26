@@ -25,6 +25,7 @@ var aux_count: Label
 var pow_button: Button
 var trust_button: Button
 var pow_bar: ProgressBar
+var pow_glow: PowGaugeGlow
 var energy_bar: ProgressBar
 var life_bar: ProgressBar
 var energy_value: Label
@@ -153,6 +154,10 @@ func build() -> void:
 	pow_bar = UiKit.bar(self, Rect2(1046, 628, 170, 14), Color("c060ff"))
 	pow_bar.max_value = float(game.balance.pow_max)
 	UiKit.label(self, tr("POW"), Rect2(1046, 606, 60, 22), 13, Color("e0b0ff"), UiKit.INK)
+	pow_glow = PowGaugeGlow.new()
+	pow_glow.position = Vector2(1046, 606)
+	pow_glow.size = Vector2(170, 40)
+	add_child(pow_glow)
 	# --- energy and life
 	energy_bar = UiKit.bar(self, Rect2(1000, 662, 214, 22), Color("b8e030"))
 	energy_value = UiKit.label(self, "240", Rect2(1000, 660, 214, 26), 16, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
@@ -227,13 +232,47 @@ func flash(text: String, color: Color) -> void:
 	tween.tween_interval(0.7)
 	tween.tween_property(banner, "modulate:a", 0.0, 0.4)
 
-func pow_banner(title: String, tint: Color) -> void:
-	var banner_node: PowBanner = PowBanner.new()
-	banner_node.title = title
-	banner_node.tint = tint
-	add_child(banner_node)
+func pow_cutin(fighter: TankFighter, tint: Color) -> void:
+	# The POW activation cut-in over the whole screen (the match holds meanwhile).
+	var cut: PowCutIn = PowCutIn.new()
+	cut.title = tr(str(fighter.weapon.get("pow", {}).get("name", "POW")))
+	cut.owner_name = fighter.display_name
+	cut.tint = tint
+	cut.look = fighter.look
+	cut.enemy = fighter.team != game.local().team
+	add_child(cut)
 	if is_instance_valid(pause_box):
 		move_child(pause_box, -1)
+
+func ability_banner(title: String, color: Color, fury: bool) -> void:
+	# A monster's ability name slams in under the clock while it winds up.
+	if title == "":
+		return
+	var label: Label = UiKit.label(self, title.to_upper(), Rect2(240, 204, 800, 70), 54 if fury else 46, color.lerp(Color.WHITE, 0.45), Color("1a0804"), HORIZONTAL_ALIGNMENT_CENTER)
+	label.add_theme_constant_override("outline_size", 10)
+	label.add_theme_color_override("font_shadow_color", Color(color.r, color.g, color.b, 0.7))
+	label.add_theme_constant_override("shadow_offset_x", 0)
+	label.add_theme_constant_override("shadow_offset_y", 4)
+	label.pivot_offset = label.size * 0.5
+	label.scale = Vector2(1.9, 1.9)
+	label.modulate.a = 0.0
+	var tween: Tween = label.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 1.0, 0.1)
+	tween.chain().tween_interval(0.75)
+	tween.chain().tween_property(label, "modulate:a", 0.0, 0.25)
+	tween.chain().tween_callback(label.queue_free)
+
+func screen_flash(color: Color, seconds: float) -> void:
+	var flash_rect: ColorRect = ColorRect.new()
+	flash_rect.color = color
+	flash_rect.size = Vector2(1280, 720)
+	flash_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(flash_rect)
+	var tween: Tween = flash_rect.create_tween()
+	tween.tween_property(flash_rect, "modulate:a", 0.0, seconds).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(flash_rect.queue_free)
 
 func toggle_trust() -> void:
 	game.set_auto_play(not game.auto_play)
@@ -297,7 +336,8 @@ func _process(_delta: float) -> void:
 	pow_bar.value = me.pow_gauge
 	var full_pow: bool = me.pow_gauge >= float(game.balance.pow_max)
 	pow_button.disabled = not acting or not full_pow or game.turn_pow
-	pow_button.modulate = Color(1.3, 1.2, 0.7) if full_pow and acting else Color.WHITE
+	pow_button.modulate = Color(1.3, 1.2, 0.7).lerp(Color(1.6, 1.4, 0.8), 0.5 + 0.5 * sin(Time.get_ticks_msec() / 140.0)) if full_pow and acting and not game.turn_pow else Color.WHITE
+	pow_glow.set_state(me.pow_gauge / float(game.balance.pow_max), full_pow, full_pow and acting)
 	for i in range(item_buttons.size()):
 		var item: Dictionary = game.balance.items[i]
 		item_buttons[i].disabled = not acting or game.energy < float(item.energy) or game.turn_fly

@@ -9,6 +9,12 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) — **feito** |
 | — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito**; preparação do lançamento (web, nomes, privacidade, denúncia, Steam) na 0.13 — **feito**, faltam as pendências externas do checklist |
+| 5 | Jogo mais bonito e atrativo: POW de jogo de luta, habilidades dos monstros, interface menos quadrada, arte PixelLab no lugar do desenho por código | Não | 26/09/2026 — **feito** no código (POW, habilidades, molduras, Namoro desligado); a arte PixelLab espera o acesso à API (`docs/PIXELLAB_PLANO.md`) |
+
+## Decisões tomadas (26/09/2026)
+- **O Namoro fica desligado por enquanto.** A capela continua na cidade como cenário, sem nome e sem clique.
+- **Monstros não atiram.** Cada monstro tem habilidades próprias que não erram (a Defesa e o escudo ainda contam); o tiro com mira fica só para jogadores e bots.
+- **POW de jogo de luta** e **interface menos quadrada**, com a arte do PixelLab substituindo o que ainda é desenhado por código assim que a API estiver acessível.
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -40,7 +46,7 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 
 **Hoje:**
 - `pow_fx.gd` tem a aura (chamas douradas enquanto o POW está armado) e o `burst` (clarão, coluna de luz, ondas, raios e a arte PixelLab do POW crescendo de 1,5× para 3,2× com um tween).
-- `pow_banner.gd` mostra o estouro "POW!" com linhas de velocidade e o nome do especial.
+- `pow_banner.gd` mostrava o estouro "POW!" com linhas de velocidade e o nome do especial (trocado em 26/09/2026 pelo corte de tela `pow_cutin.gd` e pelo número final `pow_total.gd`).
 - `projectile.gd` desenha o sprite com `sprite_size` (vem de `projectile.size` em `items.json`, hoje 24 px). O acerto é calculado pela posição do projétil contra `fighter.hit_radius` e contra a máscara do terreno, então o tamanho desenhado **já está separado da colisão**.
 - A arma nas costas é escalada em `look_rig.gd` (`back_weapon.scale`).
 

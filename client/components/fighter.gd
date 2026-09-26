@@ -1,6 +1,7 @@
 class_name TankFighter
 extends Node2D
 
+const TOMBSTONE: String = "res://assets/effects/tombstone.png"
 const TEAM_COLORS: Array[Color] = [Color("5cc8ff"), Color("ff6a5c")]
 
 var player_id: int = 0
@@ -450,7 +451,12 @@ func portrait() -> Texture2D:
 func _draw() -> void:
 	var font: Font = UiKit.font(true)
 	if hp <= 0:
-		# Tombstone marks where the fighter fell, like the classic ghost marker.
+		# Tombstone marks where the fighter fell, like the classic ghost marker (PixelLab
+		# art in assets/effects/tombstone.png when there is one).
+		if ResourceLoader.exists(TOMBSTONE):
+			var stone: Texture2D = load(TOMBSTONE)
+			draw_texture(stone, Vector2(-stone.get_width() / 2.0, -stone.get_height()))
+			return
 		draw_rect(Rect2(-10, -26, 20, 26), Color("8f96a8"))
 		draw_rect(Rect2(-12, -2, 24, 4), Color("5d6272"))
 		draw_rect(Rect2(-2, -22, 4, 14), Color("5d6272"))

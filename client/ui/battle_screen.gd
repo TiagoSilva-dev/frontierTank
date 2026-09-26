@@ -14,6 +14,15 @@ const EFFECT_SOUNDS: Dictionary = {
 	"hearts": "special_hearts", "tornado": "special_tornado", "summon": "pow_activate", "warp": "special_tornado",
 	"wave": "battle_start",
 }
+const ABILITY_SOUNDS: Dictionary = {
+	"sting": "explosion_small", "feathers": "explosion_small", "claw": "critical", "spear": "impact_lanca_antiga",
+	"spear_fire": "impact_fogo_intenso", "beam": "special_beam", "sun_meteor": "explosion_big",
+	"rock_meteor": "explosion_big", "ice_meteor": "special_freeze", "fire_pillar": "impact_fogo_intenso",
+	"quake": "special_bull", "avalanche": "special_bull", "frost_breath": "special_freeze", "gust": "special_tornado",
+	"ice_spikes": "special_freeze", "chain_lightning": "special_lightning", "chain_fire": "impact_fogo_intenso",
+	"drain": "special_hearts", "drain_self": "tool_heal", "ember_rain": "explosion_medium", "blizzard": "special_freeze",
+	"storm": "special_lightning", "mask_storm": "special_tornado",
+}
 
 var app: Node
 var config: Dictionary = {}
@@ -35,6 +44,8 @@ var results: ResultScreen
 var summary: Dictionary = {}
 var trails: ShotTrails
 var pow_auras: Dictionary = {}
+# The POW's damage being summed for PowTotal: {sum, point, last, critical, tint}.
+var pow_tally: Dictionary = {}
 var skill_queue: Dictionary = {}
 var alive: Dictionary = {}
 var last_tick: int = -1
@@ -140,6 +151,10 @@ func focus_point() -> Vector2:
 	if game.state == LocalMatch.State.PROJECTILE_FLYING and not game.projectiles.is_empty():
 		var projectile: TankProjectile = game.projectiles[0]
 		return projectile.position + projectile.velocity * 0.15
+	if game.state == LocalMatch.State.CASTING and not game.cast_plan.is_empty():
+		# A monster winds up: frame the caster and its first target.
+		var first: TankFighter = game.fighters[int(game.cast_plan.targets[0])]
+		return game.active().center().lerp(first.center(), 0.5) + Vector2(0, -60)
 	if game.state == LocalMatch.State.RESOLVING_DAMAGE and game.last_impact != Vector2.ZERO and not game.passed:
 		return game.last_impact + Vector2(0, -60)
 	return game.active().position + Vector2(0, -110)
@@ -155,6 +170,7 @@ func _process(delta: float) -> void:
 		animation.frozen = game.paused
 	update_sound()
 	update_pow_charge()
+	update_pow_tally()
 	# POW punch: a quick zoom-in that eases back (kept on top of any external zoom).
 	camera.zoom /= kick_factor
 	kick = maxf(0.0, kick - delta)
@@ -234,6 +250,23 @@ func update_pow_charge() -> void:
 		var charging: bool = game.state == LocalMatch.State.PLAYER_CHARGING and game.turn_pow
 		aura.charge = clampf(game.power / 100.0, 0.05, 1.0) if charging else 0.0
 
+func update_pow_tally() -> void:
+	# The POW is over when nothing is flying and no hit came for a moment.
+	if pow_tally.is_empty() or game.state == LocalMatch.State.PROJECTILE_FLYING or game.hitstop > 0.0:
+		return
+	if Time.get_ticks_msec() / 1000.0 - float(pow_tally.last) < 0.45:
+		return
+	if int(pow_tally.sum) > 0:
+		var total: PowTotal = PowTotal.new()
+		total.total = int(pow_tally.sum)
+		total.tint = pow_tally.tint
+		total.critical = pow_tally.critical
+		total.position = pow_tally.point
+		effects.add_child(total)
+		app.audio.play("explosion_medium", -2.0, 0.7, 120)
+		shake = maxf(shake, 0.4)
+	pow_tally = {}
+
 func fire_sound(shooter: TankFighter, projectile: TankProjectile) -> String:
 	if projectile.fly:
 		return "fire_plane"
@@ -274,6 +307,8 @@ func on_skill(fighter: TankFighter, info: Dictionary) -> void:
 		get_tree().create_timer(start - now).timeout.connect(spawn_skill.bind(fighter, info))
 	if str(info.get("kind", "")) == "pow":
 		show_pow_aura(fighter)
+		hud.pow_cutin(fighter, pow_tint(fighter))
+		app.audio.play("skill_powmax", 0.0, 0.9, 150)
 
 func spawn_skill(fighter: TankFighter, info: Dictionary) -> void:
 	if not is_instance_valid(fighter) or not is_instance_valid(effects) or fighter.hp <= 0:
@@ -319,12 +354,17 @@ func show_blast(point: Vector2, radius: float) -> void:
 	blast.position = point
 	effects.add_child(blast)
 
+func pow_tint(fighter: TankFighter) -> Color:
+	return Color(str(fighter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
+
 func show_special(point: Vector2, _path: String) -> void:
-	# The POW shot: burst of light at the fighter, "POW!" banner, zoom punch and shake.
+	# The POW shot (after the cut-in of arm_pow): a flash of the weapon's colour, burst of
+	# light at the fighter, zoom punch and shake.
 	var shooter: TankFighter = game.active()
-	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
+	var tint: Color = pow_tint(shooter)
 	app.audio.play("pow_fire")
-	hud.pow_banner(tr(str(shooter.weapon.get("pow", {}).get("name", ""))), tint)
+	hud.screen_flash(Color(tint.r, tint.g, tint.b, 0.35), 0.25)
+	pow_tally = {"sum": 0, "point": point, "last": Time.get_ticks_msec() / 1000.0, "critical": false, "tint": tint}
 	# The weapon's own animated POW art (assets/effects/pow/<weapon>/) bursts behind it.
 	var burst: PowFx = PowFx.new()
 	burst.mode = "burst"
@@ -348,10 +388,15 @@ func show_pow_impact(point: Vector2, radius: float, weapon_id: String) -> void:
 	impact.top = camera.position.y - 420.0
 	effects.add_child(impact)
 	app.audio.play("explosion_big", 1.0, 0.9, 120)
-	shake = 0.6
-	kick = 0.4
+	app.audio.play("critical", -2.0, 0.8, 120)
+	hud.screen_flash(Color(1, 1, 0.9, 0.55), 0.35)
+	shake = 0.9
+	kick = 0.5
 
 func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
+	if kind in ["ability_cast", "ability_hit"]:
+		show_ability(kind, point, data)
+		return
 	# Weapon POW visuals; each draws itself on a throwaway node and fades out.
 	var node: WeaponEffect = WeaponEffect.new()
 	node.kind = kind
@@ -367,9 +412,33 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 		"bull":
 			shake = 0.7
 
+func show_ability(kind: String, point: Vector2, data: Dictionary) -> void:
+	# PvE monsters: the wind-up at the caster (rings on every target), then each hit.
+	var node: AbilityFx = AbilityFx.new()
+	node.mode = "cast" if kind == "ability_cast" else "hit"
+	node.fx = str(data.get("fx", "strike"))
+	node.color = Color(str(data.get("color", "ffd04a")))
+	node.targets = data.get("targets", [])
+	node.from = data.get("from", point)
+	node.time = float(data.get("time", 0.9))
+	node.position = point
+	effects.add_child(node)
+	if node.mode == "cast":
+		hud.ability_banner(str(data.get("name", "")), node.color, bool(data.get("fury", false)))
+		app.audio.play("fire_boss" if data.get("kind", "") != "strike" else "pow_activate", -3.0, 1.1, 80)
+		return
+	app.audio.play(str(ABILITY_SOUNDS.get(node.fx, "explosion_medium")), -1.0, randf_range(0.95, 1.05), 60)
+	shake = maxf(shake, 0.5 if node.fx.ends_with("meteor") or node.fx in ["quake", "avalanche", "spear_fire"] else 0.3)
+
 func show_damage(point: Vector2, text: String, color: Color) -> void:
 	if text.begins_with(tr("CRÍTICO")):
 		app.audio.play("critical", -1.0, 1.0, 150)
+	# Hits on rivals during a POW add up for its closing number.
+	if not pow_tally.is_empty() and color != Color("ff9a7a") and text.contains("-"):
+		pow_tally.sum = int(pow_tally.sum) + text.get_slice("-", 1).to_int()
+		pow_tally.point = point
+		pow_tally.last = Time.get_ticks_msec() / 1000.0
+		pow_tally.critical = bool(pow_tally.critical) or text.begins_with(tr("CRÍTICO"))
 	var label: Label = Label.new()
 	label.text = text
 	label.position = point + Vector2(-30, -50)
@@ -378,6 +447,8 @@ func show_damage(point: Vector2, text: String, color: Color) -> void:
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color("2a0a04"))
 	label.add_theme_constant_override("outline_size", 8)
+	# Numbers stay on top of every effect (beams, meteors, POW).
+	label.z_index = 40
 	effects.add_child(label)
 	var tween: Tween = create_tween().set_parallel(true)
 	tween.tween_property(label, "position:y", label.position.y - 64, 1.1)

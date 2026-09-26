@@ -1,0 +1,1628 @@
+{
+ "style": "high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+ "jobs": [
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/wood.png",
+   "tool": "create_ui_asset",
+   "prompt": "main window frame, warm polished wood with rounded corners, thick gold trim and small gold corner ornaments, inner bevel, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    96,
+    96
+   ],
+   "post": "9-slice margin 30px: add \"wood\": {\"margin\": 30} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"wood\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/wood_dark.png",
+   "tool": "create_ui_asset",
+   "prompt": "top bar frame, dark walnut wood, rounded corners, thin gold trim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    72,
+    72
+   ],
+   "post": "9-slice margin 24px: add \"wood_dark\": {\"margin\": 24} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"wood_dark\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/paper.png",
+   "tool": "create_ui_asset",
+   "prompt": "inner parchment panel, cream paper with soft rounded corners and a thin brown border, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    72,
+    72
+   ],
+   "post": "9-slice margin 22px: add \"paper\": {\"margin\": 22} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"paper\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/card.png",
+   "tool": "create_ui_asset",
+   "prompt": "item card, light cream with rounded corners, orange rim, glossy top, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    64,
+    64
+   ],
+   "post": "9-slice margin 18px: add \"card\": {\"margin\": 18} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"card\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/card_hover.png",
+   "tool": "create_ui_asset",
+   "prompt": "item card highlighted, bright cream with white rim and warm glow, rounded corners, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    64,
+    64
+   ],
+   "post": "9-slice margin 18px: add \"card_hover\": {\"margin\": 18} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"card_hover\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/card_busy.png",
+   "tool": "create_ui_asset",
+   "prompt": "item card greyed out, muted beige, rounded corners, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    64,
+    64
+   ],
+   "post": "9-slice margin 18px: add \"card_busy\": {\"margin\": 18} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"card_busy\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/slot.png",
+   "tool": "create_ui_asset",
+   "prompt": "recessed inventory slot, dark brown inset with rounded corners and a thin gold rim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 12px: add \"slot\": {\"margin\": 12} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"slot\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/slot_light.png",
+   "tool": "create_ui_asset",
+   "prompt": "recessed inventory slot on parchment, light inset, rounded corners, thin brown rim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 12px: add \"slot_light\": {\"margin\": 12} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"slot_light\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/dark.png",
+   "tool": "create_ui_asset",
+   "prompt": "dark translucent info box, rounded corners, thin bronze border, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 12px: add \"dark\": {\"margin\": 12} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"dark\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/glass.png",
+   "tool": "create_ui_asset",
+   "prompt": "tooltip box, dark glass with rounded corners and thin bronze border, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 12px: add \"glass\": {\"margin\": 12} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"glass\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button.png",
+   "tool": "create_ui_asset",
+   "prompt": "orange game button, pill shaped, glossy top highlight, dark outline, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_hover.png",
+   "tool": "create_ui_asset",
+   "prompt": "orange game button hovered, brighter, white rim, pill shaped, glossy, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_hover\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_hover\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_pressed.png",
+   "tool": "create_ui_asset",
+   "prompt": "orange game button pressed in, darker, pill shaped, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_pressed\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_pressed\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_disabled.png",
+   "tool": "create_ui_asset",
+   "prompt": "grey game button disabled, flat, pill shaped, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_disabled\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_disabled\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_green.png",
+   "tool": "create_ui_asset",
+   "prompt": "green game button, pill shaped, glossy top highlight, dark outline, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_green\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_green\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_blue.png",
+   "tool": "create_ui_asset",
+   "prompt": "blue game button, pill shaped, glossy top highlight, dark outline, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_blue\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_blue\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/button_red.png",
+   "tool": "create_ui_asset",
+   "prompt": "red game button, pill shaped, glossy top highlight, dark outline, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"button_red\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"button_red\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/tab.png",
+   "tool": "create_ui_asset",
+   "prompt": "inactive tab, brown wood, rounded top corners, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"tab\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"tab\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/tab_active.png",
+   "tool": "create_ui_asset",
+   "prompt": "active tab, glossy orange, rounded top corners, gold rim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"tab_active\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"tab_active\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/plate.png",
+   "tool": "create_ui_asset",
+   "prompt": "name plate ribbon, reddish wood with gold rim, rounded, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"plate\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"plate\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/banner.png",
+   "tool": "create_ui_asset",
+   "prompt": "red banner ribbon with light rim, rounded, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    48,
+    48
+   ],
+   "post": "9-slice margin 10px: add \"banner\": {\"margin\": 10} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"banner\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/badge.png",
+   "tool": "create_ui_asset",
+   "prompt": "small blue level badge, rounded, light rim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "9-slice margin 8px: add \"badge\": {\"margin\": 8} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"badge\")"
+  },
+  {
+   "group": "ui_frames",
+   "file": "assets/ui/frames/badge_gold.png",
+   "tool": "create_ui_asset",
+   "prompt": "small gold badge, rounded, bright rim, 9-slice game UI frame, empty centre, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "9-slice margin 8px: add \"badge_gold\": {\"margin\": 8} to assets/ui/frames/frames.json",
+   "replaces": "UiKit.drawn_frame(\"badge_gold\")"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/base_m.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/base_m/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/base_f.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/base_f/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/nilo.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/nilo/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/lia.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/lia/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_ruivo.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_ruivo/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_pirata.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_pirata/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_maga.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_maga/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_ninja.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_ninja/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_robo.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_robo/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/bot_princesa.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/bot_princesa/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_capitao.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_capitao/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_maga.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_maga/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_marinheira.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_marinheira/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_ninja.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_ninja/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_princesa.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_princesa/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "portraits",
+   "file": "assets/portraits/roupa_samurai.png",
+   "tool": "create_image_pro",
+   "prompt": "fighting game super move cut-in portrait of this chibi character, waist up, heroic determined pose, dynamic angle, facing right, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/characters/roupa_samurai/south.png",
+   "size": [
+    256,
+    320
+   ],
+   "post": "keep transparency; faces right (the rival side mirrors it)",
+   "replaces": "PowCutIn standing AvatarView"
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/sting/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a glowing golden stinger bolt hitting, sparks, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"sting\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/feathers/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a volley of sharp feathers slashing, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"feathers\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/claw/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "three icy claw slashes, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"claw\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/spear/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a spear of sunlight falling from the sky and striking the ground, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"spear\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/spear_fire/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a flaming spear falling from the sky, fire shockwave, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"spear_fire\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/beam/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a vertical beam of sunlight from the sky, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"beam\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/sun_meteor/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a burning sun meteor crashing down, big fiery explosion, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"sun_meteor\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/rock_meteor/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a molten rock meteor crashing down, rocks flying, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"rock_meteor\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/ice_meteor/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a block of ice crashing down and shattering, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"ice_meteor\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/fire_pillar/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a pillar of fire erupting from the ground, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"fire_pillar\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/quake/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "the ground cracking and rocks bursting up, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"quake\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/avalanche/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "an avalanche of snow and ice chunks, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"avalanche\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/frost_breath/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a cone of freezing breath with ice crystals, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"frost_breath\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/gust/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a slicing wind gust, white arcs, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"gust\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/ice_spikes/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "ice spikes bursting out of the ground, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"ice_spikes\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/chain_lightning/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a lightning bolt strike with electric sparks, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"chain_lightning\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/chain_fire/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a whip of magenta fire striking, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"chain_fire\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/drain/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "dark magenta life energy being drained away, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"drain\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/ember_rain/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a rain of embers falling and burning, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"ember_rain\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/blizzard/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a blizzard of snowflakes and ice shards, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"blizzard\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/storm/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a storm cloud with lightning striking down, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"storm\""
+  },
+  {
+   "group": "ability_fx",
+   "file": "assets/effects/abilities/mask_storm/frame_00.png",
+   "tool": "create_object_pro_flash + animate_object",
+   "prompt": "a whirl of flaming masks and pink fire, side view game effect animation, 8-12 frames, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    128,
+    128
+   ],
+   "post": "frames as frame_00.png, frame_01.png... (impact at the bottom centre)",
+   "replaces": "AbilityFx procedural \"mask_storm\""
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/brasa.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a glowing ember coin, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "aa00966f307b3a605a5279c66c15e8518d79927bfb048b1a17d3b00f9d10fb58"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/coroa.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a small golden crown token, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "19ff199bff8989fb0701959247efe7a0ab6bcef7e19d38ae9b1e3f1d5deb1f4a"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/estrela.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a shining star token, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "0a7bc2ddf2a37036cdca33806a8e762027d8ce4d82e435933072a80cd0529374"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/tormenta.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a storm orb with lightning inside, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "902e035ece0492c8fad537be86935a36532087e0b7a5db49b3d24a88f9c75582"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/solar.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a radiant sun coin, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "b6f58f1df2c597599f12d9d881105a4915cd950cfad4c16b24028b85fa8ac3af"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/eclipse.png",
+   "tool": "create_image_pixflux",
+   "prompt": "an eclipse medallion, dark disc with golden corona, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "84f73f1c211205044e05a9e3bf6ff29ed77b10ed5c26ae4f2938763121ad7164"
+  },
+  {
+   "group": "currency",
+   "file": "assets/items/currency/espelho.png",
+   "tool": "create_image_pixflux",
+   "prompt": "a sky mirror gem, blue reflective crystal, inventory icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "32x32, replaces the file drawn by tools/currency_icons.py",
+   "replaces": "tools/currency_icons.py",
+   "code_sha": "d6b15eb340d06bd5de2835b732bf136f760f25b19288b2a697dc36bb55e7ea8e"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/azul_disc.png",
+   "tool": "create_image_pro",
+   "prompt": "blue soft glowing disc of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "120e53961f9240942533a54b030dcb76165aa27721b7cafe9aa6f3e762f78f9e"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/azul_ring.png",
+   "tool": "create_image_pro",
+   "prompt": "blue rune ring of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "9accfe1210455835cfc62f166ffb755d8d77bd34c1c8007676d08b7b5c6695f1"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/azul_rays.png",
+   "tool": "create_image_pro",
+   "prompt": "blue radiant rays of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "78ec6ab09ca67e2555295a893a8d9b08849124ea823288a408a09bb2c632cae8"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/azul_star.png",
+   "tool": "create_image_pro",
+   "prompt": "blue six pointed magic star of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "f0659554c90e945f8990b9d6e838948ff61369a2d46eb5df4e468224f3b640ef"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/roxa_disc.png",
+   "tool": "create_image_pro",
+   "prompt": "purple soft glowing disc of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "9453930a3233e1f02492cf61400e1096a51dc6f996a2ae53554704ee8935800f"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/roxa_ring.png",
+   "tool": "create_image_pro",
+   "prompt": "purple rune ring of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "5a3c9b0ea6be60fb5f714a8e771bf7e0c2c3290ff9f5d20edaa960019db9fdc7"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/roxa_rays.png",
+   "tool": "create_image_pro",
+   "prompt": "purple radiant rays of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "b617f24aae9e6051cf383e0c0044534797d59b2e5722bcbadaac369e72e95f9e"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/roxa_star.png",
+   "tool": "create_image_pro",
+   "prompt": "purple six pointed magic star of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "fee240d8bcb524018e425cf2d9db823e6f1338bedd8cda7837f6422445a54649"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/verde_disc.png",
+   "tool": "create_image_pro",
+   "prompt": "green soft glowing disc of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "abcfaeae0dde7e956fc5143a3b4896f74be437b59c16d4f992d486ef55937084"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/verde_ring.png",
+   "tool": "create_image_pro",
+   "prompt": "green rune ring of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "47beadd110d5c50006ef27895f12813bd9a4d71642837c32d66e28e19af256ce"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/verde_rays.png",
+   "tool": "create_image_pro",
+   "prompt": "green radiant rays of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "9d912a00fe5fecfff2a54ce5a1c8e9c68ce53f237b5f0782d4e43eda6190c64f"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/verde_star.png",
+   "tool": "create_image_pro",
+   "prompt": "green six pointed magic star of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "e0baeda3f12d1d5785701a065e0bf06f37155492a188595dc0f2dc7d0ab27d5e"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/vermelha_disc.png",
+   "tool": "create_image_pro",
+   "prompt": "red soft glowing disc of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "9626a91feea5dff28d91b5c5aea86ce336af81a431b5b7986073af60e954a428"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/vermelha_ring.png",
+   "tool": "create_image_pro",
+   "prompt": "red rune ring of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "371c3729b764ec0486621625fec4d7afe08656849c46e0d92beb1c83ea40d155"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/vermelha_rays.png",
+   "tool": "create_image_pro",
+   "prompt": "red radiant rays of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "71199acb5a362fd4adef77f7b0cde1cfe5ad0416b7910469ebf893d9babcac31"
+  },
+  {
+   "group": "auras",
+   "file": "assets/effects/aura/vermelha_star.png",
+   "tool": "create_image_pro",
+   "prompt": "red six pointed magic star of a magic circle seen from the front, glowing light, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    256,
+    256
+   ],
+   "post": "centred, additive-friendly (dark = transparent)",
+   "replaces": "tools/aura_textures.py",
+   "code_sha": "98d8ac666ff7330a8baef7ee7f1c40bb12ecbf0e4ee810938f4443eef4b32561"
+  },
+  {
+   "group": "icons",
+   "file": "assets/ui/icons/male.png",
+   "tool": "create_image_pixflux",
+   "prompt": "male symbol game UI icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "PixelIcons.get_icon picks it up",
+   "replaces": "PixelIcons procedural \"male\""
+  },
+  {
+   "group": "icons",
+   "file": "assets/ui/icons/female.png",
+   "tool": "create_image_pixflux",
+   "prompt": "female symbol game UI icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "PixelIcons.get_icon picks it up",
+   "replaces": "PixelIcons procedural \"female\""
+  },
+  {
+   "group": "icons",
+   "file": "assets/ui/icons/up.png",
+   "tool": "create_image_pixflux",
+   "prompt": "up arrow game UI icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "PixelIcons.get_icon picks it up",
+   "replaces": "PixelIcons procedural \"up\""
+  },
+  {
+   "group": "icons",
+   "file": "assets/ui/icons/down.png",
+   "tool": "create_image_pixflux",
+   "prompt": "down arrow game UI icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "PixelIcons.get_icon picks it up",
+   "replaces": "PixelIcons procedural \"down\""
+  },
+  {
+   "group": "icons",
+   "file": "assets/ui/icons/vip.png",
+   "tool": "create_image_pixflux",
+   "prompt": "VIP gold badge game UI icon, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "PixelIcons.get_icon picks it up",
+   "replaces": "PixelIcons procedural \"vip\""
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/quebra_tijolos/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/quebra_tijolos/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "1a4853869b444caa23ac2dce0dd7b45ca759b743ecf4b39ea1a8d0fd23f293f0"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/quebra_tijolos/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/quebra_tijolos/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "c3b4e1619aeb6751b41cdb7dc189e527d192d36f04e62584a7f94ecd0dbeb5cd"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/quebra_tijolos/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/quebra_tijolos/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "faf059da223f71c2fd53ef36d0209111da9c872ec18d5eacf93237e295c62996"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/fogo_intenso/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/fogo_intenso/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "fb5b9d929461df007a41df587894066b099c5ef37a096c9fc352e55f1601fb20"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/fogo_intenso/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/fogo_intenso/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "8d5272a68efbdca7983339eaead0c057da46d438a7f0d85f592aec2dc4d2dbe7"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/fogo_intenso/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/fogo_intenso/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "8769806d2c7f4dec43b54716e2cbc841a7926eebc30308d66307b9c99b380137"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/canhao_arco_iris/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/canhao_arco_iris/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "2ddde392285132f5515d9d41a456f6b51eeeb054f8c8e610ac1fc182e0a98e7c"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/canhao_arco_iris/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/canhao_arco_iris/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "3935d3e99b4f1797adce24420a0a98e489c4e17e8cb9746181b03e05a43c5cb4"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/canhao_arco_iris/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/canhao_arco_iris/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "0d727a9274862c55c9be530d95695570225a952603e62041e1189011e1b6a999"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/vento_de_deus/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/vento_de_deus/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "a1517ad82a0caef8e50dd76ee174bc143b0b83806c6ddb6ac9e63848c7fe71ed"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/vento_de_deus/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/vento_de_deus/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "efc6a530511487b6314cd85973432668d9ed38cbc38eeb9d1b51313b7b4bc8e0"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/vento_de_deus/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/vento_de_deus/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "a5d77d2074449eb8c9bcabc28a6de29077e24622f39b451320464d1fc70defa5"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cesto_newton/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cesto_newton/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "7fc51488cc91780b1a5ad049d8c08cd9513dfa2843e6edc6d390b5f4a670ddb7"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cesto_newton/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cesto_newton/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "72588e70b0f92b4539b438865213a7808c32d5362fa39291f4709cbb70ce0c3d"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cesto_newton/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cesto_newton/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "f340cd2993cbc237d17a4732ef4eff3becdd8107eb34292fece4c583b62c1530"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/kit_medico/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/kit_medico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "9b6bf95d81a8d0cf7a8c35b82239187e56fc6efde33747e6bb9009447d57799b"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/kit_medico/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/kit_medico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "5aa0e8b270823dc03e453b72e4f9e3bd80fdadd83196ea8a64c74a56e37d8da6"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/kit_medico/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/kit_medico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "7834fc587715787af1baa0ab71a6cfc2e7ff0a9e57636f50c9dc37f1b93a7687"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/eletrodomestico/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/eletrodomestico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "053d4dc2c64dd317ae6db34d3a6eb1d61cab8ebf9cd26d1c7aa5a474d6000bc1"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/eletrodomestico/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/eletrodomestico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "2b20b6e7a4d01f370472a92b9a068a15c9d8c6c03a8f29cf649b872167a68193"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/eletrodomestico/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/eletrodomestico/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "b061c9f7b1aff7ee6ce90cb6a74ecb39eb717b0316cdce33642c98d306c57e1b"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/trovao/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/trovao/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "fbe6aebe7274d247e0ea02167e5135dbe4fa5ca63594d195297c93cc67d06137"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/trovao/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/trovao/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "9511f0e5b5af92fa7a84c044f456b20809e435129307a2e9cf497872604f66d3"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/trovao/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/trovao/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "b5432ae2bbf837e3c584f2cc6a0c464b915f47dd5090f9c3e0f9efcfd928f431"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/desentupidor/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/desentupidor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "b044bcbc173bf3f96edff5e25eb58e24a9b4494314b02c832049da4dda44cd1c"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/desentupidor/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/desentupidor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "a4b76e7c67edef545158cc12a11a5b9bcf925812c673fc9edd3513409be1e089"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/desentupidor/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/desentupidor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "64a6e3fa1730027e67fe8d6388b4b6fa376234c66e95fa251c385c739a82ddc0"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cabeca_de_boi/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cabeca_de_boi/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "b8ff5ec367ecb415b7aa67dd8909f6290b08d32c58ef3a9da8af9efa119ddc66"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cabeca_de_boi/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cabeca_de_boi/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "9808f0c24f3c86cc0d11b040310e4dfe8cf78076aaf1e667f7cd2d584e168993"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/cabeca_de_boi/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/cabeca_de_boi/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "b401faeaf5fa8607a4d14e0ec10d7b69af13f88d147528c92bc41204cc200c71"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/bumerangue_amor/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/bumerangue_amor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "68b29627892c8b1088b23ed08972dd0508f2cae9c4dc0d0a20b2f9cdc60c69b6"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/bumerangue_amor/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/bumerangue_amor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "16b3f23d1526c53078a0ce47603f3b3f7b1449b8e536b1c521a70cc0dac8d76e"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/bumerangue_amor/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/bumerangue_amor/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "76fc47a1254bde4227da8273dd4de4f812df5b1177e12d9138c4221f3dcc6cc1"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/lanca_antiga/tier1.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: steel blue finish with a blue glow (+9), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/lanca_antiga/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "136cac500dac82ea65cbe350d27d1787ac0b379a907b70963ba26a0c32f6e6b6"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/lanca_antiga/tier2.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: violet crystal finish with a purple glow (+10), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/lanca_antiga/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "127cb7f161d1ea28c878fbf955791a999e9555f89f8ccbb9f5f8c09b4580b400"
+  },
+  {
+   "group": "weapon_tiers",
+   "file": "assets/weapons/lanca_antiga/tier3.png",
+   "tool": "create_image_pro_flash",
+   "prompt": "the same weapon, same shape and pose, evolved: gold finish with a red glow and sparkles (+12), transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "reference": "assets/weapons/lanca_antiga/tier0.png",
+   "size": [
+    96,
+    96
+   ],
+   "post": "must keep tier0's silhouette (0.5 img2img drifted; keep the recolour if it still does)",
+   "replaces": "tools/weapon_tiers.py",
+   "code_sha": "8db5c5892b731fde5bf7b3d91d1cdbd24e400d3cd54dfa499b8327bb64eadabd"
+  },
+  {
+   "group": "misc",
+   "file": "assets/effects/tombstone.png",
+   "tool": "create_image_pixflux",
+   "prompt": "small cartoon tombstone with a cross, side view, transparent background, high quality pixel art, warm fantasy adventure game, clean single colour outline, rounded shapes, gold trims, soft shading, vibrant",
+   "size": [
+    32,
+    32
+   ],
+   "post": "TankFighter._draw draws it when present",
+   "replaces": "TankFighter._draw tombstone rectangles"
+  }
+ ]
+}

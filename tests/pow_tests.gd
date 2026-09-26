@@ -95,8 +95,14 @@ func run_tests() -> void:
 	game.pow_impact.connect(func(point: Vector2, radius: float, id: String) -> void: impacts.append([point, radius, id]))
 	var base_x: float = me.visual.position.x
 	me.pow_gauge = 100
+	var clock: float = game.remaining
 	game.activate_pow()
 	check(me.rig.weapon_glow == 1.0, "preparation: the weapon on the back lights up when POW is armed")
+	check(is_equal_approx(game.hitstop, float(configured.pow_cutin)), "activation: the battle holds for the cut-in")
+	for i in range(30):
+		game._physics_process(1.0 / 60)
+	check(is_equal_approx(game.remaining, clock), "... and the turn clock stops meanwhile")
+	game.hitstop = 0.0
 	# The frames before were long (battle setup): let the tween start, then look.
 	await process_frame
 	await process_frame
@@ -115,7 +121,7 @@ func run_tests() -> void:
 		if not impacts.is_empty():
 			break
 	check(impacts.size() == 1 and impacts[0][2] == "trovao", "impact: the POW landing is announced with the weapon id")
-	check(game.hitstop > 0.05 and game.hitstop <= 0.1, "impact: 60–100 ms of hit-stop")
+	check(game.hitstop > 0.1 and game.hitstop <= 0.2, "impact: 100–200 ms of hit-stop")
 	var waited: float = game.volley_wait
 	var held: float = game.hitstop
 	game._physics_process(1.0 / 60)

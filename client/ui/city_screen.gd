@@ -12,7 +12,7 @@ const BUILDINGS: Array[Dictionary] = [
 	{"id": "smith", "name": "Ferreiro", "rect": [100, 300, 190, 180], "label": [196, 330], "tip": "Ferreiro: fortaleça suas armas"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [1040, 60, 200, 330], "label": [1140, 175], "tip": "Leilão: compre e venda itens"},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},  # i18n
-	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par"},  # i18n
+	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par", "disabled": true},  # i18n
 ]
 # Layout for the PixelLab city: a 640x360 painting shown at exactly 2x with the
 # Salão on the central plaza and six paved lots around it, one 1x sprite per building.
@@ -24,12 +24,15 @@ const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
 	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
-	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},  # i18n
+	# Namoro is off for now (26/09/2026): the chapel stays as scenery, without name or click.
+	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}, "disabled": true},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
 ]
 
 var app: Node
-var buildings: Array[Dictionary] = BUILDINGS
+var buildings: Array[Dictionary] = []
+# The PixelLab city (CITY_LAYOUT) is on: the animated details follow its sprites.
+var custom_city: bool = false
 var hovered: int = -1
 var time: float = 0.0
 var labels: Array[Label] = []
@@ -45,7 +48,10 @@ var name_input: LineEdit
 func _ready() -> void:
 	size = Vector2(1280, 720)
 	var custom: bool = ResourceLoader.exists(CITY_ART)
-	buildings = CITY_LAYOUT if custom else BUILDINGS
+	custom_city = custom
+	var layout: Array[Dictionary] = CITY_LAYOUT if custom else BUILDINGS
+	# Disabled buildings are only scenery: no name, glow, effects or click.
+	buildings.assign(layout.filter(func(building: Dictionary) -> bool: return not building.get("disabled", false)))
 	var background: String = CITY_ART if custom else "res://assets/pve/hub_celeste.png"
 	var backdrop: TextureRect = UiKit.art(self, background, Rect2(0, 0, 1280, 720), false)
 	if custom:
@@ -55,6 +61,11 @@ func _ready() -> void:
 		sea.set_shader_parameter("texels", backdrop.texture.get_size())
 		backdrop.material = sea
 		backdrop.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	for building: Dictionary in layout:
+		var scenery: String = "res://assets/city/buildings/%s.png" % building.id
+		if building.get("disabled", false) and custom and ResourceLoader.exists(scenery):
+			var r: Array = building.rect
+			UiKit.art(self, scenery, Rect2(r[0], r[1], r[2], r[3])).name = "Scenery_" + str(building.id)
 	glow = Control.new()
 	glow.size = size
 	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -193,8 +204,6 @@ func enter(id: String) -> void:
 			shop.app = app
 			shop.closed.connect(app.show_city)
 			add_child(shop)
-		"dating":
-			UiKit.notice(self, tr("NAMORO"), tr("Casamento e equipamentos de casal ainda não estão disponíveis."))
 		"pet":
 			UiKit.notice(self, tr("PET"), tr("A Casa dos Mascotes ainda não está disponível nesta versão offline."))
 
@@ -218,7 +227,7 @@ func fx_point(building: Dictionary, key: String) -> Vector2:
 
 func draw_fx() -> void:
 	# Little living details on each building (the paintings themselves are static).
-	if buildings != CITY_LAYOUT:
+	if not custom_city:
 		return
 	for building: Dictionary in buildings:
 		var effects: Dictionary = building.get("fx", {})

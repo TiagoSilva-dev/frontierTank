@@ -98,22 +98,73 @@ static func make_theme() -> Theme:
 	theme.set_stylebox("panel", "PopupMenu", frame("wood_dark"))
 	return theme
 
+# PixelLab 9-slice frames dropped in assets/ui/frames/<kind>.png replace the drawn ones;
+# frames.json there may give each one's {"margin": px, "content": px}.
+const FRAME_ART_DIR: String = "res://assets/ui/frames/"
+# Corner radius (art pixels) of the big panels, rounder than FRAMES' own: every ring
+# eats one pixel of it, so a 5-ring wood frame needs 10 to stay round inside. The small
+# widgets keep theirs (rings + radius must fit the 22-26 px buttons, plates and slots).
+const ROUND: Dictionary = {"wood": 10, "wood_dark": 9, "paper": 8, "dark": 4, "glass": 4, "slot": 3, "slot_light": 3, "tab": 4, "tab_active": 4}
+# Recessed frames: the bevel is inverted (dark top edge, light bottom edge).
+const INSET: Array[String] = ["slot", "slot_light", "dark", "glass"]
+
 static func frame(kind: String) -> StyleBoxTexture:
 	if _styles.has(kind):
 		return _styles[kind]
+	var style: StyleBoxTexture = art_frame(kind)
+	if style == null:
+		style = drawn_frame(kind)
+	_styles[kind] = style
+	return style
+
+static func art_frame(kind: String) -> StyleBoxTexture:
+	var path: String = FRAME_ART_DIR + kind + ".png"
+	if not ResourceLoader.exists(path):
+		return null
+	var texture: Texture2D = load(path)
+	var info: Dictionary = {}
+	if ResourceLoader.exists(FRAME_ART_DIR + "frames.json"):
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(FRAME_ART_DIR + "frames.json"))
+		if parsed is Dictionary:
+			info = parsed.get(kind, {})
+	var margin: float = float(info.get("margin", floorf(minf(texture.get_width(), texture.get_height()) / 3.0)))
+	var style: StyleBoxTexture = StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = margin
+	style.texture_margin_right = margin
+	style.texture_margin_top = margin
+	style.texture_margin_bottom = margin
+	var content: float = float(info.get("content", 8))
+	style.content_margin_left = content
+	style.content_margin_right = content
+	style.content_margin_top = content * 0.5
+	style.content_margin_bottom = content * 0.5
+	return style
+
+# Drawn on a 2 px grid: outer rings, a vertical gradient with an inner bevel (a light
+# line under the top edge, a dark one over the bottom), a glossy top half on buttons and
+# a soft shadow `drop` art pixels under the frame, outside the control's rect.
+static func drawn_frame(kind: String) -> StyleBoxTexture:
 	var spec: Dictionary = FRAMES[kind]
 	var rings: Array = spec.rings
-	var radius: int = int(spec.radius)
+	var radius: int = int(ROUND.get(kind, spec.radius))
 	var n: int = 2 * (rings.size() + radius) + 4
 	var s: int = PIXEL_SCALE
 	var alpha: float = float(spec.get("alpha", 1.0))
+	var drop: int = int(spec.get("drop", 0 if alpha < 1.0 or kind in INSET else (3 if radius >= 8 else 2)))
 	var top: Color = Color(spec.top)
 	var bottom: Color = Color(spec.bottom)
-	var image: Image = Image.create(n * s, n * s, false, Image.FORMAT_RGBA8)
+	var inner: int = rings.size()
+	var image: Image = Image.create(n * s, (n + drop) * s, false, Image.FORMAT_RGBA8)
+	# The shadow: the outline shape moved down, translucent.
+	for y in range(n):
+		for x in range(n):
+			if drop > 0 and _inside(x, y, n, 0, radius):
+				image.fill_rect(Rect2i(x * s, (y + drop) * s, s, s), Color(0.06, 0.02, 0.0, 0.28))
 	for y in range(n):
 		for x in range(n):
 			var level: int = -1
-			for k in range(rings.size() + 1):
+			for k in range(inner + 1):
 				if _inside(x, y, n, k, radius):
 					level = k
 				else:
@@ -121,26 +172,34 @@ static func frame(kind: String) -> StyleBoxTexture:
 			if level < 0:
 				continue
 			var color: Color
-			if level < rings.size():
+			if level < inner:
 				color = Color(rings[level])
 			else:
-				color = top.lerp(bottom, float(y - rings.size()) / float(maxi(1, n - 2 * rings.size() - 1)))
-				if spec.get("shine", false) and y < n / 2:
-					color = color.lightened(0.12)
+				var t: float = float(y - inner) / float(maxi(1, n - 2 * inner - 1))
+				color = top.lerp(bottom, t)
+				if spec.get("shine", false) and t < 0.5:
+					color = color.lightened(0.2 * (1.0 - t * 2.0) + 0.06)
+				# Bevel: the interior's first row lights up and its last row darkens (the
+				# other way round on recessed frames).
+				var inset: bool = kind in INSET
+				if not _inside(x, y - 1, n, inner, radius):
+					color = color.darkened(0.35) if inset else color.lightened(0.28)
+				elif not _inside(x, y + 1, n, inner, radius):
+					color = color.lightened(0.18) if inset else color.darkened(0.22)
 				color.a = alpha
 			image.fill_rect(Rect2i(x * s, y * s, s, s), color)
 	var style: StyleBoxTexture = StyleBoxTexture.new()
 	style.texture = ImageTexture.create_from_image(image)
-	var margin: int = (rings.size() + radius) * s
+	var margin: int = (inner + radius) * s
 	style.texture_margin_left = margin
 	style.texture_margin_right = margin
 	style.texture_margin_top = margin
-	style.texture_margin_bottom = margin
+	style.texture_margin_bottom = margin + drop * s
+	style.expand_margin_bottom = drop * s
 	style.content_margin_left = 8
 	style.content_margin_right = 8
 	style.content_margin_top = 4
 	style.content_margin_bottom = 4
-	_styles[kind] = style
 	return style
 
 static func _inside(x: int, y: int, n: int, k: int, radius: int) -> bool:

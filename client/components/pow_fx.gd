@@ -109,10 +109,10 @@ func draw_aura() -> void:
 		var k: float = 1.0 - i * 0.13
 		var h: float = (40.0 + i * 16.0) * grow * rise
 		draw_rect(Rect2(Vector2(-width * k, body.y - h), Vector2(width * 2.0 * k, h + 18.0)), Color(gold.r, gold.g * 0.8, gold.b * 0.5, (0.06 + 0.03 * pulse) * (1.0 + charge)))
-	# Ground ring, squashed into an ellipse.
-	draw_set_transform(Vector2(0, 2), 0, Vector2(1.0, 0.3))
-	draw_arc(Vector2.ZERO, (width + 12.0 + pulse * 5.0) * rise, 0, TAU, 40, Color(tint.r, tint.g, tint.b, 0.9), 6.0 + charge * 4.0)
-	draw_circle(Vector2.ZERO, (width + 8.0) * rise, Color(gold.r, gold.g, gold.b, 0.22 + 0.12 * pulse + 0.2 * charge))
+	# Magic circle on the ground, squashed into an ellipse; it spins faster with the charge.
+	draw_set_transform(Vector2(0, 2), 0, Vector2(1.0, 0.32))
+	draw_circle(Vector2.ZERO, (width + 8.0) * rise, Color(gold.r, gold.g, gold.b, 0.16 + 0.1 * pulse + 0.2 * charge))
+	draw_magic_circle((width + 26.0 + pulse * 4.0) * rise, age * (0.8 + 2.5 * charge), 0.9)
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 	# Flame tongues licking up over the body on a 2 px grid.
 	for flame: Dictionary in flames:
@@ -122,11 +122,37 @@ func draw_aura() -> void:
 		var s: float = snappedf(flame.size * (1.0 - t * 0.65) * grow, 2.0)
 		var c: Color = FLAME[mini(FLAME.size() - 1, int(t * FLAME.size()))]
 		draw_rect(Rect2(p - Vector2(s, s) / 2.0, Vector2(s, s)), Color(c.r, c.g, c.b, 0.75 * (1.0 - t)))
-	# Charging: the weapon glows hotter and a ring closes in on it.
+	# Charging: the weapon glows hotter, a second circle opens upright in front of it
+	# (seen at an angle) and a ring closes in on it.
 	if charge > 0.02:
 		var weapon: Vector2 = fighter.weapon_point() - fighter.position
+		var front: Vector2 = weapon + Vector2(float(fighter.facing) * (30.0 + 20.0 * charge), -6.0)
+		draw_set_transform(front, 0, Vector2(0.34, 1.0))
+		draw_magic_circle(34.0 + 30.0 * charge, -age * (1.5 + 4.0 * charge), charge)
+		draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 		draw_circle(weapon, 10.0 + 14.0 * charge + pulse * 3.0, Color(1.0, 0.9, 0.5, 0.35 + 0.3 * charge))
 		draw_arc(weapon, 64.0 * (1.0 - fposmod(age * 2.2, 1.0)) + 8.0, 0, TAU, 32, Color(tint.r, tint.g, tint.b, 0.7 * charge), 3.0)
+
+# Two rings turning opposite ways, rune marks between them and a six-point star.
+func draw_magic_circle(radius: float, turn: float, strength: float) -> void:
+	var line: Color = Color(tint.r, tint.g, tint.b, 0.9 * strength)
+	var light: Color = Color(1.0, 0.95, 0.75, 0.85 * strength)
+	draw_arc(Vector2.ZERO, radius, 0, TAU, 48, line, 4.0)
+	draw_arc(Vector2.ZERO, radius * 0.78, 0, TAU, 40, light, 2.0)
+	for i in range(12):
+		var a: float = TAU * i / 12.0 + turn
+		var p: Vector2 = Vector2.from_angle(a) * radius * 0.89
+		var side: Vector2 = Vector2.from_angle(a + PI / 2.0) * 4.0
+		if i % 3 == 0:
+			draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), light)
+		else:
+			draw_line(p - side, p + side, line, 2.0)
+	for k in range(2):
+		var tri: PackedVector2Array = PackedVector2Array()
+		for i in range(4):
+			tri.append(Vector2.from_angle(-turn * 0.7 + k * PI / 3.0 + TAU * i / 3.0) * radius * 0.74)
+		draw_polyline(tri, line, 2.0)
+	draw_arc(Vector2.ZERO, radius * 0.3, 0, TAU, 24, light, 2.0)
 
 func draw_burst() -> void:
 	var t: float = age / life

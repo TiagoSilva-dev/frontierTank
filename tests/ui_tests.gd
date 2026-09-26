@@ -49,6 +49,7 @@ func run_tests() -> void:
 	city = app.screen
 	check(city.has_node("Building_hall") and city.has_node("Building_instance"), "city buildings are clickable hotspots")
 	check(city.has_node("CouponButton"), "city has the coupon field button")
+	check(not city.has_node("Building_dating") and city.has_node("Scenery_dating") and not city.buildings.any(func(b: Dictionary) -> bool: return b.id == "dating"), "Namoro is off: the chapel is only scenery")
 	city.enter("smith")
 	await process_frame
 	var smith_in_city: SmithScreen = city.get_children().filter(func(n: Node) -> bool: return n is SmithScreen).front()

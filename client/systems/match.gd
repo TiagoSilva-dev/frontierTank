@@ -30,7 +30,9 @@ signal skill_used(fighter: TankFighter, info: Dictionary)
 # still for `hitstop` seconds.
 signal pow_impact(point: Vector2, radius: float, weapon_id: String)
 
-enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED }
+# CASTING (26/09/2026): a PvE monster winds up one of its abilities, which then lands
+# on its targets without any projectile (monsters never shoot and never miss).
+enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED, CASTING }
 
 var state: State = State.WAITING_FOR_TURN
 var balance: Dictionary
@@ -83,6 +85,9 @@ var ai_time: float = 0.0
 var ai_think: float = 1.5
 var ai_plan: Vector3 = Vector3(45, 60, INF)
 var ai_planned: bool = false
+# The monster ability chosen for this turn (plan_ability) and the wind-up left.
+var cast_plan: Dictionary = {}
+var cast_time: float = 0.0
 var winner_team: int = -2
 var last_impact: Vector2 = Vector2.ZERO
 # Online: stepped from outside (LockstepDriver or the server's MatchHost), no keyboard
@@ -301,6 +306,8 @@ func begin_turn() -> void:
 	skip_turn = false
 	shots_left = 0
 	ai_planned = false
+	cast_plan = {}
+	cast_time = 0.0
 	wind = snappedf(rng.randf_range(-float(balance.wind_max), float(balance.wind_max)), 0.1)
 	if threats.get("strong_wind", false):
 		# Map threat: the wind never drops below 70% of the maximum.
@@ -410,12 +417,6 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 	var radius_scale: float = 1.0
 	var freeze: bool = false
 	var pow_plan: Dictionary = {}
-	if fighter.is_monster:
-		freeze = monster_freezes(fighter)
-		# Groups of 3+ players: the boss adds an area attack (three shots) every round.
-		if fighter.is_boss and players >= int(balance.party_scaling.get("boss_area_from", 3)):
-			balls = 3
-			spread = 6.0
 	for id in turn_items:
 		var item: Dictionary = item_def(id)
 		bonus += float(item.get("damage_bonus", 0.0))
@@ -668,6 +669,9 @@ func apply_pow(fighter: TankFighter) -> bool:
 func arm_pow(fighter: TankFighter) -> void:
 	turn_pow = true
 	fighter.set_pow_armed(true)
+	# The battle holds for the activation cut-in (PowCutIn), like a fighting-game super:
+	# nothing moves and the turn clock stops, the same on every copy of the battle.
+	hitstop = maxf(hitstop, Armory.visual("pow_cutin"))
 	skill_used.emit(fighter, {"id": "pow", "name": tr(str(fighter.weapon.get("pow", {}).get("name", "POW"))), "icon": "pow", "kind": "pow"})
 
 func pass_turn() -> void:
@@ -865,35 +869,43 @@ func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: fl
 		var damage: int = Ballistics.splash_damage(distance, radius * float(balance.splash_scale), damage_value, false, 1.0)
 		if damage <= 0:
 			continue
-		# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
-		damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
-		var critical: bool = false
-		if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
-			# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
-			damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
-			critical = true
-		target.shield = 1.0
-		target.take_damage(damage)
-		target.pow_gauge = minf(float(balance.pow_max), target.pow_gauge + damage * float(balance.pow_per_damage_taken))
+		var hit: int = apply_hit(shooter, target, damage, freeze)
 		if target.team != shooter.team:
-			dealt += damage
-			shooter.stats.damage += damage
-			shooter.stats.hits += 1
-			shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
-		if freeze:
-			target.frozen = 1
-		damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
+			dealt += hit
 		if target.hp > 0 and target.team != shooter.team and kind in ["pull", "bull"]:
 			var away: float = signf(target.position.x - point.x)
 			if away == 0:
 				away = float(shooter.facing)
 			var push: float = -minf(float(rules.get("pull", 40)), absf(target.position.x - point.x)) * away if kind == "pull" else float(rules.get("knockback", 70)) * away
 			shove(target, push)
-		if target.hp <= 0:
-			if target.team != shooter.team:
-				shooter.stats.kills += 1
-			announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
 	return dealt
+
+# One hit on one fighter, from a shot or a monster ability: gear attributes, shield,
+# critical, POW gauges, stats, freeze, the damage number and the knockout. Returns the
+# damage dealt.
+func apply_hit(shooter: TankFighter, target: TankFighter, damage: int, freeze: bool) -> int:
+	# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
+	damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
+	var critical: bool = false
+	if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
+		# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
+		damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
+		critical = true
+	target.shield = 1.0
+	target.take_damage(damage)
+	target.pow_gauge = minf(float(balance.pow_max), target.pow_gauge + damage * float(balance.pow_per_damage_taken))
+	if target.team != shooter.team:
+		shooter.stats.damage += damage
+		shooter.stats.hits += 1
+		shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
+	if freeze:
+		target.frozen = 1
+	damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
+	if target.hp <= 0:
+		if target.team != shooter.team:
+			shooter.stats.kills += 1
+		announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
+	return damage
 
 func shove(target: TankFighter, amount: float) -> void:
 	var x: float = clampf(target.position.x + amount, 8, terrain.world_size.x - 8)
@@ -1000,6 +1012,12 @@ func step(delta: float) -> void:
 				elif shots_left <= 0 or fighter.hp <= 0:
 					state = State.RESOLVING_DAMAGE
 					resolve_time = 0
+		State.CASTING:
+			cast_time -= delta
+			if cast_time <= 0.0:
+				resolve_ability(fighter)
+				state = State.RESOLVING_DAMAGE
+				resolve_time = 0
 		State.RESOLVING_DAMAGE:
 			resolve_time += delta
 			if resolve_time > 1.0 and fighters.all(func(f: TankFighter) -> bool: return f.settled or f.hp <= 0):
@@ -1075,19 +1093,19 @@ func plan_ai(fighter: TankFighter) -> void:
 	fighter.update_pose()
 	if fighter.is_monster:
 		plan_monster(fighter)
+		cast_plan = plan_ability(fighter, target)
+		return
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
 	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter), balance)
-	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
-	if not fighter.is_monster:
-		spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
+	var spread: float = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
 	ai_plan = Vector3(solution.x, clampf(solution.y + rng.randf_range(-spread, spread), 5, 100), solution.z)
-	if not fighter.is_monster and fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
+	if fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
 		apply_aux(fighter)
-	if not fighter.is_monster and not fighter.human and rng.randf() < float(balance.bots.item_chance):
+	if not fighter.human and rng.randf() < float(balance.bots.item_chance):
 		var combos: Array = [["plus2", "dmg50", "dmg20"], ["triple", "dmg50", "dmg20"], ["plus1", "dmg50", "dmg20"], ["dmg50", "dmg50", "dmg40"], ["plus1", "dmg30"], ["dmg50", "dmg20"], ["powmax", "dmg50"]]
 		for id: String in combos[rng.randi() % combos.size()]:
 			apply_item(fighter, id)
-	if not fighter.is_monster and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
+	if fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
 		arm_pow(fighter)
 
 func ai_step(delta: float) -> void:
@@ -1096,6 +1114,10 @@ func ai_step(delta: float) -> void:
 		plan_ai(fighter)
 	ai_time += delta
 	remaining = maxf(0.0, remaining - delta)
+	if fighter.is_monster:
+		if ai_time >= ai_think and fighter.settled:
+			start_cast(fighter)
+		return
 	fighter.angle = move_toward(fighter.angle, ai_plan.x, 40 * delta)
 	fighter.update_pose()
 	if ai_time >= ai_think and fighter.settled and absf(fighter.angle - ai_plan.x) < 0.01:
@@ -1150,6 +1172,138 @@ func plan_monster(fighter: TankFighter) -> void:
 			minion.delay = fighter.delay + 50.0
 			announce.emit(tr("%s invoca %s!") % [fighter.display_name, minion.display_name], Color("ff8a4a"))
 			effect.emit("summon", minion.position, {})
+
+# ---------- PvE: monster abilities (26/09/2026) ----------
+# Monsters do not shoot. Each turn they wind up one ability from combat.json
+# (enemies[].abilities) and it lands on its targets: nobody can dodge it. `scale` is
+# the share of the monster's damage it deals (tuned with tests/instance_balance.gd; a
+# crater under the hero every turn left it in a pit shooting its own walls, so only fury
+# meteors dig, and a small hole). An ability is {id, name, kind, scale, fx, color} plus:
+#   kind  "strike" one target · "meteor" one target and a crater · "chain" jumps across
+#         `hits` targets (each 80% of the last) · "area" every hero · "drain" heals the
+#         caster by `lifesteal` of what it deals
+#   every  used on every N-th attack (the others use the basic one, the first listed)
+#   fury   used instead while enraged (half life, or the "boss starts enraged" threat)
+#   knockback, crater, freeze, cast (wind-up seconds)
+# Boss mechanics stay: fury, summon, freeze (every second attack) and teleport; with 3+
+# players a boss's single-target ability also hits every other hero (party_area_scale).
+
+func abilities_of(fighter: TankFighter) -> Array:
+	var list: Array = fighter.monster.get("abilities", [])
+	if list.is_empty():
+		return [{"id": "basic", "name": str(fighter.monster.get("attack", "Ataque")), "kind": "strike", "scale": 0.7, "fx": "strike", "color": str(fighter.monster.get("color", "ffd04a"))}]
+	return list
+
+# Which ability this attack uses: fury while enraged, then the ones on a cycle, else the
+# basic one. turns_taken counts the attacks already made.
+func choose_ability(fighter: TankFighter) -> Dictionary:
+	var list: Array = abilities_of(fighter)
+	var enraged: bool = fighter.always_enraged or fighter.hp <= fighter.max_hp / 2
+	if enraged:
+		for ability: Dictionary in list:
+			if bool(ability.get("fury", false)):
+				return ability
+	for ability: Dictionary in list:
+		var every: int = int(ability.get("every", 0))
+		if every > 1 and not bool(ability.get("fury", false)) and (fighter.turns_taken + 1) % every == 0:
+			return ability
+	for ability: Dictionary in list:
+		if not bool(ability.get("fury", false)) and int(ability.get("every", 0)) <= 1:
+			return ability
+	return list[0]
+
+# Chooses the ability and its targets now (the same on every copy of the battle): the
+# heroes are listed by player id; single-target abilities go for EnemyAI.pick_target.
+func plan_ability(fighter: TankFighter, first: TankFighter) -> Dictionary:
+	var ability: Dictionary = choose_ability(fighter)
+	var heroes: Array[TankFighter] = []
+	heroes.assign(fighters.filter(func(f: TankFighter) -> bool: return f.team != fighter.team and f.hp > 0 and f.rank != "totem"))
+	if heroes.is_empty() or first == null:
+		return {}
+	var kind: String = str(ability.get("kind", "strike"))
+	var targets: Array[int] = [first.player_id]
+	var scales: Array[float] = [float(ability.get("scale", 0.7))]
+	match kind:
+		"area":
+			targets.clear()
+			scales.clear()
+			for hero in heroes:
+				targets.append(hero.player_id)
+				scales.append(float(ability.get("scale", 0.45)))
+		"chain":
+			var left: Array[TankFighter] = []
+			left.assign(heroes.filter(func(f: TankFighter) -> bool: return f != first))
+			var from: TankFighter = first
+			for i in range(int(ability.get("hits", 3)) - 1):
+				if left.is_empty():
+					break
+				left.sort_custom(func(a: TankFighter, b: TankFighter) -> bool: return absf(a.position.x - from.position.x) < absf(b.position.x - from.position.x) or (absf(a.position.x - from.position.x) == absf(b.position.x - from.position.x) and a.player_id < b.player_id))
+				from = left.pop_front()
+				targets.append(from.player_id)
+				scales.append(scales.back() * 0.8)
+	var splash: Array[int] = []
+	if fighter.is_boss and kind != "area" and players >= int(balance.party_scaling.get("boss_area_from", 3)):
+		for hero in heroes:
+			if not targets.has(hero.player_id):
+				splash.append(hero.player_id)
+	return {"ability": ability, "targets": targets, "scales": scales, "splash": splash, "freeze": monster_freezes(fighter) or bool(ability.get("freeze", false))}
+
+func start_cast(fighter: TankFighter) -> void:
+	if cast_plan.is_empty():
+		apply_pass()
+		return
+	var ability: Dictionary = cast_plan.ability
+	fighter.animate_attack()
+	cast_time = float(ability.get("cast", 0.9))
+	state = State.CASTING
+	status_message = tr("%s usa %s!") % [fighter.display_name, tr(str(ability.name))]
+	announce.emit(status_message, Color(str(ability.get("color", "ffd04a"))))
+	var points: Array[Vector2] = []
+	for id: int in cast_plan.targets:
+		points.append(fighters[id].center())
+	effect.emit("ability_cast", fighter.center(), {"fx": str(ability.get("fx", "strike")), "color": str(ability.get("color", "ffd04a")), "targets": points, "time": cast_time, "kind": str(ability.get("kind", "strike")), "name": tr(str(ability.name)), "fury": bool(ability.get("fury", false))})
+	changed.emit()
+
+# The ability lands. Nothing can dodge it; the hero's Defesa and shields still count.
+func resolve_ability(fighter: TankFighter) -> void:
+	if cast_plan.is_empty() or fighter.hp <= 0:
+		return
+	var ability: Dictionary = cast_plan.ability
+	var kind: String = str(ability.get("kind", "strike"))
+	var base: float = float(fighter.weapon.damage)
+	var fx: String = str(ability.get("fx", "strike"))
+	var color: String = str(ability.get("color", "ffd04a"))
+	var dealt: int = 0
+	var hits: Array = []
+	for i in range(cast_plan.targets.size()):
+		hits.append([int(cast_plan.targets[i]), float(cast_plan.scales[i])])
+	for id: int in cast_plan.splash:
+		hits.append([id, float(balance.party_scaling.get("party_area_scale", 0.4))])
+	var previous: Vector2 = fighter.center()
+	last_impact = fighters[int(hits[0][0])].center()
+	for entry: Array in hits:
+		var target: TankFighter = fighters[int(entry[0])]
+		if target.hp <= 0:
+			continue
+		var point: Vector2 = target.center()
+		effect.emit("ability_hit", point, {"fx": fx, "color": color, "from": previous, "caster": fighter.center(), "splash": int(entry[0]) in cast_plan.splash})
+		if kind == "chain":
+			previous = point
+		var crater: float = float(ability.get("crater", 0.0))
+		if crater > 0.0 and not int(entry[0]) in cast_plan.splash:
+			terrain.crater(Vector2(target.position.x, target.position.y), crater)
+			blast.emit(Vector2(target.position.x, target.position.y - 4.0), crater)
+			target.settled = false
+		dealt += apply_hit(fighter, target, maxi(1, roundi(base * float(entry[1]))), bool(cast_plan.freeze) and not int(entry[0]) in cast_plan.splash)
+		var knockback: float = float(ability.get("knockback", 0.0))
+		if knockback > 0.0 and target.hp > 0:
+			var away: float = signf(target.position.x - fighter.position.x)
+			shove(target, knockback * (away if away != 0.0 else float(fighter.facing)))
+	if kind == "drain" and dealt > 0:
+		heal_fighter(fighter, roundi(dealt * float(ability.get("lifesteal", 0.4))))
+		effect.emit("ability_hit", fighter.center(), {"fx": "drain_self", "color": color})
+	fighter.stats.shots += 1
+	changed.emit()
 
 func monster_freezes(fighter: TankFighter) -> bool:
 	# Rainha da Nevasca: every second attack freezes whoever it hits (they lose a turn).
