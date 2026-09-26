@@ -339,7 +339,7 @@ static func level_badge(parent: Node, level: int, rect: Rect2) -> Panel:
 	return node
 
 # Extra chibi skins generated with PixelLab live in assets/characters/<skin>/; bots pick
-# from those that exist, the player keeps Nilo (m) or Lia (f).
+# from those that exist, the player keeps Nilo (m) or Lani (f).
 const SKINS: Array[String] = ["bot_ruivo", "bot_pirata", "bot_maga", "bot_ninja", "bot_robo", "bot_princesa"]
 const SKIN_GENDER: Dictionary = {"bot_ruivo": "m", "bot_pirata": "f", "bot_maga": "f", "bot_ninja": "m", "bot_robo": "m", "bot_princesa": "f"}
 
@@ -347,9 +347,10 @@ static func skin_for(entry: Dictionary) -> String:
 	var skin: String = str(entry.get("look", {}).get("skin", entry.get("skin", "")))
 	if skin != "" and ResourceLoader.exists("res://assets/characters/%s/east.png" % skin):
 		return skin
-	# Default look: plain t-shirt and shorts (base_m / base_f), else the old explorers.
+	# Default look: Nilo in plain t-shirt and shorts (base_m) or Lani in her own black
+	# outfit, else the old explorers.
 	var female: bool = str(entry.get("gender", "m")) == "f"
-	var base: String = "base_f" if female else "base_m"
+	var base: String = "lani" if female else "base_m"
 	if ResourceLoader.exists("res://assets/characters/%s/east.png" % base):
 		return base
 	return "lia" if female else "nilo"

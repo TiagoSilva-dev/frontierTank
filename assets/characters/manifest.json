@@ -49,5 +49,66 @@
         "url": "https://backblaze.pixellab.ai/file/pixellab-characters/e88341c9-e3c5-4d58-a9db-4445ecc4e9b7/7533c6f2-c452-4a00-b126-69a46ee0348f/rotations/west.png?t=1790219475"
       }
     ]
+  },
+  {
+    "name": "lani",
+    "id": "9973d592-c441-41f5-8334-28f82068fe8d",
+    "date": "2026-09-26",
+    "tool": "create_character",
+    "mode": "standard",
+    "params": {
+      "view": "side",
+      "n_directions": 4,
+      "size": 96,
+      "proportions": {
+        "type": "preset",
+        "name": "chibi"
+      },
+      "shading": "detailed shading",
+      "outline": "single color outline",
+      "detail": "high detail"
+    },
+    "description": "cute chibi young woman with dark brown skin, shoulder-length wavy black hair with a side part and soft flipped-out ends, warm friendly smile, dark brown eyes, small round gold earrings, thin gold necklace, black sleeveless halter top, high-waisted black leather shorts with a wide black belt and square buckle, gold bracelets on the wrists, small dark flower tattoo on the upper arm, black flat sandals, big head, full body",
+    "reference": "photo sent by the user",
+    "replaces": "lia / base_f as the default female look",
+    "prone_state": {
+      "id": "48019c16-16ef-43c3-9d45-38c7066a465f",
+      "tool": "create_character_state",
+      "edit_description": "lying flat on the belly on the ground in a prone shooting position like a sniper, whole body horizontal, big head raised looking forward, both arms stretched forward resting on the ground, legs extended straight behind, empty hands; same black halter top now a one-piece black bodysuit that covers the belly, same black leather shorts, same black wavy hair and gold earrings"
+    },
+    "animations": [
+      {
+        "target": "prone/idle",
+        "mode": "v3",
+        "direction": "east",
+        "frame_count": 4,
+        "group": "d357cb31-c0e7-4893-97eb-6ec345e05d1a",
+        "action": "lying prone on the belly on the ground, breathing gently, head bobbing slightly up and down, hair swaying a little, arms resting flat in front, legs still, keeping the same facing"
+      },
+      {
+        "target": "prone/crawl",
+        "mode": "v3",
+        "direction": "east",
+        "frame_count": 6,
+        "group": "531e9f3c-b2f3-4bd6-910b-09bb886a2f88",
+        "action": "crawling forward toward the left on the belly like a soldier, arms pulling alternately along the ground, legs pushing, body stays low and horizontal, head raised, keeping the same facing"
+      },
+      {
+        "target": "prone/shoot",
+        "mode": "v3",
+        "direction": "east",
+        "frame_count": 4,
+        "group": "406d2c5b-2bb8-43b5-85c9-820994f62e2f",
+        "action": "lying prone on the belly, quick throwing motion toward the left: the front arm swings up and forward to throw, then returns to rest on the ground, body stays flat on the ground, keeping the same facing"
+      }
+    ],
+    "discarded": [
+      {
+        "id": "5c760a5a-0a2c-4a2d-be0e-2b82f74c4f2a",
+        "why": "anime face and blue tattoos that read as bruises"
+      }
+    ],
+    "hand_edits": "standing views: midriff painted as bodysuit; hair pixels shifted (+0,+2,+8) so the hair dye skips black eyes and clothes (docs/PIXELLAB_LANI.md)",
+    "cost": 52
   }
 ]

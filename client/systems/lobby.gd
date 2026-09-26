@@ -80,7 +80,7 @@ func random_outfit(gender: String) -> String:
 	for def: Dictionary in Armory.data().cosmetics:
 		if def.slot == "roupa" and def.gender == gender and ResourceLoader.exists(Armory.skin_path(str(def.skin), "east")):
 			pool.append(str(def.skin))
-	var base: String = "base_f" if gender == "f" else "base_m"
+	var base: String = "lani" if gender == "f" else "base_m"
 	if ResourceLoader.exists(Armory.skin_path(base, "east")):
 		pool.append(base)
 	return pool[rng.randi() % pool.size()] if not pool.is_empty() else base

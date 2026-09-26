@@ -106,7 +106,7 @@ func build_center(room: Dictionary) -> void:
 			versus.draw.connect(func() -> void: draw_versus(versus))
 			art_box.add_child(versus)
 			UiKit.art(art_box, "res://assets/characters/nilo/east.png", Rect2(-6, 70, 200, 220))
-			UiKit.art(art_box, "res://assets/characters/lia/west.png", Rect2(172, 70, 200, 220))
+			UiKit.art(art_box, "res://assets/characters/lani/west.png", Rect2(172, 70, 200, 220))
 			var vs: Label = UiKit.label(art_box, "VS", Rect2(0, 40, 364, 110), 84, Color("ffd04a"), Color("b8320c"), HORIZONTAL_ALIGNMENT_CENTER)
 			vs.add_theme_constant_override("outline_size", 14)
 	var modes: Array = [["Combate Livre", "1. Sem limite\n2. Cenário sorteado\n3. Níveis próximos", room.mode == "pvp"], ["Guerra Soc.", "1. 2+ jogadores\n2. Mesma sociedade", false]]  # i18n

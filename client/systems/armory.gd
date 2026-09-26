@@ -300,7 +300,7 @@ static func crit_chance(extra: Dictionary) -> float:
 # ---------- looks ----------
 
 static func look_for(gender: String, equipped: Array) -> Dictionary:
-	var look: Dictionary = {"skin": "base_f" if gender == "f" else "base_m", "hair": "", "hat": "", "glasses": "", "wings": "", "weapon": LEGACY_ORDER[0], "weapon_level": 0, "clothes_level": 0}
+	var look: Dictionary = {"skin": "lani" if gender == "f" else "base_m", "hair": "", "hat": "", "glasses": "", "wings": "", "weapon": LEGACY_ORDER[0], "weapon_level": 0, "clothes_level": 0}
 	for inst: Dictionary in equipped:
 		var id: String = str(inst.id)
 		var level: int = int(inst.get("level", 0))
@@ -322,7 +322,7 @@ static func look_for(gender: String, equipped: Array) -> Dictionary:
 			"cabelo":
 				look.hair = str(cosmetic_def(id).dye)
 	if not ResourceLoader.exists(skin_path(str(look.skin))):
-		look.skin = "lia" if gender == "f" else "nilo"
+		look.skin = "lani" if gender == "f" else "nilo"
 	return look
 
 static func random_loadout(rng: RandomNumberGenerator, level: int, gender: String, skin: String) -> Dictionary:

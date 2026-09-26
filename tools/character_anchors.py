@@ -134,12 +134,18 @@ def hair_palette(img, head, fraction=0.42):
         return []
     # Keep colours close to the dominant hair hue; drops goggles, clips and outline.
     dominant = max(colors, key=colors.get)
-    hue = colorsys.rgb_to_hsv(*[v / 255 for v in dominant])[0]
+    hue, _, val = colorsys.rgb_to_hsv(*[v / 255 for v in dominant])
+    black = val < 0.13
+    if black:
+        # Black hair (Lani) is drawn in blue-black shades of its own, so the dye skips
+        # the neutral blacks of the eyes and clothes: every shade of that hue is hair,
+        # the darkest too, down to the locks at the shoulders.
+        colors = count_colors(img[top : top + h, int(cx - w / 2) : int(cx + w / 2)])
     result = []
     for color, count in colors.items():
         h2, s2, v2 = colorsys.rgb_to_hsv(*[v / 255 for v in color])
         dist = min(abs(h2 - hue), 1 - abs(h2 - hue))
-        if count >= 2 and dist < 0.09 and s2 > 0.12 and v2 > 0.1:
+        if count >= 2 and dist < 0.09 and s2 > 0.12 and (v2 < 0.25 if black else v2 > 0.1):
             result.append("%02x%02x%02x" % color)
     return sorted(result)
 

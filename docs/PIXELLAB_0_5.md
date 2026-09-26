@@ -5,7 +5,7 @@ Gerada pelo MCP do PixelLab em 2026-09-24. IDs, prompts e destino de cada arquiv
 ## Gerado e em uso
 | O quê | Como | Onde |
 |---|---|---|
-| Personagem base de camiseta e shorts (ele e ela), em pé e deitado, com respirar, rastejar e arremessar | `create_character_state` a partir de Nilo/Lia + `animate_character` v3 | `assets/characters/base_m`, `base_f` |
+| Personagem base de camiseta e shorts (ele e ela), em pé e deitado, com respirar, rastejar e arremessar | `create_character_state` a partir de Nilo/Lia + `animate_character` v3 | `assets/characters/base_m` (`base_f` foi substituída pela Lani, ver `PIXELLAB_LANI.md`) |
 | Roupas: Samurai, Ninja, Capitão; Princesa, Maga, Marinheira (mesmo rosto e cabelo) | estados do personagem base, em pé e deitado, com as três animações | `assets/characters/roupa_*` |
 | 12 armas do DDTank (9 clássicas + 3 super) | `create_image_pixen` 64×64 | `assets/weapons/<id>/tier0.png` |
 | 6 chapéus (frente e lado), 4 óculos | `create_image_pixen` | `assets/cosmetics/<id>/front.png`, `side.png` |
@@ -28,8 +28,8 @@ Gerada pelo MCP do PixelLab em 2026-09-24. IDs, prompts e destino de cada arquiv
 - Ícones antigos das pedras II e IV (um tanque e um baú, vindos de uma leva anterior) trocados.
 
 ## Como fazer mais roupas
-1. `create_character_state` no estado em pé do personagem base (`73eea963…` ele, `fe830c5c…` ela) com a roupa, sem chapéu.
-2. O mesmo texto no estado deitado (`7c9b210c…` ele, `afe5ef83…` ela), começando por "same prone pose lying on the belly, now wearing…".
+1. `create_character_state` no estado em pé do personagem base (`73eea963…` Nilo, `9973d592…` Lani) com a roupa, sem chapéu.
+2. O mesmo texto no estado deitado (`7c9b210c…` Nilo, `48019c16…` Lani), começando por "same prone pose lying on the belly, now wearing…".
 3. `animate_character` v3, direção east: respirar (4 quadros), rastejar (6) e arremessar (4), com os textos do manifesto.
 4. Baixar o zip do grupo e rodar `python tools/import_pixellab_skin.py grupo.zip Roupa_X Roupa_X_Prone roupa_x`, depois `python tools/character_anchors.py roupa_x`.
 5. Registrar a roupa em `shared/balance/items.json` (`cosmetics`, `slot: "roupa"`, `skin: "roupa_x"`).
