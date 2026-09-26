@@ -1,5 +1,6 @@
-# Frontier Tank web: the game exported for the browser and served by nginx, which also
-# forwards /v1/ to the API and /ws to the game server (server/docker/web.nginx.conf).
+# Frontier Tank web: the official website (website/) at / and the game exported for the
+# browser at /jogar/, served by nginx, which also forwards /v1/ to the API and /ws to the
+# game server (server/docker/web.nginx.conf).
 # Build from the project root:  docker build -f server/docker/web.Dockerfile .
 # The export has no threads (preset "Web" in export_presets.cfg), so no special headers.
 FROM debian:bookworm-slim AS export
@@ -21,5 +22,7 @@ RUN (GODOT_BIN=/usr/local/bin/godot python3 tools/web_build.py export > /tmp/exp
 
 FROM nginx:1.29-alpine
 COPY server/docker/web.nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=export /game/build/web /usr/share/nginx/html
+# The website is static and already built (tools/build_site.py writes it into the repo).
+COPY website /usr/share/nginx/html
+COPY --from=export /game/build/web /usr/share/nginx/html/jogar
 EXPOSE 80

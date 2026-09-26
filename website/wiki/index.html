@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR" data-root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wiki · Gustfire</title>
+  <meta name="description" content="Wiki do Gustfire: armas, especiais POW, instâncias, monstros, mapas, moedas, bônus aleatórios, fortalecimento e todas as regras do combate, direto dos dados do jogo.">
+  <meta name="theme-color" content="#080a1f">
+  <link rel="icon" type="image/png" sizes="32x32" href="../img/brand/gustfire_icon_32.png">
+  <link rel="apple-touch-icon" href="../img/brand/gustfire_icon_180.png">
+  <link rel="preload" href="../fonts/Jersey10-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="../fonts/PixelOperator-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/wiki.css">
+</head>
+<body class="wiki">
+  <a class="skip" href="#page" data-i18n="skip">Pular para o conteúdo</a>
+  <header class="wiki-top">
+    <div class="bar">
+      <button class="menu-btn" type="button" id="menu-btn" aria-label="Menu" aria-controls="side">≡</button>
+      <a class="wiki-brand" href="../">
+        <img src="../img/brand/gustfire_wordmark.png" alt="Gustfire">
+        <span>WIKI</span>
+      </a>
+      <div class="search" role="search">
+        <img class="glass" src="../img/game/ui/search.png" alt="">
+        <input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="Buscar armas, monstros, moedas…" data-i18n-attr="placeholder:wiki.search" aria-label="Buscar" aria-controls="results" aria-expanded="false">
+        <kbd>/</kbd>
+        <div class="results" id="results" role="listbox" hidden></div>
+      </div>
+      <div class="end">
+        <div class="lang" role="group" aria-label="Idioma / Language">
+          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="btn btn-fire btn-sm" data-play href="/jogar/" data-i18n="cta.play_short">Jogar</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wiki-layout">
+    <nav class="side" id="side" aria-label="Wiki"></nav>
+    <main class="page" id="page" tabindex="-1"></main>
+  </div>
+
+  <footer class="wiki-foot">
+    <span>© <span id="year">2026</span> Gustfire · <a href="../" data-i18n="wiki.site">Site oficial</a></span>
+    <span id="version"></span>
+  </footer>
+
+  <div class="tip" id="tip" hidden></div>
+
+  <script src="../js/config.js"></script>
+  <script src="../data/gamedata.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/wiki-guides.js"></script>
+  <script src="../js/wiki.js"></script>
+</body>
+</html>

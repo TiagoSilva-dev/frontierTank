@@ -10,11 +10,14 @@ Usage:
                                              (no threads, ~20 MB instead of the 1.2 GB
                                              package) into Godot's template folder
   python tools/web_build.py export [--debug] import the assets and export to build/web
-  python tools/web_build.py serve [--port 8060] [--api http://localhost:8080]
+  python tools/web_build.py serve [--port 8060] [--api http://localhost:8080] [--site]
                                              serve build/web on http://localhost:8060;
                                              with --api, /v1/... goes to the API, so the
                                              game finds the servers on the page's own
-                                             address (as behind the production proxy)
+                                             address (as behind the production proxy);
+                                             with --site, the official website (website/)
+                                             is at / and the game at /jogar/, as in the
+                                             Docker stack
 
 Then open http://localhost:8060/ to play, ?bench=30 to measure the battle FPS
 (tools/web_bench.mjs does it in Chromium and prints the numbers), ?fps=1 for the counter
@@ -36,6 +39,7 @@ import zipfile
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 BUILD = os.path.join(ROOT, "build", "web")
+SITE = os.path.join(ROOT, "website")
 GODOT_VERSION = "4.7.2"
 TEMPLATE_URL = f"https://github.com/godotengine/godot/releases/download/{GODOT_VERSION}-stable/Godot_v{GODOT_VERSION}-stable_export_templates.tpz"
 WANTED = ("version.txt", "web_nothreads_release.zip", "web_nothreads_debug.zip")
@@ -140,7 +144,13 @@ def cmd_serve(args):
         extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map, ".wasm": "application/wasm", ".pck": "application/octet-stream", ".js": "text/javascript"}
 
         def __init__(self, *handler_args, **kwargs):
-            super().__init__(*handler_args, directory=BUILD, **kwargs)
+            super().__init__(*handler_args, directory=SITE if args.site else BUILD, **kwargs)
+
+        def translate_path(self, path):
+            # --site: the website at /, the game at /jogar/ (server/docker/web.nginx.conf).
+            if args.site and (path == "/jogar" or path.startswith("/jogar/")):
+                return os.path.join(BUILD, super().translate_path(path[len("/jogar"):] or "/")[len(SITE):].lstrip(os.sep))
+            return super().translate_path(path)
 
         def end_headers(self):
             # No COOP/COEP on purpose: the build has no threads. No cache while testing.
@@ -180,10 +190,14 @@ def cmd_serve(args):
             self.do_POST()
 
     if not os.path.exists(os.path.join(BUILD, "index.html")):
-        sys.exit("No build yet: python tools/web_build.py export")
+        if not args.site:
+            sys.exit("No build yet: python tools/web_build.py export")
+        print("No game build yet (python tools/web_build.py export): /jogar/ will answer 404.")
     socketserver.ThreadingTCPServer.allow_reuse_address = True
     with socketserver.ThreadingTCPServer(("", args.port), Handler) as server:
-        print(f"Frontier Tank web: http://localhost:{args.port}/  (benchmark: ?bench=30)" + (f", API {api}" if api else ""))
+        game = f"http://localhost:{args.port}/jogar/" if args.site else f"http://localhost:{args.port}/"
+        site = f"site http://localhost:{args.port}/, " if args.site else ""
+        print(f"Frontier Tank web: {site}game {game}  (benchmark: ?bench=30)" + (f", API {api}" if api else ""))
         server.serve_forever()
 
 
@@ -196,6 +210,7 @@ def main():
     serve = commands.add_parser("serve")
     serve.add_argument("--port", type=int, default=8060)
     serve.add_argument("--api", default="")
+    serve.add_argument("--site", action="store_true", help="serve website/ at / and the game at /jogar/")
     args = parser.parse_args()
     {"templates": cmd_templates, "export": cmd_export, "serve": cmd_serve}[args.command](args)
 

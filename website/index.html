@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gustfire · Artilharia nos céus</title>
+  <meta name="description" content="Gustfire é um jogo de artilharia por turnos em pixel art: mire, sinta o vento e dispare. Batalhas online de 1v1 a 4v4, expedições contra chefes e loot com atributos aleatórios. Grátis, sem vender poder.">
+  <meta name="theme-color" content="#080a1f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gustfire · Artilharia nos céus">
+  <meta property="og:description" content="Mire. Sinta o vento. Dispare. Artilharia por turnos em pixel art, grátis e sem vender poder.">
+  <!-- Social networks need an absolute address here once the site has a domain (docs/SITE.md). -->
+  <meta property="og:image" content="img/brand/og_pt.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/brand/gustfire_icon_32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="img/brand/gustfire_icon_64.png">
+  <link rel="apple-touch-icon" href="img/brand/gustfire_icon_180.png">
+  <link rel="preload" href="fonts/Jersey10-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="fonts/PixelOperator-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Pular para o conteúdo</a>
+
+  <header class="nav" id="nav">
+    <div class="wrap">
+      <a class="nav-logo" href="#top" aria-label="Gustfire">
+        <img src="img/brand/gustfire_wordmark.png" alt="Gustfire" width="152" height="40">
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#teste" data-i18n="nav.try">Teste sua mira</a></li>
+        <li><a href="#jogo" data-i18n="nav.game">O jogo</a></li>
+        <li><a href="#arsenal" data-i18n="nav.arsenal">Arsenal</a></li>
+        <li><a href="#expedicoes" data-i18n="nav.dungeons">Expedições</a></li>
+        <li><a href="#galeria" data-i18n="nav.gallery">Galeria</a></li>
+        <li><a href="wiki/" data-i18n="nav.wiki">Wiki</a></li>
+        <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+      </ul>
+      <div class="nav-end">
+        <div class="lang" role="group" aria-label="Idioma / Language">
+          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="btn btn-fire btn-sm btn-play-nav" data-play href="/jogar/" data-i18n="cta.play_short">Jogar</a>
+        <button class="nav-toggle" type="button" aria-controls="nav-links" aria-expanded="false" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-bg" style="background-image:url('img/game/maps/ilha_celeste.webp')"></div>
+      <img class="hero-flyer" src="img/game/enemies/grifo_tempestade.png" alt="" aria-hidden="true">
+      <img class="hero-hero left" src="img/game/characters/lani.png" alt="" aria-hidden="true">
+      <img class="hero-hero right" src="img/game/characters/nilo.png" alt="" aria-hidden="true">
+      <div class="hero-inner">
+        <h1 class="hero-logo">
+          <img id="hero-logo" src="img/brand/gustfire_logo_pt@3x.png" width="1989" height="621" alt="Gustfire: Artilharia nos céus">
+          <span class="shine" aria-hidden="true"></span>
+        </h1>
+        <p class="hero-tag" data-i18n-html="hero.tag">Mire. Sinta o <b>vento</b>. <i>Dispare.</i></p>
+        <p class="hero-sub" data-i18n="hero.sub">Artilharia por turnos em pixel art: duelos online de 1 contra 1 até 4 contra 4, expedições contra chefes gigantes e equipamentos com atributos aleatórios. Grátis, e sem vender poder.</p>
+        <div class="hero-cta">
+          <a class="btn btn-fire btn-xl btn-glow" data-play href="/jogar/">
+            <img src="img/game/ui/play.png" alt="" aria-hidden="true">
+            <span data-i18n="cta.play">Jogar grátis</span>
+          </a>
+          <a class="btn btn-ghost" href="wiki/" data-i18n="cta.wiki">Explorar a wiki</a>
+        </div>
+        <div class="hero-badges">
+          <span data-i18n="badge.free">Grátis para jogar</span>
+          <span data-i18n="badge.browser">Direto no navegador</span>
+          <span data-i18n="badge.lang">Português e inglês</span>
+          <span data-i18n="badge.steam">Steam em breve</span>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#teste" data-i18n="hero.scroll">Role</a>
+    </section>
+
+    <!-- STAT STRIP -->
+    <div class="strip">
+      <div class="wrap">
+        <div class="strip-grid" id="stats"></div>
+      </div>
+    </div>
+
+    <!-- PLAYGROUND -->
+    <section class="section band-sky stars" id="teste">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker" data-i18n="try.kicker">Teste sua mira</span>
+          <h2 class="h2" data-i18n-html="try.title">Sinta o <span class="gust">vento</span>, acerte o <span class="fire">alvo</span></h2>
+          <p class="lead" data-i18n="try.lead">Uma prova da batalha de verdade, com a mesma física do jogo: gravidade, vento e força. Ajuste o ângulo, segure para carregar e solte para disparar.</p>
+        </div>
+        <div class="play-card reveal" id="playground">
+          <div class="play-stage">
+            <canvas id="play-canvas" width="1600" height="900" aria-label="Mini batalha"></canvas>
+            <div class="play-overlay" id="play-start">
+              <h3 data-i18n="try.ready">Primeiro disparo?</h3>
+              <p data-i18n="try.ready_sub">Derrube os monstros da ilha da frente. Leia o vento antes de soltar!</p>
+              <div class="row"><button class="btn btn-fire" type="button" id="play-go" data-i18n="try.start">Começar</button></div>
+            </div>
+            <div class="play-overlay" id="play-win" hidden>
+              <h3 data-i18n="try.win">Alvo abatido!</h3>
+              <p id="play-win-text"></p>
+              <div class="row">
+                <a class="btn btn-fire" data-play href="/jogar/" data-i18n="try.real">Jogar de verdade</a>
+                <button class="btn btn-ghost" type="button" id="play-again" data-i18n="try.again">Próximo alvo</button>
+              </div>
+            </div>
+          </div>
+          <div class="play-hud">
+            <div class="play-weapons" id="play-weapons" role="group" aria-label="Armas"></div>
+            <div class="power-wrap">
+              <div class="power-label"><span data-i18n="try.power">Força</span><span id="play-power-num">0</span></div>
+              <div class="power" id="play-power"><i></i><em></em></div>
+            </div>
+            <div class="play-readout">
+              <span><span data-i18n="try.angle">Ângulo</span> <b id="play-angle">45°</b></span>
+              <span><span data-i18n="try.wind">Vento</span> <b id="play-wind">0</b></span>
+            </div>
+            <button class="btn btn-fire fire-btn" type="button" id="play-fire" data-i18n="try.fire">Disparar</button>
+          </div>
+        </div>
+        <p class="play-help" data-i18n-html="try.help">Mire arrastando na tela ou com <kbd>↑</kbd> <kbd>↓</kbd> · segure <kbd>Espaço</kbd> ou o botão para carregar a força · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> trocam de arma</p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section band-fire" id="jogo">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker" data-i18n="game.kicker">O jogo</span>
+          <h2 class="h2" data-i18n="game.title">Tudo o que um artilheiro precisa</h2>
+        </div>
+
+        <article class="pillar reveal">
+          <div class="pillar-art">
+            <img class="shot" data-shot="01_battle" src="img/shots/pt/01_battle.webp" alt="" loading="lazy" width="1280" height="720">
+            <img class="sticker" src="img/game/characters/lani_prone.png" alt="" loading="lazy">
+          </div>
+          <div>
+            <span class="kicker" data-i18n="p1.kicker">PvP online</span>
+            <h3 data-i18n="p1.title">Batalhas de 1v1 a 4v4</h3>
+            <p data-i18n="p1.text">Monte a sala no Salão de Jogos, chame a equipe e encontre rivais do seu nível. Cada turno é um cálculo de ângulo, força e vento, num terreno que se desfaz a cada explosão.</p>
+            <ul class="ticks">
+              <li data-i18n="p1.t1">O tiro sai exatamente como você soltou: a partida roda em sincronia com o servidor</li>
+              <li data-i18n="p1.t2">Terreno destrutível e o tracejado do último disparo</li>
+              <li data-i18n="p1.t3">Habilidades 1–9, ferramentas Z X C, item auxiliar e o avião de papel</li>
+              <li data-i18n="p1.t4">Ninguém online? A IA completa a sala em segundos</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="pillar flip reveal">
+          <div class="pillar-art">
+            <img class="shot" data-shot="03_instance" src="img/shots/pt/03_instance.webp" alt="" loading="lazy" width="1280" height="720">
+            <img class="sticker left" src="img/game/enemies/jarl_barba_ferro.png" alt="" loading="lazy">
+          </div>
+          <div>
+            <span class="kicker" data-i18n="p2.kicker">Cooperativo</span>
+            <h3 data-i18n="p2.title">Expedições contra chefes</h3>
+            <p data-i18n="p2.text">Até 4 amigos contra instâncias de 3 fases: ondas de lacaios, guardiões e objetivos, e um chefe com fúria, invocações, congelamento ou teletransporte.</p>
+            <ul class="ticks">
+              <li data-i18n="p2.t1">Mapas de nível 1 a 16 com ameaças e recompensas aleatórias</li>
+              <li data-i18n="p2.t2">O baú do chefe guarda armas Verdadeiras e as Super Verdadeiras</li>
+              <li data-i18n="p2.t3">Loot pessoal: cada jogador leva o seu</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="pillar reveal">
+          <div class="pillar-art">
+            <img class="shot" src="img/shots/pow_cutin.webp" alt="" loading="lazy" width="1280" height="720">
+            <img class="sticker" src="img/game/pow/eletrodomestico.png" alt="" loading="lazy">
+          </div>
+          <div>
+            <span class="kicker" data-i18n="p3.kicker">Especiais</span>
+            <h3 data-i18n="p3.title">POW: o golpe de cada arma</h3>
+            <p data-i18n="p3.text">Encha a barra causando e recebendo dano e solte o especial com B. Cada arma tem o seu: geladeira que cai do céu, chuva de lanças, touro espectral, bumerangue que volta curando…</p>
+            <ul class="ticks">
+              <li data-i18n="p3.t1">Cut-in de anime com o seu personagem</li>
+              <li data-i18n="p3.t2">Projétil, impacto e som próprios em cada uma das 12 armas</li>
+            </ul>
+          </div>
+        </article>
+
+        <div class="cards" style="margin-top:110px" id="cards">
+          <article class="card reveal">
+            <div class="card-icons" data-icons="currencies"></div>
+            <h4 data-i18n="c1.title">Loot que vale a pena</h4>
+            <p data-i18n="c1.text">Itens com atributos bônus aleatórios em faixas F1 a F5 e sete moedas de criação para rolar, somar e remover bônus.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icons" data-icons="stones"></div>
+            <h4 data-i18n="c2.title">Ferreiro e auras</h4>
+            <p data-i18n="c2.text">Fortaleça até +12 com pedras. A arma ganha dano e atributos, e a aura cresce: verde, azul, roxa e vermelha.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icons" data-icons="auction"></div>
+            <h4 data-i18n="c3.title">Leilão entre jogadores</h4>
+            <p data-i18n="c3.text">Venda o que caiu nas instâncias por Solares e Estrelas. O pagamento chega pelo Correio.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icons" data-icons="looks"></div>
+            <h4 data-i18n="c4.title">Do seu jeito</h4>
+            <p data-i18n="c4.text">Roupas, chapéus, óculos, asas e tinturas de cabelo. Seu personagem aparece vestido em batalha, na sala e na Mochila.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARSENAL -->
+    <section class="section band-sky" id="arsenal">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker" data-i18n="arsenal.kicker">Arsenal</span>
+          <h2 class="h2" data-i18n="arsenal.title">12 armas, 12 especiais</h2>
+          <p class="lead" data-i18n="arsenal.lead">Do Tijolaço que se parte em pedaços ao Para-Raios que chama três raios. As Super Verdadeiras só caem dos chefes.</p>
+        </div>
+        <div class="arsenal reveal">
+          <div class="arsenal-grid" id="arsenal-grid" role="tablist" aria-label="Armas"></div>
+          <div class="weapon-show" id="weapon-show" role="tabpanel" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUNGEONS -->
+    <section class="section band-fire stars" id="expedicoes">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker" data-i18n="dungeons.kicker">Expedições</span>
+          <h2 class="h2" data-i18n="dungeons.title">Cinco instâncias. Cinco chefes.</h2>
+          <p class="lead" data-i18n="dungeons.lead">Três fases cada, e mapas que viram itens: quanto maior o nível, mais perigo e melhores recompensas.</p>
+        </div>
+        <div class="rail-nav" aria-hidden="true"><button type="button" id="rail-prev">‹</button><button type="button" id="rail-next">›</button></div>
+        <div class="rail" id="dungeons"></div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="section band-sky" id="galeria">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker" data-i18n="gallery.kicker">Capturas</span>
+          <h2 class="h2" data-i18n="gallery.title">Veja em ação</h2>
+        </div>
+        <div class="gallery reveal" id="gallery"></div>
+      </div>
+    </section>
+
+    <!-- MANIFESTO -->
+    <section class="section band-fire">
+      <div class="wrap">
+        <div class="manifesto reveal">
+          <div>
+            <span class="kicker" data-i18n="fair.kicker">Nosso compromisso</span>
+            <h2 data-i18n-html="fair.title">Grátis.<br>Sem vender poder.</h2>
+            <p data-i18n="fair.text">Gustfire é grátis para jogar. A loja vende só aparência, e o que decide uma batalha é a sua mira.</p>
+          </div>
+          <div class="promises">
+            <div class="promise"><img src="img/game/ui/shield.png" alt=""><div><b data-i18n="fair.p1">Nada que se compra dá atributo</b><span data-i18n="fair.p1t">Itens pagos são só visuais, vinculados e sem bônus.</span></div></div>
+            <div class="promise"><img src="img/game/weapons/lanca_antiga_3.png" alt=""><div><b data-i18n="fair.p2">As melhores armas caem jogando</b><span data-i18n="fair.p2t">Verdadeiras e Super Verdadeiras vêm dos chefes, nunca da loja.</span></div></div>
+            <div class="promise"><img src="img/game/ui/crown.png" alt=""><div><b data-i18n="fair.p3">Sem caixas de recompensa pagas</b><span data-i18n="fair.p3t">Nem anúncios, nem rastreadores de publicidade.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section band-sky" id="faq">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker">FAQ</span>
+          <h2 class="h2" data-i18n="faq.title">Perguntas frequentes</h2>
+        </div>
+        <div class="faq reveal">
+          <details open><summary data-i18n="faq.q1">Quanto custa?</summary><div data-i18n="faq.a1">Nada. Gustfire é grátis para jogar. A loja vende só itens de aparência, sem atributos: quem paga não fica mais forte.</div></details>
+          <details><summary data-i18n="faq.q2">Onde eu jogo?</summary><div data-i18n="faq.a2">Direto no navegador, sem instalar nada: é só clicar em Jogar. A versão para Windows e Linux vai chegar pela Steam.</div></details>
+          <details><summary data-i18n="faq.q3">Preciso criar conta?</summary><div data-i18n="faq.a3">Para jogar online, sim: a conta é criada na própria tela de entrada, só com nome e senha. O modo offline, contra a IA, funciona sem conta.</div></details>
+          <details><summary data-i18n="faq.q4">Dá para jogar com os amigos?</summary><div data-i18n="faq.a4">Sim. Montem uma sala no Salão de Jogos para duelos de até 4 contra 4, ou entrem juntos nas instâncias, com até 4 jogadores.</div></details>
+          <details><summary data-i18n="faq.q5">Tem em inglês?</summary><div data-i18n="faq.a5">O jogo inteiro está em português e inglês, com nomes próprios em cada idioma. A escolha fica na tela de entrada.</div></details>
+          <details><summary data-i18n="faq.q6">Que computador eu preciso?</summary><div data-i18n="faq.a6">No navegador, qualquer computador com um navegador atualizado e WebGL 2 (quase todos dos últimos 8 anos). Na versão para computador: Windows 10 ou Linux de 64 bits, 4 GB de memória e placa de vídeo com OpenGL 3.3.</div></details>
+          <details><summary data-i18n="faq.q7">E os meus dados?</summary><div data-i18n="faq.a7">Guardamos só o necessário para jogar online: conta, personagem e o que acontece no jogo. Não há anúncios nem rastreadores, e você pode baixar os seus dados ou excluir a conta dentro do jogo, em Ajuda → Minha conta.</div></details>
+          <details><summary data-i18n="faq.q8">O jogo está pronto?</summary><div data-i18n="faq.a8">Estamos em fase de testes. O combate, as instâncias, a economia e o leilão já funcionam; o balanceamento vai sendo ajustado junto com os jogadores.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CALL -->
+    <section class="final">
+      <div class="final-bg" style="background-image:url('img/game/maps/santuario_ventos.webp')"></div>
+      <div class="wrap">
+        <img class="emblem" src="img/brand/gustfire_icon_512.png" alt="" width="180" height="180">
+        <h2 data-i18n="final.title">Pronto para o primeiro disparo?</h2>
+        <p data-i18n="final.text">Entre agora, escolha a sua arma e mostre que ninguém lê o vento como você.</p>
+        <a class="btn btn-fire btn-xl btn-glow" data-play href="/jogar/">
+          <img src="img/game/ui/play.png" alt="" aria-hidden="true">
+          <span data-i18n="cta.play">Jogar grátis</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <img class="brand" src="img/brand/gustfire_wordmark.png" alt="Gustfire">
+          <p data-i18n="footer.tag">Artilharia por turnos nos céus, em pixel art.</p>
+        </div>
+        <div>
+          <h5 data-i18n="footer.game">Jogo</h5>
+          <ul>
+            <li><a data-play href="/jogar/" data-i18n="cta.play_short">Jogar</a></li>
+            <li><a href="#galeria" data-i18n="nav.gallery">Galeria</a></li>
+            <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+            <li><span class="soon" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">Steam</span></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Wiki</h5>
+          <ul>
+            <li><a href="wiki/#/guia/primeiros-passos" data-i18n="footer.start">Primeiros passos</a></li>
+            <li><a href="wiki/#/armas" data-i18n="footer.weapons">Armas</a></li>
+            <li><a href="wiki/#/instancias" data-i18n="footer.dungeons">Instâncias</a></li>
+            <li><a href="wiki/#/monstros" data-i18n="footer.monsters">Monstros</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 data-i18n="footer.credits">Créditos</h5>
+          <ul>
+            <li data-i18n="footer.art">Pixel art feita com PixelLab</li>
+            <li data-i18n="footer.fonts">Fontes Pixel Operator (CC0), Jersey 10 e Titan One (SIL OFL)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal">
+        <span>© <span id="year">2026</span> Gustfire. <span data-i18n="footer.rights">Todos os direitos reservados.</span></span>
+        <span id="version"></span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Captura">
+    <button class="lb-btn close" type="button" data-lb="close" aria-label="Fechar">×</button>
+    <button class="lb-btn prev" type="button" data-lb="prev" aria-label="Anterior">‹</button>
+    <figure style="margin:0"><img id="lightbox-img" alt=""><figcaption class="cap" id="lightbox-cap"></figcaption></figure>
+    <button class="lb-btn next" type="button" data-lb="next" aria-label="Próxima">›</button>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="data/gamedata.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/playground.js"></script>
+</body>
+</html>
