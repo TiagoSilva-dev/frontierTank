@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: client/components/fighter.gd:204
+#: client/components/fighter.gd:212
 msgid "Chefe"
 msgstr ""
 
-#: client/components/fighter.gd:204
+#: client/components/fighter.gd:212
 msgid "Guardião"
 msgstr ""
 
-#: client/components/fighter.gd:204
+#: client/components/fighter.gd:212
 msgid "Inimigo"
 msgstr ""
 
-#: client/components/fighter.gd:204
+#: client/components/fighter.gd:212
 msgid "Lacaio"
 msgstr ""
 
-#: client/components/fighter.gd:204
+#: client/components/fighter.gd:212
 msgid "Objetivo"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Capitão"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Coronel"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "General"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Major"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Marechal"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Recruta"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Sargento"
 msgstr ""
 
-#: client/components/fighter.gd:256
+#: client/components/fighter.gd:264
 msgid "Soldado"
 msgstr ""
 
-#: client/components/fighter.gd:256 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:264 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr ""
 
@@ -158,11 +158,11 @@ msgstr ""
 msgid "bora sala 4x4!!"
 msgstr ""
 
-#: client/scripts/main.gd:296 client/systems/lobby.gd:11 server/game/game_server.gd:634
+#: client/scripts/main.gd:296 client/systems/lobby.gd:11 server/game/game_server.gd:638
 msgid "Guerra de equipes, diversão sem limite"
 msgstr ""
 
-#: client/scripts/main.gd:302 client/ui/room_screen.gd:241 client/ui/room_screen.gd:262
+#: client/scripts/main.gd:302 client/ui/room_screen.gd:242 client/ui/room_screen.gd:263
 msgid "Expedição: %s"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Conquista: %s"
 msgstr ""
 
-#: client/scripts/main.gd:643 client/ui/shop_screen.gd:148 server/game/game_server.gd:1293
+#: client/scripts/main.gd:643 client/ui/shop_screen.gd:148 server/game/game_server.gd:1297
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr ""
 
@@ -282,7 +282,7 @@ msgstr ""
 msgid "Música ligada"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:97
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:209
 msgid "Arma"
 msgstr ""
 
@@ -290,7 +290,7 @@ msgstr ""
 msgid "Asas"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:16 client/ui/shop_screen.gd:12
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:22 client/ui/shop_screen.gd:12
 msgid "Auxiliar"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Chapéu"
 msgstr ""
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:97
+#: client/systems/armory.gd:12 client/ui/character_screen.gd:209
 msgid "Roupa"
 msgstr ""
 
@@ -318,19 +318,19 @@ msgstr ""
 msgid "Verdadeiro %s"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:128
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
 msgid "Agilidade"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:128
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
 msgid "Ataque"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:128
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
 msgid "Defesa"
 msgstr ""
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:128
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:180
 msgid "Sorte"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "comissão %s"
 msgstr ""
 
-#: client/systems/auction.gd:270 server/game/game_server.gd:1075
+#: client/systems/auction.gd:270 server/game/game_server.gd:1079
 msgid "Este anúncio não está mais à venda."
 msgstr ""
 
@@ -434,7 +434,7 @@ msgstr ""
 msgid "Esta carta já foi recebida."
 msgstr ""
 
-#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:284 client/systems/profile.gd:650
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:288 client/systems/profile.gd:680
 msgid "Item não encontrado."
 msgstr ""
 
@@ -510,7 +510,7 @@ msgstr ""
 msgid "Este item não tem bônus."
 msgstr ""
 
-#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:516 client/systems/profile.gd:540
+#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:546 client/systems/profile.gd:570
 msgid "Moeda desconhecida."
 msgstr ""
 
@@ -654,99 +654,107 @@ msgstr ""
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr ""
 
-#: client/systems/match.gd:1061
+#: client/systems/match.gd:1111
 msgid "Tempo esgotado"
 msgstr ""
 
-#: client/systems/match.gd:1116
+#: client/systems/match.gd:1132
+msgid "%s prepara %s"
+msgstr ""
+
+#: client/systems/match.gd:1177
 msgid "Uma nova onda de inimigos chegou!"
 msgstr ""
 
-#: client/systems/match.gd:1131
-msgid "%s prepara um ataque"
-msgstr ""
-
-#: client/systems/match.gd:1138
+#: client/systems/match.gd:1199
 msgid "%s prepara %s!"
 msgstr ""
 
-#: client/systems/match.gd:1138
+#: client/systems/match.gd:1199
 msgid "Fúria"
 msgstr ""
 
-#: client/systems/match.gd:1141
+#: client/systems/match.gd:1202
 msgid "%s está calculando seu ataque…"
 msgstr ""
 
-#: client/systems/match.gd:1151
+#: client/systems/match.gd:1212
 msgid "%s invoca %s!"
 msgstr ""
 
-#: client/systems/match.gd:1173
+#: client/systems/match.gd:1235
 msgid "%s voa para outra posição!"
 msgstr ""
 
-#: client/systems/match.gd:159
+#: client/systems/match.gd:1288 client/systems/match.gd:1292
+msgid "%s usa %s!"
+msgstr ""
+
+#: client/systems/match.gd:170
 msgid "Fase %d: %s"
 msgstr ""
 
-#: client/systems/match.gd:161
+#: client/systems/match.gd:172
 msgid "Processo de busca sucedido! A sua equipe começará o combate!"
 msgstr ""
 
-#: client/systems/match.gd:163
+#: client/systems/match.gd:174
 msgid "Processo de busca sucedido! A equipe adversária começa."
 msgstr ""
 
-#: client/systems/match.gd:315
+#: client/systems/match.gd:327
+msgid "%s não resistiu às chamas!"
+msgstr ""
+
+#: client/systems/match.gd:334
 msgid "%s está congelado e perde a vez!"
 msgstr ""
 
-#: client/systems/match.gd:324 client/systems/match.gd:700
+#: client/systems/match.gd:343 client/systems/match.gd:725
 msgid "Sua vez! Segure ESPAÇO para definir a força"
 msgstr ""
 
-#: client/systems/match.gd:326
+#: client/systems/match.gd:345
 msgid "Vez de %s"
 msgstr ""
 
-#: client/systems/match.gd:375
+#: client/systems/match.gd:394
 msgid "Solte ESPAÇO para disparar"
 msgstr ""
 
-#: client/systems/match.gd:447
+#: client/systems/match.gd:469
 msgid "%s usou POW: %s!"
 msgstr ""
 
-#: client/systems/match.gd:476
+#: client/systems/match.gd:501
 msgid "Projétil em voo"
 msgstr ""
 
-#: client/systems/match.gd:545
+#: client/systems/match.gd:570
 msgid "GRÁTIS!"
 msgstr ""
 
-#: client/systems/match.gd:597 client/systems/match.gd:626
+#: client/systems/match.gd:622 client/systems/match.gd:651
 msgid "%s usou %s"
 msgstr ""
 
-#: client/systems/match.gd:648
+#: client/systems/match.gd:673
 msgid "Avião de Papel"
 msgstr ""
 
-#: client/systems/match.gd:680
+#: client/systems/match.gd:705
 msgid "%s passou a vez"
 msgstr ""
 
-#: client/systems/match.gd:885
+#: client/systems/match.gd:925
 msgid "CRÍTICO -%d"
 msgstr ""
 
-#: client/systems/match.gd:895
+#: client/systems/match.gd:943
 msgid "%s derrotou %s!"
 msgstr ""
 
-#: client/systems/match.gd:927
+#: client/systems/match.gd:975
 msgid "%s voou para fora do mapa!"
 msgstr ""
 
@@ -770,103 +778,103 @@ msgstr ""
 msgid "Teste de desempenho: medindo… %d s"
 msgstr ""
 
-#: client/systems/profile.gd:289
+#: client/systems/profile.gd:293
 msgid "Esta roupa é do outro gênero."
 msgstr ""
 
-#: client/systems/profile.gd:298
+#: client/systems/profile.gd:302
 msgid "Você precisa ter uma arma equipada."
 msgstr ""
 
-#: client/systems/profile.gd:331 client/systems/profile.gd:337 client/systems/profile.gd:340 client/systems/profile.gd:353
+#: client/systems/profile.gd:361 client/systems/profile.gd:367 client/systems/profile.gd:370 client/systems/profile.gd:383
 msgid "Item desconhecido."
 msgstr ""
 
-#: client/systems/profile.gd:333
+#: client/systems/profile.gd:363
 msgid "Super armas só caem do chefe das instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:335
+#: client/systems/profile.gd:365
 msgid "Armas Verdadeiras só caem nas instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:342 client/systems/profile.gd:356 client/systems/profile.gd:429 client/systems/profile.gd:457
+#: client/systems/profile.gd:372 client/systems/profile.gd:386 client/systems/profile.gd:459 client/systems/profile.gd:487
 msgid "Moedas insuficientes."
 msgstr ""
 
-#: client/systems/profile.gd:422
+#: client/systems/profile.gd:452
 msgid "Só armas, roupas e chapéus podem ser fortalecidos."
 msgstr ""
 
-#: client/systems/profile.gd:425
+#: client/systems/profile.gd:455
 msgid "Este item já está no +12."
 msgstr ""
 
-#: client/systems/profile.gd:427
+#: client/systems/profile.gd:457
 msgid "Pedras insuficientes: precisa de %d pontos de pedra, você tem %d."
 msgstr ""
 
-#: client/systems/profile.gd:455
+#: client/systems/profile.gd:485
 msgid "Precisa de %d pedras iguais."
 msgstr ""
 
-#: client/systems/profile.gd:463
+#: client/systems/profile.gd:493
 msgid "Esta pedra já é do nível máximo."
 msgstr ""
 
-#: client/systems/profile.gd:469
+#: client/systems/profile.gd:499
 msgid "Escolha dois itens diferentes."
 msgstr ""
 
-#: client/systems/profile.gd:471
+#: client/systems/profile.gd:501
 msgid "A transferência só funciona entre itens do mesmo tipo."
 msgstr ""
 
-#: client/systems/profile.gd:489
+#: client/systems/profile.gd:519
 msgid "Escolha um item e um atributo."
 msgstr ""
 
-#: client/systems/profile.gd:495
+#: client/systems/profile.gd:525
 msgid "Este item já recebeu %d composições."
 msgstr ""
 
-#: client/systems/profile.gd:497
+#: client/systems/profile.gd:527
 msgid "Você precisa de um Cristal Dourado."
 msgstr ""
 
-#: client/systems/profile.gd:521 client/systems/profile.gd:545 client/ui/smith_screen.gd:361
+#: client/systems/profile.gd:551 client/systems/profile.gd:575 client/ui/smith_screen.gd:361
 msgid "Você não tem %s."
 msgstr ""
 
-#: client/systems/profile.gd:579 client/systems/profile.gd:724
+#: client/systems/profile.gd:609 client/systems/profile.gd:754
 msgid "Cupom inválido."
 msgstr ""
 
-#: client/systems/profile.gd:581 client/systems/profile.gd:726
+#: client/systems/profile.gd:611 client/systems/profile.gd:756
 msgid "Este cupom já foi usado nesta conta."
 msgstr ""
 
-#: client/systems/profile.gd:641 client/ui/room_screen.gd:323
+#: client/systems/profile.gd:671 client/ui/room_screen.gd:324
 msgid "%s custa %d moedas."
 msgstr ""
 
-#: client/systems/profile.gd:643
+#: client/systems/profile.gd:673
 msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
 msgstr ""
 
-#: client/systems/profile.gd:700 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
+#: client/systems/profile.gd:730 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:96
 msgid "+%d moedas"
 msgstr ""
 
-#: client/systems/profile.gd:736
+#: client/systems/profile.gd:770
 msgid "O personagem já foi criado."
 msgstr ""
 
-#: client/systems/profile.gd:738
+#: client/systems/profile.gd:772
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr ""
 
-#: client/systems/profile.gd:745 server/game/game_server.gd:451
+#: client/systems/profile.gd:779 server/game/game_server.gd:451
 msgid "Operação desconhecida."
 msgstr ""
 
@@ -926,7 +934,7 @@ msgstr ""
 msgid "Excluindo…"
 msgstr ""
 
-#: client/ui/account_screen.gd:162 server/game/game_server.gd:1222
+#: client/ui/account_screen.gd:162 server/game/game_server.gd:1226
 msgid "Digite a sua senha."
 msgstr ""
 
@@ -1014,11 +1022,11 @@ msgstr ""
 msgid "1 bônus"
 msgstr ""
 
-#: client/ui/auction_screen.gd:177 client/ui/character_screen.gd:284 client/ui/smith_screen.gd:313
+#: client/ui/auction_screen.gd:177 client/ui/character_screen.gd:449 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:313
 msgid "Nível do item %d"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:16 client/ui/shop_screen.gd:12
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:22 client/ui/shop_screen.gd:12
 msgid "Armas"
 msgstr ""
 
@@ -1026,7 +1034,7 @@ msgstr ""
 msgid "Chapéus"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:466 client/ui/character_screen.gd:16 client/ui/smith_screen.gd:245
+#: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:466 client/ui/character_screen.gd:22 client/ui/smith_screen.gd:245
 msgid "Mapas"
 msgstr ""
 
@@ -1034,7 +1042,7 @@ msgstr ""
 msgid "Roupas"
 msgstr ""
 
-#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:16
+#: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:22
 msgid "Todos"
 msgstr ""
 
@@ -1146,7 +1154,7 @@ msgstr ""
 msgid "Termina em %s"
 msgstr ""
 
-#: client/ui/auction_screen.gd:312
+#: client/ui/auction_screen.gd:312 client/ui/item_tooltip.gd:225
 msgid "Sem atributos."
 msgstr ""
 
@@ -1174,7 +1182,7 @@ msgstr ""
 msgid "Este anúncio é seu."
 msgstr ""
 
-#: client/ui/auction_screen.gd:336 server/game/game_server.gd:1077
+#: client/ui/auction_screen.gd:336 server/game/game_server.gd:1081
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr ""
 
@@ -1182,7 +1190,7 @@ msgstr ""
 msgid "Comprar %s por %s?\nO item vai direto para a sua Mochila."
 msgstr ""
 
-#: client/ui/auction_screen.gd:418 client/ui/auction_screen.gd:621 client/ui/auction_screen.gd:702 client/ui/character_screen.gd:49
+#: client/ui/auction_screen.gd:418 client/ui/auction_screen.gd:621 client/ui/auction_screen.gd:702 client/ui/character_screen.gd:86
 msgid "VOLTAR"
 msgstr ""
 
@@ -1322,7 +1330,7 @@ msgstr ""
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:118 client/ui/battle_hud.gd:314
+#: client/ui/battle_hud.gd:118 client/ui/battle_hud.gd:319
 msgid "Confiar"
 msgstr ""
 
@@ -1350,7 +1358,7 @@ msgstr ""
 msgid "Energia"
 msgstr ""
 
-#: client/ui/battle_hud.gd:162 client/ui/character_screen.gd:135 client/ui/smith_screen.gd:140
+#: client/ui/battle_hud.gd:162 client/ui/character_screen.gd:187 client/ui/smith_screen.gd:140
 msgid "Vida"
 msgstr ""
 
@@ -1382,71 +1390,71 @@ msgstr ""
 msgid "Inimigos: %d%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:248
+#: client/ui/battle_hud.gd:253
 msgid "EMPATE"
 msgstr ""
 
-#: client/ui/battle_hud.gd:256
+#: client/ui/battle_hud.gd:261
 msgid "OPÇÕES"
 msgstr ""
 
-#: client/ui/battle_hud.gd:256
+#: client/ui/battle_hud.gd:261
 msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:258
+#: client/ui/battle_hud.gd:263
 msgid "BATALHA PAUSADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:258
+#: client/ui/battle_hud.gd:263
 msgid "Partida local contra IA. Desistir conta como derrota."
 msgstr ""
 
-#: client/ui/battle_hud.gd:266
+#: client/ui/battle_hud.gd:271
 msgid "DESLIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:266
+#: client/ui/battle_hud.gd:271
 msgid "LIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:266
+#: client/ui/battle_hud.gd:271
 msgid "Música: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:267
+#: client/ui/battle_hud.gd:272
 msgid "DESLIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:267
+#: client/ui/battle_hud.gd:272
 msgid "Efeitos: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:267
+#: client/ui/battle_hud.gd:272
 msgid "LIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:275
+#: client/ui/battle_hud.gd:280
 msgid "CONTINUAR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:276
+#: client/ui/battle_hud.gd:281
 msgid "DESISTIR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:314
+#: client/ui/battle_hud.gd:319
 msgid "Confiar ✓"
 msgstr ""
 
-#: client/ui/battle_hud.gd:363 client/ui/battle_hud.gd:364
+#: client/ui/battle_hud.gd:368 client/ui/battle_hud.gd:369
 msgid "EU"
 msgstr ""
 
-#: client/ui/battle_hud.gd:451
+#: client/ui/battle_hud.gd:456
 msgid "Aguarde a sua vez…"
 msgstr ""
 
-#: client/ui/battle_hud.gd:451
+#: client/ui/battle_hud.gd:456
 msgid "Pressione Espaço com força total e realize um ataque"
 msgstr ""
 
@@ -1470,23 +1478,23 @@ msgstr ""
 msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
 msgstr ""
 
-#: client/ui/battle_screen.gd:371
+#: client/ui/battle_screen.gd:412
 msgid "CRÍTICO"
 msgstr ""
 
-#: client/ui/battle_screen.gd:396
+#: client/ui/battle_screen.gd:437
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:406 client/ui/battle_screen.gd:555
+#: client/ui/battle_screen.gd:447 client/ui/battle_screen.gd:596
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:608
+#: client/ui/battle_screen.gd:649
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:48 client/ui/character_screen.gd:342 client/ui/city_screen.gd:138
+#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:85 client/ui/character_screen.gd:637 client/ui/city_screen.gd:138
 msgid "MOCHILA"
 msgstr ""
 
@@ -1502,212 +1510,216 @@ msgstr ""
 msgid "Sair"
 msgstr ""
 
-#: client/ui/character_screen.gd:10 shared/balance/combat.json:rewards.cards[3].name shared/balance/items.json:strengthen.stones[1].name
-msgid "Pedra de Fortalecimento II"
-msgstr ""
-
-#: client/ui/character_screen.gd:101
-msgid "sem aura"
-msgstr ""
-
-#: client/ui/character_screen.gd:11 shared/balance/combat.json:rewards.cards[4].name shared/balance/items.json:strengthen.stones[2].name
-msgid "Pedra de Fortalecimento III"
-msgstr ""
-
-#: client/ui/character_screen.gd:12 shared/balance/items.json:strengthen.stones[3].name
-msgid "Pedra de Fortalecimento IV"
-msgstr ""
-
-#: client/ui/character_screen.gd:13 shared/balance/combat.json:rewards.cards[5].name
-msgid "Cristal Dourado"
-msgstr ""
-
-#: client/ui/character_screen.gd:135 client/ui/smith_screen.gd:132
-msgid "Dano"
-msgstr ""
-
-#: client/ui/character_screen.gd:135
-msgid "Força física"
-msgstr ""
-
-#: client/ui/character_screen.gd:135
-msgid "Proteção"
-msgstr ""
-
-#: client/ui/character_screen.gd:14 shared/balance/combat.json:rewards.cards[6].name
-msgid "Ovo de Mascote"
-msgstr ""
-
-#: client/ui/character_screen.gd:145
-msgid "ATRIBUTOS DE COMBATE"
-msgstr ""
-
-#: client/ui/character_screen.gd:148
-msgid "Arma: %s  •  Dano %d  •  Cratera %d"
-msgstr ""
-
-#: client/ui/character_screen.gd:149
-msgid "Ângulo %d° a %d°  •  POW: %s"
-msgstr ""
-
-#: client/ui/character_screen.gd:150
-msgid "Ataque +%d dos itens: dano x%.2f"
-msgstr ""
-
-#: client/ui/character_screen.gd:151
-msgid "Defesa +%d dos itens: dano recebido x%.2f"
-msgstr ""
-
-#: client/ui/character_screen.gd:152
-msgid "Agilidade %d: define o Delay e quem começa"
-msgstr ""
-
-#: client/ui/character_screen.gd:153
-msgid "Sorte +%d dos itens: %.1f%% de acerto crítico (x1,5)"
-msgstr ""
-
-#: client/ui/character_screen.gd:154
-msgid "Vida %d  •  Força física %d por turno"
-msgstr ""
-
-#: client/ui/character_screen.gd:155
-msgid "Avião de papel: %d de energia, recarga %d turnos"
-msgstr ""
-
-#: client/ui/character_screen.gd:16
-msgid "Materiais"
-msgstr ""
-
-#: client/ui/character_screen.gd:16
-msgid "Visual"
-msgstr ""
-
-#: client/ui/character_screen.gd:163
-msgid "Bônus: %s"
-msgstr ""
-
-#: client/ui/character_screen.gd:163
-msgid "nenhum (use moedas no Ferreiro)"
-msgstr ""
-
-#: client/ui/character_screen.gd:177
-msgid "SUA JORNADA"
-msgstr ""
-
-#: client/ui/character_screen.gd:179
-msgid "%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila"
-msgstr ""
-
-#: client/ui/character_screen.gd:245 client/ui/shop_screen.gd:141 client/ui/smith_screen.gd:287
-msgid "%d itens"
-msgstr ""
-
-#: client/ui/character_screen.gd:257 client/ui/character_screen.gd:297 client/ui/character_screen.gd:309
-msgid "EQUIPAR"
-msgstr ""
-
-#: client/ui/character_screen.gd:258
-msgid "VENDER"
-msgstr ""
-
-#: client/ui/character_screen.gd:259 client/ui/smith_screen.gd:168
-msgid "FORTALECER"
-msgstr ""
-
-#: client/ui/character_screen.gd:274
-msgid "  [color=#ffd46b]%s[/color]\nDano %d • Cratera %d • Ângulo %d°–%d° • POW: %s\n%s"
-msgstr ""
-
-#: client/ui/character_screen.gd:279
-msgid " (feminino)"
-msgstr ""
-
-#: client/ui/character_screen.gd:279
-msgid " (masculino)"
-msgstr ""
-
-#: client/ui/character_screen.gd:286 client/ui/smith_screen.gd:315
-msgid "Espelhado"
-msgstr ""
-
-#: client/ui/character_screen.gd:288 client/ui/smith_screen.gd:317
-msgid "Vinculado"
-msgstr ""
-
-#: client/ui/character_screen.gd:295
-msgid "Selecione um item da mochila ou um espaço de equipamento."
-msgstr ""
-
-#: client/ui/character_screen.gd:300
-msgid "%s: nenhum item equipado."
-msgstr ""
-
-#: client/ui/character_screen.gd:309
-msgid "REMOVER"
-msgstr ""
-
-#: client/ui/character_screen.gd:316
-msgid "Sem atributos. Coloque no espaço de mapa da sala da instância."
-msgstr ""
-
-#: client/ui/character_screen.gd:322
-msgid "Use no Ferreiro, aba Moedas, em equipamentos e mapas."
-msgstr ""
-
-#: client/ui/character_screen.gd:324
-msgid "\nVale %d ponto(s) de fortalecimento no Ferreiro."
-msgstr ""
-
-#: client/ui/character_screen.gd:326
-msgid "\nFerramenta de batalha (Z/X/C)."
-msgstr ""
-
-#: client/ui/character_screen.gd:50 client/ui/smith_screen.gd:43
-msgid "FERREIRO"
-msgstr ""
-
-#: client/ui/character_screen.gd:51
-msgid "LOJA"
-msgstr ""
-
-#: client/ui/character_screen.gd:52 client/ui/city_screen.gd:135 client/ui/shop_screen.gd:73
-msgid "CUPOM"
-msgstr ""
-
-#: client/ui/character_screen.gd:55
-msgid "moedas"
-msgstr ""
-
-#: client/ui/character_screen.gd:63
-msgid "Informações Pessoais"
-msgstr ""
-
-#: client/ui/character_screen.gd:65
-msgid "Atributos"
-msgstr ""
-
-#: client/ui/character_screen.gd:65
-msgid "Histórico"
-msgstr ""
-
-#: client/ui/character_screen.gd:65
-msgid "Perfil"
-msgstr ""
-
-#: client/ui/character_screen.gd:72
+#: client/ui/character_screen.gd:119
 msgid "Ranking %d"
 msgstr ""
 
-#: client/ui/character_screen.gd:89
+#: client/ui/character_screen.gd:133
+msgid "EXP  %.1f%%  •  %d / %d"
+msgstr ""
+
+#: client/ui/character_screen.gd:148
 msgid "Mascote"
 msgstr ""
 
-#: client/ui/character_screen.gd:9 shared/balance/items.json:strengthen.stones[0].name
+#: client/ui/character_screen.gd:15 shared/balance/items.json:strengthen.stones[0].name
 msgid "Pedra de Fortalecimento I"
 msgstr ""
 
-#: client/ui/character_screen.gd:90 client/ui/result_screen.gd:55
-msgid "EXP"
+#: client/ui/character_screen.gd:16 shared/balance/combat.json:rewards.cards[3].name shared/balance/items.json:strengthen.stones[1].name
+msgid "Pedra de Fortalecimento II"
+msgstr ""
+
+#: client/ui/character_screen.gd:17 shared/balance/combat.json:rewards.cards[4].name shared/balance/items.json:strengthen.stones[2].name
+msgid "Pedra de Fortalecimento III"
+msgstr ""
+
+#: client/ui/character_screen.gd:175 client/ui/item_tooltip.gd:182
+msgid "sem aura"
+msgstr ""
+
+#: client/ui/character_screen.gd:18 shared/balance/items.json:strengthen.stones[3].name
+msgid "Pedra de Fortalecimento IV"
+msgstr ""
+
+#: client/ui/character_screen.gd:187 client/ui/smith_screen.gd:132
+msgid "Dano"
+msgstr ""
+
+#: client/ui/character_screen.gd:187
+msgid "Força física"
+msgstr ""
+
+#: client/ui/character_screen.gd:187
+msgid "Proteção"
+msgstr ""
+
+#: client/ui/character_screen.gd:19 shared/balance/combat.json:rewards.cards[5].name
+msgid "Cristal Dourado"
+msgstr ""
+
+#: client/ui/character_screen.gd:198
+msgid "ATRIBUTOS DE COMBATE"
+msgstr ""
+
+#: client/ui/character_screen.gd:20 shared/balance/combat.json:rewards.cards[6].name
+msgid "Ovo de Mascote"
+msgstr ""
+
+#: client/ui/character_screen.gd:202
+msgid "Arma: %s  •  Dano %d  •  Cratera %d"
+msgstr ""
+
+#: client/ui/character_screen.gd:203
+msgid "Ângulo %d° a %d°  •  POW: %s"
+msgstr ""
+
+#: client/ui/character_screen.gd:204
+msgid "Ataque +%d dos itens: dano x%.2f"
+msgstr ""
+
+#: client/ui/character_screen.gd:205
+msgid "Defesa +%d dos itens: dano recebido x%.2f"
+msgstr ""
+
+#: client/ui/character_screen.gd:206
+msgid "Agilidade %d: define o Delay e quem começa"
+msgstr ""
+
+#: client/ui/character_screen.gd:207
+msgid "Sorte +%d dos itens: %.1f%% de acerto crítico (x1,5)"
+msgstr ""
+
+#: client/ui/character_screen.gd:208
+msgid "Vida %d  •  Força física %d por turno"
+msgstr ""
+
+#: client/ui/character_screen.gd:217
+msgid "Bônus: %s"
+msgstr ""
+
+#: client/ui/character_screen.gd:217
+msgid "nenhum (use moedas no Ferreiro)"
+msgstr ""
+
+#: client/ui/character_screen.gd:22
+msgid "Materiais"
+msgstr ""
+
+#: client/ui/character_screen.gd:22
+msgid "Visual"
+msgstr ""
+
+#: client/ui/character_screen.gd:231
+msgid "SUA JORNADA"
+msgstr ""
+
+#: client/ui/character_screen.gd:233
+msgid "%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila"
+msgstr ""
+
+#: client/ui/character_screen.gd:357
+msgid "ORGANIZAR"
+msgstr ""
+
+#: client/ui/character_screen.gd:359
+msgid "Arruma a mochila por tipo, qualidade e fortalecimento."
+msgstr ""
+
+#: client/ui/character_screen.gd:384 client/ui/character_screen.gd:467 client/ui/character_screen.gd:483
+msgid "EQUIPAR"
+msgstr ""
+
+#: client/ui/character_screen.gd:385
+msgid "VENDER"
+msgstr ""
+
+#: client/ui/character_screen.gd:386 client/ui/smith_screen.gd:168
+msgid "FORTALECER"
+msgstr ""
+
+#: client/ui/character_screen.gd:423 client/ui/shop_screen.gd:141 client/ui/smith_screen.gd:287
+msgid "%d itens"
+msgstr ""
+
+#: client/ui/character_screen.gd:439
+msgid "  [color=#ffd46b]%s[/color]\nDano %d • Cratera %d • Ângulo %d°–%d° • POW: %s\n%s"
+msgstr ""
+
+#: client/ui/character_screen.gd:444 client/ui/item_tooltip.gd:150
+msgid " (feminino)"
+msgstr ""
+
+#: client/ui/character_screen.gd:444 client/ui/item_tooltip.gd:150
+msgid " (masculino)"
+msgstr ""
+
+#: client/ui/character_screen.gd:451 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:315
+msgid "Espelhado"
+msgstr ""
+
+#: client/ui/character_screen.gd:453 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:317
+msgid "Vinculado"
+msgstr ""
+
+#: client/ui/character_screen.gd:463
+msgid "Selecione um item da mochila ou um espaço de equipamento."
+msgstr ""
+
+#: client/ui/character_screen.gd:470
+msgid "%s: nenhum item equipado."
+msgstr ""
+
+#: client/ui/character_screen.gd:483
+msgid "REMOVER"
+msgstr ""
+
+#: client/ui/character_screen.gd:488
+msgid "Sem atributos. Coloque no espaço de mapa da sala da instância."
+msgstr ""
+
+#: client/ui/character_screen.gd:494 client/ui/item_tooltip.gd:245
+msgid "Use no Ferreiro, aba Moedas, em equipamentos e mapas."
+msgstr ""
+
+#: client/ui/character_screen.gd:496
+msgid "\nVale %d ponto(s) de fortalecimento no Ferreiro."
+msgstr ""
+
+#: client/ui/character_screen.gd:498
+msgid "\nFerramenta de batalha (Z/X/C)."
+msgstr ""
+
+#: client/ui/character_screen.gd:87 client/ui/smith_screen.gd:43
+msgid "FERREIRO"
+msgstr ""
+
+#: client/ui/character_screen.gd:88
+msgid "LOJA"
+msgstr ""
+
+#: client/ui/character_screen.gd:89 client/ui/city_screen.gd:135 client/ui/shop_screen.gd:73
+msgid "CUPOM"
+msgstr ""
+
+#: client/ui/character_screen.gd:92
+msgid "moedas"
+msgstr ""
+
+#: client/ui/character_screen.gd:94
+msgid "Informações Pessoais"
+msgstr ""
+
+#: client/ui/character_screen.gd:96
+msgid "Atributos"
+msgstr ""
+
+#: client/ui/character_screen.gd:96
+msgid "Histórico"
+msgstr ""
+
+#: client/ui/character_screen.gd:96
+msgid "Perfil"
 msgstr ""
 
 #: client/ui/chat_box.gd:26 client/ui/city_screen.gd:103
@@ -1982,7 +1994,7 @@ msgstr ""
 msgid "A sala %d está cheia."
 msgstr ""
 
-#: client/ui/hall_screen.gd:125 client/ui/room_screen.gd:357
+#: client/ui/hall_screen.gd:125 client/ui/room_screen.gd:358
 msgid "SALA CHEIA"
 msgstr ""
 
@@ -2078,7 +2090,7 @@ msgstr ""
 msgid "Canal atual"
 msgstr ""
 
-#: client/ui/hall_screen.gd:42 client/ui/room_screen.gd:261
+#: client/ui/hall_screen.gd:42 client/ui/room_screen.gd:262
 msgid "Canal 1"
 msgstr ""
 
@@ -2092,6 +2104,70 @@ msgstr ""
 
 #: client/ui/hall_screen.gd:96
 msgid "Página %d/%d  •  %d salas aguardando  •  %d em jogo"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:160
+msgid "Cratera %d"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:160
+msgid "Dano %s"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:161
+msgid "Ângulo %d°–%d°"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:162
+msgid "POW: %s"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:167
+msgid "Usos por batalha: %d"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:183
+msgid "Fortalecido +%d  •  %s"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:188
+msgid "Sem bônus (use moedas no Ferreiro)"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:190
+msgid "BÔNUS"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:203
+msgid "Equipado"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:205
+msgid "Vende por %d moedas"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:206
+msgid "Clique duplo: equipar  •  Arraste: organizar"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:215
+msgid "Mapa de instância"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:229
+msgid "Coloque no espaço de mapa da sala da instância. É consumido ao entrar."
+msgstr ""
+
+#: client/ui/item_tooltip.gd:237
+msgid "Ferramenta de batalha (Z/X/C)"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:243
+msgid "Moeda"
+msgstr ""
+
+#: client/ui/item_tooltip.gd:247
+msgid "Vale %d ponto(s) de fortalecimento no Ferreiro."
 msgstr ""
 
 #: client/ui/mail_screen.gd:110
@@ -2166,7 +2242,7 @@ msgstr ""
 msgid "AVANÇAR ▶"
 msgstr ""
 
-#: client/ui/pow_banner.gd:76 client/ui/pow_banner.gd:77 client/ui/pow_banner.gd:78
+#: client/ui/pow_banner.gd:340 client/ui/pow_banner.gd:341
 msgid "POW!"
 msgstr ""
 
@@ -2272,6 +2348,10 @@ msgstr ""
 
 #: client/ui/result_screen.gd:54
 msgid "Resultado"
+msgstr ""
+
+#: client/ui/result_screen.gd:55
+msgid "EXP"
 msgstr ""
 
 #: client/ui/result_screen.gd:55
@@ -2398,7 +2478,7 @@ msgstr ""
 msgid "Informações"
 msgstr ""
 
-#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:368
+#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:369
 msgid "Mapa Aleatório"
 msgstr ""
 
@@ -2458,119 +2538,119 @@ msgstr ""
 msgid "Você ainda não tem mapas desta instância. Vença as fases para encontrar mapas."
 msgstr ""
 
-#: client/ui/room_screen.gd:224
+#: client/ui/room_screen.gd:226
 msgid "ESCOLHER INSTÂNCIA"
 msgstr ""
 
-#: client/ui/room_screen.gd:236
+#: client/ui/room_screen.gd:237
 msgid "%d mapa(s) na mochila"
 msgstr ""
 
-#: client/ui/room_screen.gd:259
+#: client/ui/room_screen.gd:260
 msgid "Sala"
 msgstr ""
 
-#: client/ui/room_screen.gd:267
+#: client/ui/room_screen.gd:268
 msgid "MINHAS FERRAMENTAS"
 msgstr ""
 
-#: client/ui/room_screen.gd:276
+#: client/ui/room_screen.gd:277
 msgid "%s\n%s\nClique para devolver (+%d moedas)"
 msgstr ""
 
-#: client/ui/room_screen.gd:278
+#: client/ui/room_screen.gd:279
 msgid "FERRAMENTAS A COMPRAR"
 msgstr ""
 
-#: client/ui/room_screen.gd:289
+#: client/ui/room_screen.gd:290
 msgid "%s — %d moedas\n%s"
 msgstr ""
 
-#: client/ui/room_screen.gd:298 client/ui/room_screen.gd:299 client/ui/room_screen.gd:436
+#: client/ui/room_screen.gd:299 client/ui/room_screen.gd:300 client/ui/room_screen.gd:437
 msgid "Cancelar"
 msgstr ""
 
-#: client/ui/room_screen.gd:298
+#: client/ui/room_screen.gd:299
 msgid "Início"
 msgstr ""
 
-#: client/ui/room_screen.gd:298
+#: client/ui/room_screen.gd:299
 msgid "Preparar"
 msgstr ""
 
-#: client/ui/room_screen.gd:299
+#: client/ui/room_screen.gd:300
 msgid "Aguardando o dono da sala…"
 msgstr ""
 
-#: client/ui/room_screen.gd:299
+#: client/ui/room_screen.gd:300
 msgid "Clique em \"%s\" para começar o jogo"
 msgstr ""
 
-#: client/ui/room_screen.gd:300
+#: client/ui/room_screen.gd:301
 msgid "Convidar um jogador (IA) para a equipe"
 msgstr ""
 
-#: client/ui/room_screen.gd:302
+#: client/ui/room_screen.gd:303
 msgid "Convide"
 msgstr ""
 
-#: client/ui/room_screen.gd:304
+#: client/ui/room_screen.gd:305
 msgid "Escolher o local (mapa) da batalha"
 msgstr ""
 
-#: client/ui/room_screen.gd:305 client/ui/room_screen.gd:306
+#: client/ui/room_screen.gd:306 client/ui/room_screen.gd:307
 msgid "Local"
 msgstr ""
 
-#: client/ui/room_screen.gd:308
+#: client/ui/room_screen.gd:309
 msgid "Começar a partida"
 msgstr ""
 
-#: client/ui/room_screen.gd:312
+#: client/ui/room_screen.gd:313
 msgid "Sair da sala"
 msgstr ""
 
-#: client/ui/room_screen.gd:323
+#: client/ui/room_screen.gd:324
 msgid "MOEDAS INSUFICIENTES"
 msgstr ""
 
-#: client/ui/room_screen.gd:327
+#: client/ui/room_screen.gd:328
 msgid "FERRAMENTAS"
 msgstr ""
 
-#: client/ui/room_screen.gd:350
+#: client/ui/room_screen.gd:351
 msgid "CONVITE"
 msgstr ""
 
-#: client/ui/room_screen.gd:350
+#: client/ui/room_screen.gd:351
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr ""
 
-#: client/ui/room_screen.gd:357 server/game/game_server.gd:774
+#: client/ui/room_screen.gd:358 server/game/game_server.gd:778
 msgid "Não há vagas livres na sua equipe."
 msgstr ""
 
-#: client/ui/room_screen.gd:361
+#: client/ui/room_screen.gd:362
 msgid "LOCAL"
 msgstr ""
 
-#: client/ui/room_screen.gd:361
+#: client/ui/room_screen.gd:362
 msgid "Somente o dono da sala escolhe o mapa."
 msgstr ""
 
-#: client/ui/room_screen.gd:366
+#: client/ui/room_screen.gd:367
 msgid "ESCOLHER LOCAL"
 msgstr ""
 
-#: client/ui/room_screen.gd:429
+#: client/ui/room_screen.gd:430
 msgid "Entrando na instância…"
 msgstr ""
 
-#: client/ui/room_screen.gd:429
+#: client/ui/room_screen.gd:430
 msgid "Procurando adversários com níveis próximos…"
 msgstr ""
 
-#: client/ui/room_screen.gd:473
+#: client/ui/room_screen.gd:474
 msgid "vamos lá!"
 msgstr ""
 
@@ -2922,55 +3002,55 @@ msgstr ""
 msgid "Frontier Tank: Nova Era %s"
 msgstr ""
 
-#: client/ui/ui_kit.gd:395
+#: client/ui/ui_kit.gd:404
 msgid "OK"
 msgstr ""
 
-#: server/game/game_server.gd:1029
+#: server/game/game_server.gd:1033
 msgid "Aguarde um instante para buscar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1216
+#: server/game/game_server.gd:1220
 msgid "Saia da batalha antes de excluir a conta."
 msgstr ""
 
-#: server/game/game_server.gd:1227
+#: server/game/game_server.gd:1231
 msgid "Muitas tentativas. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:1235
+#: server/game/game_server.gd:1239
 msgid "Não foi possível excluir a conta agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1235
+#: server/game/game_server.gd:1239
 msgid "Senha incorreta."
 msgstr ""
 
-#: server/game/game_server.gd:1259
+#: server/game/game_server.gd:1263
 msgid "Produto desconhecido."
 msgstr ""
 
-#: server/game/game_server.gd:1265
+#: server/game/game_server.gd:1269
 msgid "Você já tem estes itens."
 msgstr ""
 
-#: server/game/game_server.gd:1295
+#: server/game/game_server.gd:1299
 msgid "A Steam não respondeu. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1297
+#: server/game/game_server.gd:1301
 msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1299
+#: server/game/game_server.gd:1303
 msgid "Este pedido já foi encerrado."
 msgstr ""
 
-#: server/game/game_server.gd:1301
+#: server/game/game_server.gd:1305
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:1302
+#: server/game/game_server.gd:1306
 msgid "Não foi possível concluir a compra agora."
 msgstr ""
 
@@ -2978,11 +3058,11 @@ msgstr ""
 msgid "Este nome já está em uso. Escolha outro."
 msgstr ""
 
-#: server/game/game_server.gd:456 server/game/game_server.gd:627 server/game/game_server.gd:650 server/game/game_server.gd:977
+#: server/game/game_server.gd:456 server/game/game_server.gd:631 server/game/game_server.gd:654 server/game/game_server.gd:981
 msgid "Você está numa batalha."
 msgstr ""
 
-#: server/game/game_server.gd:459 server/game/game_server.gd:791 server/game/game_server.gd:981 server/game/game_server.gd:1219
+#: server/game/game_server.gd:459 server/game/game_server.gd:795 server/game/game_server.gd:985 server/game/game_server.gd:1223
 msgid "Aguarde a operação anterior terminar."
 msgstr ""
 
@@ -2990,83 +3070,83 @@ msgstr ""
 msgid "Servidor indisponível. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:494 server/game/game_server.gd:565
+#: server/game/game_server.gd:498 server/game/game_server.gd:569
 msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
 msgstr ""
 
-#: server/game/game_server.gd:498
+#: server/game/game_server.gd:502
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:522 server/game/game_server.gd:979 server/game/game_server.gd:1262
+#: server/game/game_server.gd:526 server/game/game_server.gd:983 server/game/game_server.gd:1266
 msgid "Crie o seu personagem primeiro."
 msgstr ""
 
-#: server/game/game_server.gd:525
+#: server/game/game_server.gd:529
 msgid "Escolha o motivo da denúncia."
 msgstr ""
 
-#: server/game/game_server.gd:533
+#: server/game/game_server.gd:537
 msgid "Esta mensagem é antiga demais para ser denunciada."
 msgstr ""
 
-#: server/game/game_server.gd:537
+#: server/game/game_server.gd:541
 msgid "Você não pode denunciar a sua própria mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:540
+#: server/game/game_server.gd:544
 msgid "Você já denunciou esta mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:545
+#: server/game/game_server.gd:549
 msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:573
+#: server/game/game_server.gd:577
 msgid "Não foi possível enviar a denúncia agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:652
+#: server/game/game_server.gd:656
 msgid "Sala não encontrada neste canal."
 msgstr ""
 
-#: server/game/game_server.gd:654
+#: server/game/game_server.gd:658
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr ""
 
-#: server/game/game_server.gd:656
+#: server/game/game_server.gd:660
 msgid "A sala está cheia."
 msgstr ""
 
-#: server/game/game_server.gd:667
+#: server/game/game_server.gd:671
 msgid "%s entrou na sala."
 msgstr ""
 
-#: server/game/game_server.gd:683
+#: server/game/game_server.gd:687
 msgid "%s saiu da sala."
 msgstr ""
 
-#: server/game/game_server.gd:702
+#: server/game/game_server.gd:706
 msgid "Somente o dono da sala pode fazer isso."
 msgstr ""
 
-#: server/game/game_server.gd:705
+#: server/game/game_server.gd:709
 msgid "A sala está em batalha."
 msgstr ""
 
-#: server/game/game_server.gd:743
+#: server/game/game_server.gd:747
 msgid "Você não está numa sala."
 msgstr ""
 
-#: server/game/game_server.gd:757
+#: server/game/game_server.gd:761
 msgid "Jogador não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:786
+#: server/game/game_server.gd:790
 msgid "Todos os jogadores precisam estar preparados."
 msgstr ""
 
-#: server/game/game_server.gd:928
+#: server/game/game_server.gd:932
 msgid "Carta indisponível."
 msgstr ""
 
@@ -3158,7 +3238,11 @@ msgstr ""
 msgid "Mapa Lendário"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[0].attack
+#: shared/balance/combat.json:enemies[0].abilities[0].name
+msgid "Investida Solar"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[0].attack shared/balance/combat.json:enemies[0].abilities[1].name
 msgid "Ferrão Solar"
 msgstr ""
 
@@ -3166,7 +3250,11 @@ msgstr ""
 msgid "Escaravelho Solar"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[10].attack
+#: shared/balance/combat.json:enemies[10].abilities[0].name
+msgid "Rasante"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[10].attack shared/balance/combat.json:enemies[10].abilities[1].name
 msgid "Pena Cortante"
 msgstr ""
 
@@ -3174,11 +3262,19 @@ msgstr ""
 msgid "Harpia das Ruínas"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[11].attack
+#: shared/balance/combat.json:enemies[11].abilities[2].name
+msgid "Escudo Celeste"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[11].abilities[3].name
+msgid "Furacão"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[11].attack shared/balance/combat.json:enemies[11].abilities[0].name
 msgid "Lança do Vento"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[11].fury_name shared/balance/items.json:weapons[7].pow.name
+#: shared/balance/combat.json:enemies[11].fury_name shared/balance/combat.json:enemies[11].abilities[1].name shared/balance/items.json:weapons[7].pow.name
 msgid "Tempestade"
 msgstr ""
 
@@ -3186,11 +3282,19 @@ msgstr ""
 msgid "Cavaleiro Celeste"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[12].attack
+#: shared/balance/combat.json:enemies[12].abilities[1].name
+msgid "Mergulho do Grifo"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[12].abilities[2].name
+msgid "Raios do Grifo"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[12].attack shared/balance/combat.json:enemies[12].abilities[0].name
 msgid "Rajada do Grifo"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[12].fury_name
+#: shared/balance/combat.json:enemies[12].fury_name shared/balance/combat.json:enemies[12].abilities[3].name
 msgid "Olho da Tempestade"
 msgstr ""
 
@@ -3198,11 +3302,95 @@ msgstr ""
 msgid "Grifo da Tempestade"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[1].attack
+#: shared/balance/combat.json:enemies[13].abilities[1].name
+msgid "Machado Arremessado"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[13].abilities[2].name
+msgid "Grito de Guerra"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[13].attack shared/balance/combat.json:enemies[13].abilities[0].name
+msgid "Machadada"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[13].name
+msgid "Saqueador Viking"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[14].abilities[1].name
+msgid "Revoada"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[14].abilities[2].name
+msgid "Runa Restauradora"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[14].attack shared/balance/combat.json:enemies[14].abilities[0].name
+msgid "Bicada Rúnica"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[14].name
+msgid "Corvo Rúnico"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[15].abilities[1].name
+msgid "Machados Giratórios"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[15].abilities[2].name
+msgid "Machados Arremessados"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[15].attack shared/balance/combat.json:enemies[15].abilities[0].name
+msgid "Fúria do Urso"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[15].fury_name shared/balance/combat.json:enemies[15].abilities[3].name
+msgid "Berserk"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[15].name
+msgid "Berserker Urso"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].abilities[1].name
+msgid "Investida do Jarl"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].abilities[2].name
+msgid "Tremor de Asgard"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].abilities[3].name
+msgid "Muralha de Escudos"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].attack shared/balance/combat.json:enemies[16].abilities[0].name
+msgid "Martelo do Trovão"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].fury_name shared/balance/combat.json:enemies[16].abilities[4].name
+msgid "Ira de Valhalla"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[16].name shared/balance/combat.json:instances[4].phases[2].name
+msgid "Jarl Barba-de-Ferro"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[1].abilities[1].name
+msgid "Chuva Solar"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[1].abilities[2].name
+msgid "Muralha Dourada"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[1].attack shared/balance/combat.json:enemies[1].abilities[0].name
 msgid "Lança do Sol"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[1].fury_name
+#: shared/balance/combat.json:enemies[1].fury_name shared/balance/combat.json:enemies[1].abilities[3].name
 msgid "Lança Flamejante"
 msgstr ""
 
@@ -3210,12 +3398,36 @@ msgstr ""
 msgid "Guardião do Templo"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[2].attack shared/balance/combat.json:enemies[2].fury_name
+#: shared/balance/combat.json:enemies[2].abilities[1].name
+msgid "Onda de Calor"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[2].abilities[2].name
+msgid "Raio do Sol"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[2].abilities[3].name
+msgid "Eclipse Solar"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[2].attack shared/balance/combat.json:enemies[2].fury_name shared/balance/combat.json:enemies[2].abilities[0].name
 msgid "Fúria Solar"
 msgstr ""
 
 #: shared/balance/combat.json:enemies[2].name shared/balance/combat.json:instances[0].phases[2].name
 msgid "Rei Hélio"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[3].abilities[0].name
+msgid "Sopro de Brasa"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[3].abilities[1].name
+msgid "Mordida Ardente"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[3].abilities[2].name
+msgid "Chuva de Brasas"
 msgstr ""
 
 #: shared/balance/combat.json:enemies[3].attack shared/balance/combat.json:rewards.pvp_cards[0].name shared/balance/items.json:currencies[0].name
@@ -3226,11 +3438,19 @@ msgstr ""
 msgid "Máscara Flamejante"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[4].attack
+#: shared/balance/combat.json:enemies[4].abilities[1].name
+msgid "Terremoto"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[4].abilities[2].name
+msgid "Punho de Obsidiana"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[4].attack shared/balance/combat.json:enemies[4].abilities[0].name
 msgid "Rocha Ígnea"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[4].fury_name
+#: shared/balance/combat.json:enemies[4].fury_name shared/balance/combat.json:enemies[4].abilities[3].name
 msgid "Erupção"
 msgstr ""
 
@@ -3238,11 +3458,19 @@ msgstr ""
 msgid "Sentinela de Obsidiana"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[5].attack
+#: shared/balance/combat.json:enemies[5].abilities[1].name
+msgid "Dança das Lâminas"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[5].abilities[2].name
+msgid "Chuva de Máscaras"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[5].attack shared/balance/combat.json:enemies[5].abilities[0].name
 msgid "Chama das Máscaras"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[5].fury_name
+#: shared/balance/combat.json:enemies[5].fury_name shared/balance/combat.json:enemies[5].abilities[3].name
 msgid "Baile das Máscaras"
 msgstr ""
 
@@ -3250,7 +3478,11 @@ msgstr ""
 msgid "Rei das Máscaras"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[6].attack
+#: shared/balance/combat.json:enemies[6].abilities[0].name
+msgid "Mordida Gélida"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[6].attack shared/balance/combat.json:enemies[6].abilities[1].name
 msgid "Uivo Gelado"
 msgstr ""
 
@@ -3262,11 +3494,19 @@ msgstr ""
 msgid "Cristal Glacial"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[8].attack
+#: shared/balance/combat.json:enemies[8].abilities[0].name
+msgid "Punho de Gelo"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[8].abilities[1].name
+msgid "Terremoto Gelado"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[8].attack shared/balance/combat.json:enemies[8].abilities[2].name
 msgid "Bloco de Gelo"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[8].fury_name
+#: shared/balance/combat.json:enemies[8].fury_name shared/balance/combat.json:enemies[8].abilities[3].name
 msgid "Avalanche"
 msgstr ""
 
@@ -3274,11 +3514,19 @@ msgstr ""
 msgid "Golem de Gelo"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[9].attack
+#: shared/balance/combat.json:enemies[9].abilities[1].name
+msgid "Estalactites"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[9].abilities[2].name
+msgid "Barreira de Gelo"
+msgstr ""
+
+#: shared/balance/combat.json:enemies[9].attack shared/balance/combat.json:enemies[9].abilities[0].name
 msgid "Sopro Glacial"
 msgstr ""
 
-#: shared/balance/combat.json:enemies[9].fury_name
+#: shared/balance/combat.json:enemies[9].fury_name shared/balance/combat.json:enemies[9].abilities[3].name
 msgid "Nevasca Eterna"
 msgstr ""
 
@@ -3348,6 +3596,22 @@ msgstr ""
 
 #: shared/balance/combat.json:instances[3].phases[1].name shared/balance/combat.json:maps[10].name
 msgid "Ruínas Flutuantes"
+msgstr ""
+
+#: shared/balance/combat.json:instances[4].desc
+msgid "Saqueadores e corvos rúnicos guardam o fiorde. O Jarl Barba-de-Ferro chama reforços a cada 3 turnos e ergue a muralha de escudos."
+msgstr ""
+
+#: shared/balance/combat.json:instances[4].name
+msgid "Fiorde dos Vikings"
+msgstr ""
+
+#: shared/balance/combat.json:instances[4].phases[0].name shared/balance/combat.json:maps[12].name
+msgid "Praia dos Drakkars"
+msgstr ""
+
+#: shared/balance/combat.json:instances[4].phases[1].name shared/balance/combat.json:maps[13].name
+msgid "Aldeia do Hidromel"
 msgstr ""
 
 #: shared/balance/combat.json:items[0].desc
@@ -3492,6 +3756,10 @@ msgstr ""
 
 #: shared/balance/combat.json:maps[11].name
 msgid "Santuário dos Ventos"
+msgstr ""
+
+#: shared/balance/combat.json:maps[14].name
+msgid "Trono do Jarl"
 msgstr ""
 
 #: shared/balance/combat.json:maps[9].name

@@ -1,0 +1,304 @@
+{
+ "date": "2026-09-26",
+ "cost": 68,
+ "remaining_after": 164,
+ "images": [
+  {
+   "name": "bg_praia_drakkar",
+   "job_id": "e90edd86-8691-48cd-be00-5413b41c8f78",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/praia_drakkar.png"
+  },
+  {
+   "name": "bg_aldeia_hidromel",
+   "job_id": "f0e71de0-e309-4f32-b508-62955578e936",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/aldeia_hidromel.png"
+  },
+  {
+   "name": "bg_trono_jarl",
+   "job_id": "e4b4e96f-abe4-453d-bd05-0276cb81374a",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/bg/trono_jarl.png"
+  },
+  {
+   "name": "terrain viking_praia_a",
+   "job_id": "44c96492-9434-446d-a99a-63490d25ed6d",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/viking_praia_a.png (tools/terrain_pieces.py --main)"
+  },
+  {
+   "name": "terrain viking_aldeia_a",
+   "job_id": "e2c67df9-1671-487c-90c6-e563a15d3f85",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/viking_aldeia_a.png (shadow band removed, --main)"
+  },
+  {
+   "name": "terrain viking_runas_a",
+   "job_id": "489f0d11-ec49-48cc-a501-0fcb058f6479",
+   "tool": "create_image_pixen",
+   "target": "assets/maps/terrain/viking_runas_a.png (--main)"
+  },
+  {
+   "name": "map icon fiorde_viking",
+   "job_id": "2525fe17-13ad-4539-99b5-493b1fdbddec",
+   "tool": "create_image_pixen",
+   "target": "assets/items/maps/fiorde_viking.png"
+  },
+  {
+   "name": "saqueador_viking",
+   "job_id": "98a23368-83b4-4083-90a6-7e18eaea5c74",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/saqueador_viking/sprite.png"
+  },
+  {
+   "name": "saqueador_viking/idle",
+   "job_id": "0ca11dae-e9a0-43c4-a202-d539682c8c15",
+   "tool": "animate_image",
+   "target": "assets/enemies/saqueador_viking/idle/frame_*.png"
+  },
+  {
+   "name": "saqueador_viking/attack",
+   "job_id": "5f4e6c1d-f5e8-4f31-b793-556972f2ccd4",
+   "tool": "animate_image",
+   "target": "assets/enemies/saqueador_viking/attack/frame_*.png"
+  },
+  {
+   "name": "corvo_runico",
+   "job_id": "90f830aa-d2c5-4b8b-9ca7-a6d042502c60",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/corvo_runico/sprite.png"
+  },
+  {
+   "name": "corvo_runico/idle",
+   "job_id": "b4872bed-01a4-4d5c-a4cc-a884b3b20099",
+   "tool": "animate_image",
+   "target": "assets/enemies/corvo_runico/idle/frame_*.png"
+  },
+  {
+   "name": "corvo_runico/attack",
+   "job_id": "38edc17d-4998-40d5-bb56-42c3d88d5264",
+   "tool": "animate_image",
+   "target": "assets/enemies/corvo_runico/attack/frame_*.png"
+  },
+  {
+   "name": "berserker_urso",
+   "job_id": "d18275ae-3144-4982-b0d6-6db83aaf37f0",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/berserker_urso/sprite.png"
+  },
+  {
+   "name": "berserker_urso/idle",
+   "job_id": "cdbc4ad0-65e2-42e9-823d-b76132829a87",
+   "tool": "animate_image",
+   "target": "assets/enemies/berserker_urso/idle/frame_*.png"
+  },
+  {
+   "name": "berserker_urso/attack",
+   "job_id": "dcfef75c-eeac-40d5-b621-fa83004fcc42",
+   "tool": "animate_image",
+   "target": "assets/enemies/berserker_urso/attack/frame_*.png"
+  },
+  {
+   "name": "jarl_barba_ferro",
+   "job_id": "6e01b931-5ef0-4175-8142-bd44742bec25",
+   "tool": "create_image_pro_flash",
+   "target": "assets/enemies/jarl_barba_ferro/sprite.png"
+  },
+  {
+   "name": "jarl_barba_ferro/idle",
+   "job_id": "8a8189ef-4068-40bc-b7f6-5612d2e9b5aa",
+   "tool": "animate_image",
+   "target": "assets/enemies/jarl_barba_ferro/idle/frame_*.png"
+  },
+  {
+   "name": "jarl_barba_ferro/attack",
+   "job_id": "683c4ba8-9510-4558-9523-0479337cacd7",
+   "tool": "animate_image",
+   "target": "assets/enemies/jarl_barba_ferro/attack/frame_*.png"
+  },
+  {
+   "name": "pow projectile quebra_tijolos",
+   "job_id": "f3fa99f6-bbbc-4108-ad94-bd55b434b0c6",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/quebra_tijolos/projectile.png"
+  },
+  {
+   "name": "pow projectile fogo_intenso",
+   "job_id": "dd3c71b6-e986-4b27-9b60-59c978a65bee",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/fogo_intenso/projectile.png"
+  },
+  {
+   "name": "pow projectile canhao_arco_iris",
+   "job_id": "874d8f3d-8398-48e3-912f-3ea9a6a8f6d6",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/canhao_arco_iris/projectile.png"
+  },
+  {
+   "name": "pow projectile vento_de_deus",
+   "job_id": "4a7270d4-f5db-489c-a080-858b5bb45f12",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/vento_de_deus/projectile.png"
+  },
+  {
+   "name": "pow projectile cesto_newton",
+   "job_id": "7b2f8399-b28c-4b8f-b333-5bb968c89023",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/cesto_newton/projectile.png"
+  },
+  {
+   "name": "pow projectile kit_medico",
+   "job_id": "0d77723b-90c6-45b4-ba59-b67dab8ccfdb",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/kit_medico/projectile.png"
+  },
+  {
+   "name": "pow projectile eletrodomestico",
+   "job_id": "aa9838bb-1f88-45fa-8a44-ef9559b0f61f",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/eletrodomestico/projectile.png"
+  },
+  {
+   "name": "pow projectile trovao",
+   "job_id": "789733aa-7133-4c54-b770-a1d24ea1e4c9",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/trovao/projectile.png"
+  },
+  {
+   "name": "pow projectile desentupidor",
+   "job_id": "e0c6767f-d65a-4474-9247-4c7b52322a82",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/desentupidor/projectile.png"
+  },
+  {
+   "name": "pow projectile cabeca_de_boi",
+   "job_id": "004f604a-85d3-470f-87d4-421b73222ead",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/cabeca_de_boi/projectile.png"
+  },
+  {
+   "name": "pow projectile bumerangue_amor",
+   "job_id": "5f32a303-c164-44a5-9b2c-1d7f3b94df7e",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/bumerangue_amor/projectile.png"
+  },
+  {
+   "name": "pow projectile lanca_antiga",
+   "job_id": "4dadf39c-50ca-429b-bd3b-ae414f568b73",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/pow/lanca_antiga/projectile.png"
+  },
+  {
+   "name": "ability drop sun",
+   "job_id": "64e2a323-a506-4c02-abcc-29b63781c1e4",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/sun.png"
+  },
+  {
+   "name": "ability drop ice",
+   "job_id": "2322ab1a-ad58-441f-8f8a-d28f1399ee89",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/ice.png"
+  },
+  {
+   "name": "ability drop feather",
+   "job_id": "ea6e5b42-bf9c-4224-8f2d-5d96b57d641d",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/feather.png (flipped to point down)"
+  },
+  {
+   "name": "ability drop axe",
+   "job_id": "5651cc14-686e-4589-bd32-55fe63ee81c0",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/axe.png"
+  },
+  {
+   "name": "ability drop raven",
+   "job_id": "c452ed75-2c31-4c68-91c0-441b426eb2e2",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/raven.png"
+  },
+  {
+   "name": "ability drop rock",
+   "job_id": "ffe58db0-52b2-497e-ae53-c3ac0157beeb",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/rock.png"
+  },
+  {
+   "name": "ability drop dark",
+   "job_id": "dec0d440-2c12-4333-86c6-95cbba11378e",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/drops/dark.png"
+  },
+  {
+   "name": "ability icon leap",
+   "job_id": "575456f9-bb04-4b9a-a455-a023ec895b82",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/leap.png"
+  },
+  {
+   "name": "ability icon dive",
+   "job_id": "22f7bfc7-0fde-468a-a637-888476c59f2f",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/dive.png"
+  },
+  {
+   "name": "ability icon slam",
+   "job_id": "596beb63-210e-4427-beb1-d7439c55f017",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/slam.png"
+  },
+  {
+   "name": "ability icon sky",
+   "job_id": "bc0bb57f-dda8-4334-8fe6-7570b6d9a572",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/sky.png"
+  },
+  {
+   "name": "ability icon breath",
+   "job_id": "2aabdeff-dd0f-4637-95cd-b9a4f27f15aa",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/breath.png"
+  },
+  {
+   "name": "ability icon guard",
+   "job_id": "4ced95e9-851f-47f4-b692-2fd6d1bce43f",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/guard.png"
+  },
+  {
+   "name": "ability icon roar",
+   "job_id": "a9dd8fe5-4254-470c-9471-11f2a62802a2",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/roar.png"
+  },
+  {
+   "name": "ability icon heal",
+   "job_id": "0d403ff2-52f1-4b80-8fa4-d7f81df269d9",
+   "tool": "create_image_pixen",
+   "target": "assets/effects/abilities/icons/heal.png"
+  }
+ ],
+ "reused": [
+  {
+   "name": "meteor drop",
+   "from": "assets/effects/pow/fogo_intenso/projectile.png rotated to point down",
+   "target": "assets/effects/abilities/drops/meteor.png"
+  }
+ ],
+ "discarded": [
+  {
+   "name": "berserker_urso (server error 502, not charged)",
+   "job_id": "fba1e127-0a71-4734-b043-68a0461310d3"
+  },
+  {
+   "name": "terrain with holes and noise",
+   "job_id": "fbd82e0d-da22-4aaa-a3f1-0d8026e0873b"
+  },
+  {
+   "name": "terrain in top-down perspective",
+   "job_id": "89332d64-071c-44d6-9675-16539ea76ec7"
+  }
+ ]
+}

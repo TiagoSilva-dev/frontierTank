@@ -55,6 +55,10 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 
 **Feito na 0.8 (25/09/2026):** `pow_fx.gd` (preparação e carga), `pow_impact.gd` (impacto por arma), `fx_particles.gd` (`CPUParticles2D`), halo e rastro do POW em `projectile.gd`, hit-stop de 80 ms em `LocalMatch.hitstop`, arte animada de cada POW em `assets/effects/pow/<arma>/` (PixelLab), arma nas costas maior em `look_rig.gd`, teste `tests/pow_tests.gd`.
 
+**Revisto na 0.14:** os especiais ainda pareciam iguais em jogo (a arte animada tocava atrás do banner, no atirador, e os impactos eram anéis de cores diferentes). Agora cada especial voa com um projétil próprio, a arte entra no banner e a animação da arma toca onde o especial cai (`docs/PIXELLAB_0_14.md`).
+
+**Revisto na 0.15:** o estouro "POW!" parecia uma caixa de diálogo perto do resto do jogo. Virou um *cut-in* de anime com o retrato do jogador, o nome do especial e a arte do especial, e a partida segura o tiro até a faixa fechar (`visual.pow_cutin`). A arma nas costas, que flutuava, agora fica apoiada no corpo.
+
 **Decidido provisoriamente:** arma nas costas e projétil em **1,5×**, tiro de POW mais **1,6×** (`items.json` → `visual`). Captura lado a lado 1× · 1,5× · 2× em `docs/screens/scale_compare.png`; basta trocar os números para 2× se preferir.
 
 ---
@@ -83,6 +87,8 @@ O jogo hoje não tem servidor. `LobbyDirectory` simula salas e jogadores, e o pr
 4. **Ilha Celeste em Ruínas** — chefe voador que troca de posição.
 
 Cada chefe novo precisa de arte PixelLab (pose, repouso e ataque). Temos um limite de gerações por mês, então vamos planejar isso por instância.
+
+**Na 0.14:** os monstros deixaram de atirar e passaram a usar habilidades (salto, mergulho, golpe no chão, magias do céu, sopro, escudo, grito de guerra, cura, queimadura), e entrou a quinta instância, **Fiorde dos Vikings** (Saqueador, Corvo Rúnico, Berserker Urso e o Jarl Barba-de-Ferro).
 
 **Feito na 0.9:** as quatro instâncias, com lacaios, guardiões, chefes, totens e 7 mapas novos (arte em `docs/PIXELLAB_0_9.md`). Fase 2: Templo e Trono têm guardião com lacaio; Picos Gelados tem o objetivo "destruir os cristais"; Ilha em Ruínas tem "sobreviver 5 turnos". Mecânicas dos chefes: fúria (todos), invocar máscaras (Rei das Máscaras), congelar a vez (Rainha da Nevasca) e trocar de posição (Grifo da Tempestade).
 
@@ -222,7 +228,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - [x] Novas abas do Ferreiro para usar as moedas em itens e mapas.
 - [x] Onde caem: cartas e baús das instâncias (as raras só em mapas de nível alto) e um pouco no PvP.
 
-**Feito na 0.10:** `items.json` → `currencies`, `Crafting.apply`/`apply_map`, `PlayerProfile.craft`/`craft_map`, aba **Moedas** no Ferreiro (equipamentos e mapas), moedas por fase e cartas de moeda (`InstanceRun`), Brasa e Coroa nas cartas do PvP (`rewards.pvp_cards`), ícones provisórios (`tools/currency_icons.py`), cupom `MOEDAS`.
+**Feito na 0.10:** `items.json` → `currencies`, `Crafting.apply`/`apply_map`, `PlayerProfile.craft`/`craft_map`, aba **Moedas** no Ferreiro (equipamentos e mapas), moedas por fase e cartas de moeda (`InstanceRun`), Brasa e Coroa nas cartas do PvP (`rewards.pvp_cards`), ícones provisórios (`tools/currency_icons.py`, trocados depois pela arte PixelLab de `docs/PIXELLAB_0_10.md`), cupom `MOEDAS`.
 
 **Decidido provisoriamente na 0.10:**
 - Chance de moeda por fase vencida: 35% (fase 1), 45% (fase 2) e 100% no chefão, vezes (1 + quantidade de itens do mapa); mais cartas de moeda no baú (peso 12, como as outras cartas raras).

@@ -80,6 +80,15 @@ func apply_style(style: Dictionary, sprite_path: String) -> void:
 	if not TRAILS.has(trail_kind):
 		trail_kind = "plain"
 
+func use_pow_art(art: Texture2D, aligned: bool) -> void:
+	# 0.14: the POW shot flies as the special's own PixelLab art (assets/effects/pow/<weapon>/
+	# projectile.png). Art for nose-first weapons points right, so it follows the flight.
+	texture = art
+	align = aligned
+	align_offset = 0.0
+	if not aligned and is_zero_approx(spin):
+		spin = deg_to_rad(360.0)
+
 func set_powered(colors: Array[Color]) -> void:
 	pow_colors = colors
 	# Embers shed along the flight; they stay in the world where they were emitted.

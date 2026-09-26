@@ -1,0 +1,113 @@
+{
+ "date": "2026-09-25",
+ "cost": 17,
+ "remaining_after": 232,
+ "settings": {
+  "tool": "create_image_pixen",
+  "size": "64x64",
+  "no_background": true,
+  "outline": "single color black outline",
+  "detail": "highly detailed",
+  "view": "side"
+ },
+ "images": [
+  {
+   "name": "brasa",
+   "job_id": "b83edd5f-4c13-4f29-b935-7133bebeca61",
+   "seed": 11,
+   "tool": "create_image_pixen",
+   "prompt": "RPG game currency item icon: a glowing ember coal with small flames on top, orange and red, cracks of lava light, dark outline, medium shading, light from top-left, just the object alone, centered",
+   "target": "assets/items/currency/brasa.png"
+  },
+  {
+   "name": "coroa",
+   "job_id": "51ec256d-dbf6-433e-9a99-7d2891b8c4c4",
+   "seed": 11,
+   "tool": "create_image_pixen",
+   "prompt": "RPG game currency item icon: a small golden royal crown with three points and red and blue gems, dark outline, medium shading, light from top-left, just the object alone, centered",
+   "target": "assets/items/currency/coroa.png"
+  },
+  {
+   "name": "estrela",
+   "job_id": "56d4b666-0841-4eb3-9fbd-35ca92b91050",
+   "seed": 11,
+   "tool": "create_image_pixen",
+   "prompt": "RPG game currency item icon: a shining five-pointed golden star, faceted like a gem, with small sparkles around it, dark outline, medium shading, light from top-left, just the object alone, centered",
+   "target": "assets/items/currency/estrela.png"
+  },
+  {
+   "name": "tormenta",
+   "job_id": "92e37a96-8187-4db5-b619-ab1a2b63ddb0",
+   "seed": 11,
+   "tool": "create_image_pixen",
+   "prompt": "RPG game currency item icon: a purple glass storm orb with swirling dark clouds inside and a bright yellow lightning bolt across it, dark outline, medium shading, light from top-left, just the object alone, centered",
+   "target": "assets/items/currency/tormenta.png"
+  },
+  {
+   "name": "solar",
+   "job_id": "3a097ce9-44ff-433c-ab52-cfe27819112f",
+   "seed": 47,
+   "tool": "create_image_pixen",
+   "prompt": "small RPG currency item icon in the middle of the canvas with empty transparent margin all around: a radiant golden sun disk medallion with twelve short pointed rays and a bright white glowing core, divine and precious, dark outline, medium shading, just the object alone",
+   "target": "assets/items/currency/solar.png"
+  },
+  {
+   "name": "eclipse",
+   "job_id": "22a3782b-6639-442f-b73e-c1bd32470e1e",
+   "seed": 59,
+   "tool": "create_image_pixen",
+   "prompt": "RPG currency item icon, compact and centered with a small empty margin: a total solar eclipse, a flat black-purple disk in front of the sun with blazing golden-orange solar flames radiating all around its rim, brighter flare on the upper right, dark outline, medium shading, just the object alone, not a planet",
+   "target": "assets/items/currency/eclipse.png"
+  },
+  {
+   "name": "espelho",
+   "job_id": "805fa59c-1f0a-4f77-a798-15c82e72ee66",
+   "seed": 59,
+   "tool": "create_image_pixen",
+   "prompt": "large RPG currency item icon filling most of the canvas: a celestial ornate golden hand mirror, big round golden frame decorated with small stars, shining sky-blue reflective glass with a white glint, a short straight golden handle pointing down to the lower right, dark outline, medium shading, just the object alone",
+   "target": "assets/items/currency/espelho.png"
+  }
+ ],
+ "discarded": [
+  {
+   "name": "solar (raios cortados na borda)",
+   "job_id": "83f55fa3-81fd-4f16-906e-bfd389ccdd38"
+  },
+  {
+   "name": "solar (pouco detalhe)",
+   "job_id": "78053b19-d028-4cf4-bb79-1ec96cc48861"
+  },
+  {
+   "name": "eclipse (coroa cortada na borda)",
+   "job_id": "973c4fa1-d882-4ef7-a77a-701ba5384b60"
+  },
+  {
+   "name": "eclipse (virou planeta com anel)",
+   "job_id": "1ce4aa4b-4c47-4db3-aac1-6c804086c7d1"
+  },
+  {
+   "name": "eclipse (virou planeta com anel)",
+   "job_id": "e7e8440d-9518-45d0-9481-8420da203967"
+  },
+  {
+   "name": "eclipse (parece bomba com pavio)",
+   "job_id": "774dd3fd-7f9d-40e1-a35d-d413b72fd25d"
+  },
+  {
+   "name": "espelho (cabo em argola, cortado)",
+   "job_id": "54b26e75-8eed-4d3d-ab79-83e600f2bdac"
+  },
+  {
+   "name": "espelho (pequeno demais)",
+   "job_id": "05e3ff3e-55cb-40c5-a25b-f989178d305c"
+  },
+  {
+   "name": "espelho (pequeno demais)",
+   "job_id": "069d0510-a9ee-4e37-a8c8-cf24c2a8c1be"
+  },
+  {
+   "name": "espelho (cortado na borda)",
+   "job_id": "cd039b94-b1b3-4bdd-8bc3-034b7933875d"
+  }
+ ]
+}

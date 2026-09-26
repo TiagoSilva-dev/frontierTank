@@ -35,6 +35,12 @@ func play_phase(game: LocalMatch, run: InstanceRun) -> void:
 func enemies(game: LocalMatch) -> Array[TankFighter]:
 	return game.fighters.filter(func(f: TankFighter) -> bool: return f.team == 1)
 
+var boss_shot: bool = false
+
+func check_no_shot(game: LocalMatch, fighter: TankFighter) -> void:
+	if game.active_id == fighter.player_id and not game.projectiles.is_empty():
+		boss_shot = true
+
 func turn_of(game: LocalMatch, fighter: TankFighter) -> void:
 	for other in game.fighters:
 		other.delay = 1000.0
@@ -60,7 +66,7 @@ func run_tests() -> void:
 	root.add_child(game)
 	game.set_physics_process(false)
 	game.balance.pve.power_error = 0.0
-	check(balance.instances.size() == 4 and balance.instances.all(func(i: Dictionary) -> bool: return i.phases.size() == 3), "four instances with 3 phases each")
+	check(balance.instances.size() == 5 and balance.instances.all(func(i: Dictionary) -> bool: return i.phases.size() == 3), "five instances with 3 phases each")
 	check(not balance.pve.has("difficulties"), "the Normal/Difícil/Heroico/Pesadelo difficulties are gone")
 	var art_ok: bool = true
 	for def: Dictionary in balance.enemies:
@@ -87,14 +93,14 @@ func run_tests() -> void:
 	check(not game.evaluate_winner() and enemies(game).filter(func(f: TankFighter) -> bool: return f.hp > 0).size() == 2 and game.waves.is_empty(), "clearing a wave brings the next one")
 	var dropped: TankFighter = enemies(game)[-1]
 	check(not dropped.settled or dropped.position.y < game.terrain.surface_y(dropped.position.x), "the new wave falls from the sky")
-	# Minion AI fires by itself
+	# Minion AI acts by itself, with an ability instead of a shot (0.14)
 	turn_of(game, dropped)
 	check(not game.can_act(), "players cannot act on a minion's turn")
 	for i in range(600):
 		game._physics_process(1.0 / 60)
-		if game.state == LocalMatch.State.PROJECTILE_FLYING:
+		if game.state == LocalMatch.State.MONSTER_ACTING:
 			break
-	check(game.state == LocalMatch.State.PROJECTILE_FLYING, "minions calculate and fire autonomously")
+	check(game.state == LocalMatch.State.MONSTER_ACTING and game.projectiles.is_empty() and not game.ability.is_empty(), "minions use an ability by themselves (no shot)")
 	for enemy in enemies(game):
 		enemy.hp = 0
 	check(game.evaluate_winner() and game.winner_team == 0, "phase 1 is won when the last wave falls")
@@ -136,15 +142,16 @@ func run_tests() -> void:
 	game.paused = false
 	for i in range(240):
 		game._physics_process(1.0 / 60)
-		if game.state == LocalMatch.State.PROJECTILE_FLYING:
+		if game.state == LocalMatch.State.MONSTER_ACTING:
 			break
-	check(game.state == LocalMatch.State.PROJECTILE_FLYING and boss.attack_animation.visible, "boss fires autonomously with its cast animation")
+	check(game.state == LocalMatch.State.MONSTER_ACTING and boss.attack_animation.visible and game.projectiles.is_empty(), "the boss uses an ability with its cast animation")
 	var hp_before: int = game.fighters[0].hp
 	for i in range(900):
 		game._physics_process(1.0 / 60)
+		check_no_shot(game, boss)
 		if game.active_id != boss.player_id or not game.running:
 			break
-	check(game.fighters[0].hp < hp_before, "the boss hits the player using terrain and wind")
+	check(game.fighters[0].hp < hp_before and not boss_shot, "the boss's ability hits the player without shooting")
 	boss.hp = boss.max_hp / 2
 	turn_of(game, boss)
 	check(game.boss_enraged and boss.weapon.damage == int(helio.fury_damage) and game.status_message.contains("FÚRIA"), "the boss enrages at half health")
@@ -170,7 +177,9 @@ func run_tests() -> void:
 	area_config.seed = 5
 	game.start(area_config)
 	boss = enemies(game).filter(func(f: TankFighter) -> bool: return f.is_boss).front()
-	check(int(game.compose_plan(boss).balls) == 3, "with 3-4 players the boss adds an area attack")
+	game.ability = {"id": "teste", "kind": "sky", "targets": "one"}
+	var party: Array[TankFighter] = game.fighters.filter(func(f: TankFighter) -> bool: return f.team == 0)
+	check(game.ability_targets(boss, party[0]).size() == party.size() and party.size() >= 3, "with 3-4 players the boss's spells hit the whole party")
 
 	# --- Map items: quality, modifiers, threats
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()

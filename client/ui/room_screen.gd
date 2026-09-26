@@ -221,9 +221,10 @@ func pick_map_item(uid: int, dialog: Control = null) -> void:
 	rebuild()
 
 func choose_instance() -> void:
-	var dialog: Control = UiKit.modal(self, tr("ESCOLHER INSTÂNCIA"), "", Vector2(820, 420))
-	var rect: Rect2 = dialog.get_meta("rect")
 	var list: Array = app.balance.instances
+	# Two columns; the window grows a row for every two instances (0.14: five).
+	var dialog: Control = UiKit.modal(self, tr("ESCOLHER INSTÂNCIA"), "", Vector2(820, 120 + ceili(list.size() / 2.0) * 150))
+	var rect: Rect2 = dialog.get_meta("rect")
 	for i in range(list.size()):
 		var instance: Dictionary = list[i]
 		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 26 + (i % 2) * 386, rect.position.y + 58 + (i / 2) * 150, 378, 142), pick_instance.bind(str(instance.id), dialog), "card_hover" if app.room.instance == instance.id else "card")

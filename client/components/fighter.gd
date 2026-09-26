@@ -28,6 +28,14 @@ var base_damage: int = 0
 var fury_damage: int = 0
 var summon_entry: Dictionary = {}
 var turns_taken: int = 0
+# Monster abilities (0.14): turns left before each ability can be used again, the leap in
+# progress (no gravity while it flies), a war cry's bonus to the next attack and burning
+# (damage at the start of each of the next turns).
+var cooldowns: Dictionary = {}
+var leaping: bool = false
+var empower: float = 1.0
+var burn_turns: int = 0
+var burn_damage: int = 0
 var is_boss: bool:
 	get:
 		return rank == "boss"
@@ -376,7 +384,7 @@ func step_fall(delta: float, terrain: DestructibleTerrain, gravity: float) -> vo
 		walk_time -= delta
 		if walk_time <= 0:
 			show_animation(idle_animation)
-	if hp <= 0:
+	if hp <= 0 or leaping:
 		return
 	if terrain.solid(position + Vector2(0, 2)):
 		velocity_y = 0
@@ -474,7 +482,23 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(-8, top + bob), Vector2(8, top + bob), Vector2(0, top + 10 + bob)]), Color("4aa8ff"))
 		draw_polyline(PackedVector2Array([Vector2(-8, top + bob), Vector2(8, top + bob), Vector2(0, top + 10 + bob), Vector2(-8, top + bob)]), Color("0f2a5a"), 2)
 	if shield < 1.0:
-		draw_arc(Vector2(0, -body_size.y / 2), maxf(body_size.x, body_size.y) / 2 + 8, 0, TAU, 40, Color(0.4, 0.85, 1.0, 0.8), 3)
+		var guard_center: Vector2 = Vector2(0, -monster_height * 0.5) if is_monster else Vector2(0, -body_size.y / 2)
+		draw_arc(guard_center, maxf(body_size.x, body_size.y) / 2 + 8, 0, TAU, 40, Color(0.4, 0.85, 1.0, 0.8), 3)
+	if empower > 1.0:
+		# War cry: a red pulse around the feet until the next attack.
+		var beat: float = 0.5 + 0.5 * sin(pulse * 8.0)
+		draw_set_transform(Vector2(0, -2), 0, Vector2(1.0, 0.3))
+		draw_arc(Vector2.ZERO, body_size.x * 0.6 + 10.0 + beat * 4.0, 0, TAU, 32, Color(1.0, 0.3, 0.2, 0.8), 4.0)
+		draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	if burn_turns > 0:
+		# Burning: small flames licking up over the body, on the 2 px grid.
+		var top_y: float = -monster_height if is_monster else -body_size.y
+		for i in range(5):
+			var t: float = fposmod(pulse * 1.6 + i * 0.21, 1.0)
+			var fx: float = (i - 2) * body_size.x * 0.16 + sin(pulse * 6.0 + i) * 2.0
+			var p: Vector2 = Vector2(fx, top_y * (0.25 + 0.6 * t)).snapped(Vector2(2, 2))
+			var s: float = snappedf(6.0 * (1.0 - t) + 2.0, 2.0)
+			draw_rect(Rect2(p - Vector2(s, s) / 2.0, Vector2(s, s)), Color(1.0, 0.55 + 0.4 * (1.0 - t), 0.15, 0.85 * (1.0 - t)))
 	var y: float = 6.0
 	draw_rect(Rect2(-26, y, 52, 6), Color("1a0f08"))
 	draw_rect(Rect2(-25, y + 1, 50.0 * hp / maxf(1, max_hp), 4), color)

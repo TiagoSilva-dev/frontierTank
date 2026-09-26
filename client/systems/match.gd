@@ -19,7 +19,9 @@ signal shot_fired(projectile: TankProjectile)
 signal turn_started(fighter: TankFighter)
 signal announce(text: String, color: Color)
 signal special(point: Vector2, texture_path: String)
-# Weapon POW visuals: beam, lightning, heal, bull, hearts, tornado, fridge.
+# Weapon POW visuals (beam, lightning, heal, bull, hearts, tornado) and, in instances,
+# the monsters' abilities (ability_cast, mark, drop, leap, strike, slam, breath, guard,
+# roar, heal_allies, burn) plus summon, warp and wave.
 signal effect(kind: String, point: Vector2, data: Dictionary)
 # A skill 1–9, tool, auxiliary item, the paper plane or POW was used. The screen shows
 # the fighter consuming it (icon over the head), as in DDTank. Info: id, name, kind
@@ -30,7 +32,7 @@ signal skill_used(fighter: TankFighter, info: Dictionary)
 # still for `hitstop` seconds.
 signal pow_impact(point: Vector2, radius: float, weapon_id: String)
 
-enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED }
+enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED, MONSTER_ACTING }
 
 var state: State = State.WAITING_FOR_TURN
 var balance: Dictionary
@@ -96,6 +98,15 @@ var anchor_id: int = 0
 # shot uses exactly the force they released at (the simulation runs a little behind).
 var predicted_power: float = -1.0
 var predicted_pass: int = 0
+# PvE monsters (0.14) use abilities instead of shooting (EnemyAI.choose_ability). The
+# chosen ability, its target and a timeline of beats (leap, strike, drops...) run in
+# MONSTER_ACTING with the same fixed steps on every copy; `ability_focus` is where the
+# camera looks meanwhile.
+var ability: Dictionary = {}
+var ability_target: int = -1
+var ability_time: float = 0.0
+var ability_run: Dictionary = {}
+var ability_focus: Vector2 = Vector2.ZERO
 const ACTING: Array[State] = [State.TURN_STARTED, State.PLAYER_MOVING, State.PLAYER_AIMING]
 
 func _init() -> void:
@@ -306,6 +317,14 @@ func begin_turn() -> void:
 		# Map threat: the wind never drops below 70% of the maximum.
 		wind = snappedf((1.0 if rng.randf() < 0.5 else -1.0) * rng.randf_range(float(balance.wind_max) * 0.7, float(balance.wind_max)), 0.1)
 	fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(balance.pow_per_turn))
+	if fighter.burn_turns > 0:
+		# Burning (monster abilities): damage at the start of each of the next turns.
+		fighter.burn_turns -= 1
+		fighter.take_damage(fighter.burn_damage)
+		damage_text.emit(fighter.center(), "-%d" % fighter.burn_damage, Color("ff9a3a"))
+		effect.emit("burn", fighter.center(), {})
+		if fighter.hp <= 0:
+			announce.emit(tr("%s não resistiu às chamas!") % fighter.display_name, Color("ff8a6a"))
 	for other in fighters:
 		other.active = other == fighter
 		other.update_pose()
@@ -444,6 +463,9 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 					if recovered > 0:
 						damage_text.emit(ally.center(), "+%d" % recovered, Color("9aff7a"))
 		fighter.pow_gauge = 0
+		# 0.15: the battle holds the shot while the POW cut-in plays (the same on every
+		# copy of the match, so lockstep stays in step).
+		hitstop = maxf(hitstop, Armory.visual("pow_cutin"))
 		announce.emit(tr("%s usou POW: %s!") % [fighter.display_name, tr(str(pow_rules.name))], Color("ffd04a"))
 		special.emit(fighter.center(), str(pow_rules.get("effect", "")))
 	return {"damage": roundi(float(weapon.damage) * scale * (1.0 + bonus)), "base_damage": roundi(float(weapon.damage) * (1.0 + bonus) * (scale / float(pow_plan.get("damage_scale", 1.0)))), "radius": float(weapon.radius) * radius_scale, "base_radius": float(weapon.radius), "balls": balls, "spread": spread, "extra": extra, "fly": false, "freeze": freeze, "pow": pow_plan}
@@ -467,6 +489,9 @@ func fire_volley() -> void:
 			if str(pow_plan.get("kind", "")) != "giant":
 				projectile.sprite_size *= Armory.visual("pow_projectile_scale")
 			projectile.set_powered(PowImpact.colors_for(str(fighter.weapon.get("id", ""))))
+			var art: String = PowFx.projectile_art(str(fighter.weapon.get("id", "")))
+			if art != "":
+				projectile.use_pow_art(load(art), bool(style.get("align", false)))
 		projectile.base_damage = int(shot_plan.get("base_damage", shot_plan.damage))
 		projectile.base_radius = float(shot_plan.get("base_radius", shot_plan.radius))
 	fighter.stats.shots += 1
@@ -856,43 +881,66 @@ func resolve_impact(projectile: TankProjectile, point: Vector2) -> void:
 func explode(shooter: TankFighter, point: Vector2, damage_value: int, radius: float, freeze: bool, rules: Dictionary) -> int:
 	terrain.crater(point, radius)
 	blast.emit(point, radius)
-	var kind: String = str(rules.get("kind", ""))
+	return damage_area(shooter, point, damage_value, radius, freeze, rules)
+
+# Splash damage around a point (no crater). Rules: kind (pull/bull shove), and for the
+# monster abilities "enemies_only", "knockback" (away from `from_x`) and "burn".
+func damage_area(shooter: TankFighter, point: Vector2, damage_value: int, radius: float, freeze: bool, rules: Dictionary) -> int:
 	var dealt: int = 0
 	for target in fighters:
 		if target.hp <= 0:
+			continue
+		if bool(rules.get("enemies_only", false)) and (target.team == shooter.team or target.rank == "totem"):
 			continue
 		var distance: float = maxf(0, point.distance_to(target.center()) - target.hit_radius)
 		var damage: int = Ballistics.splash_damage(distance, radius * float(balance.splash_scale), damage_value, false, 1.0)
 		if damage <= 0:
 			continue
-		# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
-		damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
-		var critical: bool = false
-		if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
-			# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
-			damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
-			critical = true
-		target.shield = 1.0
-		target.take_damage(damage)
-		target.pow_gauge = minf(float(balance.pow_max), target.pow_gauge + damage * float(balance.pow_per_damage_taken))
+		dealt += hit_fighter(shooter, target, damage, point, freeze, rules)
+	return dealt
+
+# One fighter takes a hit (already scaled by the splash): gear attributes, critical,
+# shield, POW gauges, statistics, freeze and the rules' shove, knockback and burning.
+# Returns the damage dealt to an enemy (0 for friendly fire).
+func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: Vector2, freeze: bool, rules: Dictionary) -> int:
+	var kind: String = str(rules.get("kind", ""))
+	var dealt: int = 0
+	# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
+	damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
+	var critical: bool = false
+	if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
+		# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
+		damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
+		critical = true
+	target.shield = 1.0
+	target.take_damage(damage)
+	target.pow_gauge = minf(float(balance.pow_max), target.pow_gauge + damage * float(balance.pow_per_damage_taken))
+	if target.team != shooter.team:
+		dealt += damage
+		shooter.stats.damage += damage
+		shooter.stats.hits += 1
+		shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
+	if freeze:
+		target.frozen = 1
+	damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
+	if target.hp > 0 and target.team != shooter.team and kind in ["pull", "bull"]:
+		var away: float = signf(target.position.x - point.x)
+		if away == 0:
+			away = float(shooter.facing)
+		var push: float = -minf(float(rules.get("pull", 40)), absf(target.position.x - point.x)) * away if kind == "pull" else float(rules.get("knockback", 70)) * away
+		shove(target, push)
+	if target.hp > 0 and target.team != shooter.team and kind == "ability":
+		if float(rules.get("knockback", 0)) > 0.0:
+			var side: float = signf(target.position.x - float(rules.get("from_x", shooter.position.x)))
+			shove(target, float(rules.knockback) * (side if side != 0.0 else float(shooter.facing)))
+		var burn: Array = rules.get("burn", [])
+		if burn.size() == 2:
+			target.burn_damage = maxi(target.burn_damage if target.burn_turns > 0 else 0, maxi(1, roundi(damage * float(burn[0]))))
+			target.burn_turns = maxi(target.burn_turns, int(burn[1]))
+	if target.hp <= 0:
 		if target.team != shooter.team:
-			dealt += damage
-			shooter.stats.damage += damage
-			shooter.stats.hits += 1
-			shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
-		if freeze:
-			target.frozen = 1
-		damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
-		if target.hp > 0 and target.team != shooter.team and kind in ["pull", "bull"]:
-			var away: float = signf(target.position.x - point.x)
-			if away == 0:
-				away = float(shooter.facing)
-			var push: float = -minf(float(rules.get("pull", 40)), absf(target.position.x - point.x)) * away if kind == "pull" else float(rules.get("knockback", 70)) * away
-			shove(target, push)
-		if target.hp <= 0:
-			if target.team != shooter.team:
-				shooter.stats.kills += 1
-			announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
+			shooter.stats.kills += 1
+		announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
 	return dealt
 
 func shove(target: TankFighter, amount: float) -> void:
@@ -1000,6 +1048,8 @@ func step(delta: float) -> void:
 				elif shots_left <= 0 or fighter.hp <= 0:
 					state = State.RESOLVING_DAMAGE
 					resolve_time = 0
+		State.MONSTER_ACTING:
+			ability_step(delta)
 		State.RESOLVING_DAMAGE:
 			resolve_time += delta
 			if resolve_time > 1.0 and fighters.all(func(f: TankFighter) -> bool: return f.settled or f.hp <= 0):
@@ -1074,7 +1124,14 @@ func plan_ai(fighter: TankFighter) -> void:
 	fighter.facing = 1 if target.position.x > fighter.position.x else -1
 	fighter.update_pose()
 	if fighter.is_monster:
-		plan_monster(fighter)
+		# Monsters never aim a shot: they choose an ability (0.14).
+		var enraged: bool = plan_monster(fighter)
+		ability = EnemyAI.choose_ability(self, fighter, target, enraged)
+		ability_target = target.player_id
+		if not (enraged and "fury" in mechanics(fighter)):
+			status_message = tr("%s prepara %s") % [fighter.display_name, tr(str(ability.get("name", "")))]
+		ai_plan = Vector3(fighter.angle, 0, 0)
+		return
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
 	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter), balance)
 	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
@@ -1096,6 +1153,10 @@ func ai_step(delta: float) -> void:
 		plan_ai(fighter)
 	ai_time += delta
 	remaining = maxf(0.0, remaining - delta)
+	if fighter.is_monster:
+		if ai_time >= ai_think and fighter.settled:
+			begin_ability(fighter)
+		return
 	fighter.angle = move_toward(fighter.angle, ai_plan.x, 40 * delta)
 	fighter.update_pose()
 	if ai_time >= ai_think and fighter.settled and absf(fighter.angle - ai_plan.x) < 0.01:
@@ -1126,10 +1187,10 @@ func next_delay_floor() -> float:
 func mechanics(fighter: TankFighter) -> Array:
 	return fighter.monster.get("mechanics", [])
 
-func plan_monster(fighter: TankFighter) -> void:
+func plan_monster(fighter: TankFighter) -> bool:
+	# Fury and summons; returns whether the monster is enraged.
 	if not fighter.is_boss and fighter.rank != "guardian":
-		status_message = tr("%s prepara um ataque") % fighter.display_name
-		return
+		return false
 	var enraged: bool = fighter.always_enraged or fighter.hp <= fighter.max_hp / 2
 	if fighter.is_boss:
 		boss_enraged = enraged
@@ -1150,6 +1211,7 @@ func plan_monster(fighter: TankFighter) -> void:
 			minion.delay = fighter.delay + 50.0
 			announce.emit(tr("%s invoca %s!") % [fighter.display_name, minion.display_name], Color("ff8a4a"))
 			effect.emit("summon", minion.position, {})
+	return enraged
 
 func monster_freezes(fighter: TankFighter) -> bool:
 	# Rainha da Nevasca: every second attack freezes whoever it hits (they lose a turn).
@@ -1171,6 +1233,236 @@ func after_pve_turn(fighter: TankFighter) -> void:
 		fighter.settled = false
 		effect.emit("warp", old + Vector2(0, -fighter.monster_height * 0.5), {"to": fighter.position})
 		announce.emit(tr("%s voa para outra posição!") % fighter.display_name, Color("a8e8ff"))
+
+# ---------- PvE: monster abilities (0.14) ----------
+# Kinds: leap (jumps beside the target, strikes and jumps back; "stay" keeps it there),
+# dive (a flyer's swoop, always back home), slam (shockwave around itself), sky (marks the targets, then things fall on them),
+# breath (a cone from the mouth to the target), heal / guard / roar (allies nearby).
+# Every beat has a time on the ability's clock, so all copies of an online battle play
+# it identically.
+
+func ability_damage(fighter: TankFighter) -> int:
+	# Abilities never miss (the old shots often did): pve.ability_damage scales them all.
+	var scale: float = float(balance.pve.get("ability_damage", 1.0))
+	return maxi(1, roundi(float(fighter.weapon.damage) * float(ability.get("damage", 1.0)) * scale * float(ability_run.get("empower", 1.0))))
+
+func ability_rules(fighter: TankFighter, from_x: float) -> Dictionary:
+	return {"kind": "ability", "enemies_only": true, "knockback": float(ability.get("knockback", 0)), "from_x": from_x, "burn": ability.get("burn", [])}
+
+func ability_targets(fighter: TankFighter, target: TankFighter) -> Array[TankFighter]:
+	# "all" hits every player; bosses spread their single-target spells over the whole
+	# party from 3 players on (the old area attack, party scaling).
+	var every: bool = str(ability.get("targets", "one")) == "all"
+	if fighter.is_boss and players >= int(balance.party_scaling.get("boss_area_from", 3)):
+		every = true
+	var list: Array[TankFighter] = []
+	for other in fighters:
+		if other.team != fighter.team and other.hp > 0 and other.rank != "totem" and (every or other == target):
+			list.append(other)
+	return list
+
+func begin_ability(fighter: TankFighter) -> void:
+	var target: TankFighter = fighters[ability_target] if ability_target >= 0 and ability_target < fighters.size() else null
+	if target == null or target.hp <= 0 or target.team == fighter.team:
+		target = EnemyAI.pick_target(fighter, fighters)
+	if ability.is_empty():
+		ability = EnemyAI.choose_ability(self, fighter, target, false)
+	var kind: String = str(ability.get("kind", "sky"))
+	if kind in ["leap", "dive"] and (target == null or EnemyAI.landing_spot(self, fighter, target) == Vector2.INF):
+		# The ground under the target broke since the plan: fall back to a ranged attack.
+		ability = EnemyAI.choose_ability(self, fighter, null, false)
+		kind = str(ability.get("kind", "sky"))
+	state = State.MONSTER_ACTING
+	ability_time = 0.0
+	# Rainha da Nevasca's freeze is decided before the attack counts, as with the shots.
+	ability_run = {"freeze": monster_freezes(fighter), "empower": fighter.empower, "beats": {}, "end": 1.4, "kind": kind}
+	fighter.empower = 1.0
+	for id: String in fighter.cooldowns.keys():
+		fighter.cooldowns[id] = maxi(0, int(fighter.cooldowns[id]) - 1)
+	if int(ability.get("cooldown", 0)) > 0:
+		fighter.cooldowns[str(ability.get("id", ""))] = int(ability.cooldown)
+	fighter.stats.shots += 1
+	fighter.animate_attack()
+	var color: Color = Color(str(ability.get("color", fighter.weapon.get("color", "ff8a4a"))))
+	ability_run.color = color
+	announce.emit(tr("%s usa %s!") % [fighter.display_name, tr(str(ability.get("name", "")))], color.lightened(0.2))
+	skill_used.emit(fighter, {"id": str(ability.get("id", "")), "name": tr(str(ability.get("name", ""))), "icon": "res://assets/effects/abilities/icons/%s.png" % kind, "kind": "monster"})
+	effect.emit("ability_cast", fighter.center(), {"fx": str(ability.get("fx", "")), "color": color, "kind": kind, "fighter": fighter.player_id})
+	ability_focus = fighter.center()
+	status_message = tr("%s usa %s!") % [fighter.display_name, tr(str(ability.get("name", "")))]
+	match kind:
+		"leap", "dive":
+			var land: Vector2 = EnemyAI.landing_spot(self, fighter, target)
+			var distance: float = fighter.position.distance_to(land)
+			var flight: float = clampf(distance / 650.0, 0.45, 0.85)
+			var back: bool = kind == "dive" or not bool(ability.get("stay", false))
+			ability_run.merge({"from": fighter.position, "land": land, "flight": flight, "height": minf(260.0, (140.0 if kind == "dive" else 90.0) + distance * 0.15), "target": target.player_id, "takeoff": 0.35, "back": back})
+			ability_run.strike = 0.35 + flight
+			ability_run.end = ability_run.strike + (0.3 + flight + 0.45 if back else 0.6)
+			fighter.facing = 1 if land.x > fighter.position.x else -1
+			fighter.update_pose()
+			ability_focus = (fighter.center() + target.center()) * 0.5
+		"slam":
+			ability_run.strike = 0.75
+			ability_run.end = 1.5
+		"breath":
+			ability_run.merge({"target": target.player_id, "strike": 0.8})
+			ability_run.end = 1.6
+			ability_focus = (fighter.center() + target.center()) * 0.5
+		"heal", "guard", "roar":
+			ability_run.strike = 0.6
+			ability_run.end = 1.3
+		_:
+			# sky: reticles now, then each drop falls for `fall` seconds onto its point.
+			var drops: Array = []
+			var count: int = int(ability.get("count", 1))
+			var spacing: float = float(ability.get("spacing", 60))
+			var hit_at: float = 1.0
+			var victims: Array[TankFighter] = ability_targets(fighter, target)
+			for victim in victims:
+				for i in range(count):
+					var offset: float = (i - (count - 1) / 2.0) * spacing
+					var x: float = clampf(victim.position.x + offset, 4.0, terrain.world_size.x - 4.0)
+					var point: Vector2 = victim.center() if is_zero_approx(offset) else Vector2(x, minf(terrain.surface_y(x, victim.position.y - 140.0), terrain.world_size.y + 40.0))
+					drops.append({"point": point, "at": hit_at})
+					effect.emit("mark", point, {"time": hit_at, "color": color})
+					hit_at += 0.16
+			ability_run.drops = drops
+			ability_run.end = hit_at + 0.7
+			if not victims.is_empty():
+				var middle: Vector2 = Vector2.ZERO
+				for victim in victims:
+					middle += victim.center()
+				ability_focus = middle / victims.size()
+	changed.emit()
+
+func beat(name: String, at: float) -> bool:
+	# True once, on the step the ability's clock passes `at`.
+	var beats: Dictionary = ability_run.beats
+	if beats.has(name) or ability_time < at:
+		return false
+	beats[name] = true
+	return true
+
+func ability_step(delta: float) -> void:
+	var fighter: TankFighter = active()
+	ability_time += delta
+	var kind: String = str(ability_run.get("kind", "sky"))
+	var damage: int = ability_damage(fighter)
+	var fx: String = str(ability.get("fx", ""))
+	var color: Color = ability_run.get("color", Color.WHITE)
+	var freeze: bool = bool(ability_run.get("freeze", false))
+	if fighter.hp <= 0:
+		fighter.leaping = false
+		state = State.RESOLVING_DAMAGE
+		resolve_time = 0
+		return
+	match kind:
+		"leap", "dive":
+			var takeoff: float = float(ability_run.takeoff)
+			var flight: float = float(ability_run.flight)
+			var start: Vector2 = ability_run.from
+			var land: Vector2 = ability_run.land
+			if beat("takeoff", takeoff):
+				fighter.leaping = true
+				fighter.settled = false
+				effect.emit("leap", start, {"color": color})
+			if ability_time >= takeoff and ability_time < takeoff + flight:
+				fly_arc(fighter, start, land, (ability_time - takeoff) / flight, float(ability_run.height))
+				ability_focus = fighter.center()
+			if beat("strike", float(ability_run.strike)):
+				fighter.position = land
+				var target: TankFighter = fighters[int(ability_run.target)]
+				var point: Vector2 = target.center() if target.hp > 0 else land + Vector2(fighter.facing * 20.0, -20.0)
+				effect.emit("strike", point, {"fx": fx, "color": color, "facing": fighter.facing})
+				damage_area(fighter, point, damage, float(ability.get("radius", 36)), freeze, ability_rules(fighter, land.x))
+				ability_focus = point
+				if not bool(ability_run.back):
+					fighter.leaping = false
+					effect.emit("leap", land, {"color": color, "landing": true})
+			if bool(ability_run.back):
+				var back_at: float = float(ability_run.strike) + 0.3
+				if ability_time >= back_at and ability_time < back_at + flight:
+					fly_arc(fighter, land, start, (ability_time - back_at) / flight, float(ability_run.height) * 0.7)
+					ability_focus = fighter.center()
+				if beat("home", back_at + flight):
+					fighter.position = start
+					fighter.leaping = false
+					if kind == "leap":
+						effect.emit("leap", start, {"color": color, "landing": true})
+		"slam":
+			if beat("hop", 0.2):
+				effect.emit("leap", fighter.position, {"color": color})
+			if ability_time >= 0.2 and ability_time < 0.75:
+				fighter.visual.position.y = -sin((ability_time - 0.2) / 0.55 * PI) * 36.0
+			if beat("strike", float(ability_run.strike)):
+				fighter.visual.position.y = 0.0
+				var radius: float = float(ability.get("radius", 180))
+				effect.emit("slam", fighter.position, {"fx": fx, "color": color, "radius": radius})
+				for target in fighters.duplicate():
+					if target.team != fighter.team and target.hp > 0 and target.rank != "totem" and target.center().distance_to(fighter.position) <= radius:
+						# Full strength at the feet, weaker at the edge of the shockwave.
+						var falloff: float = 1.0 - 0.5 * clampf(target.center().distance_to(fighter.position) / radius, 0.0, 1.0)
+						hit_fighter(fighter, target, roundi(damage * falloff), fighter.position, freeze, ability_rules(fighter, fighter.position.x))
+		"breath":
+			var target: TankFighter = fighters[int(ability_run.target)]
+			var goal: Vector2 = target.center()
+			if beat("breath", 0.4):
+				effect.emit("breath", fighter.muzzle(), {"fx": fx, "color": color, "to": goal, "time": 0.9})
+			if beat("strike", float(ability_run.strike)):
+				# Everyone within `width` of the line from the mouth to the target is hit.
+				var mouth: Vector2 = fighter.muzzle()
+				var width: float = float(ability.get("width", 50))
+				for other in fighters.duplicate():
+					if other.team == fighter.team or other.hp <= 0 or other.rank == "totem":
+						continue
+					var closest: Vector2 = Geometry2D.get_closest_point_to_segment(other.center(), mouth, goal + (goal - mouth).normalized() * 40.0)
+					if closest.distance_to(other.center()) <= width + other.hit_radius:
+						hit_fighter(fighter, other, damage, other.center(), freeze, ability_rules(fighter, fighter.position.x))
+				if float(ability.get("crater", 0)) > 0.0:
+					terrain.crater(goal, float(ability.crater))
+		"heal", "guard", "roar":
+			if beat("strike", float(ability_run.strike)):
+				var radius: float = float(ability.get("radius", 400))
+				var allies: Array[TankFighter] = EnemyAI.allies_near(self, fighter, radius)
+				effect.emit({"heal": "heal_allies", "guard": "guard", "roar": "roar"}[kind], fighter.center(), {"color": color, "radius": radius, "allies": allies.map(func(f: TankFighter) -> Vector2: return f.center())})
+				for ally in allies:
+					match kind:
+						"heal":
+							heal_fighter(ally, roundi(ally.max_hp * float(ability.get("heal", 0.15))))
+						"guard":
+							ally.shield = float(ability.get("shield", 0.5))
+							ally.queue_redraw()
+						"roar":
+							ally.empower = float(ability.get("empower", 1.3))
+							ally.queue_redraw()
+		_:
+			var fall: float = float(ability.get("fall", 0.55))
+			var drops: Array = ability_run.get("drops", [])
+			for i in range(drops.size()):
+				var drop: Dictionary = drops[i]
+				if beat("fall%d" % i, float(drop.at) - fall):
+					effect.emit("drop", drop.point, {"fx": fx, "color": color, "time": fall})
+				if beat("hit%d" % i, float(drop.at)):
+					# Spells land on the target itself, so a crater every turn would dig a
+					# well under a player who stands still: only abilities with "crater" dig.
+					var radius: float = float(ability.get("radius", 36))
+					ability_focus = drop.point
+					if float(ability.get("crater", 0)) > 0.0:
+						terrain.crater(drop.point, float(ability.crater))
+					blast.emit(drop.point, radius)
+					damage_area(fighter, drop.point, damage, radius, freeze, ability_rules(fighter, drop.point.x))
+	if ability_time >= float(ability_run.get("end", 1.4)):
+		fighter.leaping = false
+		fighter.visual.position.y = 0.0
+		state = State.RESOLVING_DAMAGE
+		resolve_time = 0.4
+		changed.emit()
+
+func fly_arc(fighter: TankFighter, from: Vector2, to: Vector2, t: float, height: float) -> void:
+	var u: float = clampf(t, 0.0, 1.0)
+	fighter.position = from.lerp(to, u) + Vector2(0, -4.0 * height * u * (1.0 - u))
+	fighter.update_pose()
 
 func keyboard_axis(negative: Key, positive: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

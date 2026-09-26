@@ -227,10 +227,15 @@ func flash(text: String, color: Color) -> void:
 	tween.tween_interval(0.7)
 	tween.tween_property(banner, "modulate:a", 0.0, 0.4)
 
-func pow_banner(title: String, tint: Color) -> void:
+func pow_banner(title: String, tint: Color, art_path: String = "", look: Dictionary = {}, shooter_name: String = "", weapon_name: String = "") -> void:
 	var banner_node: PowBanner = PowBanner.new()
 	banner_node.title = title
 	banner_node.tint = tint
+	banner_node.look = look
+	banner_node.shooter_name = shooter_name
+	banner_node.weapon_name = weapon_name
+	if art_path != "":
+		banner_node.art = load(art_path)
 	add_child(banner_node)
 	if is_instance_valid(pause_box):
 		move_child(pause_box, -1)

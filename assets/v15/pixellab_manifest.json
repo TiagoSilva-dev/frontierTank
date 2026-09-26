@@ -1,0 +1,22 @@
+{
+ "date": "2026-09-26",
+ "cost": 13,
+ "remaining_after": 151,
+ "images": [
+  {"name": "pedestal", "job_id": "f3bd3342-b89a-4997-adea-9ce1998c6c7a", "tool": "create_image_pixen", "target": "assets/ui/profile/pedestal.png"},
+  {"name": "stat_ataque", "job_id": "99bde4f5-b0bd-46ed-9813-5e9231542050", "tool": "create_image_pixen", "target": "assets/ui/stats/ataque.png"},
+  {"name": "stat_defesa", "job_id": "1ecb0cac-96c5-4be0-ac97-5d0aae892ec7", "tool": "create_image_pixen", "target": "assets/ui/stats/defesa.png"},
+  {"name": "stat_agilidade", "job_id": "d8b68c64-0fc0-4b70-adb7-94ec7a8258ba", "tool": "create_image_pixen", "target": "assets/ui/stats/agilidade.png"},
+  {"name": "stat_sorte", "job_id": "0db77c00-dd37-4aa4-8aa0-949cdb35d435", "tool": "create_image_pixen", "target": "assets/ui/stats/sorte.png"},
+  {"name": "stat_dano", "job_id": "09dfb4a1-b9d3-4182-9be4-e55a11f23ca8", "tool": "create_image_pixen", "target": "assets/ui/stats/dano.png"},
+  {"name": "stat_protecao", "job_id": "a6a8f7e5-9051-4df8-b97d-bae9e0b5e7b0", "tool": "create_image_pixen", "target": "assets/ui/stats/protecao.png"},
+  {"name": "stat_vida", "job_id": "13f8200e-6b65-441b-aee3-f14e32779cf0", "tool": "create_image_pixen", "target": "assets/ui/stats/vida.png"},
+  {"name": "stat_energia", "job_id": "9b850315-b218-41e5-a07a-f05aeb83b051", "tool": "create_image_pixen", "target": "assets/ui/stats/energia.png"}
+ ],
+ "discarded": [
+  {"name": "stage_spotlight", "job_id": "e313d787-36b3-4e67-8db4-77187c04f30e", "why": "pedestal in the middle of the picture left no room for the character at 2x"},
+  {"name": "stage_curtains", "job_id": "49b49f50-57f3-4444-aacc-aa438402da0d", "why": "a hexagram on the pedestal clashed with the weapon aura"},
+  {"name": "pedestal_a", "job_id": "b8cb1bb9-1ae6-490a-970d-b2b3a9097fe0", "why": "octagonal, less readable than the round one"},
+  {"name": "stat_protecao_b", "job_id": "f963d90c-c2ea-4c00-b019-03ea16c1c999", "why": "came inside a dark square frame"}
+ ]
+}

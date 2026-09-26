@@ -110,6 +110,12 @@ func run_tests() -> void:
 	game.release_shot()
 	var powered: TankProjectile = game.projectiles[0]
 	check(not powered.pow_colors.is_empty() and is_instance_valid(powered.sparks), "flight: the POW shot trails particles in its weapon's colours")
+	# 0.15: the cut-in plays first; the special waits for it (the same on every copy).
+	check(game.hitstop >= Armory.visual("pow_cutin") - 0.001, "the POW cut-in holds the shot while it plays")
+	var held_at: Vector2 = powered.position
+	for i in range(30):
+		game._physics_process(1.0 / 60)
+	check(powered.position == held_at and game.hitstop > 0.0, "the special does not fly behind the cut-in")
 	for i in range(1500):
 		game._physics_process(1.0 / 60)
 		if not impacts.is_empty():
@@ -132,6 +138,32 @@ func run_tests() -> void:
 	rig.follow(me.body)
 	var head_x: float = rig.map_point(me.body, Vector2(rig.points.head[0], rig.points.head[1])).x
 	check((rig.back_weapon.position.x - head_x) * me.facing < 0.0, "the bigger weapon sits behind the head (back side)")
+	# 0.15: strapped to the back, not hanging in the air behind the fighter.
+	var back_point: Vector2 = rig.map_point(me.body, Vector2(rig.points.back[0], rig.points.back[1]))
+	var head_width: float = float(rig.points.head[2]) * me.body.scale.x
+	var strapped: bool = true
+	for def: Dictionary in Armory.data().weapons:
+		var dummy: LookRig = LookRig.new()
+		dummy.setup({"skin": me.look.skin, "weapon": str(def.id), "weapon_level": 0}, "prone")
+		dummy.follow(me.body)
+		var art: Rect2 = LookRig.art_bounds(dummy.back_weapon.texture)
+		var bottom: float = dummy.back_weapon.position.y + art.size.y * dummy.back_weapon.scale.y * 0.5
+		strapped = strapped and dummy.back_weapon.position.distance_to(back_point) < head_width * 0.9 and bottom > back_point.y
+		dummy.back.free()
+		dummy.free()
+	check(strapped, "every weapon rests on the back: centred near it, its lower part behind the body")
+	# The cut-in: the shooter's own look, a title on the font's pixel grid, frees itself.
+	var banner: PowBanner = PowBanner.new()
+	banner.title = "Tempestade"
+	banner.look = me.look
+	banner.art = load(PowFx.projectile_art("trovao"))
+	banner.shooter_name = me.display_name
+	root.add_child(banner)
+	await process_frame
+	check(banner.canvas != null and banner.close == Armory.visual("pow_cutin") and banner.title_size % 16 == 0, "the POW cut-in shows the shooter's portrait and the special's name")
+	banner._process(banner.close + PowBanner.OUTRO + 0.1)
+	await process_frame
+	check(not is_instance_valid(banner), "the cut-in frees itself once the band closes")
 	# One impact per weapon: every weapon has its own shape and colours, and its POW art.
 	var shapes: Dictionary = {}
 	var art_ok: bool = true

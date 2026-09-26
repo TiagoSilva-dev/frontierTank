@@ -6,6 +6,8 @@ extends Control
 # the back, glasses, hat, hair dye and the clothes aura glow.
 
 var look: Dictionary = {}
+# Fixed art scale (the POW cut-in draws the avatar at 1x and enlarges it); 0 = fit.
+var pixel_scale: float = 0.0
 var body: Sprite2D
 var rig: LookRig
 
@@ -35,6 +37,8 @@ func show_look(look_data: Dictionary) -> void:
 	# Leave room above for hats and around for wings.
 	var k: float = minf(size.y * 0.8 / used.size.y, size.x * 0.62 / used.size.x)
 	k = maxf(0.5, floorf(k * 4.0) / 4.0) if k >= 1.0 else k
+	if pixel_scale > 0.0:
+		k = pixel_scale
 	body.scale = Vector2(k, k)
 	body.position = Vector2(size.x / 2.0 - (used.get_center().x - tex.x / 2.0) * k, size.y * 0.97 - (used.end.y - tex.y / 2.0) * k)
 	rig = LookRig.new()

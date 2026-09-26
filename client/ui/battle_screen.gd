@@ -7,12 +7,18 @@ extends Control
 
 const SKILL_SOUNDS: Dictionary = {
 	"multi": "skill_multi", "power": "skill_power", "powmax": "skill_powmax", "heal": "tool_heal", "energy": "tool_energy",
-	"shield": "tool_shield", "plane": "fire_plane", "angel": "aux_angel", "pow": "pow_activate",
+	"shield": "tool_shield", "plane": "fire_plane", "angel": "aux_angel", "pow": "pow_activate", "monster": "mob_cast",
 }
 const EFFECT_SOUNDS: Dictionary = {
 	"lightning": "special_lightning", "beam": "special_beam", "bull": "special_bull", "heal": "special_heal",
 	"hearts": "special_hearts", "tornado": "special_tornado", "summon": "pow_activate", "warp": "special_tornado",
 	"wave": "battle_start",
+}
+# Monster abilities (0.14): drawn by MonsterFx. Drops and the breath pick their sound by fx.
+const MONSTER_EFFECTS: Array[String] = ["ability_cast", "mark", "drop", "leap", "strike", "slam", "breath", "guard", "roar", "heal_allies", "burn"]
+const MONSTER_SOUNDS: Dictionary = {
+	"leap": "mob_leap", "strike": "mob_strike", "slam": "mob_slam", "guard": "tool_shield",
+	"roar": "mob_roar", "heal_allies": "tool_heal", "burn": "mob_burn",
 }
 
 var app: Node
@@ -140,6 +146,8 @@ func focus_point() -> Vector2:
 	if game.state == LocalMatch.State.PROJECTILE_FLYING and not game.projectiles.is_empty():
 		var projectile: TankProjectile = game.projectiles[0]
 		return projectile.position + projectile.velocity * 0.15
+	if game.state == LocalMatch.State.MONSTER_ACTING and game.ability_focus != Vector2.ZERO:
+		return game.ability_focus + Vector2(0, -40)
 	if game.state == LocalMatch.State.RESOLVING_DAMAGE and game.last_impact != Vector2.ZERO and not game.passed:
 		return game.last_impact + Vector2(0, -60)
 	return game.active().position + Vector2(0, -110)
@@ -259,8 +267,13 @@ func on_shot(projectile: TankProjectile) -> void:
 	var mine: bool = shooter.player_id == game.local_id
 	var color: Color = Color.WHITE if mine else (Color("a8e0ff") if shooter.team == game.local().team else Color("ffb4a0"))
 	trails.track(projectile, shooter.player_id, game.round_number, mine, color)
-	# One sound per volley (three balls fire together), each weapon its own.
-	app.audio.play(fire_sound(shooter, projectile), 0.0, randf_range(0.96, 1.04), 90)
+	# One sound per volley (three balls fire together), each weapon its own. A POW shot
+	# waits for the cut-in (the match holds it) and sounds when it really leaves.
+	var sound: String = fire_sound(shooter, projectile)
+	if game.hitstop > 0.05:
+		get_tree().create_timer(game.hitstop).timeout.connect(func() -> void: app.audio.play(sound, 0.0, randf_range(0.96, 1.04), 90))
+	else:
+		app.audio.play(sound, 0.0, randf_range(0.96, 1.04), 90)
 	clear_pow_aura(shooter)
 
 func on_skill(fighter: TankFighter, info: Dictionary) -> void:
@@ -324,8 +337,13 @@ func show_special(point: Vector2, _path: String) -> void:
 	var shooter: TankFighter = game.active()
 	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
 	app.audio.play("pow_fire")
-	hud.pow_banner(tr(str(shooter.weapon.get("pow", {}).get("name", ""))), tint)
-	# The weapon's own animated POW art (assets/effects/pow/<weapon>/) bursts behind it.
+	# 0.15: the cut-in with the shooter's portrait; the match holds the shot while it
+	# plays (LocalMatch.hitstop), and the band closes with a slash as the shot leaves.
+	app.audio.play("pow_cutin", -1.0)
+	var look: Dictionary = {} if shooter.is_monster else shooter.look
+	hud.pow_banner(tr(str(shooter.weapon.get("pow", {}).get("name", ""))), tint, PowFx.projectile_art(str(shooter.weapon.get("id", ""))), look, shooter.display_name, str(shooter.weapon.get("name", "")))
+	get_tree().create_timer(maxf(0.05, game.hitstop - 0.05)).timeout.connect(func() -> void: app.audio.play("pow_slash", -1.0))
+	# Light, rays and sparks burst behind the fighter (the special's art plays where it lands).
 	var burst: PowFx = PowFx.new()
 	burst.mode = "burst"
 	burst.tint = tint
@@ -352,6 +370,9 @@ func show_pow_impact(point: Vector2, radius: float, weapon_id: String) -> void:
 	kick = 0.4
 
 func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
+	if kind in MONSTER_EFFECTS:
+		show_monster_effect(kind, point, data)
+		return
 	# Weapon POW visuals; each draws itself on a throwaway node and fades out.
 	var node: WeaponEffect = WeaponEffect.new()
 	node.kind = kind
@@ -366,6 +387,26 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 			shake = 0.5
 		"bull":
 			shake = 0.7
+
+func show_monster_effect(kind: String, point: Vector2, data: Dictionary) -> void:
+	var node: MonsterFx = MonsterFx.new()
+	node.kind = kind
+	node.data = data
+	node.position = point
+	effects.add_child(node)
+	var fx: String = str(data.get("fx", ""))
+	var sound: String = str(MONSTER_SOUNDS.get(kind, ""))
+	match kind:
+		"drop":
+			sound = "special_lightning" if fx == "lightning" else "drop_whistle"
+		"breath":
+			sound = "special_freeze" if fx in ["frost", "ice"] else ("special_tornado" if fx == "wind" else "mob_breath")
+		"slam":
+			shake = 0.6
+		"strike":
+			shake = 0.35
+	if sound != "":
+		app.audio.play(sound, -1.0, randf_range(0.95, 1.05), 60)
 
 func show_damage(point: Vector2, text: String, color: Color) -> void:
 	if text.begins_with(tr("CRÍTICO")):

@@ -12,7 +12,7 @@ const LIFE: float = 1.8
 const ICON: float = 36.0
 const COLORS: Dictionary = {
 	"multi": "ffb347", "power": "ff5a3a", "powmax": "c77bff", "heal": "7aff9a", "energy": "d8ff4a",
-	"shield": "7ad8ff", "plane": "e8f4ff", "angel": "fff0a0", "pow": "ffd04a",
+	"shield": "7ad8ff", "plane": "e8f4ff", "angel": "fff0a0", "pow": "ffd04a", "monster": "ff5a4a",
 }
 
 var fighter: TankFighter

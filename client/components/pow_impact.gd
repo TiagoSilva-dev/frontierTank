@@ -47,6 +47,7 @@ func _ready() -> void:
 	rng.randomize()
 	style = style_for(weapon_id)
 	colors = colors_for(weapon_id)
+	add_art()
 	var shape: String = str(style.shape)
 	var count: int = {"rocks": 14, "lava": 16, "prism": 12, "swirl": 10, "leaves": 16, "crosses": 12, "ice": 9, "bolts": 2, "bubbles": 18, "horns": 7, "hearts": 14, "shards": 6, "sun": 16}.get(shape, 12)
 	for i in range(count):
@@ -114,6 +115,32 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, radius * (0.6 + 1.2 * ground), Color(colors[2].r, colors[2].g, colors[2].b, 0.25 * fade))
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 	call("draw_" + str(style.shape), fade)
+
+func add_art() -> void:
+	# 0.14: each special explodes with its own animated PixelLab art (assets/effects/pow/
+	# <weapon>/frame_*.png, 128 px), shown 2.3x over a glowing additive copy, then fading.
+	if not ResourceLoader.exists(PowFx.ART_DIR + weapon_id + "/frame_00.png"):
+		return
+	var frames: Array[Texture2D] = PowFx.art_frames(weapon_id)
+	for additive: bool in [true, false]:
+		var sprite: PixelAnimation = PixelAnimation.new()
+		sprite.frames = frames
+		sprite.texture = frames[0]
+		sprite.fps = 12.0
+		sprite.loop = false
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.position = Vector2(0, -radius * 0.35)
+		sprite.z_index = 1
+		if additive:
+			var glow: CanvasItemMaterial = CanvasItemMaterial.new()
+			glow.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+			sprite.material = glow
+			sprite.modulate.a = 0.55
+		sprite.scale = Vector2.ONE * (1.2 if not additive else 1.4)
+		add_child(sprite)
+		var tween: Tween = create_tween().set_parallel(true)
+		tween.tween_property(sprite, "scale", Vector2.ONE * (2.3 if not additive else 2.8), 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(sprite, "modulate:a", 0.0, 0.45).set_delay(frames.size() / 12.0 * 0.75).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 static func ease_out(t: float) -> float:
 	return 1.0 - pow(1.0 - clampf(t, 0.0, 1.0), 3.0)

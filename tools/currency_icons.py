@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Draw the 0.10 currency icons (32x32 pixel art) into assets/items/currency/.
+"""Draw the 0.10 stand-in currency icons (32x32 pixel art) into assets/items/currency/.
 
 Brasa (ember), Coroa (crown), Estrela (star), Tormenta (storm orb), Solar (sun),
 Eclipse and Espelho Celeste (sky mirror). Shapes are shaded with a light from the top
-left, mapped onto small colour ramps and outlined with the interface ink, so they sit
-next to the PixelLab stones and coin. They stand in until PixelLab icons are generated
-(docs/PIXELLAB_0_10.md has the prompts); a PNG with the same name replaces them.
+left, mapped onto small colour ramps and outlined with the interface ink. The game now
+uses the 64x64 PixelLab icons (docs/PIXELLAB_0_10.md), so existing files are kept; this
+script only fills in a missing icon (for a new currency) unless --force is given.
 
-Usage: python tools/currency_icons.py [--preview out.png]
+Usage: python tools/currency_icons.py [--force] [--preview out.png]
 """
 import math
 import os
@@ -277,9 +277,13 @@ ICONS = {"brasa": brasa, "coroa": coroa, "estrela": estrela, "tormenta": torment
 def main():
     os.makedirs(OUT, exist_ok=True)
     images = []
+    written = 0
     for name, draw in ICONS.items():
         image = draw().image()
-        image.save(os.path.join(OUT, name + ".png"))
+        path = os.path.join(OUT, name + ".png")
+        if "--force" in sys.argv or not os.path.exists(path):
+            image.save(path)
+            written += 1
         images.append(image)
     if "--preview" in sys.argv:
         target = sys.argv[sys.argv.index("--preview") + 1]
@@ -287,7 +291,7 @@ def main():
         for i, image in enumerate(images):
             sheet.paste(image.resize((32 * 6, 32 * 6), Image.NEAREST), (i * 240 + 24, 24), image.resize((32 * 6, 32 * 6), Image.NEAREST))
         sheet.save(target)
-    print("wrote %d icons to %s" % (len(images), os.path.normpath(OUT)))
+    print("wrote %d icons to %s (kept %d existing)" % (written, os.path.normpath(OUT), len(images) - written))
 
 
 if __name__ == "__main__":

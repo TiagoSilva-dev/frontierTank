@@ -23,6 +23,8 @@ var page: int = 0
 var contents: Control
 var flash_time: float = 0.0
 var message: String = ""
+# 0.15: the Mochila's item card over the lists.
+var card: ItemTooltip
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -65,6 +67,16 @@ func build() -> void:
 	if message != "":
 		var bar: Panel = UiKit.panel(contents, Rect2(600, 634, 612, 38), "dark")
 		UiKit.label(bar, message, Rect2(8, 0, 596, 38), 15, Color("fff4a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	card = ItemTooltip.new()
+	contents.add_child(card)
+
+func with_card(slot: Control, entry: Dictionary) -> void:
+	slot.mouse_entered.connect(func() -> void:
+		if is_instance_valid(card):
+			card.show_entry(entry, app.profile, app.balance))
+	slot.mouse_exited.connect(func() -> void:
+		if is_instance_valid(card):
+			card.hide_card())
 
 func eligible() -> Array[Dictionary]:
 	var list: Array[Dictionary] = []
@@ -87,7 +99,9 @@ func build_item_list() -> void:
 		var kind: String = "card_hover" if uid == selected_uid else ("slot_light" if uid == target_uid else "slot")
 		var slot: Button = UiKit.button(contents, "", rect, pick.bind(uid), kind)
 		slot.name = "Smith_%d" % uid
-		slot.tooltip_text = Armory.item_name(inst)
+		with_card(slot, {"key": "uid:%d" % uid, "inst": inst, "name": Armory.item_name(inst)})
+		if str(inst.get("quality", "normal")) != "normal":
+			slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.quality_color(inst)))
 		var picture: TextureRect = UiKit.art(slot, Armory.load_icon(inst), Rect2(12, 6, 52, 52))
 		picture.modulate = Armory.icon_tint(inst)
 		if int(inst.level) > 0:
@@ -262,11 +276,11 @@ func build_craft_list() -> void:
 		var slot: Button = UiKit.button(contents, "", rect, pick_craft.bind(uid), "card_hover" if chosen else "slot")
 		if craft_target == "item":
 			slot.name = "Craft_%d" % uid
-			slot.tooltip_text = "%s\n%s" % [Armory.item_name(entry), "\n".join(Crafting.describe(entry))]
+			with_card(slot, {"key": "uid:%d" % uid, "inst": entry, "name": Armory.item_name(entry)})
+			if str(entry.quality) != "normal":
+				slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.quality_color(entry)))
 			var picture: TextureRect = UiKit.art(slot, Armory.load_icon(entry), Rect2(12, 6, 52, 52))
 			picture.modulate = Armory.icon_tint(entry)
-			if str(entry.quality) != "normal":
-				slot.add_child(quality_frame(Rect2(8, 3, 60, 60), Armory.quality_color(entry)))
 			if int(entry.level) > 0:
 				UiKit.label(slot, "+%d" % int(entry.level), Rect2(2, 0, 40, 20), 14, Armory.aura_color(int(entry.level)).lightened(0.3), UiKit.INK)
 			var mods: int = (entry.get("mods", []) as Array).size()
@@ -276,7 +290,9 @@ func build_craft_list() -> void:
 				UiKit.label(slot, "E", Rect2(4, 44, 16, 20), 13, Color("9aff7a"), UiKit.INK)
 		else:
 			slot.name = "CraftMap_%d" % uid
-			slot.tooltip_text = "%s\n%s" % [InstanceRun.map_name(entry), "\n".join(InstanceRun.describe_map(entry))]
+			with_card(slot, {"key": "map:%d" % uid, "map": entry, "name": InstanceRun.map_name(entry), "icon": InstanceRun.map_icon(entry), "count": 1})
+			if str(entry.quality) != "normal":
+				slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), InstanceRun.quality_color(str(entry.quality))))
 			UiKit.art(slot, InstanceRun.map_icon(entry), Rect2(12, 6, 52, 52))
 			UiKit.label(slot, str(int(entry.level)), Rect2(40, 42, 34, 22), 16, InstanceRun.quality_color(str(entry.quality)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	if list.is_empty():
@@ -285,14 +301,6 @@ func build_craft_list() -> void:
 	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(420, 626, 80, 32), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(500, 626, 40, 32), turn_page.bind(1), "tab", 14)
 	UiKit.label(contents, (tr("%d itens") if craft_target == "item" else tr("%d mapas")) % list.size(), Rect2(72, 626, 200, 32), 15, UiKit.TEXT_DARK)
-
-func quality_frame(rect: Rect2, color: Color) -> Panel:
-	var frame: Panel = Panel.new()
-	frame.position = rect.position
-	frame.size = rect.size
-	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	frame.add_theme_stylebox_override("panel", UiKit.box(Color(0, 0, 0, 0), color, 3))
-	return frame
 
 func craft_subject() -> Dictionary:
 	return app.profile.find_instance(selected_uid) if craft_target == "item" else app.profile.find_map(map_uid)
@@ -316,9 +324,10 @@ func build_craft() -> void:
 		elif bool(subject.get("bound", false)):
 			facts.append(tr("Vinculado"))
 		UiKit.label(contents, "  •  ".join(facts), Rect2(600, 170, 612, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		if quality != "normal":
+			box.add_child(BagSlot.glow_node(Rect2(4, 4, 112, 112), Armory.quality_color(subject)))
 		var picture: TextureRect = UiKit.art(box, Armory.load_icon(subject), Rect2(14, 14, 92, 92))
 		picture.modulate = Armory.icon_tint(subject)
-		box.add_child(quality_frame(Rect2(4, 4, 112, 112), Armory.quality_color(subject)))
 		lines = Crafting.describe(subject)
 		for line in lines:
 			colors.append(Color("9ae8ff"))

@@ -14,6 +14,7 @@ extends Node2D
 const LOOK_SHADER: Shader = preload("res://client/shaders/look.gdshader")
 
 static var _anchor_cache: Dictionary = {}
+static var _bounds_cache: Dictionary = {}
 
 var look: Dictionary = {}
 var view: String = "south"
@@ -212,17 +213,24 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 			pin_wing(wing_b, true, shoulder + Vector2(head_w * 0.1, 0), s)
 	if back_weapon != null:
 		# In battle the weapon is drawn bigger (0.8: `back_weapon_scale`); it is only art,
-		# the hitbox stays the fighter's hit_radius. The extra size grows away from the
-		# head so it never covers the face or the name plate below the fighter.
+		# the hitbox stays the fighter's hit_radius. 0.15: the weapon is strapped to the
+		# back instead of hanging in the air behind it. The icons are very different
+		# shapes (a spear, a basket, a TV), so the rig measures each one's visible part,
+		# centres it on the sprite's origin and rests it on the back, leaning towards the
+		# legs, with its lower part tucked behind the body.
 		var grow: float = Armory.visual("back_weapon_scale") if prone else 1.0
 		var size: float = head_w * (1.15 if not prone else 0.95) * grow
-		var s: float = size / maxf(back_weapon.texture.get_width(), back_weapon.texture.get_height())
+		var used: Rect2 = art_bounds(back_weapon.texture)
+		var s: float = size / maxf(used.size.x, used.size.y)
 		back_weapon.scale = Vector2(s, s)
 		back_weapon.flip_h = flip
-		back_weapon.rotation = -dir * 0.35
-		# Along the back, behind the wings' shoulders.
-		back_weapon.position = back + Vector2(-dir * head_w * (0.85 + (grow - 1.0) * 0.3), -head_w * (0.12 + (grow - 1.0) * 0.9))
+		var shift: Vector2 = used.get_center() - back_weapon.texture.get_size() / 2.0
+		back_weapon.offset = Vector2(shift.x if flip else -shift.x, -shift.y)
+		back_weapon.rotation = -dir * 0.3
+		var tall: float = used.size.y * s
+		back_weapon.position = back + Vector2(-dir * head_w * 0.12, -tall * 0.3)
 		if weapon_shine != null:
+			weapon_shine.offset = back_weapon.offset
 			weapon_shine.flip_h = flip
 			weapon_shine.visible = weapon_glow > 0.0
 			weapon_shine.scale = Vector2.ONE * (1.08 + 0.06 * sin(time * 12.0))
@@ -234,6 +242,18 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 		aura.scale = Vector2.ONE * diameter / AuraRing.SIZE
 		aura.position = Vector2(top.x, top.y + head_h * 0.62)
 	queue_redraw()
+
+static func art_bounds(texture: Texture2D) -> Rect2:
+	# The opaque part of an icon (weapons are drawn on 96x96 canvases with margins).
+	var key: String = texture.resource_path
+	if key != "" and _bounds_cache.has(key):
+		return _bounds_cache[key]
+	var used: Rect2 = Rect2(texture.get_image().get_used_rect())
+	if used.size.x <= 0 or used.size.y <= 0:
+		used = Rect2(Vector2.ZERO, texture.get_size())
+	if key != "":
+		_bounds_cache[key] = used
+	return used
 
 func cosmetic_for(key: String) -> Dictionary:
 	var art: String = str(look.get(key, ""))

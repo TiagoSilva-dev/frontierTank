@@ -430,6 +430,25 @@ def pow_fire():
                  (stereo(boom(1.2, 80, 30, 0.45, r)), 0, 0.8))
 
 
+@sound("pow_cutin", -14, 0.35)
+def pow_cutin():
+    """0.15: the POW cut-in opens across the screen like a blade, with a ringing shine."""
+    r = rng(66)
+    slash = whoosh(0.34, 900, 6500, 0.7, 0.35, r)
+    shing = metal(2400, 1.0, (1.0, 1.34, 2.01, 2.66, 3.4), 0.3, r)
+    ring = chime(["A5", "E6", "A6"], 0.035, 1.0, 0.45)
+    return stack((stereo(slash), 0, 0.9), (shing, 0.05, 0.55), (ring, 0.08, 0.5), (sparkle(0.7, 50, 3500, 9500, r), 0.06, 0.5))
+
+
+@sound("pow_slash", -14, 0.3)
+def pow_slash():
+    """The cut-in closes like a sword cut and the special leaves."""
+    r = rng(67)
+    cut = whoosh(0.24, 5200, 700, 0.8, 0.2, r)
+    edge = metal(3100, 0.45, (1.0, 1.51, 2.24), 0.12, r)
+    return stack((stereo(cut), 0, 1.0), (edge, 0.0, 0.5), (thump(0.2, 160, 60, r), 0.03, 0.5))
+
+
 @sound("special_beam", -15, 0.4)
 def special_beam():
     r = rng(63)
@@ -510,6 +529,63 @@ def boomerang_return():
     tt = timeline(n)
     whup = 0.5 + 0.5 * np.sin(2 * np.pi * 10 * tt) ** 2
     return sweep(white(n, r), "bandpass", 500, 1300, 0.6) * whup * env_ar(n, 0.2, 0.3)
+
+
+# ---------------------------------------------------------------- PvE monster abilities (0.14)
+
+@sound("mob_cast", -17, 0.3)
+def mob_cast():
+    # A monster calls up its ability: a dark swell, motes and a low hit as it lets go.
+    r = rng(121)
+    return stack((whoosh(0.7, 250, 2200, 0.7, 0.6, r), 0, 1.0), (sparkle(0.6, 40, 2000, 6000, r), 0.15, 0.45),
+                 (boom(0.5, 95, 40, 0.18, r), 0.42, 0.55))
+
+
+@sound("mob_leap", -18, 0.15)
+def mob_leap():
+    r = rng(122)
+    return stack((thump(0.16, 170, 70, r), 0, 0.8), (whoosh(0.5, 500, 2400, 0.8, 0.35, r), 0.02, 1.0))
+
+
+@sound("mob_strike", -13, 0.2)
+def mob_strike():
+    # Claw, axe or beak: a fast swipe, the hit and a short ring of metal.
+    r = rng(123)
+    return stack((whoosh(0.16, 2500, 7000, 0.9, 0.3, r), 0, 1.0), (thump(0.22, 210, 60, r), 0.07, 1.2),
+                 (metal(880, 0.35, (1.0, 2.41, 3.87), 0.15, r), 0.07, 0.35), (crackle(0.2, 120, 1500, 7000, 0.05, r), 0.07, 0.5))
+
+
+@sound("mob_slam", -12, 0.35)
+def mob_slam():
+    r = rng(124)
+    debris = stack(*[(thump(0.12, r.uniform(200, 320), 90, r), 0.12 + i * r.uniform(0.05, 0.09), 0.35) for i in range(6)])
+    return stack((boom(1.2, 95, 28, 0.45, r), 0, 1.3), (crackle(0.7, 180, 800, 6000, 0.25, r), 0.02, 0.9), (debris, 0, 1.0))
+
+
+@sound("mob_roar", -13, 0.35)
+def mob_roar():
+    # War cry: a growl over a low horn.
+    r = rng(125)
+    n = samples(1.1)
+    tt = timeline(n)
+    growl = sine(glide(120, 85, n), n) * (0.55 + 0.45 * np.sin(2 * np.pi * 26 * tt)) + sweep(white(n, r), "bandpass", 280, 650, 0.9) * 0.8
+    growl = drive(growl * env_ar(n, 0.08, 0.55), 2.2)
+    horn = brass(note("D3"), 0.9, 0.8, "horn", 0.3, r)
+    return stack((growl, 0, 1.0), (horn, 0.05, 0.7))
+
+
+@sound("mob_breath", -14, 0.25)
+def mob_breath():
+    r = rng(126)
+    n = samples(1.2)
+    return stack((fire_roar(1.2, r) * env_ar(n, 0.12, 0.7), 0, 1.0), (whoosh(1.0, 300, 1500, 0.9, 0.3, r), 0, 0.7))
+
+
+@sound("mob_burn", -19, 0.1)
+def mob_burn():
+    r = rng(127)
+    n = samples(0.6)
+    return stack((crackle(0.6, 160, 1200, 7000, 0.2, r), 0, 1.0), (fire_roar(0.6, r) * env_ar(n, 0.05, 0.3), 0, 0.5))
 
 
 # ---------------------------------------------------------------- skills 1–9, tools, auxiliaries

@@ -34,6 +34,9 @@ var next_uid: int = 1
 var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
+# 0.15: how the player arranged the Mochila, cell by cell ("" = empty cell). Only the
+# order is kept here; CharacterScreen fits new and vanished items into it.
+var bag: Array[String] = []
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var remote: bool = false
 var on_save: Callable = Callable()
@@ -113,6 +116,7 @@ func load_data(data: Dictionary) -> bool:
 	if saved_pity is Dictionary:
 		for key: String in saved_pity:
 			pity[key] = maxi(0, int(saved_pity[key]))
+	bag = clean_bag(data.get("bag", []))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
 	if saved_coupons is Array:
@@ -140,7 +144,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity}
+	return {"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "bag": bag}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -313,10 +317,36 @@ func sell(uid: int) -> int:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or is_equipped(uid):
 		return 0
-	var value: int = maxi(10, item_price(str(inst.id), str(inst.quality)) / 4)
+	var value: int = sell_value(inst)
 	coins += value
 	remove_instance(uid)
 	return value
+
+static func sell_value(inst: Dictionary) -> int:
+	return maxi(10, item_price(str(inst.get("id", "")), str(inst.get("quality", "normal"))) / 4)
+
+# ---------- Mochila layout (0.15) ----------
+
+const BAG_CELLS: int = 480
+const BAG_KEY: String = "^(uid|item|tool|map):[a-z0-9_]{1,32}$"
+
+static func clean_bag(raw: Variant) -> Array[String]:
+	# Cell keys from a save or from the network: known shapes only, bounded, no
+	# repeats, no empty cells at the end.
+	var cells: Array[String] = []
+	if not raw is Array:
+		return cells
+	var pattern: RegEx = RegEx.create_from_string(BAG_KEY)
+	var seen: Dictionary = {}
+	for value: Variant in (raw as Array).slice(0, BAG_CELLS):
+		var key: String = str(value) if value is String else ""
+		if key != "" and (pattern.search(key) == null or seen.has(key)):
+			key = ""
+		seen[key] = true
+		cells.append(key)
+	while not cells.is_empty() and cells.back() == "":
+		cells.pop_back()
+	return cells
 
 static func item_price(id: String, quality: String = "normal") -> int:
 	var def: Dictionary = Armory.definition(id)
@@ -660,7 +690,7 @@ func sell_tool(slot: int, balance: Dictionary) -> String:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "fuse", "transfer", "compose", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "fuse", "transfer", "compose", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -726,6 +756,10 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				error = tr("Este cupom já foi usado nesta conta.")
 			else:
 				message = redeem(code)
+		"bag_layout":
+			# Cosmetic only: the new arrangement of the Mochila (an empty list sorts it).
+			bag = clean_bag(args[0] if not args.is_empty() else [])
+			save_profile()
 		"buy_tool":
 			error = buy_tool(arg_str(args, 0), balance)
 		"sell_tool":

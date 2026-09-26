@@ -41,34 +41,130 @@
     {"id": "shield", "name": "Escudo", "icon": "res://assets/ui/icone_escudo.png", "price": 70, "shield": 0.5, "desc": "Reduz pela metade o próximo dano recebido."},
     {"id": "wing", "name": "Pena de Voo", "icon": "res://assets/expansion/combat/tool_teleport.png", "price": 70, "fly_reset": true, "desc": "Recarrega o avião de papel (F)."}
   ],
-  "pve": {"think_seconds": 1.6, "power_error": 3.0, "minion_power_error": 7.0, "turn_seconds": 20, "phase_heal": 0.3, "revive_hp": 0.2, "phase_gold": [20, 30, 60], "exp": 60},
+  "pve": {"think_seconds": 1.6, "power_error": 3.0, "minion_power_error": 7.0, "turn_seconds": 20, "phase_heal": 0.3, "ability_damage": 1.15, "revive_hp": 0.2, "phase_gold": [20, 30, 60], "exp": 60},
   "enemies": [
     {"id": "escaravelho_solar", "name": "Escaravelho Solar", "rank": "minion", "hp": 320, "damage": 70, "radius": 30, "agility": 60, "hit_radius": 20, "height": 52, "angle": [30, 70], "attack": "Ferrão Solar", "color": "ffd04a",
-     "sprite": "res://assets/enemies/escaravelho_solar/sprite.png", "idle": "res://assets/enemies/escaravelho_solar/idle", "attack_clip": "res://assets/enemies/escaravelho_solar/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18}},
+     "sprite": "res://assets/enemies/escaravelho_solar/sprite.png", "idle": "res://assets/enemies/escaravelho_solar/idle", "attack_clip": "res://assets/enemies/escaravelho_solar/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18},
+     "abilities": [
+       {"id": "investida_solar", "name": "Investida Solar", "kind": "leap", "damage": 1.0, "radius": 30, "knockback": 30, "reach": 640, "fx": "horn", "weight": 3},
+       {"id": "ferrao_solar", "name": "Ferrão Solar", "kind": "sky", "damage": 0.85, "radius": 32, "fx": "sun", "weight": 2}
+     ]},
     {"id": "guardiao_templo", "name": "Guardião do Templo", "rank": "guardian", "hp": 1100, "damage": 120, "fury_damage": 155, "radius": 38, "agility": 55, "hit_radius": 30, "height": 110, "angle": [25, 75], "attack": "Lança do Sol", "fury_name": "Lança Flamejante", "color": "ffb347", "mechanics": ["fury"],
-     "sprite": "res://assets/expansion/enemies/temple_guard.png", "idle": "res://assets/enemies/guardiao_templo/idle", "attack_clip": "res://assets/enemies/guardiao_templo/attack", "projectile": {"sprite": "icon", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 24}},
+     "sprite": "res://assets/expansion/enemies/temple_guard.png", "idle": "res://assets/enemies/guardiao_templo/idle", "attack_clip": "res://assets/enemies/guardiao_templo/attack", "projectile": {"sprite": "icon", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 24},
+     "abilities": [
+       {"id": "lanca_do_sol", "name": "Lança do Sol", "kind": "leap", "damage": 1.0, "radius": 40, "knockback": 50, "reach": 760, "fx": "slash", "weight": 3},
+       {"id": "chuva_solar", "name": "Chuva Solar", "kind": "sky", "damage": 0.5, "count": 3, "spacing": 64, "radius": 36, "fx": "sun", "weight": 2},
+       {"id": "muralha_dourada", "name": "Muralha Dourada", "kind": "guard", "radius": 600, "shield": 0.5, "cooldown": 3, "color": "ffd04a", "weight": 1},
+       {"id": "lanca_flamejante", "name": "Lança Flamejante", "kind": "leap", "damage": 1.15, "radius": 44, "knockback": 50, "reach": 900, "fx": "slash", "burn": [0.12, 2], "fury": true, "color": "ff7a2a", "weight": 2}
+     ]},
     {"id": "rei_helio", "name": "Rei Hélio", "rank": "boss", "hp": 2000, "damage": 170, "fury_damage": 235, "radius": 42, "agility": 40, "hit_radius": 55, "height": 170, "angle": [20, 80], "attack": "Fúria Solar", "fury_name": "Fúria Solar", "color": "ffd04a", "mechanics": ["fury"],
-     "sprite": "res://assets/pve/rei_sol.png", "idle": "res://assets/pve/boss_idle", "attack_clip": "res://assets/pve/boss_attack", "idle_fps": 7, "attack_fps": 7, "pingpong": false},
+     "sprite": "res://assets/pve/rei_sol.png", "idle": "res://assets/pve/boss_idle", "attack_clip": "res://assets/pve/boss_attack", "idle_fps": 7, "attack_fps": 7, "pingpong": false,
+     "abilities": [
+       {"id": "furia_solar", "name": "Fúria Solar", "kind": "sky", "damage": 0.55, "count": 3, "spacing": 70, "radius": 40, "fx": "sun", "weight": 3},
+       {"id": "onda_de_calor", "name": "Onda de Calor", "kind": "slam", "damage": 0.9, "radius": 240, "fx": "fire", "burn": [0.12, 2], "color": "ff7a2a", "weight": 2},
+       {"id": "raio_do_sol", "name": "Raio do Sol", "kind": "breath", "damage": 0.95, "range": 1600, "width": 46, "fx": "sun", "weight": 2},
+       {"id": "eclipse_solar", "name": "Eclipse Solar", "kind": "sky", "targets": "all", "damage": 0.8, "radius": 48, "fx": "meteor", "burn": [0.1, 2], "fury": true, "color": "ff5a1f", "weight": 2, "crater": 26}
+     ]},
     {"id": "mascara_flamejante", "name": "Máscara Flamejante", "rank": "minion", "hp": 300, "damage": 75, "radius": 30, "agility": 65, "hit_radius": 20, "height": 54, "angle": [25, 70], "attack": "Brasa", "color": "ff6a2a",
-     "sprite": "res://assets/enemies/mascara_flamejante/sprite.png", "idle": "res://assets/enemies/mascara_flamejante/idle", "attack_clip": "res://assets/enemies/mascara_flamejante/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18}},
+     "sprite": "res://assets/enemies/mascara_flamejante/sprite.png", "idle": "res://assets/enemies/mascara_flamejante/idle", "attack_clip": "res://assets/enemies/mascara_flamejante/attack", "projectile": {"sprite": "fire_bullet", "texture": "res://assets/projectiles/fire_bullet.png", "align": true, "trail": "fire", "size": 18},
+     "abilities": [
+       {"id": "brasa", "name": "Sopro de Brasa", "kind": "breath", "damage": 0.85, "range": 560, "width": 40, "fx": "fire", "burn": [0.1, 2], "weight": 3},
+       {"id": "mordida_ardente", "name": "Mordida Ardente", "kind": "dive", "damage": 0.9, "radius": 30, "reach": 760, "fx": "bite", "weight": 2},
+       {"id": "chuva_de_brasas", "name": "Chuva de Brasas", "kind": "sky", "damage": 0.8, "radius": 32, "fx": "meteor", "weight": 2}
+     ]},
     {"id": "sentinela_obsidiana", "name": "Sentinela de Obsidiana", "rank": "guardian", "hp": 1150, "damage": 125, "fury_damage": 160, "radius": 40, "agility": 50, "hit_radius": 32, "height": 116, "angle": [25, 75], "attack": "Rocha Ígnea", "fury_name": "Erupção", "color": "ff5a1f", "mechanics": ["fury"],
-     "sprite": "res://assets/enemies/sentinela_obsidiana/sprite.png", "idle": "res://assets/enemies/sentinela_obsidiana/idle", "attack_clip": "res://assets/enemies/sentinela_obsidiana/attack", "projectile": {"sprite": "brick", "texture": "res://assets/projectiles/brick.png", "spin": 400, "trail": "fire", "size": 24}},
+     "sprite": "res://assets/enemies/sentinela_obsidiana/sprite.png", "idle": "res://assets/enemies/sentinela_obsidiana/idle", "attack_clip": "res://assets/enemies/sentinela_obsidiana/attack", "projectile": {"sprite": "brick", "texture": "res://assets/projectiles/brick.png", "spin": 400, "trail": "fire", "size": 24},
+     "abilities": [
+       {"id": "rocha_ignea", "name": "Rocha Ígnea", "kind": "sky", "damage": 0.6, "count": 2, "spacing": 70, "radius": 40, "fx": "rock", "weight": 3},
+       {"id": "terremoto", "name": "Terremoto", "kind": "slam", "damage": 0.95, "radius": 220, "fx": "rock", "weight": 2},
+       {"id": "punho_de_obsidiana", "name": "Punho de Obsidiana", "kind": "leap", "damage": 1.05, "radius": 40, "knockback": 50, "reach": 700, "fx": "smash", "weight": 2},
+       {"id": "erupcao", "name": "Erupção", "kind": "sky", "targets": "all", "damage": 0.75, "radius": 44, "fx": "meteor", "burn": [0.12, 2], "fury": true, "color": "ff5a1f", "weight": 2, "crater": 26}
+     ]},
     {"id": "rei_mascaras", "name": "Rei das Máscaras", "rank": "boss", "hp": 2100, "damage": 175, "fury_damage": 240, "radius": 42, "agility": 40, "hit_radius": 50, "height": 180, "angle": [20, 80], "attack": "Chama das Máscaras", "fury_name": "Baile das Máscaras", "color": "ff5ad0", "mechanics": ["fury", "summon"], "summon": "mascara_flamejante",
-     "sprite": "res://assets/expansion/enemies/mask_king.png", "idle": "res://assets/expansion/animations/mask_king_idle", "attack_clip": "res://assets/expansion/animations/mask_king_attack", "idle_fps": 5, "attack_fps": 8, "faces": "right"},
+     "sprite": "res://assets/expansion/enemies/mask_king.png", "idle": "res://assets/expansion/animations/mask_king_idle", "attack_clip": "res://assets/expansion/animations/mask_king_attack", "idle_fps": 5, "attack_fps": 8, "faces": "right",
+     "abilities": [
+       {"id": "chama_das_mascaras", "name": "Chama das Máscaras", "kind": "breath", "damage": 0.95, "range": 1500, "width": 50, "fx": "fire", "burn": [0.1, 2], "weight": 3},
+       {"id": "danca_das_laminas", "name": "Dança das Lâminas", "kind": "leap", "damage": 1.05, "radius": 46, "knockback": 50, "reach": 900, "fx": "slash", "color": "ff5ad0", "weight": 2},
+       {"id": "chuva_de_mascaras", "name": "Chuva de Máscaras", "kind": "sky", "damage": 0.5, "count": 3, "spacing": 70, "radius": 38, "fx": "dark", "color": "ff5ad0", "weight": 2},
+       {"id": "baile_das_mascaras", "name": "Baile das Máscaras", "kind": "sky", "targets": "all", "damage": 0.55, "count": 2, "spacing": 60, "radius": 40, "fx": "dark", "fury": true, "color": "ff5ad0", "weight": 2, "crater": 26}
+     ]},
     {"id": "lobo_nevasca", "name": "Lobo da Nevasca", "rank": "minion", "hp": 330, "damage": 70, "radius": 30, "agility": 70, "hit_radius": 20, "height": 50, "angle": [25, 70], "attack": "Uivo Gelado", "color": "8ad8ff",
-     "sprite": "res://assets/enemies/lobo_nevasca/sprite.png", "idle": "res://assets/enemies/lobo_nevasca/idle", "attack_clip": "res://assets/enemies/lobo_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 500, "trail": "wind", "size": 18}},
+     "sprite": "res://assets/enemies/lobo_nevasca/sprite.png", "idle": "res://assets/enemies/lobo_nevasca/idle", "attack_clip": "res://assets/enemies/lobo_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 500, "trail": "wind", "size": 18},
+     "abilities": [
+       {"id": "mordida_gelida", "name": "Mordida Gélida", "kind": "leap", "damage": 1.0, "radius": 30, "knockback": 25, "reach": 700, "fx": "bite", "weight": 3},
+       {"id": "uivo_gelado", "name": "Uivo Gelado", "kind": "sky", "damage": 0.85, "radius": 32, "fx": "ice", "weight": 2}
+     ]},
     {"id": "cristal_glacial", "name": "Cristal Glacial", "rank": "totem", "hp": 500, "damage": 0, "radius": 0, "agility": 0, "hit_radius": 26, "height": 72, "attack": "", "color": "8ad8ff",
      "sprite": "res://assets/expansion/objects/protection_crystal.png", "idle": "", "attack_clip": ""},
     {"id": "golem_gelo", "name": "Golem de Gelo", "rank": "guardian", "hp": 1200, "damage": 115, "fury_damage": 150, "radius": 42, "agility": 45, "hit_radius": 34, "height": 120, "angle": [30, 75], "attack": "Bloco de Gelo", "fury_name": "Avalanche", "color": "c8f0ff", "mechanics": ["fury"],
-     "sprite": "res://assets/enemies/golem_gelo/sprite.png", "idle": "res://assets/enemies/golem_gelo/idle", "attack_clip": "res://assets/enemies/golem_gelo/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 300, "trail": "wind", "size": 24}},
+     "sprite": "res://assets/enemies/golem_gelo/sprite.png", "idle": "res://assets/enemies/golem_gelo/idle", "attack_clip": "res://assets/enemies/golem_gelo/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 300, "trail": "wind", "size": 24},
+     "abilities": [
+       {"id": "punho_de_gelo", "name": "Punho de Gelo", "kind": "leap", "damage": 1.1, "radius": 42, "knockback": 50, "reach": 700, "fx": "smash", "weight": 3},
+       {"id": "terremoto_gelado", "name": "Terremoto Gelado", "kind": "slam", "damage": 0.95, "radius": 220, "fx": "ice", "weight": 2},
+       {"id": "bloco_de_gelo", "name": "Bloco de Gelo", "kind": "sky", "damage": 0.9, "radius": 42, "fx": "ice", "weight": 2},
+       {"id": "avalanche", "name": "Avalanche", "kind": "sky", "targets": "all", "damage": 0.55, "count": 3, "spacing": 60, "radius": 38, "fx": "ice", "fury": true, "weight": 2, "crater": 26}
+     ]},
     {"id": "rainha_nevasca", "name": "Rainha da Nevasca", "rank": "boss", "hp": 2050, "damage": 165, "fury_damage": 230, "radius": 42, "agility": 42, "hit_radius": 50, "height": 180, "angle": [20, 80], "attack": "Sopro Glacial", "fury_name": "Nevasca Eterna", "color": "a8ecff", "mechanics": ["fury", "freeze"],
-     "sprite": "res://assets/enemies/rainha_nevasca/sprite.png", "idle": "res://assets/enemies/rainha_nevasca/idle", "attack_clip": "res://assets/enemies/rainha_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 600, "trail": "wind", "size": 28}},
+     "sprite": "res://assets/enemies/rainha_nevasca/sprite.png", "idle": "res://assets/enemies/rainha_nevasca/idle", "attack_clip": "res://assets/enemies/rainha_nevasca/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 600, "trail": "wind", "size": 28},
+     "abilities": [
+       {"id": "sopro_glacial", "name": "Sopro Glacial", "kind": "breath", "damage": 0.95, "range": 1600, "width": 50, "fx": "frost", "weight": 3},
+       {"id": "estalactites", "name": "Estalactites", "kind": "sky", "damage": 0.55, "count": 3, "spacing": 66, "radius": 38, "fx": "ice", "weight": 2},
+       {"id": "barreira_de_gelo", "name": "Barreira de Gelo", "kind": "guard", "radius": 500, "shield": 0.5, "cooldown": 4, "color": "8ad8ff", "weight": 1},
+       {"id": "nevasca_eterna", "name": "Nevasca Eterna", "kind": "sky", "targets": "all", "damage": 0.85, "radius": 44, "fx": "ice", "fury": true, "weight": 2, "crater": 26}
+     ]},
     {"id": "harpia_ruinas", "name": "Harpia das Ruínas", "rank": "minion", "hp": 300, "damage": 75, "radius": 30, "agility": 75, "hit_radius": 20, "height": 54, "angle": [20, 70], "attack": "Pena Cortante", "color": "c8f4ff",
-     "sprite": "res://assets/enemies/harpia_ruinas/sprite.png", "idle": "res://assets/enemies/harpia_ruinas/idle", "attack_clip": "res://assets/enemies/harpia_ruinas/attack", "projectile": {"sprite": "rainbow_orb", "texture": "res://assets/projectiles/rainbow_orb.png", "spin": 500, "trail": "wind", "size": 18}},
+     "sprite": "res://assets/enemies/harpia_ruinas/sprite.png", "idle": "res://assets/enemies/harpia_ruinas/idle", "attack_clip": "res://assets/enemies/harpia_ruinas/attack", "projectile": {"sprite": "rainbow_orb", "texture": "res://assets/projectiles/rainbow_orb.png", "spin": 500, "trail": "wind", "size": 18},
+     "abilities": [
+       {"id": "rasante", "name": "Rasante", "kind": "dive", "damage": 0.95, "radius": 30, "reach": 900, "fx": "claw", "weight": 3},
+       {"id": "pena_cortante", "name": "Pena Cortante", "kind": "sky", "damage": 0.5, "count": 2, "spacing": 44, "radius": 30, "fx": "feather", "weight": 2}
+     ]},
     {"id": "cavaleiro_celeste", "name": "Cavaleiro Celeste", "rank": "guardian", "hp": 1100, "damage": 125, "fury_damage": 160, "radius": 40, "agility": 60, "hit_radius": 32, "height": 116, "angle": [20, 75], "attack": "Lança do Vento", "fury_name": "Tempestade", "color": "7ad8ff", "mechanics": ["fury"],
-     "sprite": "res://assets/enemies/cavaleiro_celeste/sprite.png", "idle": "res://assets/enemies/cavaleiro_celeste/idle", "attack_clip": "res://assets/enemies/cavaleiro_celeste/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 24}},
+     "sprite": "res://assets/enemies/cavaleiro_celeste/sprite.png", "idle": "res://assets/enemies/cavaleiro_celeste/idle", "attack_clip": "res://assets/enemies/cavaleiro_celeste/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 24},
+     "abilities": [
+       {"id": "lanca_do_vento", "name": "Lança do Vento", "kind": "leap", "damage": 1.0, "radius": 40, "knockback": 50, "reach": 900, "fx": "slash", "weight": 3},
+       {"id": "tempestade", "name": "Tempestade", "kind": "sky", "damage": 0.5, "count": 3, "spacing": 70, "radius": 36, "fx": "lightning", "weight": 2},
+       {"id": "escudo_celeste", "name": "Escudo Celeste", "kind": "guard", "radius": 600, "shield": 0.5, "cooldown": 3, "color": "7ad8ff", "weight": 1},
+       {"id": "furacao", "name": "Furacão", "kind": "breath", "damage": 0.9, "range": 900, "width": 60, "knockback": 40, "fx": "wind", "fury": true, "weight": 2}
+     ]},
     {"id": "grifo_tempestade", "name": "Grifo da Tempestade", "rank": "boss", "hp": 2000, "damage": 175, "fury_damage": 240, "radius": 42, "agility": 48, "hit_radius": 50, "height": 176, "angle": [15, 80], "attack": "Rajada do Grifo", "fury_name": "Olho da Tempestade", "color": "9ae8ff", "mechanics": ["fury", "teleport"],
-     "sprite": "res://assets/enemies/grifo_tempestade/sprite.png", "idle": "res://assets/enemies/grifo_tempestade/idle", "attack_clip": "res://assets/enemies/grifo_tempestade/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 28}}
+     "sprite": "res://assets/enemies/grifo_tempestade/sprite.png", "idle": "res://assets/enemies/grifo_tempestade/idle", "attack_clip": "res://assets/enemies/grifo_tempestade/attack", "projectile": {"sprite": "electric_orb", "texture": "res://assets/projectiles/electric_orb.png", "spin": 700, "trail": "electric", "size": 28},
+     "abilities": [
+       {"id": "rajada_do_grifo", "name": "Rajada do Grifo", "kind": "breath", "damage": 0.7, "range": 1600, "width": 56, "knockback": 40, "fx": "wind", "weight": 3},
+       {"id": "mergulho_do_grifo", "name": "Mergulho do Grifo", "kind": "dive", "damage": 0.9, "radius": 44, "reach": 1400, "fx": "claw", "weight": 2},
+       {"id": "raios_do_grifo", "name": "Raios do Grifo", "kind": "sky", "damage": 0.4, "count": 3, "spacing": 70, "radius": 38, "fx": "lightning", "weight": 2},
+       {"id": "olho_da_tempestade", "name": "Olho da Tempestade", "kind": "sky", "targets": "all", "damage": 0.8, "radius": 44, "fx": "lightning", "fury": true, "weight": 2, "crater": 26}
+     ]},
+    {"id": "saqueador_viking", "name": "Saqueador Viking", "rank": "minion", "hp": 340, "damage": 72, "radius": 30, "agility": 65, "hit_radius": 20, "height": 54, "angle": [25, 70], "attack": "Machadada", "color": "ff7a4a", "faces": "right",
+     "sprite": "res://assets/enemies/saqueador_viking/sprite.png", "idle": "res://assets/enemies/saqueador_viking/idle", "attack_clip": "res://assets/enemies/saqueador_viking/attack",
+     "abilities": [
+       {"id": "machadada", "name": "Machadada", "kind": "leap", "damage": 1.0, "radius": 32, "knockback": 30, "reach": 700, "fx": "slash", "weight": 3},
+       {"id": "machado_arremessado", "name": "Machado Arremessado", "kind": "sky", "damage": 0.85, "radius": 32, "fx": "axe", "weight": 2},
+       {"id": "grito_de_guerra", "name": "Grito de Guerra", "kind": "roar", "radius": 700, "empower": 1.3, "cooldown": 3, "color": "ff4a3a", "weight": 1}
+     ]},
+    {"id": "corvo_runico", "name": "Corvo Rúnico", "rank": "minion", "hp": 290, "damage": 70, "radius": 30, "agility": 80, "hit_radius": 20, "height": 50, "angle": [20, 70], "attack": "Bicada Rúnica", "color": "5ab8ff",
+     "sprite": "res://assets/enemies/corvo_runico/sprite.png", "idle": "res://assets/enemies/corvo_runico/idle", "attack_clip": "res://assets/enemies/corvo_runico/attack",
+     "abilities": [
+       {"id": "bicada_runica", "name": "Bicada Rúnica", "kind": "dive", "damage": 0.95, "radius": 30, "reach": 1000, "fx": "peck", "weight": 3},
+       {"id": "revoada", "name": "Revoada", "kind": "sky", "damage": 0.45, "count": 3, "spacing": 50, "radius": 28, "fx": "raven", "weight": 2},
+       {"id": "runa_restauradora", "name": "Runa Restauradora", "kind": "heal", "radius": 700, "heal": 0.2, "cooldown": 3, "color": "5ab8ff", "weight": 2}
+     ]},
+    {"id": "berserker_urso", "name": "Berserker Urso", "rank": "guardian", "hp": 1200, "damage": 125, "fury_damage": 165, "radius": 40, "agility": 55, "hit_radius": 32, "height": 118, "angle": [25, 75], "attack": "Fúria do Urso", "fury_name": "Berserk", "color": "ff4a3a", "mechanics": ["fury"],
+     "sprite": "res://assets/enemies/berserker_urso/sprite.png", "idle": "res://assets/enemies/berserker_urso/idle", "attack_clip": "res://assets/enemies/berserker_urso/attack",
+     "abilities": [
+       {"id": "furia_do_urso", "name": "Fúria do Urso", "kind": "leap", "damage": 1.1, "radius": 44, "knockback": 50, "reach": 800, "fx": "claw", "weight": 3},
+       {"id": "machados_giratorios", "name": "Machados Giratórios", "kind": "slam", "damage": 0.95, "radius": 200, "fx": "axe", "weight": 2},
+       {"id": "machados_arremessados", "name": "Machados Arremessados", "kind": "sky", "damage": 0.6, "count": 2, "spacing": 60, "radius": 36, "fx": "axe", "weight": 2},
+       {"id": "berserk", "name": "Berserk", "kind": "leap", "damage": 1.35, "radius": 50, "knockback": 50, "reach": 1100, "fx": "smash", "fury": true, "color": "ff4a3a", "weight": 2}
+     ]},
+    {"id": "jarl_barba_ferro", "name": "Jarl Barba-de-Ferro", "rank": "boss", "hp": 2150, "damage": 175, "fury_damage": 240, "radius": 42, "agility": 42, "hit_radius": 52, "height": 180, "angle": [20, 80], "attack": "Martelo do Trovão", "fury_name": "Ira de Valhalla", "color": "7ab8ff", "mechanics": ["fury", "summon"], "summon": "saqueador_viking",
+     "sprite": "res://assets/enemies/jarl_barba_ferro/sprite.png", "idle": "res://assets/enemies/jarl_barba_ferro/idle", "attack_clip": "res://assets/enemies/jarl_barba_ferro/attack",
+     "abilities": [
+       {"id": "martelo_do_trovao", "name": "Martelo do Trovão", "kind": "sky", "damage": 0.55, "count": 3, "spacing": 70, "radius": 40, "fx": "lightning", "weight": 3},
+       {"id": "investida_do_jarl", "name": "Investida do Jarl", "kind": "leap", "damage": 1.05, "radius": 50, "knockback": 50, "reach": 1100, "fx": "smash", "weight": 2},
+       {"id": "tremor_de_asgard", "name": "Tremor de Asgard", "kind": "slam", "damage": 0.95, "radius": 260, "fx": "rune", "weight": 2},
+       {"id": "muralha_de_escudos", "name": "Muralha de Escudos", "kind": "guard", "radius": 700, "shield": 0.5, "cooldown": 4, "color": "ffd04a", "weight": 1},
+       {"id": "ira_de_valhalla", "name": "Ira de Valhalla", "kind": "sky", "targets": "all", "damage": 0.6, "count": 2, "spacing": 60, "radius": 42, "fx": "lightning", "fury": true, "color": "7ab8ff", "weight": 2, "crater": 26}
+     ]}
   ],
   "instances": [
     {"id": "templo_sol", "name": "Templo do Sol", "boss": "rei_helio", "minion": "escaravelho_solar", "color": "ffd04a", "preview": "res://assets/expansion/lobby/instance_preview.png",
@@ -102,7 +198,13 @@
        {"name": "Ruínas Flutuantes", "map": "ruinas_flutuantes", "objective": "survive", "turns": 5, "waves": [["cavaleiro_celeste", "harpia_ruinas", "harpia_ruinas"]]},
        {"name": "Grifo da Tempestade", "map": "santuario_ventos", "waves": [["grifo_tempestade"]]}
      ],
-     "loot": {"weapons": ["vento_de_deus", "cesto_newton", "canhao_arco_iris"], "super": "bumerangue_amor"}}
+     "loot": {"weapons": ["vento_de_deus", "cesto_newton", "canhao_arco_iris"], "super": "bumerangue_amor"}},
+    {"id": "fiorde_viking", "name": "Fiorde dos Vikings", "boss": "jarl_barba_ferro", "minion": "saqueador_viking", "color": "7ab8ff", "preview": "res://assets/maps/thumbs/trono_jarl.png",
+     "desc": "Saqueadores e corvos rúnicos guardam o fiorde. O Jarl Barba-de-Ferro chama reforços a cada 3 turnos e ergue a muralha de escudos.",
+     "phases": [{"name": "Praia dos Drakkars", "map": "praia_drakkar", "waves": [["saqueador_viking", "corvo_runico"], ["saqueador_viking", "corvo_runico"]]},
+                {"name": "Aldeia do Hidromel", "map": "aldeia_hidromel", "waves": [["berserker_urso", "saqueador_viking"]]},
+                {"name": "Jarl Barba-de-Ferro", "map": "trono_jarl", "waves": [["jarl_barba_ferro"]]}],
+     "loot": {"weapons": ["quebra_tijolos", "trovao", "fogo_intenso"], "super": "cabeca_de_boi"}}
   ],
   "map_items": {
     "max_level": 16, "hp_per_level": 1.12, "damage_per_level": 1.07, "reward_per_level": 0.1,
@@ -167,7 +269,10 @@
      "islands": [[60, 608, 560, 220], [820, 1368, 650, 220], [1590, 2138, 570, 220]], "spawns": [[100, 560], [1640, 2100]]},
     {"id": "santuario_ventos", "name": "Santuário dos Ventos", "bg": "res://assets/maps/bg/santuario_ventos.png", "size": [2000, 1050], "palette": "meadow", "rim": "3a2418", "dim": 0.15, "ambience": "sky",
      "terrain": [{"art": "res://assets/maps/terrain/santuario_a.png", "x": 40, "y": 600}, {"art": "res://assets/maps/terrain/celeste_b.png", "x": 860, "y": 540}, {"art": "res://assets/maps/terrain/santuario_a.png", "x": 1180, "y": 600, "flip": true}],
-     "islands": [[40, 824, 600, 180], [860, 1130, 540, 130], [1180, 1964, 600, 180]], "spawns": [[100, 760], [1150, 1920]]}
+     "islands": [[40, 824, 600, 180], [860, 1130, 540, 130], [1180, 1964, 600, 180]], "spawns": [[100, 760], [1150, 1920]]},
+    {"id": "praia_drakkar", "name": "Praia dos Drakkars", "bg": "res://assets/maps/bg/praia_drakkar.png", "size": [2360, 1150], "palette": "frost", "rim": "1e2a44", "dim": 0.16, "ambience": "snow", "terrain": [{"art": "res://assets/maps/terrain/viking_praia_a.png", "x": 20, "y": 600}, {"art": "res://assets/maps/terrain/viking_aldeia_a.png", "x": 930, "y": 660}, {"art": "res://assets/maps/terrain/viking_praia_a.png", "x": 1500, "y": 600, "flip": true}], "islands": [[20, 860, 600, 220], [930, 1466, 660, 160], [1500, 2340, 600, 220]], "spawns": [[80, 760], [1560, 2280]]},
+    {"id": "aldeia_hidromel", "name": "Aldeia do Hidromel", "bg": "res://assets/maps/bg/aldeia_hidromel.png", "size": [2000, 1050], "palette": "frost", "rim": "1e2a44", "dim": 0.24, "ambience": "snow", "terrain": [{"art": "res://assets/maps/terrain/viking_aldeia_a.png", "x": 40, "y": 620}, {"art": "res://assets/maps/terrain/viking_praia_a.png", "x": 590, "y": 560}, {"art": "res://assets/maps/terrain/viking_aldeia_a.png", "x": 1420, "y": 620, "flip": true}], "islands": [[40, 576, 620, 160], [590, 1430, 560, 220], [1420, 1956, 620, 160]], "spawns": [[80, 540], [1180, 1920]]},
+    {"id": "trono_jarl", "name": "Trono do Jarl", "bg": "res://assets/maps/bg/trono_jarl.png", "size": [1700, 950], "palette": "frost", "rim": "1e2a44", "dim": 0.3, "ambience": "snow", "pve_only": true, "terrain": [{"art": "res://assets/maps/terrain/viking_runas_a.png", "x": 0, "y": 560}, {"art": "res://assets/maps/terrain/viking_runas_a.png", "x": 850, "y": 560, "flip": true}], "islands": [[0, 1690, 560, 170]], "spawns": [[100, 600], [1150, 1600]]}
   ],
   "rewards": {
     "win_exp": 40, "loss_exp": 12, "exp_per_damage": 0.04, "exp_per_kill": 15,

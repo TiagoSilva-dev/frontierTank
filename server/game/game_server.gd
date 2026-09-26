@@ -469,6 +469,10 @@ func profile_op(session: PlayerSession, message: Dictionary) -> void:
 				reply(session, message, {"error": Lang.t("Este nome já está em uso. Escolha outro.")})
 				return
 	var result: Dictionary = session.profile.apply_op(op, args, balance, test_coupons)
+	if op == "bag_layout":
+		# Arranging the Mochila moves nothing of value: no audit entry, no lobby update.
+		reply(session, message, {"error": result.error, "message": result.message, "profile": session.profile.to_data()})
+		return
 	audit(session, "op." + op, {"args": args, "error": result.error, "coins": session.profile.coins})
 	reply(session, message, {"error": result.error, "message": result.message, "profile": session.profile.to_data()})
 	if result.error == "":

@@ -5,9 +5,10 @@ extends Node2D
 # "aura" (preparation and charge): from the moment POW is armed the fighter burns with
 # rising flames and a ring on the ground; while the force bar charges (`charge` 0..1) the
 # aura grows and particles are pulled into the weapon on the back.
-# "burst" (the shot): white flash, a pillar of light, shockwaves, sun rays, sparks and
-# the weapon's own animated PixelLab POW art (assets/effects/pow/<weapon>/).
-# The flight (halo and trail) lives in TankProjectile and the landing in PowImpact.
+# "burst" (the shot): white flash, a pillar of light, shockwaves, sun rays and sparks.
+# The flight (the special's own projectile art, halo and trail) lives in TankProjectile
+# and the landing, with the weapon's animated PixelLab POW art, in PowImpact (0.14; it
+# used to play here, behind the "POW!" banner).
 
 const FLAME: Array[Color] = [Color("fffbe0"), Color("ffe36a"), Color("ffb02e"), Color("ff6a1f"), Color("c8300f")]
 const ART_DIR: String = "res://assets/effects/pow/"
@@ -25,13 +26,21 @@ var embers: CPUParticles2D
 var pull: CPUParticles2D
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
+static func projectile_art(id: String) -> String:
+	var path: String = ART_DIR + "%s/projectile.png" % id
+	return path if ResourceLoader.exists(path) else ""
+
 static func art_frames(id: String) -> Array[Texture2D]:
 	var list: Array[Texture2D] = []
 	for i in range(24):
 		var path: String = ART_DIR + "%s/frame_%02d.png" % [id, i]
 		if not ResourceLoader.exists(path):
 			break
-		list.append(load(path))
+		var frame: Texture2D = load(path)
+		# Some generated clips have near-empty frames in the middle: skip them.
+		var used: Vector2i = frame.get_image().get_used_rect().size
+		if used.x * used.y >= frame.get_width() * frame.get_height() * 0.06:
+			list.append(frame)
 	if list.is_empty():
 		var still: String = ART_DIR + id + ".png"
 		list.append(load(still if ResourceLoader.exists(still) else FALLBACK_ART))
@@ -53,24 +62,6 @@ func _ready() -> void:
 		pull = FxParticles.stream(self, fighter.weapon_point() - fighter.position, {"amount": 36, "lifetime": 0.45, "speed": [0.0, 10.0], "gravity": Vector2.ZERO, "size": [2.0, 4.0], "colors": ["ffffff", colors[1], tint], "ring": [52.0, 64.0], "radial": -620.0, "tangential": 140.0, "emitting": false, "lifetime_randomness": 0.1})
 		return
 	z_index = 25
-	var frames: Array[Texture2D] = art_frames(weapon_id)
-	var sprite: PixelAnimation = PixelAnimation.new()
-	sprite.frames = frames
-	sprite.texture = frames[0]
-	sprite.fps = 14.0
-	sprite.loop = false
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var glow: CanvasItemMaterial = CanvasItemMaterial.new()
-	glow.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sprite.material = glow
-	# 128 px PixelLab art: grows from 1.1x to 2.3x while it plays.
-	sprite.scale = Vector2.ONE * 1.1
-	sprite.modulate.a = 0.9
-	add_child(sprite)
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(sprite, "scale", Vector2.ONE * 2.3, 0.8).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	tween.tween_property(sprite, "modulate:a", 0.0, 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(sprite, "rotation", 0.6, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	FxParticles.burst(self, Vector2.ZERO, {"amount": 40, "lifetime": 0.8, "speed": [160.0, 420.0], "direction": Vector2.UP, "spread": 110.0, "gravity": Vector2(0, 300), "size": [2.0, 5.0], "colors": ["ffffff", colors[1], tint, colors[3]], "damping": 90.0})
 
 func _process(delta: float) -> void:

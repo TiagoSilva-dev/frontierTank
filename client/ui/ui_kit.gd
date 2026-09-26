@@ -23,6 +23,8 @@ const FRAMES: Dictionary = {
 	"dark": {"rings": ["120904", "7a5230"], "top": "2e1c10", "bottom": "1d1109", "radius": 2, "alpha": 0.9},
 	"glass": {"rings": ["120904", "5a3a22"], "top": "1c120a", "bottom": "120b06", "radius": 2, "alpha": 0.62},
 	"slot": {"rings": ["2a1608", "c98b45", "5a3417"], "top": "4a3220", "bottom": "2e1d10", "radius": 2},
+	"slot_hover": {"rings": ["2a1608", "f2c27a", "6e4020"], "top": "5e4028", "bottom": "3a2515", "radius": 2},
+	"tooltip": {"rings": ["0d0703", "d9a45a", "4a2c14"], "top": "2a1a0e", "bottom": "150c06", "radius": 3, "alpha": 0.97},
 	"slot_light": {"rings": ["3a1d0a", "fff1c4", "c98b45"], "top": "f3dcae", "bottom": "e1bd7f", "radius": 2},
 	"button": {"rings": ["3a1a06", "fff0b0"], "top": "ffc94f", "bottom": "e0701a", "radius": 3, "shine": true},
 	"button_hover": {"rings": ["3a1a06", "ffffff"], "top": "ffdc7a", "bottom": "f2892a", "radius": 3, "shine": true},
