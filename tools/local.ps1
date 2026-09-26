@@ -3,6 +3,7 @@
 #
 #   powershell -File tools/local.ps1            build and start everything, wait until it
 #                                               answers and open http://localhost:8000
+#                                               (the website; the game is at /jogar/)
 #                                               (the first build takes a few minutes)
 #   powershell -File tools/local.ps1 status     what is running and the listed servers
 #   powershell -File tools/local.ps1 logs [svc] follow the logs (api, game, web, db)
@@ -58,7 +59,7 @@ function Wait-Ready {
             $reply = Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 "$url/v1/servers"
             if ($reply.Content -match '"url"') {
                 Write-Host ""
-                Write-Host "Pronto: $url"
+                Write-Host "Pronto: $url (site) · $url/jogar/ (jogo)"
                 return $true
             }
         } catch { }

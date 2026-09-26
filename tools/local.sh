@@ -3,7 +3,8 @@
 # with Docker (server/docker-compose.yml). The same script runs the stack on a VM.
 #
 #   tools/local.sh            build and start everything, wait until it answers and open
-#                             http://localhost:8000 (the first build takes a few minutes)
+#                             http://localhost:8000: the website, with the game at /jogar/
+#                             (the first build takes a few minutes)
 #   tools/local.sh status     what is running and the game servers the API lists
 #   tools/local.sh logs [svc] follow the logs (api, game, web, db)
 #   tools/local.sh stop       stop (the game server saves every profile first)
@@ -45,7 +46,7 @@ wait_ready() {
 	for _ in $(seq 1 120); do
 		if curl -fsS "$url/v1/servers" 2>/dev/null | grep -q '"url"'; then
 			echo
-			echo "Ready: $url"
+			echo "Ready: $url (website) · $url/jogar/ (game)"
 			return 0
 		fi
 		echo -n "."

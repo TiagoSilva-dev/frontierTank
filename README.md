@@ -4,6 +4,9 @@ Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou impor
 
 Jogo de artilharia por turnos em pixel art, com cidade, salas, instâncias e economia de itens. Joga **online** (conta, servidor de jogo, salas, chat e batalhas com outros jogadores) ou no **modo offline** contra bots.
 
+## Site oficial e wiki — Gustfire
+O jogo ganhou nome novo, **Gustfire** (*gust* = rajada de vento, *fire* = disparo), com logotipo em pixel art e site oficial em `website/`: página inicial com o botão **JOGAR**, uma mini batalha jogável com a física do jogo e uma **wiki** no estilo do poedb (armas, POW, instâncias, monstros, mapas, moedas, bônus, fortalecimento e as fórmulas do combate), em português e inglês. Os números da wiki saem dos arquivos de balanceamento: depois de mudar o jogo, rode `python tools/build_site.py`. Abra `website/index.html` ou suba o Docker (site em `/`, jogo em `/jogar/`). Tudo em [docs/SITE.md](docs/SITE.md). Dentro do jogo o nome ainda é Frontier Tank.
+
 ## Online (0.11)
 - **Subir os servidores**: `cd server && cp .env.example .env && docker compose up --build -d` (PostgreSQL, API em Go e o servidor de jogo, que é este projeto rodando sem tela). Passo a passo, variáveis e produção em `server/README.md`.
 - **Entrar**: a tela de entrada lista os servidores no ar; crie a conta (CRIAR CONTA) ou entre (ENTRAR). "Modo offline" continua lá.
@@ -38,14 +41,14 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |
 
 ## Tudo no seu computador, no navegador
-Um comando sobe o banco (PostgreSQL), a API, o servidor de jogo e o jogo web com o Docker, e o jogo abre em **http://localhost:8000**:
+Um comando sobe o banco (PostgreSQL), a API, o servidor de jogo e o jogo web com o Docker, e o site oficial abre em **http://localhost:8000** (o jogo fica em **/jogar/**, no botão JOGAR do site):
 
 - **Windows**: abra o Docker Desktop e dê dois cliques em **SubirLocal.cmd** (ou `powershell -File tools/local.ps1`).
 - **Linux e macOS** (e depois a VM): `tools/local.sh`.
 
 A primeira vez leva alguns minutos (baixa o Godot, importa os assets e exporta o jogo para o navegador); depois é rápido. O script cria `server/.env` com senha e chave aleatórias e os cupons de teste ligados, espera o servidor de jogo aparecer e abre o navegador. Crie a conta na própria página e jogue. Outros comandos: `status`, `logs [api|game|web|db]`, `stop` e `reset` (apaga o banco, pede confirmação). Detalhes, variáveis e o que muda numa VM em `server/README.md`.
 
-Tudo passa por um endereço só: o nginx do serviço `web` entrega o jogo, manda `/v1/...` para a API e `/ws` para o servidor de jogo. O jogo do computador (Jogar.cmd) continua entrando pelas portas 8080 e 7350, que ficam abertas só nesta máquina.
+Tudo passa por um endereço só: o nginx do serviço `web` entrega o site em `/` e o jogo em `/jogar/`, manda `/v1/...` para a API e `/ws` para o servidor de jogo. O jogo do computador (Jogar.cmd) continua entrando pelas portas 8080 e 7350, que ficam abertas só nesta máquina.
 
 ## Versão web para testes fechados
 A versão web roda sem threads, então não precisa de `SharedArrayBuffer` nem dos cabeçalhos COOP/COEP: qualquer hospedagem estática serve (itch.io, GitHub Pages, Netlify, nginx). Preset **Web** em `export_presets.cfg` (os documentos, testes, ferramentas e metadados do PixelLab ficam de fora do pacote).

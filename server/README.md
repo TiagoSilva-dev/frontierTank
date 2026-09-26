@@ -16,9 +16,10 @@ docker compose up --build -d
 
 Antes, troque em `.env` a senha do banco (`DB_PASSWORD`) e a chave interna (`INTERNAL_KEY`, com pelo menos 16 caracteres). A primeira construção baixa o Godot 4.7.2, importa os assets e exporta o jogo para o navegador, o que leva alguns minutos.
 
-Quatro serviços: `db` (PostgreSQL), `api`, `game` e `web`. O `web` (`server/docker/web.Dockerfile`) exporta o jogo com o preset Web (sem threads) e o serve com nginx (`server/docker/web.nginx.conf`), que também encaminha `/v1/` para a API e `/ws` para o servidor de jogo. Assim tudo fica num endereço só:
+Quatro serviços: `db` (PostgreSQL), `api`, `game` e `web`. O `web` (`server/docker/web.Dockerfile`) exporta o jogo com o preset Web (sem threads) e o serve com nginx (`server/docker/web.nginx.conf`) junto com o site oficial (`website/`), e o nginx também encaminha `/v1/` para a API e `/ws` para o servidor de jogo. Assim tudo fica num endereço só:
 
-- **Jogo no navegador**: `http://localhost:8000` (`WEB_PORT`). O jogo procura a API no próprio endereço e a API lista o servidor de jogo como `ws://localhost:8000/ws` (`GAME_PUBLIC_URL`).
+- **Site oficial**: `http://localhost:8000` (`WEB_PORT`), com a página inicial e a wiki (`docs/SITE.md`). O botão JOGAR leva ao jogo.
+- **Jogo no navegador**: `http://localhost:8000/jogar/`. O jogo procura a API no próprio endereço (a subpasta não muda nada) e a API lista o servidor de jogo como `ws://localhost:8000/ws` (`GAME_PUBLIC_URL`).
 - **API e servidor de jogo direto** (para o jogo do computador, Jogar.cmd): `http://localhost:8080` e `ws://localhost:7350`, publicados só em `127.0.0.1` (`API_BIND`, `GAME_BIND`). O jogo do computador também entra pelo nginx: `--api=http://localhost:8000`.
 - A API confia no endereço que o nginx manda (`TRUST_PROXY=1`), para o limite de tentativas de login e o registro de acessos terem o IP do jogador. Por isso a porta 8080 não deve ficar aberta para fora.
 - A porta interna da API (8081) não sai da rede do Docker.
