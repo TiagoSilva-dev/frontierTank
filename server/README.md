@@ -24,12 +24,13 @@ Quatro serviços: `db` (PostgreSQL), `api`, `game` e `web`. O `web` (`server/doc
 - A porta interna da API (8081) não sai da rede do Docker.
 - `docker compose stop game` desliga o servidor de jogo com calma: ele salva todos os perfis e libera as contas antes de sair.
 - Os dados ficam no volume `db-data`. `docker compose down` mantém o volume; `docker compose down -v` apaga tudo.
+- O PostgreSQL só lê `DB_PASSWORD` quando cria o banco; num volume que já existe a senha antiga continuaria valendo e a API pararia com `password authentication failed for user "frontier"` (SQLSTATE 28P01). Por isso o `db`, ao subir, grava a senha do `.env` no banco (pelo socket local, que não pede senha) antes de liberar a API: dá para trocar `DB_PASSWORD` e rodar `docker compose up -d` de novo sem apagar nada.
 
 Variáveis do `.env`:
 
 | Variável | Para quê |
 |---|---|
-| `DB_PASSWORD` | Senha do PostgreSQL. |
+| `DB_PASSWORD` | Senha do PostgreSQL. Pode ser trocada depois (o `db` grava a nova no banco) e ter qualquer caractere: a API a recebe em `PGPASSWORD`, fora da URL. |
 | `INTERNAL_KEY` | Chave que a API exige dos servidores de jogo. |
 | `WEB_PORT` | Porta do jogo no navegador (8000). Numa VM, é a única que precisa ficar aberta. |
 | `GAME_PUBLIC_URL` | Endereço que os jogadores usam para chegar ao servidor de jogo: a porta web mais `/ws` (`ws://localhost:8000/ws`); atrás de TLS, `wss://`. |

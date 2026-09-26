@@ -20,7 +20,17 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U frontier -d frontier"]
+      # POSTGRES_PASSWORD only counts when the volume is empty: on an existing volume the
+      # old password stays and the API fails with "password authentication failed". So once
+      # per container (a new DB_PASSWORD makes compose create a new one) the password of
+      # .env is written to the database through the local socket, which needs none.
+      test:
+        - CMD-SHELL
+        - >-
+          pg_isready -U frontier -d frontier && { [ -f /tmp/password-set ] ||
+          { echo "ALTER ROLE frontier PASSWORD :'pw'" |
+          psql -q -v ON_ERROR_STOP=1 -v pw="$$POSTGRES_PASSWORD" -U frontier -d frontier &&
+          touch /tmp/password-set; }; }
       interval: 5s
       timeout: 3s
       retries: 20
@@ -32,7 +42,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://frontier:${DB_PASSWORD}@db:5432/frontier?sslmode=disable
+      # The password goes apart (pgx reads PGPASSWORD): in the URL a # ? / or % of it would
+      # change what is sent.
+      DATABASE_URL: postgres://frontier@db:5432/frontier?sslmode=disable
+      PGPASSWORD: ${DB_PASSWORD}
       PUBLIC_ADDR: ":8080"
       INTERNAL_ADDR: ":8081"
       INTERNAL_KEY: ${INTERNAL_KEY:?set INTERNAL_KEY in .env}
