@@ -454,7 +454,8 @@ func on_finished(winner: int) -> void:
 	app.audio.set_charge(false, 0.0)
 	app.audio.play_music("", 0.8)
 	app.audio.play("victory" if summary.won else "defeat")
-	end_timer = 2.6
+	# 0.16: the victory/defeat moment (BattleOutcome) plays out before the results.
+	end_timer = 3.4
 
 func show_transition(report: Dictionary) -> void:
 	if not is_instance_valid(hud) or is_instance_valid(transition):
@@ -602,7 +603,7 @@ func settle_online() -> void:
 	hud.show_outcome(bool(summary.get("won", false)), bool(summary.get("draw", false)))
 	app.audio.play_music("", 0.8)
 	app.audio.play("victory" if summary.get("won", false) else "defeat")
-	end_timer = 2.6
+	end_timer = 3.4
 
 static func axis(negative: Key, positive: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

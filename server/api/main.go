@@ -1,4 +1,4 @@
-// Frontier Tank API: accounts, sessions, profile storage, audit log, game server list,
+// Gustfire API: accounts, sessions, profile storage, audit log, game server list,
 // presence and the Leilão (items in custody and the game mail). Game logic (battles,
 // crafting, loot, what can be sold) runs in the headless Godot game server, which is the
 // only client of the internal API.

@@ -45,6 +45,9 @@ func _ready() -> void:
 		server.configure(args)
 		add_child(server)
 		return
+	# The game was renamed (Frontier Tank -> Gustfire): bring the old user:// folder along
+	# before anything reads it (client/systems/legacy_data.gd).
+	LegacyData.migrate()
 	# Language (roadmap 4.3): saved choice or the system language; --lang=en for captures.
 	Lang.setup(str(args.get("lang", "")))
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
@@ -504,7 +507,7 @@ func shortcut(id: String) -> void:
 			open_help()
 		"exit":
 			if screen_name == "city":
-				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Voltar à tela de entrada?") if OS.has_feature("web") else tr("Deseja fechar o Frontier Tank?"))
+				var dialog: Control = UiKit.modal(ui, tr("SAIR"), tr("Voltar à tela de entrada?") if OS.has_feature("web") else tr("Deseja fechar o Gustfire?"))
 				var rect: Rect2 = dialog.get_meta("rect")
 				UiKit.button(dialog, tr("SAIR"), Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), quit_game)
 				UiKit.button(dialog, tr("FICAR"), Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)

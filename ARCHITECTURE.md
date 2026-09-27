@@ -1,4 +1,4 @@
-# Arquitetura
+# Arquitetura — Gustfire
 
 Projeto Godot 4.7 na raiz (reutiliza `assets/`). Renderizador Compatibility, resolução lógica 1280×720, filtro nearest. Offline a autoridade da partida é local; online (0.11) o servidor de jogo é a autoridade e a batalha roda em lockstep (seção Online). O Leilão e o Correio (0.12) só existem online (seção Leilão e Correio).
 
@@ -37,6 +37,7 @@ Entrada (`title_screen.gd`: logotipo com `client/shaders/logo_shine.gdshader`, a
 - Escala visual (0.8): `items.json` → `visual` (`projectile_scale` 1,5, `pow_projectile_scale` 1,6, `back_weapon_scale` 1,5, `pow_hitstop`), lida por `Armory.visual`. Só muda o desenho: o acerto usa o ponto do projétil contra a máscara do terreno e o `hit_radius`, e `tests/pow_tests.gd` confere dano, cratera e acerto iguais antes e depois.
 - `weapon_effect.gd`: efeitos dos especiais (raio arco-íris, raios, cura, corações, touro, tornado).
 - `monster_fx.gd` (`MonsterFx`, 0.14): as habilidades dos monstros na tela — lançamento, retículas nos alvos, o que cai do céu (`assets/effects/abilities/drops/<fx>.png`), poeira do salto, marcas de garra/machado/bico, onda do golpe no chão, cone do sopro, escudo, grito de guerra, cura e queimadura. `BattleScreen.show_monster_effect` escolhe o som (`mob_*` em `tools/make_sfx.py`); a câmera segue `LocalMatch.ability_focus`.
+- HUD da batalha (`battle_hud.gd`, redesenhado depois da 0.15): cada peça é um `Control` que se desenha com `hud_paint.gd` (`HudPaint`: moldura de bronze, poço de vidro, barra com brilho e valor que fica para trás, brilhos, raios e o texto em relevo do *cut-in*). `skill_slot.gd` (`SkillSlot`, um `Button`) é cada habilidade 1–9, F, V e Z/X/C: ícone cortado na parte usada, cinza pelo `client/shaders/hud_icon.gdshader` quando indisponível, moldura dourada no que está armado (`used`) e brilho no começo da vez (`play_shine`). `pow_orb.gd` (`PowOrb`) é o botão B. `battle_outcome.gd` (`BattleOutcome`) é a vitória/derrota/empate em tela cheia (`BattleHUD.show_outcome`); o resultado abre 3,4 s depois.
 - `battle_screen.gd`: mundo num `SubViewport` com `Camera2D` que segue o jogador da vez, o projétil e o impacto; fundo em escala inteira (2× nos fundos de 680×380) que desliza em pixels inteiros com a câmera e é escurecido por `dim`; tremor nas explosões; arrastar com o botão direito e clicar no minimapa.
 - `impact_fx.gd`: explosão com os quadros de `assets/effects/explosion/`, clarão, onda de choque, fumaça e estilhaços com as cores do chão. `ambience.gd`: clima em tela na frente do mundo e abaixo do HUD (`ambience` do mapa: `snow`, `embers`, `motes`, `sky`).
 - Mapas, itens, ferramentas, PvE, bots e recompensas ficam em `shared/balance/combat.json`; armas e equipamentos em `shared/balance/items.json`.

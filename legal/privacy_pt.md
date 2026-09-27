@@ -1,8 +1,8 @@
-# Política de Privacidade do Frontier Tank
+# Política de Privacidade do Gustfire
 
 Versão {{VERSION}}
 
-Esta política explica quais dados pessoais o Frontier Tank coleta, para quê, por quanto tempo, com quem eles são compartilhados e como você exerce os seus direitos. Ela segue a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018), o Marco Civil da Internet (Lei 12.965/2014) e o Regulamento Geral sobre a Proteção de Dados da União Europeia (GDPR).
+Esta política explica quais dados pessoais o Gustfire coleta, para quê, por quanto tempo, com quem eles são compartilhados e como você exerce os seus direitos. Ela segue a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018), o Marco Civil da Internet (Lei 12.965/2014) e o Regulamento Geral sobre a Proteção de Dados da União Europeia (GDPR).
 
 ## 1. Quem cuida dos seus dados
 

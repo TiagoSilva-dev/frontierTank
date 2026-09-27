@@ -348,22 +348,6 @@ a:hover { color: #fff; }
 }
 .hero-hero.left { left: max(2vw, 16px); }
 .hero-hero.right { right: max(2vw, 16px); animation-delay: -2s; }
-.hero-flyer {
-  position: absolute;
-  top: 16%;
-  left: -220px;
-  z-index: -2;
-  width: 200px;
-  image-rendering: pixelated;
-  animation: fly 38s linear infinite;
-  opacity: .9;
-}
-@keyframes fly {
-  0% { transform: translate(0, 0) scaleX(-1); }
-  50% { transform: translate(calc(100vw + 440px), -40px) scaleX(-1); }
-  50.01% { transform: translate(calc(100vw + 440px), -40px) scaleX(1); }
-  100% { transform: translate(0, 0) scaleX(1); }
-}
 .scroll-cue {
   position: absolute;
   bottom: 26px;
@@ -380,9 +364,6 @@ a:hover { color: #fff; }
 @keyframes cue { 50% { transform: translateY(6px); } }
 @media (max-width: 1100px) {
   .hero-hero { display: none; }
-}
-@media (max-width: 860px) {
-  .hero-flyer { display: none; }
 }
 
 /* ---------- stat strip ---------- */

@@ -36,7 +36,7 @@ const BLOCKED_WORDS: Array[String] = ["porra", "caralho", "merda", "puta", "fdp"
 var port: int = 7350
 var bind_address: String = "*"
 var public_url: String = "ws://localhost:7350"
-var server_name: String = "S1 · Nova Era"
+var server_name: String = "S1 · Ilha Celeste"
 var server_id: String = "s1"
 var capacity: int = 500
 var test_coupons: bool = false
@@ -84,7 +84,7 @@ func configure(args: Dictionary) -> void:
 	port = int(setting(args, "port", "FT_PORT", "7350"))
 	bind_address = setting(args, "bind", "FT_BIND", "*")
 	public_url = setting(args, "public-url", "FT_PUBLIC_URL", "ws://localhost:%d" % port)
-	server_name = setting(args, "name", "FT_NAME", "S1 · Nova Era")
+	server_name = setting(args, "name", "FT_NAME", "S1 · Ilha Celeste")
 	server_id = setting(args, "id", "FT_ID", "s1")
 	capacity = int(setting(args, "capacity", "FT_CAPACITY", "500"))
 	test_coupons = setting(args, "test-coupons", "FT_TEST_COUPONS", "0") == "1"

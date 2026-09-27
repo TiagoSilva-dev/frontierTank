@@ -76,6 +76,7 @@ func run_tests() -> void:
 	Lang.setup()
 	test_web()
 	test_identity()
+	test_rename()
 	test_legal_texts()
 	await test_privacy_screens()
 	await test_steam_client()
@@ -138,6 +139,50 @@ func test_identity() -> void:
 	var profile: PlayerProfile = PlayerProfile.new()
 	profile.load_profile()
 	check(Armory.item_name(profile.equipped_instance("arma")) == "Tijolaço", "a new account still starts with the first weapon (same id, new name)")
+
+# ---------- the Gustfire name (26/09/2026) ----------
+
+func test_rename() -> void:
+	check(str(ProjectSettings.get_setting("application/config/name")) == "Gustfire", "the window and the export are called Gustfire")
+	var texts: Dictionary = shipped_texts()
+	var hits: Array[String] = []
+	for path: String in texts:
+		# The migration has to know the old user:// folder name; nothing else may say it.
+		if path == "res://client/systems/legacy_data.gd":
+			continue
+		for old in ["Frontier Tank", "FRONTIER TANK", "Nova Era", "NOVA ERA"]:
+			if str(texts[path]).contains(old):
+				hits.append("%s: %s" % [path, old])
+	check(hits.is_empty(), "the old name is gone from what players see %s" % str(hits.slice(0, 5)))
+	for path in [TitleScreen.LOGO, TitleScreen.LOGO_EN, "res://icon.png"]:
+		check(ResourceLoader.exists(path), "%s exists" % path)
+	var logo: Texture2D = load(TitleScreen.LOGO)
+	check(logo != null and logo.get_width() <= 1280 and TitleScreen.LOGO_TOP + logo.get_height() < 276, "the logo fits above the login box")
+	# Saves under the old name are copied to the new user:// folder once.
+	var root: String = ProjectSettings.globalize_path("user://rename_test/app_userdata")
+	var old_dir: String = root.path_join(LegacyData.OLD_FOLDER)
+	var new_dir: String = root.path_join("Gustfire")
+	DirAccess.make_dir_recursive_absolute(old_dir.path_join("exports"))
+	DirAccess.make_dir_recursive_absolute(old_dir.path_join("logs"))
+	for file in [["profile.json", "{\"coins\": 123}"], ["settings.cfg", "[game]"], ["exports/dados.json", "{}"], ["logs/godot.log", "x"]]:
+		var out: FileAccess = FileAccess.open(old_dir.path_join(file[0]), FileAccess.WRITE)
+		out.store_string(file[1])
+		out.close()
+	var copied: int = LegacyData.migrate(new_dir)
+	check(copied == 3 and FileAccess.get_file_as_string(new_dir.path_join("profile.json")) == "{\"coins\": 123}" and FileAccess.file_exists(new_dir.path_join("exports/dados.json")), "the old save, settings and exports come along (%d files)" % copied)
+	check(not DirAccess.dir_exists_absolute(new_dir.path_join("logs")) and FileAccess.file_exists(old_dir.path_join("profile.json")), "engine logs are skipped and the old folder stays as it was")
+	var again: FileAccess = FileAccess.open(new_dir.path_join("profile.json"), FileAccess.WRITE)
+	again.store_string("{\"coins\": 999}")
+	again.close()
+	check(LegacyData.migrate(new_dir) == 0 and FileAccess.get_file_as_string(new_dir.path_join("profile.json")) == "{\"coins\": 999}", "a save made under the new name is never replaced")
+	remove_tree(ProjectSettings.globalize_path("user://rename_test"))
+
+static func remove_tree(path: String) -> void:
+	for folder in DirAccess.get_directories_at(path):
+		remove_tree(path.path_join(folder))
+	for file in DirAccess.get_files_at(path):
+		DirAccess.remove_absolute(path.path_join(file))
+	DirAccess.remove_absolute(path)
 
 # ---------- privacy and accounts (LGPD/GDPR) ----------
 

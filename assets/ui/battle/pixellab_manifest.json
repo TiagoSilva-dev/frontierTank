@@ -1,0 +1,24 @@
+{
+ "date": "2026-09-27",
+ "cost": 15,
+ "remaining_after": 82,
+ "images": [
+  {"name": "victory_emblem", "job_id": "58d06829-e26c-47b2-9ad1-9fde3ec69835", "tool": "create_image_pixen", "size": "192x144", "seed": 1602, "target": "assets/ui/battle/victory_emblem.png"},
+  {"name": "defeat_emblem", "job_id": "ac167dd3-3fd6-4395-841f-013fac5f86a9", "tool": "create_image_pixen", "size": "192x144", "seed": 1611, "target": "assets/ui/battle/defeat_emblem.png"},
+  {"name": "skill_plus2", "job_id": "c3e0be32-045e-48ab-93a2-97adb5efc90e", "tool": "create_image_pixen", "size": "64x64", "seed": 1621, "target": "assets/ui/skills/item_1.png"},
+  {"name": "skill_triple", "job_id": "6cd83c85-9e6f-4359-a3e8-26b2a8254838", "tool": "create_image_pixen", "size": "64x64", "seed": 1633, "target": "assets/ui/skills/item_2.png"},
+  {"name": "skill_plus1", "job_id": "88123847-8570-4aff-a0fb-f111b8bd76a2", "tool": "create_image_pixen", "size": "64x64", "seed": 1642, "target": "assets/ui/skills/item_3.png"},
+  {"name": "skill_damage", "job_id": "bbdfa1b3-e387-4675-8be6-ec89641ea04f", "tool": "create_image_pixen", "size": "64x64", "seed": 1652, "target": "assets/ui/skills/item_4.png … item_8.png (hue shifted: -0.075, -0.04, 0, +0.035, +0.07; only pixels with saturation >= 0.25)"},
+  {"name": "skill_powmax", "job_id": "81dcdebb-405a-4bbb-95a5-9d2b2b90aeef", "tool": "create_image_pixen", "size": "64x64", "seed": 1661, "target": "assets/ui/skills/item_9.png"}
+ ],
+ "discarded": [
+  {"name": "victory_emblem_a", "job_id": "bd072d49-f010-4f87-aef2-f7a4e24c91f0", "why": "brown shield face; the other one reads cleaner"},
+  {"name": "defeat_emblem_b", "job_id": "2e34069d-7f91-4082-b1d3-aca190492889", "why": "fine, but the chosen one has the snapped sword and a clearer crack"},
+  {"name": "skill_plus2_b", "job_id": "cc6d65a6-203d-4e85-b9cb-6fbc35867305", "why": "arrows too thin"},
+  {"name": "skill_triple_a", "job_id": "b4771596-4e9c-4299-9e25-93de54347e44", "why": "three cannons in a frost ring"},
+  {"name": "skill_triple_b", "job_id": "0c20d3ff-1082-447e-8a89-eb53e9bfb8b7", "why": "a spiky machine"},
+  {"name": "skill_plus1_a", "job_id": "3bed584e-418b-4239-880b-93557ea75ff4", "why": "points down-left"},
+  {"name": "skill_damage_a", "job_id": "0aa86c2c-0583-45ca-9f0b-8f5089cb3195", "why": "blurry blade"},
+  {"name": "skill_powmax_b", "job_id": "3eded150-ffb1-44c4-8bd4-ae7df9a9d8d9", "why": "lightning touches the canvas edge"}
+ ]
+}

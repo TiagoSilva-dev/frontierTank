@@ -1,4 +1,4 @@
-# Frontier Tank: Nova Era
+# Gustfire (antes Frontier Tank: Nova Era)
 
 ## Idiomas (roadmap 4.3)
 Português e inglês desde já, com versão própria dos nomes em cada idioma. O português é o idioma-fonte; o inglês fica em `locale/en.po`. Detalhes no `README.md` (seção Idiomas).

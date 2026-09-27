@@ -9,7 +9,7 @@ O site fica em `website/`: uma página inicial para chamar jogadores e uma wiki 
 - **Logotipo** em pixel art, gerado por `tools/make_logo.py`: letras da fonte Titan One (SIL OFL, `tools/logo/TitanOne-OFL.txt`) num arco, pintadas como pixel art à mão (degradê em faixas com pontilhado, chanfro, brilho, contorno escuro, extrusão 3D e borda creme). “GUST” nas cores do vento e “FIRE” nas do fogo; rajadas de vento à esquerda, brasas saindo do FIRE, o tracejado do tiro e a bomba com asas no ápice (arte do PixelLab, `tools/logo/emblem_bomb.png`, 1 geração).
 - Arquivos em `website/img/brand/`: `gustfire_logo_pt.png` e `_en.png` (663×207 em pixels nativos, transparente), as versões `@3x` (1989×621, para cápsulas e impressos), `gustfire_wordmark` (só as letras), `gustfire_icon_{32,64,180,512}` (ícone redondo com a bomba) e `og_pt.png` / `og_en.png` (1200×630, prévia de link em redes sociais).
 - Para ampliar o logotipo, sempre em escala inteira com vizinho mais próximo (2×, 3×, 4×…), para os pixels continuarem quadrados.
-- **O jogo ainda se chama Frontier Tank por dentro** (tela de entrada, janela, textos legais, página da Steam, nome do servidor “S1 · Nova Era”). Trocar isso é um passo separado.
+- **O jogo inteiro usa o nome novo** (26/09/2026): o logotipo na tela de entrada (`assets/title/logo.png` e `logo_en.png`, gravados pelo `make_logo.py` em 1:1), o ícone do jogo (`icon.png`), o título da janela, os executáveis, os textos legais, a página e as cápsulas da Steam (padrão em inglês, `capsules/pt/` em português) e o servidor padrão **S1 · Ilha Celeste**. Os saves da pasta antiga (`app_userdata/Frontier Tank- Nova Era`) são copiados na primeira vez (`client/systems/legacy_data.gd`).
 
 ## Página inicial (`website/index.html`)
 
@@ -59,7 +59,6 @@ O site não usa rastreadores, anúncios nem fontes do Google (as fontes vão jun
 
 ## Pendências
 
-- Trocar o nome **dentro do jogo** (logotipo da tela de entrada, título da janela, textos legais, página e cápsulas da Steam, nome do servidor padrão) para Gustfire.
 - Busca de marca de “Gustfire” antes de registrar domínio e página da Steam.
 - Links de **Termos de Uso** e **Política de Privacidade** no rodapé quando os textos de `legal/` tiverem os dados da empresa e a revisão jurídica.
 - Endereço absoluto no `og:image` quando houver domínio.

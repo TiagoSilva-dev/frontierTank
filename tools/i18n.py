@@ -137,7 +137,7 @@ def read_po(path):
 
 HEADER = '''msgid ""
 msgstr ""
-"Project-Id-Version: Frontier Tank\\n"
+"Project-Id-Version: Gustfire\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=UTF-8\\n"
 "Content-Transfer-Encoding: 8bit\\n"

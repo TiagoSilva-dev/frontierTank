@@ -6,7 +6,8 @@ Everything goes to store/steam/ (ignored by Godot, left out of the game package)
 Usage:
   python tools/steam_store.py capsules       every capsule size Steamworks asks for, from
                                              the title art (assets/title) scaled by whole
-                                             numbers so the pixels stay square
+                                             numbers so the pixels stay square, with the
+                                             Gustfire logo (tools/make_logo.py)
   python tools/steam_store.py achievements   256x256 icons (unlocked and locked) and
                                              achievements.csv to register them on
                                              Steamworks, from shared/balance/achievements.json
@@ -30,18 +31,21 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 OUT = os.path.join(ROOT, "store", "steam")
 BG = os.path.join(ROOT, "assets", "title", "title_bg.png")
 LOGO = os.path.join(ROOT, "assets", "title", "logo.png")
+LOGO_EN = os.path.join(ROOT, "assets", "title", "logo_en.png")
 
-# name: (size, background scale, crop center (0..1 of the scaled art), logo scale,
-# logo center (0..1 of the capsule)). Logo scale 0 = no logo (Steam asks for art only on
-# the library hero and the page background).
+# name: (size, background scale, crop center (0..1 of the scaled art), logo width (share
+# of the capsule width), logo center (0..1 of the capsule)). Logo width 0 = no logo (Steam
+# asks for art only on the library hero and the page background). The Gustfire logo
+# (tools/make_logo.py) is high-resolution pixel art: it is enlarged by whole numbers and
+# then smoothed down to the exact width, so it stays sharp at any capsule size.
 CAPSULES = {
-    "header_capsule": ((920, 430), 2, (0.64, 0.60), 2, (0.36, 0.42)),
-    "small_capsule": ((462, 174), 1, (0.5, 0.40), 1, (0.5, 0.46)),
-    "main_capsule": ((1232, 706), 2, (0.5, 0.5), 3, (0.40, 0.36)),
-    "vertical_capsule": ((748, 896), 3, (0.82, 0.55), 2, (0.5, 0.20)),
+    "header_capsule": ((920, 430), 2, (0.64, 0.60), 0.66, (0.40, 0.38)),
+    "small_capsule": ((462, 174), 1, (0.5, 0.40), 0.92, (0.5, 0.48)),
+    "main_capsule": ((1232, 706), 2, (0.5, 0.5), 0.62, (0.40, 0.33)),
+    "vertical_capsule": ((748, 896), 3, (0.82, 0.55), 0.9, (0.5, 0.17)),
     "page_background": ((1438, 810), 3, (0.5, 0.5), 0, None),
-    "library_capsule": ((600, 900), 3, (0.86, 0.52), 2, (0.5, 0.17)),
-    "library_header": ((920, 430), 2, (0.64, 0.60), 2, (0.36, 0.42)),
+    "library_capsule": ((600, 900), 3, (0.86, 0.52), 0.92, (0.5, 0.15)),
+    "library_header": ((920, 430), 2, (0.64, 0.60), 0.66, (0.40, 0.38)),
     "library_hero": ((3840, 1240), 6, (0.5, 0.45), 0, None),
 }
 
@@ -49,6 +53,13 @@ CAPSULES = {
 def scaled(path, factor):
     image = Image.open(path).convert("RGBA")
     return image.resize((image.width * factor, image.height * factor), Image.NEAREST)
+
+
+def logo_at(width, path=LOGO):
+    logo = Image.open(path).convert("RGBA")
+    factor = max(1, -(-width // logo.width))
+    big = logo.resize((logo.width * factor, logo.height * factor), Image.NEAREST)
+    return big.resize((width, round(big.height * width / big.width)), Image.LANCZOS)
 
 
 def crop_center(image, size, center):
@@ -60,37 +71,50 @@ def crop_center(image, size, center):
     return image.crop((left, top, left + width, top + height))
 
 
-def with_logo(canvas, factor, center):
-    logo = scaled(LOGO, factor)
+def with_logo(canvas, share, center, path=LOGO_EN):
+    logo = logo_at(round(canvas.width * share), path)
     x = round(canvas.width * center[0] - logo.width / 2)
     y = round(canvas.height * center[1] - logo.height / 2)
     # A soft shadow under the logo keeps it readable on the busy art.
+    blur = max(2, logo.width // 120)
     shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     alpha = logo.split()[3].point(lambda a: 150 if a > 0 else 0)
-    shadow.paste((20, 10, 4, 255), (x + factor * 2, y + factor * 3), alpha)
-    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(factor * 3)))
+    shadow.paste((20, 10, 4, 255), (x + blur, y + blur * 2), alpha)
+    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(blur * 2)))
     canvas.alpha_composite(logo, (x, y))
     return canvas
 
 
 def cmd_capsules():
-    folder = os.path.join(OUT, "capsules")
-    os.makedirs(folder, exist_ok=True)
-    for name, (size, factor, center, logo_factor, logo_center) in CAPSULES.items():
-        canvas = crop_center(scaled(BG, factor), size, center)
-        if logo_factor:
-            canvas = with_logo(canvas, logo_factor, logo_center)
-        canvas.convert("RGB").save(os.path.join(folder, name + ".png"))
-        print(f"  {name}.png {size[0]}x{size[1]}")
-    # Library logo: the logo alone on transparency (1280x720 at most).
-    scaled(LOGO, 5).save(os.path.join(folder, "library_logo.png"))
-    print("  library_logo.png 1280x720 (transparent)")
-    # Community icon (184x184) and the small client icon (32x32): the cannon emblem.
-    emblem = Image.open(LOGO).convert("RGBA").crop((82, 0, 174, 92))
-    icon = Image.new("RGBA", (92, 92), (38, 20, 8, 255))
-    icon.alpha_composite(emblem)
-    icon.resize((184, 184), Image.NEAREST).convert("RGB").save(os.path.join(folder, "community_icon.jpg"), quality=95)
-    icon.resize((32, 32), Image.LANCZOS).save(os.path.join(folder, "client_icon.png"))
+    # Steam shows the default capsules to every language and the localized ones to their
+    # own: English (the "SKY ARTILLERY" ribbon) is the default, Brazilian Portuguese
+    # ("ARTILHARIA NOS CÉUS") goes in capsules/pt for Steamworks' localized assets.
+    base = os.path.join(OUT, "capsules")
+    for folder, logo_path in ((base, LOGO_EN), (os.path.join(base, "pt"), LOGO)):
+        os.makedirs(folder, exist_ok=True)
+        for name, (size, factor, center, logo_share, logo_center) in CAPSULES.items():
+            if folder != base and not logo_share:
+                continue
+            canvas = crop_center(scaled(BG, factor), size, center)
+            if logo_share:
+                canvas = with_logo(canvas, logo_share, logo_center, logo_path)
+            canvas.convert("RGB").save(os.path.join(folder, name + ".png"))
+            print(f"  {os.path.relpath(folder, OUT)}/{name}.png {size[0]}x{size[1]}")
+        # Library logo: the logo alone on transparency (1280x720 at most).
+        library = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
+        logo = logo_at(1240, logo_path)
+        library.alpha_composite(logo, ((1280 - logo.width) // 2, (720 - logo.height) // 2))
+        library.save(os.path.join(folder, "library_logo.png"))
+        print(f"  {os.path.relpath(folder, OUT)}/library_logo.png 1280x720 (transparent)")
+    folder = base
+    # Community icon (184x184) and the small client icon (32x32): the winged bomb badge.
+    sys.path.insert(0, os.path.dirname(__file__))
+    import make_logo
+    badge = make_logo.icon()
+    icon = Image.new("RGBA", (184, 184), (26, 15, 46, 255))
+    icon.alpha_composite(badge, ((184 - badge.width) // 2, (184 - badge.height) // 2))
+    icon.convert("RGB").save(os.path.join(folder, "community_icon.jpg"), quality=95)
+    badge.resize((32, 32), Image.LANCZOS).save(os.path.join(folder, "client_icon.png"))
     print("  community_icon.jpg 184x184, client_icon.png 32x32")
 
 

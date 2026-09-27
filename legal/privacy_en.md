@@ -1,8 +1,8 @@
-# Frontier Tank Privacy Policy
+# Gustfire Privacy Policy
 
 Version {{VERSION}}
 
-This policy explains what personal data Frontier Tank collects, why, for how long, who it is shared with and how you exercise your rights. It follows the Brazilian General Data Protection Law (LGPD, Law 13.709/2018), the Brazilian Internet Civil Framework (Marco Civil da Internet, Law 12.965/2014) and the European Union General Data Protection Regulation (GDPR).
+This policy explains what personal data Gustfire collects, why, for how long, who it is shared with and how you exercise your rights. It follows the Brazilian General Data Protection Law (LGPD, Law 13.709/2018), the Brazilian Internet Civil Framework (Marco Civil da Internet, Law 12.965/2014) and the European Union General Data Protection Regulation (GDPR).
 
 ## 1. Who looks after your data
 

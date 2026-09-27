@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Frontier Tank\n"
+"Project-Id-Version: Gustfire\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -154,131 +154,131 @@ msgstr ""
 msgid "Erro do servidor: %s"
 msgstr ""
 
-#: client/scripts/main.gd:251 client/systems/lobby.gd:20
+#: client/scripts/main.gd:254 client/systems/lobby.gd:20
 msgid "bora sala 4x4!!"
 msgstr ""
 
-#: client/scripts/main.gd:296 client/systems/lobby.gd:11 server/game/game_server.gd:638
+#: client/scripts/main.gd:299 client/systems/lobby.gd:11 server/game/game_server.gd:638
 msgid "Guerra de equipes, diversão sem limite"
 msgstr ""
 
-#: client/scripts/main.gd:302 client/ui/room_screen.gd:242 client/ui/room_screen.gd:263
+#: client/scripts/main.gd:305 client/ui/room_screen.gd:242 client/ui/room_screen.gd:263
 msgid "Expedição: %s"
 msgstr ""
 
-#: client/scripts/main.gd:312 client/scripts/main.gd:323 client/scripts/main.gd:382 client/scripts/main.gd:737
+#: client/scripts/main.gd:315 client/scripts/main.gd:326 client/scripts/main.gd:385 client/scripts/main.gd:740
 msgid "SALA"
 msgstr ""
 
-#: client/scripts/main.gd:507
-msgid "Deseja fechar o Frontier Tank?"
+#: client/scripts/main.gd:510
+msgid "Deseja fechar o Gustfire?"
 msgstr ""
 
-#: client/scripts/main.gd:507 client/scripts/main.gd:509 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:69
+#: client/scripts/main.gd:510 client/scripts/main.gd:512 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:75
 msgid "SAIR"
 msgstr ""
 
-#: client/scripts/main.gd:507
+#: client/scripts/main.gd:510
 msgid "Voltar à tela de entrada?"
 msgstr ""
 
-#: client/scripts/main.gd:510
+#: client/scripts/main.gd:513
 msgid "FICAR"
 msgstr ""
 
-#: client/scripts/main.gd:529 client/ui/bottom_bar.gd:17
+#: client/scripts/main.gd:532 client/ui/bottom_bar.gd:17
 msgid "MISSÃO"
 msgstr ""
 
-#: client/scripts/main.gd:529 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
+#: client/scripts/main.gd:532 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
 msgid "PET"
 msgstr ""
 
-#: client/scripts/main.gd:530
+#: client/scripts/main.gd:533
 msgid "Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."
 msgstr ""
 
-#: client/scripts/main.gd:534 client/ui/bottom_bar.gd:22
+#: client/scripts/main.gd:537 client/ui/bottom_bar.gd:22
 msgid "AJUDA"
 msgstr ""
 
-#: client/scripts/main.gd:534
+#: client/scripts/main.gd:537
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr ""
 
-#: client/scripts/main.gd:540 client/ui/title_screen.gd:74
+#: client/scripts/main.gd:543 client/ui/title_screen.gd:80
 msgid "Privacidade"
 msgstr ""
 
-#: client/scripts/main.gd:542 client/ui/title_screen.gd:122
+#: client/scripts/main.gd:545 client/ui/title_screen.gd:128
 msgid "Minha conta"
 msgstr ""
 
-#: client/scripts/main.gd:546 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34
+#: client/scripts/main.gd:549 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:72 client/ui/coupon_dialog.gd:34
 msgid "FECHAR"
 msgstr ""
 
-#: client/scripts/main.gd:559 client/ui/auction_screen.gd:71
+#: client/scripts/main.gd:562 client/ui/auction_screen.gd:71
 msgid "LEILÃO"
 msgstr ""
 
-#: client/scripts/main.gd:559
+#: client/scripts/main.gd:562
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:569 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+#: client/scripts/main.gd:572 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
 msgid "CORREIO"
 msgstr ""
 
-#: client/scripts/main.gd:569
+#: client/scripts/main.gd:572
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:580
+#: client/scripts/main.gd:583
 msgid "O Leilão só funciona online."
 msgstr ""
 
-#: client/scripts/main.gd:634
+#: client/scripts/main.gd:637
 msgid "Conquista: %s"
 msgstr ""
 
-#: client/scripts/main.gd:643 client/ui/shop_screen.gd:148 server/game/game_server.gd:1297
+#: client/scripts/main.gd:646 client/ui/shop_screen.gd:148 server/game/game_server.gd:1297
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr ""
 
-#: client/scripts/main.gd:652
+#: client/scripts/main.gd:655
 msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
 msgstr ""
 
-#: client/scripts/main.gd:655
+#: client/scripts/main.gd:658
 msgid "Compra cancelada."
 msgstr ""
 
-#: client/scripts/main.gd:660
+#: client/scripts/main.gd:663
 msgid "Compra concluída! Os itens chegaram ao Correio."
 msgstr ""
 
-#: client/scripts/main.gd:681
+#: client/scripts/main.gd:684
 msgid "Bem-vindo ao servidor %s!"
 msgstr ""
 
-#: client/scripts/main.gd:714
+#: client/scripts/main.gd:717
 msgid "CONEXÃO"
 msgstr ""
 
-#: client/scripts/main.gd:724
+#: client/scripts/main.gd:727
 msgid "AVISO"
 msgstr ""
 
-#: client/scripts/main.gd:737
+#: client/scripts/main.gd:740
 msgid "Você foi removido da sala."
 msgstr ""
 
-#: client/scripts/main.gd:788
+#: client/scripts/main.gd:791
 msgid "Música desligada"
 msgstr ""
 
-#: client/scripts/main.gd:788
+#: client/scripts/main.gd:791
 msgid "Música ligada"
 msgstr ""
 
@@ -558,7 +558,7 @@ msgstr ""
 msgid "%d Moedas"
 msgstr ""
 
-#: client/systems/instance_run.gd:54 client/ui/battle_hud.gd:175 client/ui/result_screen.gd:94 client/ui/room_screen.gd:202
+#: client/systems/instance_run.gd:54 client/ui/battle_hud.gd:172 client/ui/result_screen.gd:94 client/ui/room_screen.gd:202
 msgid "Entrada livre"
 msgstr ""
 
@@ -894,7 +894,7 @@ msgstr ""
 msgid "EXCLUIR"
 msgstr ""
 
-#: client/ui/account_screen.gd:133 client/ui/title_screen.gd:140
+#: client/ui/account_screen.gd:133 client/ui/title_screen.gd:146
 msgid "sua senha"
 msgstr ""
 
@@ -922,7 +922,7 @@ msgstr ""
 msgid "CONTA EXCLUÍDA"
 msgstr ""
 
-#: client/ui/account_screen.gd:196 client/ui/title_screen.gd:237
+#: client/ui/account_screen.gd:196 client/ui/title_screen.gd:243
 msgid "Conectando à Steam…"
 msgstr ""
 
@@ -934,7 +934,7 @@ msgstr ""
 msgid "MINHA CONTA"
 msgstr ""
 
-#: client/ui/account_screen.gd:50 client/ui/title_screen.gd:117 client/ui/title_screen.gd:135
+#: client/ui/account_screen.gd:50 client/ui/title_screen.gd:123 client/ui/title_screen.gd:141
 msgid "Conta"
 msgstr ""
 
@@ -1294,168 +1294,192 @@ msgstr ""
 msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
 msgstr ""
 
-#: client/ui/battle_hud.gd:105
-msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
+#: client/ui/battle_hud.gd:100
+msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
 msgstr ""
 
-#: client/ui/battle_hud.gd:110
-msgid "%s (V)\n%s"
+#: client/ui/battle_hud.gd:101
+msgid "Pausa / opções (Esc)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:110
-msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
+#: client/ui/battle_hud.gd:102
+msgid "Sair da batalha"
 msgstr ""
 
-#: client/ui/battle_hud.gd:115
+#: client/ui/battle_hud.gd:111
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:118 client/ui/battle_hud.gd:319
-msgid "Confiar"
+#: client/ui/battle_hud.gd:115
+msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
 msgstr ""
 
 #: client/ui/battle_hud.gd:119
+msgid "%s (V)\n%s"
+msgstr ""
+
+#: client/ui/battle_hud.gd:119
+msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
+msgstr ""
+
+#: client/ui/battle_hud.gd:121 client/ui/battle_hud.gd:341
+msgid "Confiar"
+msgstr ""
+
+#: client/ui/battle_hud.gd:122
 msgid "Confiar: a IA joga os seus turnos."
 msgstr ""
 
-#: client/ui/battle_hud.gd:127
-msgid "Força"
+#: client/ui/battle_hud.gd:136
+msgid "Sem ferramenta. Compre na sala."
 msgstr ""
 
-#: client/ui/battle_hud.gd:143
-msgid "Sem ferramenta. Compre na sala."
+#: client/ui/battle_hud.gd:148
+msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
 msgstr ""
 
 #: client/ui/battle_hud.gd:152
 msgid "POW (B): %s. Enche causando e recebendo dano."
 msgstr ""
 
-#: client/ui/battle_hud.gd:155
-msgid "POW"
-msgstr ""
-
-#: client/ui/battle_hud.gd:159
-msgid "Energia"
-msgstr ""
-
-#: client/ui/battle_hud.gd:162 client/ui/character_screen.gd:186 client/ui/smith_screen.gd:148
-msgid "Vida"
-msgstr ""
-
-#: client/ui/battle_hud.gd:175 client/ui/result_screen.gd:94 client/ui/room_screen.gd:206
+#: client/ui/battle_hud.gd:172 client/ui/result_screen.gd:94 client/ui/room_screen.gd:206
 msgid "Nível %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:176
+#: client/ui/battle_hud.gd:173
 msgid "Fase %d/%d  •  %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:181
+#: client/ui/battle_hud.gd:178
 msgid "Sem avião de papel neste mapa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:188
+#: client/ui/battle_hud.gd:206
 msgid "Cristais: %d/%d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:190
+#: client/ui/battle_hud.gd:208
 msgid "Sobreviva: %d/%d turnos"
 msgstr ""
 
-#: client/ui/battle_hud.gd:193
+#: client/ui/battle_hud.gd:211
 msgid "  (+%d onda)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:193
+#: client/ui/battle_hud.gd:211
 msgid "Inimigos: %d%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:253
-msgid "EMPATE"
+#: client/ui/battle_hud.gd:251
+msgid "Ninguém venceu desta vez."
 msgstr ""
 
-#: client/ui/battle_hud.gd:261
+#: client/ui/battle_hud.gd:253
+msgid "Instância concluída!"
+msgstr ""
+
+#: client/ui/battle_hud.gd:253
+msgid "Sua equipe venceu a batalha!"
+msgstr ""
+
+#: client/ui/battle_hud.gd:255
+msgid "Sua equipe foi derrotada."
+msgstr ""
+
+#: client/ui/battle_hud.gd:269
 msgid "OPÇÕES"
 msgstr ""
 
-#: client/ui/battle_hud.gd:261
+#: client/ui/battle_hud.gd:269
 msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:263
+#: client/ui/battle_hud.gd:271
 msgid "BATALHA PAUSADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:263
+#: client/ui/battle_hud.gd:271
 msgid "Partida local contra IA. Desistir conta como derrota."
 msgstr ""
 
-#: client/ui/battle_hud.gd:271
+#: client/ui/battle_hud.gd:279
 msgid "DESLIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:271
+#: client/ui/battle_hud.gd:279
 msgid "LIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:271
+#: client/ui/battle_hud.gd:279
 msgid "Música: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:272
+#: client/ui/battle_hud.gd:280
 msgid "DESLIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:272
+#: client/ui/battle_hud.gd:280
 msgid "Efeitos: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:272
+#: client/ui/battle_hud.gd:280
 msgid "LIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:280
+#: client/ui/battle_hud.gd:288
 msgid "CONTINUAR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:281
+#: client/ui/battle_hud.gd:289
 msgid "DESISTIR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:319
+#: client/ui/battle_hud.gd:341
 msgid "Confiar ✓"
 msgstr ""
 
-#: client/ui/battle_hud.gd:368 client/ui/battle_hud.gd:369
+#: client/ui/battle_hud.gd:427
 msgid "EU"
 msgstr ""
 
-#: client/ui/battle_hud.gd:456
+#: client/ui/battle_hud.gd:543
+msgid "Rodada %d"
+msgstr ""
+
+#: client/ui/battle_hud.gd:715
+msgid "Força"
+msgstr ""
+
+#: client/ui/battle_hud.gd:773
 msgid "Aguarde a sua vez…"
 msgstr ""
 
-#: client/ui/battle_hud.gd:456
+#: client/ui/battle_hud.gd:773
 msgid "Pressione Espaço com força total e realize um ataque"
 msgstr ""
 
-#: client/ui/battle_hud.gd:86
+#: client/ui/battle_hud.gd:93
+msgid "Vento e tempo do turno."
+msgstr ""
+
+#: client/ui/battle_hud.gd:94
 msgid "PASS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:87
+#: client/ui/battle_hud.gd:95
 msgid "Passar a vez (P). Gera menos atraso."
 msgstr ""
 
-#: client/ui/battle_hud.gd:90
-msgid "Pausa / opções (Esc)"
+#: client/ui/battle_outcome.gd:48
+msgid "DERROTA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:91
-msgid "Sair da batalha"
+#: client/ui/battle_outcome.gd:48
+msgid "EMPATE"
 msgstr ""
 
-#: client/ui/battle_hud.gd:98
-msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
+#: client/ui/battle_outcome.gd:48
+msgid "VITÓRIA!"
 msgstr ""
 
 #: client/ui/battle_screen.gd:412
@@ -1466,11 +1490,11 @@ msgstr ""
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:447 client/ui/battle_screen.gd:596
+#: client/ui/battle_screen.gd:447 client/ui/battle_screen.gd:597
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:649
+#: client/ui/battle_screen.gd:650
 msgid "Sincronizando a batalha…"
 msgstr ""
 
@@ -1532,6 +1556,10 @@ msgstr ""
 
 #: client/ui/character_screen.gd:186
 msgid "Proteção"
+msgstr ""
+
+#: client/ui/character_screen.gd:186 client/ui/smith_screen.gd:148
+msgid "Vida"
 msgstr ""
 
 #: client/ui/character_screen.gd:19 shared/balance/combat.json:rewards.cards[5].name
@@ -1866,7 +1894,7 @@ msgstr ""
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr ""
 
-#: client/ui/consent_dialog.gd:27 client/ui/title_screen.gd:144
+#: client/ui/consent_dialog.gd:27 client/ui/title_screen.gd:150
 msgid "CRIAR CONTA"
 msgstr ""
 
@@ -2038,7 +2066,7 @@ msgstr ""
 msgid "Sala %s não encontrada neste canal."
 msgstr ""
 
-#: client/ui/hall_screen.gd:232 client/ui/title_screen.gd:64
+#: client/ui/hall_screen.gd:232 client/ui/title_screen.gd:70
 msgid "ENTRAR"
 msgstr ""
 
@@ -2220,6 +2248,10 @@ msgstr ""
 
 #: client/ui/pow_banner.gd:340 client/ui/pow_banner.gd:341
 msgid "POW!"
+msgstr ""
+
+#: client/ui/pow_orb.gd:96
+msgid "POW"
 msgstr ""
 
 #: client/ui/report_dialog.gd:10
@@ -2846,92 +2878,92 @@ msgstr ""
 msgid "Alto-falante"
 msgstr ""
 
-#: client/ui/title_screen.gd:100
+#: client/ui/title_screen.gd:106
 msgid "Buscando servidores…"
 msgstr ""
 
-#: client/ui/title_screen.gd:111
+#: client/ui/title_screen.gd:117
 msgid "Jogue sozinho: as salas e os jogadores do canal são simulados por IA e o progresso fica neste computador."
 msgstr ""
 
-#: client/ui/title_screen.gd:119
+#: client/ui/title_screen.gd:125
 msgid "Trocar de conta"
 msgstr ""
 
-#: client/ui/title_screen.gd:126
+#: client/ui/title_screen.gd:132
 msgid "Steam: %s"
 msgstr ""
 
-#: client/ui/title_screen.gd:128
+#: client/ui/title_screen.gd:134
 msgid "ENTRAR COM A STEAM"
 msgstr ""
 
-#: client/ui/title_screen.gd:130
+#: client/ui/title_screen.gd:136
 msgid "Usar conta e senha"
 msgstr ""
 
-#: client/ui/title_screen.gd:136
+#: client/ui/title_screen.gd:142
 msgid "nome da conta"
 msgstr ""
 
-#: client/ui/title_screen.gd:139
+#: client/ui/title_screen.gd:145
 msgid "Senha"
 msgstr ""
 
-#: client/ui/title_screen.gd:14
-msgid "Modo offline"
-msgstr ""
-
-#: client/ui/title_screen.gd:14
-msgid "Sozinho"
-msgstr ""
-
-#: client/ui/title_screen.gd:143
+#: client/ui/title_screen.gd:149
 msgid "Lembrar"
 msgstr ""
 
-#: client/ui/title_screen.gd:171
+#: client/ui/title_screen.gd:17
+msgid "Modo offline"
+msgstr ""
+
+#: client/ui/title_screen.gd:17
+msgid "Sozinho"
+msgstr ""
+
+#: client/ui/title_screen.gd:177
 msgid "%d online"
 msgstr ""
 
-#: client/ui/title_screen.gd:171
+#: client/ui/title_screen.gd:177
 msgid "Cheio"
 msgstr ""
 
-#: client/ui/title_screen.gd:179
+#: client/ui/title_screen.gd:185
 msgid "Servidores online indisponíveis agora. Você pode jogar no modo offline."
 msgstr ""
 
-#: client/ui/title_screen.gd:215
+#: client/ui/title_screen.gd:221
 msgid "Bem-vindo ao modo offline!"
 msgstr ""
 
-#: client/ui/title_screen.gd:241 client/ui/title_screen.gd:267
+#: client/ui/title_screen.gd:247 client/ui/title_screen.gd:273
 msgid "Para criar a conta, aceite os Termos de Uso e a Política de Privacidade."
 msgstr ""
 
-#: client/ui/title_screen.gd:262
+#: client/ui/title_screen.gd:268
 msgid "Digite a conta e a senha."
 msgstr ""
 
-#: client/ui/title_screen.gd:269
+#: client/ui/title_screen.gd:275
 msgid "Criando a conta…"
 msgstr ""
 
-#: client/ui/title_screen.gd:269
+#: client/ui/title_screen.gd:275
 msgid "Entrando…"
 msgstr ""
 
-#: client/ui/title_screen.gd:280
+#: client/ui/title_screen.gd:286
 msgid "Conectando a %s…"
 msgstr ""
 
-#: client/ui/title_screen.gd:52
+#: client/ui/title_screen.gd:58
 msgid "SELECIONE O SERVIDOR"
 msgstr ""
 
-#: client/ui/title_screen.gd:66
-msgid "Frontier Tank: Nova Era %s"
+#: client/ui/title_screen.gd:72
+msgid "Gustfire %s"
 msgstr ""
 
 #: client/ui/ui_kit.gd:405

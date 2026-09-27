@@ -1,4 +1,4 @@
-# Frontier Tank game server: this Godot project run headless with --server.
+# Gustfire game server: this Godot project run headless with --server.
 # Build from the project root:  docker build -f server/docker/game.Dockerfile .
 FROM debian:bookworm-slim AS godot
 ARG GODOT_VERSION=4.7.2

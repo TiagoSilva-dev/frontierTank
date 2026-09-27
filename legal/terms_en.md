@@ -1,8 +1,8 @@
-# Frontier Tank Terms of Use
+# Gustfire Terms of Use
 
 Version {{VERSION}}
 
-These terms are the agreement between you and {{EMPRESA}}, CNPJ {{CNPJ}}, the company responsible for Frontier Tank. Please read them carefully together with the Privacy Policy.
+These terms are the agreement between you and {{EMPRESA}}, CNPJ {{CNPJ}}, the company responsible for Gustfire. Please read them carefully together with the Privacy Policy.
 
 ## 1. Acceptance
 
@@ -36,7 +36,7 @@ Any player can report a chat message with the report button. Reports are reviewe
 
 ## 6. In-game items and currencies
 
-Gold coins, Solars, Stars and the other currencies, items, maps and cosmetics are game content. You receive a personal, limited, non-transferable and revocable licence to use them inside Frontier Tank. They are not money, have no value outside the game, cannot be exchanged for money and are not your property. We may adjust the balance (prices, attributes, chances and rules) to keep the game fair. The Auction and trades between players only accept in-game currencies.
+Gold coins, Solars, Stars and the other currencies, items, maps and cosmetics are game content. You receive a personal, limited, non-transferable and revocable licence to use them inside Gustfire. They are not money, have no value outside the game, cannot be exchanged for money and are not your property. We may adjust the balance (prices, attributes, chances and rules) to keep the game fair. The Auction and trades between players only accept in-game currencies.
 
 ## 7. Purchases
 

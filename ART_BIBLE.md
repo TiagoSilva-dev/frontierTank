@@ -1,4 +1,4 @@
-# Frontier Tank: Nova Era — pacote inicial PixelLab
+# Gustfire (antes Frontier Tank: Nova Era) — pacote inicial PixelLab
 
 ## Direção visual
 Fantasia medieval e tecnologia steampunk. Personagens chibi originais com cabeças grandes, roupas de aventureiro e armas exageradas. Ilhas flutuantes, ruínas e vegetação iluminadas por luz quente superior esquerda.

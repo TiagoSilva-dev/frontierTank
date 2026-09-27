@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Frontier Tank on this machine: PostgreSQL, the API, the game server and the web game,
+# Gustfire on this machine: PostgreSQL, the API, the game server and the web game,
 # with Docker (server/docker-compose.yml). The same script runs the stack on a VM.
 #
 #   tools/local.sh            build and start everything, wait until it answers and open

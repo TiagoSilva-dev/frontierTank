@@ -197,7 +197,7 @@ def cmd_serve(args):
     with socketserver.ThreadingTCPServer(("", args.port), Handler) as server:
         game = f"http://localhost:{args.port}/jogar/" if args.site else f"http://localhost:{args.port}/"
         site = f"site http://localhost:{args.port}/, " if args.site else ""
-        print(f"Frontier Tank web: {site}game {game}  (benchmark: ?bench=30)" + (f", API {api}" if api else ""))
+        print(f"Gustfire web: {site}game {game}  (benchmark: ?bench=30)" + (f", API {api}" if api else ""))
         server.serve_forever()
 
 

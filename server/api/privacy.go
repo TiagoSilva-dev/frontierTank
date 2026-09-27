@@ -87,7 +87,7 @@ func (a *API) exportMe(w http.ResponseWriter, r *http.Request) {
 		a.fail(w, err)
 		return
 	}
-	w.Header().Set("Content-Disposition", `attachment; filename="frontier_tank_`+account.Username+`.json"`)
+	w.Header().Set("Content-Disposition", `attachment; filename="gustfire_`+account.Username+`.json"`)
 	writeJSON(w, http.StatusOK, data)
 }
 

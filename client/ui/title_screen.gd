@@ -1,7 +1,7 @@
 class_name TitleScreen
 extends Control
 
-# Tela de entrada, como o login do DDTank: arte PixelLab em 2x, o logotipo com um
+# Tela de entrada, como o login do DDTank: arte PixelLab em 2x, o logotipo do Gustfire com um
 # brilho passando, a escolha de servidor e ENTRAR, que leva à cidade. No canto, o idioma
 # do jogo (português ou inglês, roadmap 4.3).
 # Online (backend 0.11): a lista vem da API com os servidores de jogo no ar; a conta e a
@@ -9,7 +9,10 @@ extends Control
 # continua jogando sozinho, com salas e jogadores simulados.
 
 const ART: String = "res://assets/title/title_bg.png"
+# The Gustfire logo (tools/make_logo.py), with the tagline ribbon in each language.
 const LOGO: String = "res://assets/title/logo.png"
+const LOGO_EN: String = "res://assets/title/logo_en.png"
+const LOGO_TOP: float = 44.0
 const VERSION: String = NetClient.GAME_VERSION
 const OFFLINE: Dictionary = {"name": "Modo offline", "state": "Sozinho", "color": "c8b8a0", "offline": true}  # i18n
 
@@ -41,7 +44,10 @@ func _ready() -> void:
 	sparkles.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sparkles.draw.connect(draw_sparkles)
 	add_child(sparkles)
-	logo = UiKit.art(self, LOGO, Rect2(384, -8, 512, 288))
+	# Drawn 1:1 (the logo is high-resolution pixel art), centred above the login box.
+	var logo_art: Texture2D = load(LOGO_EN if Lang.locale() == "en" else LOGO)
+	var logo_size: Vector2 = logo_art.get_size()
+	logo = UiKit.art(self, logo_art, Rect2(Vector2(roundf((1280 - logo_size.x) / 2), LOGO_TOP), logo_size))
 	logo.name = "Logo"
 	var shine: ShaderMaterial = ShaderMaterial.new()
 	shine.shader = load("res://client/shaders/logo_shine.gdshader")
@@ -63,7 +69,7 @@ func _ready() -> void:
 	UiKit.wrap(status_label, Vector2(456, 44))
 	enter_button = UiKit.button(box, tr("ENTRAR"), Rect2(150, 380, 180, 46), enter, "button_green", 24)
 	enter_button.name = "EnterButton"
-	UiKit.label(self, tr("Frontier Tank: Nova Era %s") % VERSION, Rect2(12, 690, 400, 26), 15, Color("fff4d6"), UiKit.INK)
+	UiKit.label(self, tr("Gustfire %s") % VERSION, Rect2(12, 690, 400, 26), 15, Color("fff4d6"), UiKit.INK)
 	if not OS.has_feature("web"):
 		# A browser tab cannot close itself (web build for closed tests).
 		var quit: Button = UiKit.button(self, tr("SAIR"), Rect2(1168, 676, 100, 34), func() -> void: app.quit_game(), "button", 15)
@@ -318,8 +324,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	time += delta
-	# The logo floats a little, in whole 2x pixels.
-	logo.position.y = -8.0 + roundf(sin(time * 1.6) * 2.0) * 2.0
+	# The logo floats a little, in whole pixels.
+	logo.position.y = LOGO_TOP + roundf(sin(time * 1.6) * 4.0)
 	sparkles.queue_redraw()
 
 func draw_sparkles() -> void:

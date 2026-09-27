@@ -1,4 +1,4 @@
-"""Small numpy synthesizer behind every Frontier Tank sound.
+"""Small numpy synthesizer behind every Gustfire sound.
 
 The effects (tools/make_sfx.py) and the three music loops (tools/make_music.py) are
 generated from code, so the audio is original and can be rebuilt or tweaked:

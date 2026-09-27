@@ -1,4 +1,4 @@
-"""Generate the looping music of Frontier Tank into assets/audio/music/*.ogg.
+"""Generate the looping music of Gustfire into assets/audio/music/*.ogg.
 
     lobby.ogg     title screen, city, hall and rooms: heroic D major theme, 96 BPM
     battle.ogg    PvP battles: driving D minor with taiko and galloping strings, 140 BPM

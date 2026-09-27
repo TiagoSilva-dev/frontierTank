@@ -1,8 +1,8 @@
-# Termos de Uso do Frontier Tank
+# Termos de Uso do Gustfire
 
 Versão {{VERSION}}
 
-Estes termos são o contrato entre você e {{EMPRESA}}, CNPJ {{CNPJ}}, responsável pelo Frontier Tank. Leia com atenção junto com a Política de Privacidade.
+Estes termos são o contrato entre você e {{EMPRESA}}, CNPJ {{CNPJ}}, responsável pelo Gustfire. Leia com atenção junto com a Política de Privacidade.
 
 ## 1. Aceite
 
@@ -36,7 +36,7 @@ Qualquer jogador pode denunciar uma mensagem do chat pelo botão de denúncia. A
 
 ## 6. Itens e moedas do jogo
 
-As moedas de ouro, Solares, Estrelas e as demais moedas, os itens, os mapas e os cosméticos são conteúdo do jogo. Você recebe uma licença pessoal, limitada, intransferível e revogável para usá-los dentro do Frontier Tank. Eles não são dinheiro, não têm valor fora do jogo, não podem ser trocados por dinheiro e não são propriedade sua. Podemos ajustar o balanceamento (preços, atributos, chances e regras) para manter o jogo justo. O Leilão e as trocas entre jogadores só aceitam moedas do jogo.
+As moedas de ouro, Solares, Estrelas e as demais moedas, os itens, os mapas e os cosméticos são conteúdo do jogo. Você recebe uma licença pessoal, limitada, intransferível e revogável para usá-los dentro do Gustfire. Eles não são dinheiro, não têm valor fora do jogo, não podem ser trocados por dinheiro e não são propriedade sua. Podemos ajustar o balanceamento (preços, atributos, chances e regras) para manter o jogo justo. O Leilão e as trocas entre jogadores só aceitam moedas do jogo.
 
 ## 7. Compras
 

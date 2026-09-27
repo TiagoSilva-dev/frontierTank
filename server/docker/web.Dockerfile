@@ -1,4 +1,4 @@
-# Frontier Tank web: the official website (website/) at / and the game exported for the
+# Gustfire web: the official website (website/) at / and the game exported for the
 # browser at /jogar/, served by nginx, which also forwards /v1/ to the API and /ws to the
 # game server (server/docker/web.nginx.conf).
 # Build from the project root:  docker build -f server/docker/web.Dockerfile .

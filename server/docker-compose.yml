@@ -1,4 +1,4 @@
-# Frontier Tank online: PostgreSQL + API (Go) + one game server (Godot headless) + the
+# Gustfire online: PostgreSQL + API (Go) + one game server (Godot headless) + the
 # web game (nginx), all on one machine.
 #   tools/local.sh (or SubirLocal.cmd on Windows) creates .env and runs everything, or:
 #   cd server && cp .env.example .env   (then change the passwords and the key)
@@ -73,7 +73,7 @@ services:
       FT_API: http://frontier-api:8081
       FT_API_KEY: ${INTERNAL_KEY}
       FT_ID: s1
-      FT_NAME: ${GAME_NAME:-S1 · Nova Era}
+      FT_NAME: ${GAME_NAME:-S1 · Ilha Celeste}
       FT_PORT: "7350"
       # Through the web port (nginx /ws); the desktop game can use it too.
       FT_PUBLIC_URL: ${GAME_PUBLIC_URL:-ws://localhost:8000/ws}

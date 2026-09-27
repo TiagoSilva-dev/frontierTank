@@ -1,4 +1,4 @@
-"""Generate every sound effect of Frontier Tank into assets/audio/sfx/*.ogg.
+"""Generate every sound effect of Gustfire into assets/audio/sfx/*.ogg.
 
 Each weapon has its own firing sound (fire_<weapon id>) and a flavour layer played
 with the explosion (impact_<weapon id>); then explosions, POW, skills 1–9, tools,

@@ -1,10 +1,10 @@
 # Página da Steam — português do Brasil
 
-Textos para a página "em breve" (Steamworks → Store Page Admin). Os limites de tamanho são os da Steam. As imagens estão em `capsules/`, `screenshots/pt/` e `achievements/` (geradas por `tools/steam_store.py`). **Antes de publicar:** decidir o subtítulo "Nova Era" (ver `docs/ROADMAP.md`, revisão de nomes) e passar os textos pela revisão jurídica junto com os Termos e a Política.
+Textos para a página "em breve" (Steamworks → Store Page Admin). Os limites de tamanho são os da Steam. As imagens estão em `capsules/`, `screenshots/pt/` e `achievements/` (geradas por `tools/steam_store.py`). **Antes de publicar:** fazer a busca de marca de “Gustfire” e passar os textos pela revisão jurídica junto com os Termos e a Política.
 
 ## Nome
 
-Frontier Tank: Nova Era *(pendente: o subtítulo aparece no logotipo e em todas as cápsulas)*
+Gustfire *(no logotipo, com a faixa “Artilharia nos céus”)*
 
 ## Descrição curta (até 300 caracteres)
 
@@ -14,7 +14,7 @@ Artilharia por turnos em pixel art: mire, calcule o vento e acerte o disparo. Du
 
 ## Sobre o jogo
 
-**Mire, sinta o vento, dispare.** Frontier Tank é um jogo de artilharia por turnos em pixel art, feito para jogar com os amigos. Cada tiro é um cálculo de ângulo e força contra o vento, num terreno que se desfaz a cada explosão.
+**Mire, sinta o vento, dispare.** Gustfire é um jogo de artilharia por turnos em pixel art, feito para jogar com os amigos. Cada tiro é um cálculo de ângulo e força contra o vento, num terreno que se desfaz a cada explosão.
 
 **Batalhas online de 1 contra 1 até 4 contra 4.** Entre no Salão de Jogos, monte a sala com a sua equipe e encontre rivais do seu nível. As partidas rodam em sincronia com o servidor: o tiro sai exatamente com a mira e a força que você soltou.
 

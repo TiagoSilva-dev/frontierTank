@@ -45,7 +45,7 @@ Sem `STEAM_APP_ID` e `STEAM_WEB_API_KEY` a Steam fica desligada (`/v1/auth/steam
 ## Na Steamworks
 
 1. **Pagar a taxa** (US$ 100 por app) e preencher dados fiscais e bancários da empresa (os mesmos de `legal/controller.json`).
-2. **Página da loja** (Store Page Admin): textos de `store/steam/page_pt.md` e `page_en.md`; imagens de `store/steam/capsules/` (cápsulas horizontal, pequena, principal, vertical, fundo da página) e `screenshots/` (pelo menos 5; as geradas são 1280×720, o mínimo aceito); etiquetas, idiomas, requisitos e o questionário de conteúdo (chat de usuários, compras dentro do jogo).
+2. **Página da loja** (Store Page Admin): textos de `store/steam/page_pt.md` e `page_en.md`; imagens de `store/steam/capsules/` (cápsulas horizontal, pequena, principal, vertical, fundo da página; o padrão tem o logotipo com a faixa em inglês e `capsules/pt/` traz as versões com “Artilharia nos céus” para enviar como recursos localizados em português do Brasil) e `screenshots/` (pelo menos 5; as geradas são 1280×720, o mínimo aceito); etiquetas, idiomas, requisitos e o questionário de conteúdo (chat de usuários, compras dentro do jogo).
 3. **Biblioteca** (Library Assets): `library_capsule.png` (600×900), `library_header.png` (920×430), `library_hero.png` (3840×1240, sem texto) e `library_logo.png` (transparente).
 4. **Conquistas** (Stats & Achievements): uma por linha de `store/steam/achievements/achievements.csv`, com o **API Name** igual ao `id`, nomes e descrições em pt-BR e en e os dois ícones 256×256. Publicar as mudanças.
 5. **Microtransações**: ativar as compras dentro do jogo e informar a URL/IP do servidor da API se a Valve pedir. Testar tudo com `STEAM_MICROTXN_SANDBOX=1` antes.
@@ -62,11 +62,11 @@ python tools/steam_store.py achievements   # store/steam/achievements/ (ícones 
 python tools/steam_store.py screenshots    # store/steam/screenshots/pt e en (usa o Godot; xvfb-run no Linux sem tela)
 ```
 
-As cápsulas saem da arte da entrada (`assets/title`) em escala inteira, para os pixels ficarem quadrados. Se o logotipo mudar (ver a pendência do subtítulo abaixo), é só gerar de novo.
+As cápsulas saem da arte da entrada (`assets/title`) em escala inteira, para os pixels ficarem quadrados, com o logotipo do Gustfire (`tools/make_logo.py`). Se o logotipo mudar, rode `python tools/make_logo.py` e gere as cápsulas de novo.
 
 ## Pendências antes da página "em breve"
 
-- **Subtítulo "Nova Era"**: é também o nome de uma edição brasileira do DDTank (`docs/ROADMAP.md`, revisão de nomes). Decidir antes de publicar, porque está no logotipo, nas cápsulas e no nome da página.
+- **Nome**: o jogo passou a se chamar **Gustfire** em 26/09/2026 (o subtítulo “Nova Era” saiu; ver `docs/SITE.md`). Falta a busca de marca antes de publicar a página.
 - **Revisão jurídica** dos Termos, da Política e das exigências do ECA Digital (verificação de idade, ferramentas para responsáveis) para um jogo com chat e compras.
 - **Estornos**: a Steam informa reembolsos e chargebacks por `ISteamMicroTxn/GetReport`. Falta a rotina que lê o relatório e retira os itens (o pedido já guarda tudo o que ela precisa).
 - **Catálogo**: 4 tinturas são o começo; a arte dos cosméticos exclusivos (e o passe de temporada) vem depois. Nenhum item com atributo pode entrar.

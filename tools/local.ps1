@@ -1,4 +1,4 @@
-# Frontier Tank on this machine: PostgreSQL, the API, the game server and the web game,
+# Gustfire on this machine: PostgreSQL, the API, the game server and the web game,
 # with Docker Desktop (server/docker-compose.yml). SubirLocal.cmd runs "up".
 #
 #   powershell -File tools/local.ps1            build and start everything, wait until it

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gustfire logo in pixel art (website, store and, later, the title screen).
+"""Gustfire logo in pixel art (title screen, game icon, website and Steam store).
 
 The letters come from Titan One (SIL OFL, tools/logo/TitanOne-OFL.txt), laid on an arch
 at 4x, then reduced to native pixels and painted like hand-made pixel art: stepped
@@ -14,6 +14,8 @@ Writes, for each language (en, pt):
   gustfire_logo_<lang>.png       native pixels, transparent
   gustfire_logo_<lang>@3x.png    3x nearest neighbour (hero, store capsules)
 and gustfire_wordmark.png / @3x (letters only), gustfire_icon_{32,64,180,512}.png.
+The game gets the same logo on the title screen (assets/title/logo.png and logo_en.png)
+and the badge as its icon (icon.png); --no-game skips those.
 """
 import argparse
 import math
@@ -373,26 +375,43 @@ def build_logo(lang, emblem=True, tagline=True, extras=True):
 
 
 def icon():
-    """The winged bomb on a round sky badge, for favicons and app icons."""
+    """The winged bomb on a round sky badge, for favicons, the game icon and the store.
+    The bomb stays at 1x inside a 172 px badge; the sizes are made from that."""
     bomb = Image.open(EMBLEM).convert("RGBA")
     bomb = bomb.crop(bomb.getbbox())
-    size = 144
+    size = 172
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     d.ellipse([2, 2, size - 3, size - 3], fill=OUTLINE)
     d.ellipse([6, 6, size - 7, size - 7], fill=hexc("ffcf4a"))
-    d.ellipse([9, 9, size - 10, size - 10], fill=hexc("2a86f0"))
-    d.ellipse([12, 12, size - 13, size - 40], fill=hexc("3aa6ff"))
-    scale = (size - 16) / bomb.width
-    bomb = bomb.resize((int(bomb.width * scale), int(bomb.height * scale)), Image.NEAREST)
-    img.alpha_composite(bomb, ((size - bomb.width) // 2, (size - bomb.height) // 2 + 4))
-    return img
+    d.ellipse([10, 10, size - 11, size - 11], fill=hexc("2a86f0"))
+    d.ellipse([14, 14, size - 15, size - 48], fill=hexc("3aa6ff"))
+    img.alpha_composite(bomb, ((size - bomb.width) // 2, (size - bomb.height) // 2 + 6))
+    arr = np.array(img)
+    arr[..., 3] = np.where(arr[..., 3] >= 128, 255, 0)
+    return Image.fromarray(arr, "RGBA")
+
+
+def icon_size(badge, s):
+    """Whole-number scales stay pixel-exact; other sizes are smoothed."""
+    factor = s / badge.width
+    if factor >= 1 and abs(factor - round(factor)) < 0.05:
+        big = badge.resize((badge.width * round(factor),) * 2, Image.NEAREST)
+        if big.width > s:
+            # A few pixels too big (3x of 172 is 516 for 512): trim the empty border.
+            cut = (big.width - s) // 2
+            return big.crop((cut, cut, cut + s, cut + s))
+        canvas = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+        canvas.alpha_composite(big, ((s - big.width) // 2, (s - big.height) // 2))
+        return canvas
+    return badge.resize((s, s), Image.LANCZOS)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default=os.path.join(ROOT, "website", "img", "brand"))
     parser.add_argument("--preview", default="")
+    parser.add_argument("--no-game", action="store_true", help="only the website files, not assets/title and icon.png")
     args = parser.parse_args()
     os.makedirs(args.out, exist_ok=True)
 
@@ -409,8 +428,13 @@ def main():
     save(build_logo("en", emblem=False, tagline=False, extras=False), "gustfire_wordmark")
     badge = icon()
     for s in (32, 64, 180, 512):
-        badge.resize((s, s), Image.NEAREST if s >= 144 else Image.LANCZOS).save(
-            os.path.join(args.out, f"gustfire_icon_{s}.png"), optimize=True)
+        icon_size(badge, s).save(os.path.join(args.out, f"gustfire_icon_{s}.png"), optimize=True)
+    if not args.no_game:
+        # The game: the title screen logo (one per language) and the project icon, which
+        # is also the window, taskbar, executable and web favicon icon.
+        logos["pt"].save(os.path.join(ROOT, "assets", "title", "logo.png"), optimize=True)
+        logos["en"].save(os.path.join(ROOT, "assets", "title", "logo_en.png"), optimize=True)
+        icon_size(badge, 256).save(os.path.join(ROOT, "icon.png"), optimize=True)
     print("logos", {k: v.size for k, v in logos.items()}, "->", os.path.relpath(args.out, ROOT))
 
     if args.preview:

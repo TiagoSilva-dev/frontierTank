@@ -106,7 +106,7 @@ func download_data() -> void:
 	if result.has("error"):
 		say(AuthClient.message_for(str(result.error)), true)
 		return
-	var file_name: String = "frontier_tank_%s_%s.json" % [account_name(), Time.get_datetime_string_from_system().replace(":", "-")]
+	var file_name: String = "gustfire_%s_%s.json" % [account_name(), Time.get_datetime_string_from_system().replace(":", "-")]
 	if OS.has_feature("web"):
 		JavaScriptBridge.download_buffer(str(result.text).to_utf8_buffer(), file_name, "application/json")
 		say(tr("Arquivo baixado: %s") % file_name)

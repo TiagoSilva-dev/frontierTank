@@ -1,10 +1,10 @@
 # Steam store page — English
 
-Texts for the "coming soon" page (Steamworks → Store Page Admin), within Steam's length limits. Art is in `capsules/`, `screenshots/en/` and `achievements/` (made by `tools/steam_store.py`). **Before publishing:** decide on the "Nova Era" subtitle (see `docs/ROADMAP.md`, name review) and have the texts reviewed together with the Terms and the Privacy Policy.
+Texts for the "coming soon" page (Steamworks → Store Page Admin), within Steam's length limits. Art is in `capsules/`, `screenshots/en/` and `achievements/` (made by `tools/steam_store.py`). **Before publishing:** run a trademark search for “Gustfire” and have the texts reviewed together with the Terms and the Privacy Policy.
 
 ## Name
 
-Frontier Tank: Nova Era *(pending: the subtitle is on the logo and on every capsule)*
+Gustfire *(the logo carries the “Sky Artillery” ribbon)*
 
 ## Short description (up to 300 characters)
 
@@ -14,7 +14,7 @@ Turn-based pixel art artillery: aim, read the wind and land the shot. Online bat
 
 ## About this game
 
-**Aim, read the wind, fire.** Frontier Tank is a turn-based pixel art artillery game made to play with friends. Every shot is a matter of angle and power against the wind, on ground that breaks apart with each explosion.
+**Aim, read the wind, fire.** Gustfire is a turn-based pixel art artillery game made to play with friends. Every shot is a matter of angle and power against the wind, on ground that breaks apart with each explosion.
 
 **Online battles from 1 vs 1 to 4 vs 4.** Walk into the Game Hall, set up a room with your team and find rivals of your level. Matches run in lockstep with the server: your shot leaves with exactly the aim and power you released.
 

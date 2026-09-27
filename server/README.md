@@ -1,4 +1,4 @@
-# Frontier Tank online (0.11, Leilão na 0.12, lançamento na 0.13)
+# Gustfire online (0.11, Leilão na 0.12, lançamento na 0.13)
 
 Três peças: **PostgreSQL**, a **API** em Go (`server/api/`) e o **servidor de jogo**, que é este mesmo projeto Godot rodando sem tela (`server/game/`). A arquitetura está em `ARCHITECTURE.md`, seções Online e Leilão e Correio. O Leilão (0.12) não pede configuração nova: a migração `002_auction.sql` roda sozinha quando a API sobe.
 
@@ -48,7 +48,7 @@ Variáveis do `.env`:
 
 ## Jogar
 
-1. Abra o jogo (Jogar.cmd). Na tela de entrada aparece **S1 · Nova Era** (vindo da API) e o **Modo offline**.
+1. Abra o jogo (Jogar.cmd). Na tela de entrada aparece **S1 · Ilha Celeste** (vindo da API; o nome vem de `GAME_NAME` no `.env`) e o **Modo offline**.
 2. Escolha o servidor, digite uma conta e uma senha e clique em **CRIAR CONTA** (depois basta **ENTRAR**). "Lembrar" guarda a sessão em `user://online.cfg`.
 3. Na cidade, crie o personagem (o nome é único no servidor). O Salão mostra as salas e os jogadores de verdade.
 4. **Sala → Início** procura outra sala do mesmo tamanho e nível parecido; sem ninguém, depois de `BOT_FILL_SECONDS` entram rivais de IA. Na **Instância**, os outros jogadores entram na sala, clicam em **Preparar** e o dono clica em **Início**.
