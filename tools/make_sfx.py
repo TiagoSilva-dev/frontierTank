@@ -588,6 +588,86 @@ def mob_burn():
     return stack((crackle(0.6, 160, 1200, 7000, 0.2, r), 0, 1.0), (fire_roar(0.6, r) * env_ar(n, 0.05, 0.3), 0, 0.5))
 
 
+# ---------------------------------------------------------------- status effects (0.16)
+
+@sound("status_poison", -18, 0.2)
+def status_poison():
+    # Poison: a sour bubbling gurgle and a hiss.
+    r = rng(131)
+    gurgle = stack(*[(bubble(r.uniform(180, 380), r.uniform(0.05, 0.09)), i * 0.055 + r.uniform(0, 0.02), r.uniform(0.6, 1.0)) for i in range(9)])
+    n = samples(0.6)
+    hiss = hp(white(n, r), 3500) * env_ar(n, 0.08, 0.25) * 0.35
+    return stack((gurgle, 0, 1.0), (hiss, 0.05, 1.0), (sine(glide(420, 190, samples(0.4)), samples(0.4)) * env_exp(samples(0.4), 0.15) * 0.3, 0, 1.0))
+
+
+@sound("status_seal", -16, 0.35)
+def status_seal():
+    # Seal: chains rattle shut and a dark two-note chord locks.
+    r = rng(132)
+    links = stack(*[(metal(r.uniform(1800, 2600), 0.18, (1.0, 1.51, 2.3), 0.06, r), i * 0.045, 0.6) for i in range(6)])
+    lock = stack((metal(620, 0.5, (1.0, 2.41, 3.87), 0.12, r), 0, 1.0), (thump(0.15, 180, 70, r), 0, 0.8))
+    chord = mono(brass(note("C3"), 0.7, 0.8, "horn", 0.3, r) + brass(note("F#3"), 0.7, 0.7, "horn", 0.3, r))
+    return stack((links, 0, 0.9), (lock, 0.28, 1.0), (chord, 0.3, 0.55))
+
+
+@sound("status_root", -16, 0.2)
+def status_root():
+    # Roots: a creak of wood twisting up from the ground and a rustle of leaves.
+    r = rng(133)
+    n = samples(0.7)
+    tt = timeline(n)
+    creak = sweep(saw(glide(90, 140, n), n), "bandpass", 300, 900, 0.5) * (0.5 + 0.5 * np.sin(2 * np.pi * 34 * tt) ** 2) * env_ar(n, 0.1, 0.35)
+    rustle = crackle(0.5, 140, 2000, 7000, 0.2, r)
+    return stack((thump(0.2, 140, 50, r), 0, 0.8), (creak, 0.02, 1.0), (rustle, 0.1, 0.5))
+
+
+@sound("status_mark", -16, 0.25)
+def status_mark():
+    # Marked prey: a rising tension sting and a sharp lock-on ping.
+    r = rng(134)
+    n = samples(0.45)
+    sting = sine(glide(500, 1200, n), n) * env_ar(n, 0.3, 0.1) * 0.5
+    ping = bell(2400, 0.6, 0.8, (1.0, 2.0, 3.0), (1, 0.3, 0.1), (1, 0.6, 0.3))
+    return stack((sting, 0, 1.0), (ping, 0.36, 1.0), (whoosh(0.3, 1500, 5000, 0.8, 0.8, r), 0.05, 0.3))
+
+
+@sound("status_blind", -17, 0.4)
+def status_blind():
+    # Glare: a bright shimmering flash.
+    r = rng(135)
+    return stack((sparkle(0.7, 70, 4000, 11000, r), 0, 1.0), (chime(["E6", "B6", "E7"], 0.03, 0.9, 0.5), 0, 0.8),
+                 (whoosh(0.5, 3000, 9000, 0.6, 0.15, r), 0, 0.5))
+
+
+@sound("status_exhaust", -18, 0.2)
+def status_exhaust():
+    # Exhaustion: a tired downward sigh.
+    r = rng(136)
+    n = samples(0.8)
+    sigh = formant(sweep(white(n, r), "bandpass", 1400, 500, 0.6), "a", 0.3) * env_ar(n, 0.15, 0.35)
+    drop = sine(glide(520, 160, n, 0.6), n) * env_exp(n, 0.3) * 0.4
+    return stack((sigh, 0, 1.0), (drop, 0.05, 1.0))
+
+
+@sound("status_hex", -16, 0.4)
+def status_hex():
+    # A curse closing in: a dark swell with whispering noise and a low bell.
+    r = rng(137)
+    n = samples(1.0)
+    tt = timeline(n)
+    swell_ = sweep(white(n, r), "bandpass", 300, 1200, 0.5) * np.minimum(1, tt / 0.8) * env_exp(n, 0.9) * 0.7
+    return stack((swell_, 0, 1.0), (bell(165, 1.2, 0.7, (1.0, 2.76, 5.4), (1, 0.4, 0.2), (1, 0.6, 0.35)), 0.75, 0.9),
+                 (sparkle(0.5, 30, 1500, 5000, r), 0.8, 0.4))
+
+
+@sound("status_cleanse", -16, 0.35)
+def status_cleanse():
+    # Elixir Purificador: a gulp and a bright rising chime.
+    r = rng(138)
+    gulps = stack(*[(bubble(r.uniform(260, 420), 0.07), i * 0.1, 0.7) for i in range(2)])
+    return stack((gulps, 0, 1.0), (chime(["C6", "E6", "G6", "C7", "E7"], 0.05, 0.9, 0.5), 0.2, 1.0), (sparkle(0.7, 50, 4000, 10000, r), 0.22, 0.5))
+
+
 # ---------------------------------------------------------------- skills 1–9, tools, auxiliaries
 
 @sound("skill_multi", -16, 0.25)

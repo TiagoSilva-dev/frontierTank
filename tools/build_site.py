@@ -277,6 +277,15 @@ def build_data():
                     "desc": T(s["desc"]), "icon": art(s["icon"], f"skills/{s['id']}.png")} for s in combat["items"]],
         "tools": [{"id": t["id"], "name": T(t["name"]), "price": t["price"], "desc": T(t["desc"]),
                    "icon": art(t["icon"], f"tools/{t['id']}.png", crop=True)} for t in combat["tools"]],
+        # 0.16: status effects from the monsters and the elite affixes.
+        "statuses": [{"id": st["id"], "name": T(st["name"]), "label": T(st["label"]), "desc": T(st["desc"]),
+                      "color": st["color"], "turns": st["turns"],
+                      "icon": art(st["icon"], f"status/{st['id']}.png")} for st in combat.get("statuses", [])],
+        "elites": {**{k: v for k, v in combat.get("elites", {}).items() if k != "affixes"},
+                   "affixes": [{"id": a["id"], "name": T(a["name"]), "desc": T(a["desc"]), "color": a["color"],
+                                "status": a.get("status", []),
+                                "icon": art(a["icon"], f"status/elite_{a['id']}.png")}
+                               for a in combat.get("elites", {}).get("affixes", [])]},
         "enemies": enemies,
         "instances": inst_out,
         "map_items": map_items,

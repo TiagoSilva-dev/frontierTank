@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 
-#: client/components/fighter.gd:212
+#: client/components/fighter.gd:227
 msgid "Chefe"
 msgstr "Boss"
 
-#: client/components/fighter.gd:212
+#: client/components/fighter.gd:227
 msgid "Guardião"
 msgstr "Guardian"
 
-#: client/components/fighter.gd:212
+#: client/components/fighter.gd:227
 msgid "Inimigo"
 msgstr "Enemy"
 
-#: client/components/fighter.gd:212
+#: client/components/fighter.gd:227
 msgid "Lacaio"
 msgstr "Minion"
 
-#: client/components/fighter.gd:212
+#: client/components/fighter.gd:227
 msgid "Objetivo"
 msgstr "Objective"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Capitão"
 msgstr "Captain"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Coronel"
 msgstr "Colonel"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "General"
 msgstr "General"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Major"
 msgstr "Major"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Marechal"
 msgstr "Marshal"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Recruta"
 msgstr "Recruit"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Sargento"
 msgstr "Sergeant"
 
-#: client/components/fighter.gd:264
+#: client/components/fighter.gd:289
 msgid "Soldado"
 msgstr "Soldier"
 
-#: client/components/fighter.gd:264 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:289 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr "Veteran"
 
@@ -554,11 +554,11 @@ msgstr "This map has no modifiers."
 msgid "F%d"
 msgstr "T%d"
 
-#: client/systems/instance_run.gd:385
+#: client/systems/instance_run.gd:421
 msgid "%d Moedas"
 msgstr "%d Gold"
 
-#: client/systems/instance_run.gd:54 client/ui/battle_hud.gd:172 client/ui/result_screen.gd:94 client/ui/room_screen.gd:202
+#: client/systems/instance_run.gd:54 client/ui/battle_hud.gd:185 client/ui/result_screen.gd:94 client/ui/room_screen.gd:202
 msgid "Entrada livre"
 msgstr "Free entry"
 
@@ -654,107 +654,127 @@ msgstr "Event: double merit in the Game Hall this weekend!"
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr "Offline mode: rooms, players and messages on this channel are simulated by AI."
 
-#: client/systems/match.gd:1111
+#: client/systems/match.gd:1146
 msgid "Tempo esgotado"
 msgstr "Time's up"
 
-#: client/systems/match.gd:1132
+#: client/systems/match.gd:1167
 msgid "%s prepara %s"
 msgstr "%s readies %s"
 
-#: client/systems/match.gd:1177
+#: client/systems/match.gd:1217
 msgid "Uma nova onda de inimigos chegou!"
 msgstr "A new wave of enemies has arrived!"
 
-#: client/systems/match.gd:1199
+#: client/systems/match.gd:1239
 msgid "%s prepara %s!"
 msgstr "%s prepares %s!"
 
-#: client/systems/match.gd:1199
+#: client/systems/match.gd:1239
 msgid "Fúria"
 msgstr "Fury"
 
-#: client/systems/match.gd:1202
+#: client/systems/match.gd:1242
 msgid "%s está calculando seu ataque…"
 msgstr "%s is lining up an attack…"
 
-#: client/systems/match.gd:1212
+#: client/systems/match.gd:1252
 msgid "%s invoca %s!"
 msgstr "%s summons %s!"
 
-#: client/systems/match.gd:1235
+#: client/systems/match.gd:1275
 msgid "%s voa para outra posição!"
 msgstr "%s flies to another spot!"
 
-#: client/systems/match.gd:1288 client/systems/match.gd:1292
+#: client/systems/match.gd:1330 client/systems/match.gd:1334
 msgid "%s usa %s!"
 msgstr "%s uses %s!"
 
-#: client/systems/match.gd:170
-msgid "Fase %d: %s"
-msgstr "Stage %d: %s"
+#: client/systems/match.gd:1576
+msgid "IMUNE!"
+msgstr "IMMUNE!"
 
-#: client/systems/match.gd:172
-msgid "Processo de busca sucedido! A sua equipe começará o combate!"
-msgstr "Match found! Your team starts the battle!"
+#: client/systems/match.gd:1599
+msgid "%s: %s!"
+msgstr "%s: %s!"
 
-#: client/systems/match.gd:174
-msgid "Processo de busca sucedido! A equipe adversária começa."
-msgstr "Match found! The enemy team starts."
+#: client/systems/match.gd:1614
+msgid "%s não resistiu ao veneno!"
+msgstr "%s succumbed to the poison!"
 
-#: client/systems/match.gd:327
+#: client/systems/match.gd:1614
 msgid "%s não resistiu às chamas!"
 msgstr "%s burned down!"
 
-#: client/systems/match.gd:334
+#: client/systems/match.gd:1641
+msgid "PURIFICADO!"
+msgstr "PURIFIED!"
+
+#: client/systems/match.gd:1661
+msgid "%s explodiu!"
+msgstr "%s exploded!"
+
+#: client/systems/match.gd:171
+msgid "Fase %d: %s"
+msgstr "Stage %d: %s"
+
+#: client/systems/match.gd:173
+msgid "Processo de busca sucedido! A sua equipe começará o combate!"
+msgstr "Match found! Your team starts the battle!"
+
+#: client/systems/match.gd:175
+msgid "Processo de busca sucedido! A equipe adversária começa."
+msgstr "Match found! The enemy team starts."
+
+#: client/systems/match.gd:329
 msgid "%s está congelado e perde a vez!"
 msgstr "%s is frozen and loses the turn!"
 
-#: client/systems/match.gd:343 client/systems/match.gd:725
+#: client/systems/match.gd:338 client/systems/match.gd:735
 msgid "Sua vez! Segure ESPAÇO para definir a força"
 msgstr "Your turn! Hold SPACE to set the power"
 
-#: client/systems/match.gd:345
+#: client/systems/match.gd:340
 msgid "Vez de %s"
 msgstr "%s's turn"
 
-#: client/systems/match.gd:394
+#: client/systems/match.gd:392
 msgid "Solte ESPAÇO para disparar"
 msgstr "Release SPACE to fire"
 
-#: client/systems/match.gd:469
+#: client/systems/match.gd:467
 msgid "%s usou POW: %s!"
 msgstr "%s used POW: %s!"
 
-#: client/systems/match.gd:501
+#: client/systems/match.gd:499
 msgid "Projétil em voo"
 msgstr "Shot in flight"
 
-#: client/systems/match.gd:570
+#: client/systems/match.gd:572
 msgid "GRÁTIS!"
 msgstr "FREE!"
 
-#: client/systems/match.gd:622 client/systems/match.gd:651
+#: client/systems/match.gd:630 client/systems/match.gd:659
 msgid "%s usou %s"
 msgstr "%s used %s"
 
-#: client/systems/match.gd:673
+#: client/systems/match.gd:683
 msgid "Avião de Papel"
 msgstr "Paper Plane"
 
-#: client/systems/match.gd:705
+#: client/systems/match.gd:715
 msgid "%s passou a vez"
 msgstr "%s passed"
 
-#: client/systems/match.gd:925
+#: client/systems/match.gd:940
 msgid "CRÍTICO -%d"
 msgstr "CRITICAL -%d"
 
-#: client/systems/match.gd:943
+#: client/systems/match.gd:960
 msgid "%s derrotou %s!"
 msgstr "%s defeated %s!"
 
-#: client/systems/match.gd:975
+#: client/systems/match.gd:998
 msgid "%s voou para fora do mapa!"
 msgstr "%s flew off the map!"
 
@@ -857,6 +877,14 @@ msgstr "Invalid name: use 2 to 14 letters or digits."
 #: client/systems/profile.gd:728 server/game/game_server.gd:451
 msgid "Operação desconhecida."
 msgstr "Unknown operation."
+
+#: client/systems/status_rules.gd:59
+msgid "%d turnos"
+msgstr "%d turns"
+
+#: client/systems/status_rules.gd:59
+msgid "1 turno"
+msgstr "1 turn"
 
 #: client/ui/account_screen.gd:101
 msgid "Preparando os seus dados…"
@@ -1294,207 +1322,215 @@ msgstr "MAIL (%d)"
 msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
 msgstr "Prices in Solars and Stars  •  %d%% commission on sales"
 
-#: client/ui/battle_hud.gd:100
-msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
-msgstr "Click to move the camera. Each mark = 1/10 of a screen."
-
-#: client/ui/battle_hud.gd:101
-msgid "Pausa / opções (Esc)"
-msgstr "Pause / options (Esc)"
-
-#: client/ui/battle_hud.gd:102
-msgid "Sair da batalha"
-msgstr "Leave the battle"
-
-#: client/ui/battle_hud.gd:111
-msgid "%s  (tecla %s)\n%s\nEnergia: %d"
-msgstr "%s  (key %s)\n%s\nEnergy: %d"
-
-#: client/ui/battle_hud.gd:115
-msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
-msgstr "Paper plane (F): fly to where the shot lands. %d energy."
-
-#: client/ui/battle_hud.gd:119
-msgid "%s (V)\n%s"
-msgstr "%s (V)\n%s"
-
-#: client/ui/battle_hud.gd:119
-msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
-msgstr "No support item. Equip one in the Bag (Balm or shield)."
-
-#: client/ui/battle_hud.gd:121 client/ui/battle_hud.gd:341
-msgid "Confiar"
-msgstr "Auto"
-
-#: client/ui/battle_hud.gd:122
-msgid "Confiar: a IA joga os seus turnos."
-msgstr "Auto: the AI plays your turns."
-
-#: client/ui/battle_hud.gd:136
-msgid "Sem ferramenta. Compre na sala."
-msgstr "No tool. Buy some in the room."
-
-#: client/ui/battle_hud.gd:148
-msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
-msgstr "Energy: spent on skills, the plane and walking.\nHP: at zero you are out of the battle."
-
-#: client/ui/battle_hud.gd:152
-msgid "POW (B): %s. Enche causando e recebendo dano."
-msgstr "POW (B): %s. Fills up by dealing and taking damage."
-
-#: client/ui/battle_hud.gd:172 client/ui/result_screen.gd:94 client/ui/room_screen.gd:206
-msgid "Nível %d"
-msgstr "Level %d"
-
-#: client/ui/battle_hud.gd:173
-msgid "Fase %d/%d  •  %s"
-msgstr "Stage %d/%d  •  %s"
-
-#: client/ui/battle_hud.gd:178
-msgid "Sem avião de papel neste mapa."
-msgstr "No paper plane on this map."
-
-#: client/ui/battle_hud.gd:206
-msgid "Cristais: %d/%d"
-msgstr "Crystals: %d/%d"
-
-#: client/ui/battle_hud.gd:208
-msgid "Sobreviva: %d/%d turnos"
-msgstr "Survive: %d/%d turns"
-
-#: client/ui/battle_hud.gd:211
-msgid "  (+%d onda)"
-msgstr "  (+%d wave)"
-
-#: client/ui/battle_hud.gd:211
-msgid "Inimigos: %d%s"
-msgstr "Enemies: %d%s"
-
-#: client/ui/battle_hud.gd:251
-msgid "Ninguém venceu desta vez."
-msgstr "Nobody won this time."
-
-#: client/ui/battle_hud.gd:253
-msgid "Instância concluída!"
-msgstr "Instance cleared!"
-
-#: client/ui/battle_hud.gd:253
-msgid "Sua equipe venceu a batalha!"
-msgstr "Your team won the battle!"
-
-#: client/ui/battle_hud.gd:255
-msgid "Sua equipe foi derrotada."
-msgstr "Your team was defeated."
-
-#: client/ui/battle_hud.gd:269
-msgid "OPÇÕES"
-msgstr "OPTIONS"
-
-#: client/ui/battle_hud.gd:269
-msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
-msgstr "Online battle: it keeps going. Giving up hands your character to the AI and you get no reward."
-
-#: client/ui/battle_hud.gd:271
-msgid "BATALHA PAUSADA"
-msgstr "BATTLE PAUSED"
-
-#: client/ui/battle_hud.gd:271
-msgid "Partida local contra IA. Desistir conta como derrota."
-msgstr "Local match against the AI. Giving up counts as a defeat."
-
-#: client/ui/battle_hud.gd:279
-msgid "DESLIGADA"
-msgstr "OFF"
-
-#: client/ui/battle_hud.gd:279
-msgid "LIGADA"
-msgstr "ON"
-
-#: client/ui/battle_hud.gd:279
-msgid "Música: %s"
-msgstr "Music: %s"
-
-#: client/ui/battle_hud.gd:280
-msgid "DESLIGADOS"
-msgstr "OFF"
-
-#: client/ui/battle_hud.gd:280
-msgid "Efeitos: %s"
-msgstr "Effects: %s"
-
-#: client/ui/battle_hud.gd:280
-msgid "LIGADOS"
-msgstr "ON"
-
-#: client/ui/battle_hud.gd:288
-msgid "CONTINUAR"
-msgstr "RESUME"
-
-#: client/ui/battle_hud.gd:289
-msgid "DESISTIR"
-msgstr "GIVE UP"
-
-#: client/ui/battle_hud.gd:341
-msgid "Confiar ✓"
-msgstr "Auto ✓"
-
-#: client/ui/battle_hud.gd:427
-msgid "EU"
-msgstr "ME"
-
-#: client/ui/battle_hud.gd:543
-msgid "Rodada %d"
-msgstr "Round %d"
-
-#: client/ui/battle_hud.gd:715
-msgid "Força"
-msgstr "Power"
-
-#: client/ui/battle_hud.gd:773
-msgid "Aguarde a sua vez…"
-msgstr "Wait for your turn…"
-
-#: client/ui/battle_hud.gd:773
-msgid "Pressione Espaço com força total e realize um ataque"
-msgstr "Press Space at full power to attack"
-
-#: client/ui/battle_hud.gd:93
+#: client/ui/battle_hud.gd:104
 msgid "Vento e tempo do turno."
 msgstr "Wind and turn time."
 
-#: client/ui/battle_hud.gd:94
+#: client/ui/battle_hud.gd:105
 msgid "PASS"
 msgstr "PASS"
 
-#: client/ui/battle_hud.gd:95
+#: client/ui/battle_hud.gd:106
 msgid "Passar a vez (P). Gera menos atraso."
 msgstr "Pass the turn (P). Adds less delay."
 
-#: client/ui/battle_outcome.gd:48
+#: client/ui/battle_hud.gd:111
+msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
+msgstr "Click to move the camera. Each mark = 1/10 of a screen."
+
+#: client/ui/battle_hud.gd:112
+msgid "Pausa / opções (Esc)"
+msgstr "Pause / options (Esc)"
+
+#: client/ui/battle_hud.gd:113
+msgid "Sair da batalha"
+msgstr "Leave the battle"
+
+#: client/ui/battle_hud.gd:122
+msgid "%s  (tecla %s)\n%s\nEnergia: %d"
+msgstr "%s  (key %s)\n%s\nEnergy: %d"
+
+#: client/ui/battle_hud.gd:128
+msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
+msgstr "Paper plane (F): fly to where the shot lands. %d energy."
+
+#: client/ui/battle_hud.gd:132
+msgid "%s (V)\n%s"
+msgstr "%s (V)\n%s"
+
+#: client/ui/battle_hud.gd:132
+msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
+msgstr "No support item. Equip one in the Bag (Balm or shield)."
+
+#: client/ui/battle_hud.gd:134 client/ui/battle_hud.gd:356
+msgid "Confiar"
+msgstr "Auto"
+
+#: client/ui/battle_hud.gd:135
+msgid "Confiar: a IA joga os seus turnos."
+msgstr "Auto: the AI plays your turns."
+
+#: client/ui/battle_hud.gd:149
+msgid "Sem ferramenta. Compre na sala."
+msgstr "No tool. Buy some in the room."
+
+#: client/ui/battle_hud.gd:161
+msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
+msgstr "Energy: spent on skills, the plane and walking.\nHP: at zero you are out of the battle."
+
+#: client/ui/battle_hud.gd:165
+msgid "POW (B): %s. Enche causando e recebendo dano."
+msgstr "POW (B): %s. Fills up by dealing and taking damage."
+
+#: client/ui/battle_hud.gd:185 client/ui/result_screen.gd:94 client/ui/room_screen.gd:206
+msgid "Nível %d"
+msgstr "Level %d"
+
+#: client/ui/battle_hud.gd:186
+msgid "Fase %d/%d  •  %s"
+msgstr "Stage %d/%d  •  %s"
+
+#: client/ui/battle_hud.gd:191
+msgid "Sem avião de papel neste mapa."
+msgstr "No paper plane on this map."
+
+#: client/ui/battle_hud.gd:219
+msgid "Cristais: %d/%d"
+msgstr "Crystals: %d/%d"
+
+#: client/ui/battle_hud.gd:221
+msgid "Sobreviva: %d/%d turnos"
+msgstr "Survive: %d/%d turns"
+
+#: client/ui/battle_hud.gd:224
+msgid "  (+%d onda)"
+msgstr "  (+%d wave)"
+
+#: client/ui/battle_hud.gd:224
+msgid "Inimigos: %d%s"
+msgstr "Enemies: %d%s"
+
+#: client/ui/battle_hud.gd:265
+msgid "Ninguém venceu desta vez."
+msgstr "Nobody won this time."
+
+#: client/ui/battle_hud.gd:267
+msgid "Instância concluída!"
+msgstr "Instance cleared!"
+
+#: client/ui/battle_hud.gd:267
+msgid "Sua equipe venceu a batalha!"
+msgstr "Your team won the battle!"
+
+#: client/ui/battle_hud.gd:269
+msgid "Sua equipe foi derrotada."
+msgstr "Your team was defeated."
+
+#: client/ui/battle_hud.gd:283
+msgid "OPÇÕES"
+msgstr "OPTIONS"
+
+#: client/ui/battle_hud.gd:283
+msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
+msgstr "Online battle: it keeps going. Giving up hands your character to the AI and you get no reward."
+
+#: client/ui/battle_hud.gd:285
+msgid "BATALHA PAUSADA"
+msgstr "BATTLE PAUSED"
+
+#: client/ui/battle_hud.gd:285
+msgid "Partida local contra IA. Desistir conta como derrota."
+msgstr "Local match against the AI. Giving up counts as a defeat."
+
+#: client/ui/battle_hud.gd:293
+msgid "DESLIGADA"
+msgstr "OFF"
+
+#: client/ui/battle_hud.gd:293
+msgid "LIGADA"
+msgstr "ON"
+
+#: client/ui/battle_hud.gd:293
+msgid "Música: %s"
+msgstr "Music: %s"
+
+#: client/ui/battle_hud.gd:294
+msgid "DESLIGADOS"
+msgstr "OFF"
+
+#: client/ui/battle_hud.gd:294
+msgid "Efeitos: %s"
+msgstr "Effects: %s"
+
+#: client/ui/battle_hud.gd:294
+msgid "LIGADOS"
+msgstr "ON"
+
+#: client/ui/battle_hud.gd:302
+msgid "CONTINUAR"
+msgstr "RESUME"
+
+#: client/ui/battle_hud.gd:303
+msgid "DESISTIR"
+msgstr "GIVE UP"
+
+#: client/ui/battle_hud.gd:356
+msgid "Confiar ✓"
+msgstr "Auto ✓"
+
+#: client/ui/battle_hud.gd:505
+msgid "EU"
+msgstr "ME"
+
+#: client/ui/battle_hud.gd:641
+msgid "Rodada %d"
+msgstr "Round %d"
+
+#: client/ui/battle_hud.gd:817
+msgid "Força"
+msgstr "Power"
+
+#: client/ui/battle_hud.gd:875
+msgid "Aguarde a sua vez…"
+msgstr "Wait for your turn…"
+
+#: client/ui/battle_hud.gd:875
+msgid "Pressione Espaço com força total e realize um ataque"
+msgstr "Press Space at full power to attack"
+
+#: client/ui/battle_outcome.gd:50
 msgid "DERROTA"
 msgstr "DEFEAT"
 
-#: client/ui/battle_outcome.gd:48
+#: client/ui/battle_outcome.gd:50
 msgid "EMPATE"
 msgstr "DRAW"
 
-#: client/ui/battle_outcome.gd:48
+#: client/ui/battle_outcome.gd:50
 msgid "VITÓRIA!"
 msgstr "VICTORY!"
 
-#: client/ui/battle_screen.gd:412
+#: client/ui/battle_screen.gd:427
 msgid "CRÍTICO"
 msgstr "CRITICAL"
 
-#: client/ui/battle_screen.gd:437
+#: client/ui/battle_screen.gd:452 shared/balance/combat.json:statuses[2].label
+msgid "CONGELADO!"
+msgstr "FROZEN!"
+
+#: client/ui/battle_screen.gd:452
+msgid "Você perde este turno."
+msgstr "You lose this turn."
+
+#: client/ui/battle_screen.gd:459
 msgid "SUA VEZ!"
 msgstr "YOUR TURN!"
 
-#: client/ui/battle_screen.gd:447 client/ui/battle_screen.gd:597
+#: client/ui/battle_screen.gd:469 client/ui/battle_screen.gd:619
 msgid "FASE CONCLUÍDA!"
 msgstr "STAGE CLEARED!"
 
-#: client/ui/battle_screen.gd:650
+#: client/ui/battle_screen.gd:672
 msgid "Sincronizando a batalha…"
 msgstr "Syncing the battle…"
 
@@ -3202,11 +3238,71 @@ msgstr "Own a level 16 map."
 msgid "Mapa Lendário"
 msgstr "Legendary Map"
 
+#: shared/balance/combat.json:elites.affixes[0].desc
+msgid "Seus ataques causam Queimação."
+msgstr "Its attacks cause Burning."
+
+#: shared/balance/combat.json:elites.affixes[0].name
+msgid "Elite das Chamas"
+msgstr "Flame Elite"
+
+#: shared/balance/combat.json:elites.affixes[1].desc
+msgid "Seus ataques envenenam."
+msgstr "Its attacks poison."
+
+#: shared/balance/combat.json:elites.affixes[1].name
+msgid "Elite do Veneno"
+msgstr "Venom Elite"
+
+#: shared/balance/combat.json:elites.affixes[2].desc
+msgid "Seus ataques causam Exaustão e podem congelar."
+msgstr "Its attacks cause Exhaustion and may freeze."
+
+#: shared/balance/combat.json:elites.affixes[2].name
+msgid "Elite do Gelo"
+msgstr "Frost Elite"
+
+#: shared/balance/combat.json:elites.affixes[3].desc
+msgid "Recupera 35% do dano que causa."
+msgstr "Recovers 35% of the damage it deals."
+
+#: shared/balance/combat.json:elites.affixes[3].name
+msgid "Elite Vampira"
+msgstr "Vampire Elite"
+
+#: shared/balance/combat.json:elites.affixes[4].desc
+msgid "Um escudo corta à metade o primeiro golpe e volta a cada 2 turnos."
+msgstr "A shield halves the first hit and returns every 2 turns."
+
+#: shared/balance/combat.json:elites.affixes[4].name
+msgid "Elite Encouraçada"
+msgstr "Armored Elite"
+
+#: shared/balance/combat.json:elites.affixes[5].desc
+msgid "Explode ao morrer e fere quem estiver perto."
+msgstr "Explodes when it dies, hurting anyone nearby."
+
+#: shared/balance/combat.json:elites.affixes[5].name
+msgid "Elite Explosiva"
+msgstr "Explosive Elite"
+
+#: shared/balance/combat.json:elites.affixes[6].desc
+msgid "Age com muito mais frequência."
+msgstr "Acts far more often."
+
+#: shared/balance/combat.json:elites.affixes[6].name
+msgid "Elite Veloz"
+msgstr "Swift Elite"
+
 #: shared/balance/combat.json:enemies[0].abilities[0].name
 msgid "Investida Solar"
 msgstr "Solar Charge"
 
-#: shared/balance/combat.json:enemies[0].attack shared/balance/combat.json:enemies[0].abilities[1].name
+#: shared/balance/combat.json:enemies[0].abilities[1].name
+msgid "Ferrão Venenoso"
+msgstr "Venom Sting"
+
+#: shared/balance/combat.json:enemies[0].attack
 msgid "Ferrão Solar"
 msgstr "Solar Sting"
 
@@ -3330,11 +3426,15 @@ msgstr "Asgard Tremor"
 msgid "Muralha de Escudos"
 msgstr "Shield Wall"
 
+#: shared/balance/combat.json:enemies[16].abilities[4].name
+msgid "Grilhões de Ferro"
+msgstr "Iron Shackles"
+
 #: shared/balance/combat.json:enemies[16].attack shared/balance/combat.json:enemies[16].abilities[0].name
 msgid "Martelo do Trovão"
 msgstr "Thunder Hammer"
 
-#: shared/balance/combat.json:enemies[16].fury_name shared/balance/combat.json:enemies[16].abilities[4].name
+#: shared/balance/combat.json:enemies[16].fury_name shared/balance/combat.json:enemies[16].abilities[5].name
 msgid "Ira de Valhalla"
 msgstr "Wrath of Valhalla"
 
@@ -3350,11 +3450,15 @@ msgstr "Solar Rain"
 msgid "Muralha Dourada"
 msgstr "Golden Wall"
 
+#: shared/balance/combat.json:enemies[1].abilities[3].name
+msgid "Julgamento Solar"
+msgstr "Solar Judgment"
+
 #: shared/balance/combat.json:enemies[1].attack shared/balance/combat.json:enemies[1].abilities[0].name
 msgid "Lança do Sol"
 msgstr "Sun Lance"
 
-#: shared/balance/combat.json:enemies[1].fury_name shared/balance/combat.json:enemies[1].abilities[3].name
+#: shared/balance/combat.json:enemies[1].fury_name shared/balance/combat.json:enemies[1].abilities[4].name
 msgid "Lança Flamejante"
 msgstr "Blazing Lance"
 
@@ -3393,6 +3497,10 @@ msgstr "Burning Bite"
 #: shared/balance/combat.json:enemies[3].abilities[2].name
 msgid "Chuva de Brasas"
 msgstr "Ember Rain"
+
+#: shared/balance/combat.json:enemies[3].abilities[3].name
+msgid "Riso Maldito"
+msgstr "Cursed Laughter"
 
 #: shared/balance/combat.json:enemies[3].attack shared/balance/combat.json:rewards.pvp_cards[0].name shared/balance/items.json:currencies[0].name
 msgid "Brasa"
@@ -3486,11 +3594,15 @@ msgstr "Icicles"
 msgid "Barreira de Gelo"
 msgstr "Ice Barrier"
 
+#: shared/balance/combat.json:enemies[9].abilities[3].name
+msgid "Correntes de Gelo"
+msgstr "Ice Chains"
+
 #: shared/balance/combat.json:enemies[9].attack shared/balance/combat.json:enemies[9].abilities[0].name
 msgid "Sopro Glacial"
 msgstr "Glacial Breath"
 
-#: shared/balance/combat.json:enemies[9].fury_name shared/balance/combat.json:enemies[9].abilities[3].name
+#: shared/balance/combat.json:enemies[9].fury_name shared/balance/combat.json:enemies[9].abilities[4].name
 msgid "Nevasca Eterna"
 msgstr "Endless Blizzard"
 
@@ -3655,26 +3767,34 @@ msgid "Inimigos com +%d%% de vida"
 msgstr "Enemies have +%d%% HP"
 
 #: shared/balance/combat.json:map_items.mods[10].text
+msgid "Efeitos negativos duram +1 turno"
+msgstr "Negative effects last +1 turn"
+
+#: shared/balance/combat.json:map_items.mods[11].text
+msgid "+%d%% de chance de mapa"
+msgstr "+%d%% map drop chance"
+
+#: shared/balance/combat.json:map_items.mods[12].text
 msgid "+%d%% de XP"
 msgstr "+%d%% XP"
 
-#: shared/balance/combat.json:map_items.mods[11].text
+#: shared/balance/combat.json:map_items.mods[13].text
 msgid "+%d%% de ouro"
 msgstr "+%d%% gold"
 
-#: shared/balance/combat.json:map_items.mods[12].text
+#: shared/balance/combat.json:map_items.mods[14].text
 msgid "+%d%% de quantidade de itens"
 msgstr "+%d%% item quantity"
 
-#: shared/balance/combat.json:map_items.mods[13].text
+#: shared/balance/combat.json:map_items.mods[15].text
 msgid "+%d%% de raridade"
 msgstr "+%d%% item rarity"
 
-#: shared/balance/combat.json:map_items.mods[14].text
+#: shared/balance/combat.json:map_items.mods[16].text
 msgid "+1 carta no baú do chefe"
 msgstr "+1 card in the boss chest"
 
-#: shared/balance/combat.json:map_items.mods[15].text
+#: shared/balance/combat.json:map_items.mods[17].text
 msgid "+%d%% de chance de Super Verdadeira"
 msgstr "+%d%% Super True chance"
 
@@ -3711,8 +3831,8 @@ msgid "Inimigos com escudo no primeiro golpe"
 msgstr "Enemies shield the first hit"
 
 #: shared/balance/combat.json:map_items.mods[9].text
-msgid "+%d%% de chance de mapa"
-msgstr "+%d%% map drop chance"
+msgid "+%d%% de inimigos de elite"
+msgstr "+%d%% elite enemies"
 
 #: shared/balance/combat.json:maps[0].name
 msgid "Ilha Celeste"
@@ -3745,6 +3865,98 @@ msgstr "Strengthening Stone"
 #: shared/balance/combat.json:rewards.pvp_cards[1].name shared/balance/items.json:currencies[1].name
 msgid "Coroa"
 msgstr "Crown"
+
+#: shared/balance/combat.json:statuses[0].desc
+msgid "Perde vida no início de cada turno."
+msgstr "Loses life at the start of each turn."
+
+#: shared/balance/combat.json:statuses[0].label
+msgid "QUEIMANDO!"
+msgstr "BURNING!"
+
+#: shared/balance/combat.json:statuses[0].name
+msgid "Queimação"
+msgstr "Burning"
+
+#: shared/balance/combat.json:statuses[1].desc
+msgid "Perde 2% da vida máxima por dose no início de cada turno (até 3 doses) e recebe só metade da cura."
+msgstr "Loses 2% of max life per dose at the start of each turn (up to 3 doses) and receives only half the healing."
+
+#: shared/balance/combat.json:statuses[1].label
+msgid "ENVENENADO!"
+msgstr "POISONED!"
+
+#: shared/balance/combat.json:statuses[1].name
+msgid "Envenenamento"
+msgstr "Poison"
+
+#: shared/balance/combat.json:statuses[2].desc
+msgid "Perde o próximo turno. Depois fica imune ao gelo por 1 turno."
+msgstr "Loses the next turn. Then immune to ice for 1 turn."
+
+#: shared/balance/combat.json:statuses[2].name
+msgid "Congelamento"
+msgstr "Freeze"
+
+#: shared/balance/combat.json:statuses[3].desc
+msgid "Andar, habilidades e avião custam 50% mais energia."
+msgstr "Walking, skills and the plane cost 50% more energy."
+
+#: shared/balance/combat.json:statuses[3].label
+msgid "EXAUSTO!"
+msgstr "EXHAUSTED!"
+
+#: shared/balance/combat.json:statuses[3].name
+msgid "Exaustão"
+msgstr "Exhaustion"
+
+#: shared/balance/combat.json:statuses[4].desc
+msgid "Não pode usar as habilidades 1–9 nem o POW."
+msgstr "Cannot use skills 1–9 or POW."
+
+#: shared/balance/combat.json:statuses[4].label
+msgid "SELADO!"
+msgstr "SEALED!"
+
+#: shared/balance/combat.json:statuses[4].name
+msgid "Selo"
+msgstr "Seal"
+
+#: shared/balance/combat.json:statuses[5].desc
+msgid "Não pode andar nem usar o avião de papel."
+msgstr "Cannot walk or use the paper plane."
+
+#: shared/balance/combat.json:statuses[5].label
+msgid "ENRAIZADO!"
+msgstr "ROOTED!"
+
+#: shared/balance/combat.json:statuses[5].name
+msgid "Raízes"
+msgstr "Roots"
+
+#: shared/balance/combat.json:statuses[6].desc
+msgid "Recebe 30% mais dano."
+msgstr "Takes 30% more damage."
+
+#: shared/balance/combat.json:statuses[6].label
+msgid "MARCADO!"
+msgstr "MARKED!"
+
+#: shared/balance/combat.json:statuses[6].name
+msgid "Marca da Caça"
+msgstr "Hunter's Mark"
+
+#: shared/balance/combat.json:statuses[7].desc
+msgid "Não enxerga o vento nem a linha de mira."
+msgstr "Cannot see the wind or the aim line."
+
+#: shared/balance/combat.json:statuses[7].label
+msgid "OFUSCADO!"
+msgstr "DAZZLED!"
+
+#: shared/balance/combat.json:statuses[7].name
+msgid "Ofuscamento"
+msgstr "Glare"
 
 #: shared/balance/combat.json:tools[0].desc
 msgid "Recupera 300 de vida."
@@ -3793,6 +4005,14 @@ msgstr "Recharges the paper plane (F)."
 #: shared/balance/combat.json:tools[5].name
 msgid "Pena de Voo"
 msgstr "Flight Feather"
+
+#: shared/balance/combat.json:tools[6].desc
+msgid "Remove todos os efeitos negativos: queimação, veneno, selo, raízes, exaustão, marca e ofuscamento."
+msgstr "Removes every negative effect: burning, poison, seal, roots, exhaustion, mark and glare."
+
+#: shared/balance/combat.json:tools[6].name
+msgid "Elixir Purificador"
+msgstr "Purifying Elixir"
 
 #: shared/balance/items.json:affixes.armor[0].text
 msgid "+%d de Defesa"

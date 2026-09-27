@@ -21,7 +21,8 @@ signal announce(text: String, color: Color)
 signal special(point: Vector2, texture_path: String)
 # Weapon POW visuals (beam, lightning, heal, bull, hearts, tornado) and, in instances,
 # the monsters' abilities (ability_cast, mark, drop, leap, strike, slam, breath, guard,
-# roar, heal_allies, burn) plus summon, warp and wave.
+# roar, heal_allies, hex), the status effects (status: one lands; burn / poison: they
+# hurt; cleanse) and the elites' death blast (elite_blast), plus summon, warp and wave.
 signal effect(kind: String, point: Vector2, data: Dictionary)
 # A skill 1–9, tool, auxiliary item, the paper plane or POW was used. The screen shows
 # the fighter consuming it (icon over the head), as in DDTank. Info: id, name, kind
@@ -107,6 +108,10 @@ var ability_target: int = -1
 var ability_time: float = 0.0
 var ability_run: Dictionary = {}
 var ability_focus: Vector2 = Vector2.ZERO
+# Status effects that landed on each fighter this round (0.16), so their texts and icons
+# stack instead of covering each other: player_id -> count (visual only).
+var status_pops: Dictionary = {}
+var status_round: int = -1
 const ACTING: Array[State] = [State.TURN_STARTED, State.PLAYER_MOVING, State.PLAYER_AIMING]
 
 func _init() -> void:
@@ -317,19 +322,13 @@ func begin_turn() -> void:
 		# Map threat: the wind never drops below 70% of the maximum.
 		wind = snappedf((1.0 if rng.randf() < 0.5 else -1.0) * rng.randf_range(float(balance.wind_max) * 0.7, float(balance.wind_max)), 0.1)
 	fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(balance.pow_per_turn))
-	if fighter.burn_turns > 0:
-		# Burning (monster abilities): damage at the start of each of the next turns.
-		fighter.burn_turns -= 1
-		fighter.take_damage(fighter.burn_damage)
-		damage_text.emit(fighter.center(), "-%d" % fighter.burn_damage, Color("ff9a3a"))
-		effect.emit("burn", fighter.center(), {})
-		if fighter.hp <= 0:
-			announce.emit(tr("%s não resistiu às chamas!") % fighter.display_name, Color("ff8a6a"))
+	tick_statuses(fighter)
+	restore_elite_shield(fighter)
 	for other in fighters:
 		other.active = other == fighter
 		other.update_pose()
-	if fighter.frozen > 0:
-		fighter.frozen -= 1
+	if fighter.frozen > 0 and fighter.hp > 0:
+		thaw(fighter)
 		skip_turn = true
 		status_message = tr("%s está congelado e perde a vez!") % fighter.display_name
 		announce.emit(status_message, Color("a8e8ff"))
@@ -365,7 +364,10 @@ func finish_turn() -> void:
 		if fighter.bonus.has("delay"):
 			# "-Delay" bonus from gear (0.10); a turn always adds some delay.
 			added = maxf(100.0, added - float(fighter.bonus.delay))
+		# Swift elites (0.16) come back sooner.
+		added *= float(fighter.elite.get("delay_scale", 1.0))
 	fighter.delay += added
+	expire_statuses(fighter)
 	fighter.fly_cooldown = maxi(0, fighter.fly_cooldown - 1)
 	fighter.active = false
 	state = State.TURN_FINISHED
@@ -559,7 +561,11 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 				return false
 	if id == "triple" and turn_pow:
 		return false
-	if energy < float(item.energy):
+	# Sealed (0.16): no skills 1–9 this turn. Exhausted: they cost more energy.
+	if fighter.has_status("selado"):
+		return false
+	var cost: float = energy_cost(fighter, float(item.energy))
+	if energy < cost:
 		return false
 	var fill: bool = bool(item.get("pow_fill", false))
 	if fill and (fighter.pow_gauge >= float(balance.pow_max) or turn_pow):
@@ -569,7 +575,7 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 		# Weapon bonus (0.10): a chance that the skill costs no energy.
 		damage_text.emit(fighter.center() + Vector2(0, -26), tr("GRÁTIS!"), Color("9ae8ff"))
 	else:
-		energy -= float(item.energy)
+		energy -= cost
 	turn_items.append(id)
 	if fill:
 		# POW Máx (item 9): the bar fills now, so B can release the special this turn.
@@ -616,6 +622,12 @@ func apply_tool(fighter: TankFighter, slot: int) -> bool:
 			return false
 		fighter.fly_cooldown = 0
 		kind = "plane"
+	elif tool.has("cleanse"):
+		# Elixir Purificador (0.16): every status effect is gone.
+		if fighter.statuses.is_empty():
+			return false
+		cleanse(fighter)
+		kind = "cleanse"
 	skill_used.emit(fighter, {"id": str(tool.id), "name": tr(str(tool.name)), "icon": str(tool.icon), "kind": kind})
 	fighter.tools[slot] = ""
 	tools_used += 1
@@ -661,8 +673,10 @@ func toggle_fly() -> bool:
 	return apply_fly(active())
 
 func apply_fly(fighter: TankFighter) -> bool:
-	var cost: float = float(balance.fly.energy)
+	var cost: float = energy_cost(fighter, float(balance.fly.energy))
 	if threats.get("no_plane", false) and not turn_fly:
+		return false
+	if fighter.has_status("enraizado") and not turn_fly:
 		return false
 	if turn_fly:
 		turn_fly = false
@@ -684,7 +698,7 @@ func activate_pow() -> bool:
 	return apply_pow(active())
 
 func apply_pow(fighter: TankFighter) -> bool:
-	if turn_pow or turn_fly or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items:
+	if turn_pow or turn_fly or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items or fighter.has_status("selado"):
 		return false
 	arm_pow(fighter)
 	changed.emit()
@@ -792,6 +806,8 @@ func checksum_text() -> String:
 	var parts: PackedStringArray = PackedStringArray([str(state), str(active_id), str(round_number), "%.2f" % wind, str(rng.state), str(fighters.size()), str(projectiles.size())])
 	for fighter in fighters:
 		parts.append("%d|%.1f|%.1f|%.1f|%.1f|%.1f|%d" % [fighter.hp, fighter.position.x, fighter.position.y, fighter.delay, fighter.pow_gauge, fighter.angle, fighter.facing])
+		for pair: Array in StatusRules.listed(fighter):
+			parts.append("%s%d.%d" % [pair[0], int(pair[1].turns), int(pair[1].get("stacks", 1))])
 	return "/".join(parts)
 
 # ---------- resolution ----------
@@ -907,6 +923,9 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 	var dealt: int = 0
 	# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
 	damage = roundi(damage * target.shield * Armory.attack_scale(shooter.attrs) * Armory.defense_scale(target.attrs))
+	if target.team != shooter.team and target.has_status("marcado"):
+		# Marked prey (0.16) takes more damage from every enemy.
+		damage = roundi(damage * float(StatusRules.def("marcado").get("damage_taken", 1.3)))
 	var critical: bool = false
 	if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
 		# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
@@ -921,7 +940,7 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 		shooter.stats.hits += 1
 		shooter.pow_gauge = minf(float(balance.pow_max), shooter.pow_gauge + damage * float(balance.pow_per_damage_dealt))
 	if freeze:
-		target.frozen = 1
+		add_status(target, "congelado", shooter)
 	damage_text.emit(target.center(), (tr("CRÍTICO -%d") if critical else "-%d") % damage, Color("ff5aff") if critical else (Color("ffe95a") if target.team != shooter.team else Color("ff9a7a")))
 	if target.hp > 0 and target.team != shooter.team and kind in ["pull", "bull"]:
 		var away: float = signf(target.position.x - point.x)
@@ -933,14 +952,18 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 		if float(rules.get("knockback", 0)) > 0.0:
 			var side: float = signf(target.position.x - float(rules.get("from_x", shooter.position.x)))
 			shove(target, float(rules.knockback) * (side if side != 0.0 else float(shooter.facing)))
-		var burn: Array = rules.get("burn", [])
-		if burn.size() == 2:
-			target.burn_damage = maxi(target.burn_damage if target.burn_turns > 0 else 0, maxi(1, roundi(damage * float(burn[0]))))
-			target.burn_turns = maxi(target.burn_turns, int(burn[1]))
+		for entry: Dictionary in rules.get("status", []):
+			afflict(shooter, target, entry, damage)
+	if kind == "ability" and target.team != shooter.team and damage > 0 and shooter.elite.has("lifesteal") and shooter.hp > 0:
+		# Vampire elites drink part of what they deal.
+		heal_fighter(shooter, roundi(damage * float(shooter.elite.lifesteal)))
+		effect.emit("hearts", shooter.center(), {})
 	if target.hp <= 0:
 		if target.team != shooter.team:
 			shooter.stats.kills += 1
 		announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
+		if target.elite.has("explode") and not target.exploded:
+			elite_explode(target)
 	return dealt
 
 func shove(target: TankFighter, amount: float) -> void:
@@ -951,8 +974,12 @@ func shove(target: TankFighter, amount: float) -> void:
 	target.update_pose()
 
 func healing(fighter: TankFighter, amount: int) -> int:
-	# "+% cura recebida" (0.10) raises every heal the fighter receives.
-	return roundi(amount * (1.0 + float(fighter.bonus.get("cura", 0)) / 100.0))
+	# "+% cura recebida" (0.10) raises every heal the fighter receives; poison (0.16)
+	# halves it.
+	var scale: float = 1.0 + float(fighter.bonus.get("cura", 0)) / 100.0
+	if fighter.has_status("veneno"):
+		scale *= float(StatusRules.def("veneno").get("heal_scale", 0.5))
+	return roundi(amount * scale)
 
 func wind_factor(fighter: TankFighter) -> float:
 	# "-% efeito do vento" (0.10), capped at 50%.
@@ -987,6 +1014,9 @@ func evaluate_winner() -> bool:
 			alive_teams = {0: true}
 		elif objective == "survive" and survived >= int(phase.get("turns", 6)):
 			alive_teams = {0: true}
+		elif boss_defeated():
+			# The boss is down (0.16: bosses come with minions): the rest flee.
+			alive_teams = {0: true}
 		elif not alive_teams.has(1) and not waves.is_empty():
 			# The next wave of minions drops in; the phase goes on.
 			spawn_wave(waves.pop_front())
@@ -1005,6 +1035,10 @@ func evaluate_winner() -> bool:
 	finished.emit(winner_team)
 	changed.emit()
 	return true
+
+func boss_defeated() -> bool:
+	var bosses: Array[TankFighter] = fighters.filter(func(f: TankFighter) -> bool: return f.is_boss)
+	return not bosses.is_empty() and bosses.all(func(f: TankFighter) -> bool: return f.hp <= 0)
 
 # ---------- simulation ----------
 
@@ -1095,8 +1129,13 @@ func human_step(delta: float) -> void:
 		walking = clampf(move_input + keyboard_axis(KEY_A, KEY_D) + keyboard_axis(KEY_LEFT, KEY_RIGHT), -1, 1)
 		aiming = clampf(aim_input + keyboard_axis(KEY_S, KEY_W) + keyboard_axis(KEY_DOWN, KEY_UP), -1, 1)
 	fighter.angle = clampf(fighter.angle + aiming * 30 * delta, fighter.angle_range.x, fighter.angle_range.y)
+	if walking != 0 and fighter.has_status("enraizado"):
+		# Rooted (0.16): the fighter may turn around but not walk.
+		if fighter.facing != int(signf(walking)):
+			fighter.facing = int(signf(walking))
+		walking = 0.0
 	if walking != 0:
-		var cost: float = float(balance.move_energy_per_px)
+		var cost: float = energy_cost(fighter, float(balance.move_energy_per_px))
 		var amount: float = minf(float(balance.move_speed) * delta, energy / cost)
 		if amount > 0.01 and fighter.move_ground(amount * walking, terrain):
 			energy -= amount * cost
@@ -1140,11 +1179,16 @@ func plan_ai(fighter: TankFighter) -> void:
 	ai_plan = Vector3(solution.x, clampf(solution.y + rng.randf_range(-spread, spread), 5, 100), solution.z)
 	if not fighter.is_monster and fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
 		apply_aux(fighter)
+	if not fighter.is_monster and (fighter.statuses.size() >= 2 or fighter.has_status("selado") or int(fighter.statuses.get("veneno", {}).get("stacks", 0)) >= 2):
+		# The AI drinks the Elixir Purificador when the afflictions pile up.
+		var slot: int = fighter.tools.find("cleanse")
+		if slot >= 0:
+			apply_tool(fighter, slot)
 	if not fighter.is_monster and not fighter.human and rng.randf() < float(balance.bots.item_chance):
 		var combos: Array = [["plus2", "dmg50", "dmg20"], ["triple", "dmg50", "dmg20"], ["plus1", "dmg50", "dmg20"], ["dmg50", "dmg50", "dmg40"], ["plus1", "dmg30"], ["dmg50", "dmg20"], ["powmax", "dmg50"]]
 		for id: String in combos[rng.randi() % combos.size()]:
 			apply_item(fighter, id)
-	if not fighter.is_monster and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items:
+	if not fighter.is_monster and fighter.pow_gauge >= float(balance.pow_max) and not "triple" in turn_items and not fighter.has_status("selado"):
 		arm_pow(fighter)
 
 func ai_step(delta: float) -> void:
@@ -1247,7 +1291,9 @@ func ability_damage(fighter: TankFighter) -> int:
 	return maxi(1, roundi(float(fighter.weapon.damage) * float(ability.get("damage", 1.0)) * scale * float(ability_run.get("empower", 1.0))))
 
 func ability_rules(fighter: TankFighter, from_x: float) -> Dictionary:
-	return {"kind": "ability", "enemies_only": true, "knockback": float(ability.get("knockback", 0)), "from_x": from_x, "burn": ability.get("burn", [])}
+	# The ability's status effects plus the elite's (0.16).
+	var status: Array = ability.get("status", []) + fighter.elite.get("status", [])
+	return {"kind": "ability", "enemies_only": true, "knockback": float(ability.get("knockback", 0)), "from_x": from_x, "status": status}
 
 func ability_targets(fighter: TankFighter, target: TankFighter) -> Array[TankFighter]:
 	# "all" hits every player; bosses spread their single-target spells over the whole
@@ -1275,7 +1321,7 @@ func begin_ability(fighter: TankFighter) -> void:
 	state = State.MONSTER_ACTING
 	ability_time = 0.0
 	# Rainha da Nevasca's freeze is decided before the attack counts, as with the shots.
-	ability_run = {"freeze": monster_freezes(fighter), "empower": fighter.empower, "beats": {}, "end": 1.4, "kind": kind}
+	ability_run = {"freeze": monster_freezes(fighter), "empower": fighter.empower, "beats": {}, "end": 1.4, "kind": kind, "afflicted": {}}
 	fighter.empower = 1.0
 	for id: String in fighter.cooldowns.keys():
 		fighter.cooldowns[id] = maxi(0, int(fighter.cooldowns[id]) - 1)
@@ -1312,6 +1358,19 @@ func begin_ability(fighter: TankFighter) -> void:
 		"heal", "guard", "roar":
 			ability_run.strike = 0.6
 			ability_run.end = 1.3
+		"hex":
+			# A curse (0.16): a rune circle closes around each victim, then the status
+			# effects land (and the damage, if the curse has any).
+			var victims: Array[TankFighter] = ability_targets(fighter, target)
+			var middle: Vector2 = Vector2.ZERO
+			for victim in victims:
+				effect.emit("hex", victim.center(), {"color": color, "time": 0.95, "fx": str(ability.get("fx", ""))})
+				middle += victim.center()
+			ability_run.victims = victims.map(func(f: TankFighter) -> int: return f.player_id)
+			ability_run.strike = 0.95
+			ability_run.end = 1.6
+			if not victims.is_empty():
+				ability_focus = middle / victims.size()
 		_:
 			# sky: reticles now, then each drop falls for `fall` seconds onto its point.
 			var drops: Array = []
@@ -1421,6 +1480,17 @@ func ability_step(delta: float) -> void:
 						hit_fighter(fighter, other, damage, other.center(), freeze, ability_rules(fighter, fighter.position.x))
 				if float(ability.get("crater", 0)) > 0.0:
 					terrain.crater(goal, float(ability.crater))
+		"hex":
+			if beat("strike", float(ability_run.strike)):
+				for id: int in ability_run.get("victims", []):
+					var victim: TankFighter = fighters[id]
+					if victim.hp <= 0:
+						continue
+					if ability.has("damage"):
+						hit_fighter(fighter, victim, damage, victim.center(), freeze, ability_rules(fighter, fighter.position.x))
+					else:
+						for entry: Dictionary in ability.get("status", []):
+							afflict(fighter, victim, entry, 0)
 		"heal", "guard", "roar":
 			if beat("strike", float(ability_run.strike)):
 				var radius: float = float(ability.get("radius", 400))
@@ -1463,6 +1533,146 @@ func fly_arc(fighter: TankFighter, from: Vector2, to: Vector2, t: float, height:
 	var u: float = clampf(t, 0.0, 1.0)
 	fighter.position = from.lerp(to, u) + Vector2(0, -4.0 * height * u * (1.0 - u))
 	fighter.update_pose()
+
+# ---------- status effects and elites (0.16) ----------
+# A status lasts a number of the victim's own turns: damage over time hurts at the start
+# of each of them, the rest (seal, roots, exhaustion, glare, mark) weigh on the whole
+# turn, and every one counts down when the turn ends. Freezing is spent by losing the
+# turn and leaves the fighter immune to it for its next turn, so nobody is frozen twice
+# in a row. Every roll uses the match's seeded rng (lockstep).
+
+func energy_cost(fighter: TankFighter, base: float) -> float:
+	# Exhausted fighters pay more for walking, skills and the plane.
+	if fighter.has_status("exaustao"):
+		return base * float(StatusRules.def("exaustao").get("cost_scale", 1.5))
+	return base
+
+func can_afflict(target: TankFighter, id: String) -> bool:
+	# Whether a status would still change anything on this fighter.
+	if target.hp <= 0 or target.rank == "totem" or int(target.immune.get(id, 0)) > 0:
+		return false
+	if id == "veneno":
+		return int(target.statuses.get(id, {}).get("stacks", 0)) < int(StatusRules.def(id).get("max_stacks", 3))
+	return not target.statuses.has(id)
+
+func status_useful(target: TankFighter, list: Array) -> bool:
+	return target != null and list.any(func(entry: Dictionary) -> bool: return can_afflict(target, str(entry.get("id", ""))))
+
+func afflict(source: TankFighter, target: TankFighter, entry: Dictionary, hit: int) -> void:
+	# An ability's status lands on a victim: at most once per ability (a volley of drops
+	# does not stack three doses of poison) and only if its chance comes up.
+	var id: String = str(entry.get("id", ""))
+	var seen: Dictionary = ability_run.get("afflicted", {}) if state == State.MONSTER_ACTING else {}
+	var key: String = "%d:%s" % [target.player_id, id]
+	if seen.has(key):
+		return
+	seen[key] = true
+	var chance: float = float(entry.get("chance", 1.0))
+	if chance < 1.0 and rng.randf() >= chance:
+		return
+	add_status(target, id, source, entry, hit)
+
+func add_status(target: TankFighter, id: String, source: TankFighter = null, entry: Dictionary = {}, hit: int = 0) -> bool:
+	var info: Dictionary = StatusRules.def(id)
+	if info.is_empty() or target.hp <= 0 or target.rank == "totem":
+		return false
+	if int(target.immune.get(id, 0)) > 0:
+		damage_text.emit(target.center() + Vector2(0, -30), tr("IMUNE!"), Color("e8f4ff"))
+		return false
+	var turns: int = int(entry.get("turns", info.get("turns", 1)))
+	if source != null and source.is_monster and id != "congelado" and threats.get("long_status", false):
+		# Map threat: negative effects last one turn more.
+		turns += 1
+	if target.player_id == active_id and state in [State.PROJECTILE_FLYING, State.RESOLVING_DAMAGE, State.MONSTER_ACTING]:
+		# Caught during its own turn: the turn that is ending does not count.
+		turns += 1
+	var old: Dictionary = target.statuses.get(id, {})
+	var stacks: int = 1
+	var power: float = 0.0
+	match id:
+		"veneno":
+			stacks = mini(int(old.get("stacks", 0)) + 1, int(info.get("max_stacks", 3)))
+			power = float(info.get("per_stack", 0.03))
+		"queimacao":
+			power = maxf(float(old.get("power", 0.0)), maxf(1.0, hit * float(entry.get("power", info.get("power", 0.12)))))
+	target.statuses[id] = {"turns": maxi(turns, int(old.get("turns", 0))), "stacks": stacks, "power": power}
+	var color: Color = StatusRules.color(id)
+	if status_round != round_number:
+		status_round = round_number
+		status_pops.clear()
+	var order: int = int(status_pops.get(target.player_id, 0))
+	status_pops[target.player_id] = order + 1
+	damage_text.emit(target.center() + Vector2(0, -30 - 26 * order), tr(str(info.get("label", ""))), color)
+	effect.emit("status", target.center(), {"id": id, "color": color, "fighter": target.player_id, "order": order})
+	if old.is_empty():
+		announce.emit(tr("%s: %s!") % [target.display_name, tr(str(info.get("name", id)))], color.lightened(0.2))
+	target.update_pose()
+	return true
+
+func tick_statuses(fighter: TankFighter) -> void:
+	# Start of the fighter's turn: burning and poison hurt.
+	for id: String in ["queimacao", "veneno"]:
+		if not fighter.statuses.has(id) or fighter.hp <= 0:
+			continue
+		var entry: Dictionary = fighter.statuses[id]
+		var amount: int = maxi(1, roundi(float(entry.power))) if id == "queimacao" else maxi(1, roundi(fighter.max_hp * float(entry.power) * int(entry.stacks)))
+		fighter.take_damage(amount)
+		damage_text.emit(fighter.center(), "-%d" % amount, StatusRules.color(id))
+		effect.emit("burn" if id == "queimacao" else "poison", fighter.center(), {"color": StatusRules.color(id)})
+		if fighter.hp <= 0:
+			var line: String = tr("%s não resistiu às chamas!") if id == "queimacao" else tr("%s não resistiu ao veneno!")
+			announce.emit(line % fighter.display_name, Color("ff8a6a"))
+
+func expire_statuses(fighter: TankFighter) -> void:
+	# End of the fighter's turn: every status counts down; immunity only on a turn played.
+	for id: String in fighter.statuses.keys():
+		var entry: Dictionary = fighter.statuses[id]
+		entry.turns = int(entry.turns) - 1
+		if int(entry.turns) <= 0:
+			fighter.statuses.erase(id)
+	if not skip_turn:
+		for id: String in fighter.immune.keys():
+			fighter.immune[id] = int(fighter.immune[id]) - 1
+			if int(fighter.immune[id]) <= 0:
+				fighter.immune.erase(id)
+	fighter.update_pose()
+
+func thaw(fighter: TankFighter) -> void:
+	# The frozen turn is spent: the ice breaks and it cannot freeze again right away.
+	fighter.frozen = 0
+	var immunity: int = int(StatusRules.def("congelado").get("immunity", 1))
+	if immunity > 0:
+		fighter.immune["congelado"] = immunity
+	fighter.update_pose()
+
+func cleanse(fighter: TankFighter) -> void:
+	fighter.statuses.clear()
+	damage_text.emit(fighter.center() + Vector2(0, -30), tr("PURIFICADO!"), Color("fff4c0"))
+	effect.emit("cleanse", fighter.center(), {"color": Color("fff4c0")})
+	fighter.update_pose()
+
+func restore_elite_shield(fighter: TankFighter) -> void:
+	# Armoured elites raise their shield again every few of their turns.
+	var every: int = int(fighter.elite.get("shield_every", 0))
+	if every <= 0 or fighter.hp <= 0 or fighter.shield < 1.0 or fighter.turns_taken == 0 or fighter.turns_taken % every != 0:
+		return
+	fighter.shield = float(fighter.elite.shield)
+	effect.emit("guard", fighter.center(), {"color": Color(str(fighter.elite.color)), "radius": 0.0, "allies": [fighter.center()]})
+	fighter.queue_redraw()
+
+func elite_explode(fighter: TankFighter) -> void:
+	# An explosive elite blows up where it falls and hurts every enemy around it.
+	fighter.exploded = true
+	var rules: Dictionary = fighter.elite.get("explode", {})
+	var point: Vector2 = fighter.center()
+	var radius: float = float(rules.get("radius", 150))
+	var color: Color = Color(str(fighter.elite.get("color", "ffb02e")))
+	announce.emit(tr("%s explodiu!") % fighter.display_name, color)
+	if float(rules.get("crater", 0)) > 0.0:
+		terrain.crater(point, float(rules.crater))
+	blast.emit(point, radius * 0.4)
+	effect.emit("elite_blast", point, {"radius": radius, "color": color})
+	damage_area(fighter, point, roundi(fighter.base_damage * float(rules.get("damage", 1.3))), radius, false, {"kind": "ability", "enemies_only": true, "knockback": 60.0, "from_x": point.x})
 
 func keyboard_axis(negative: Key, positive: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

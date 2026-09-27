@@ -84,13 +84,14 @@ func run_tests() -> void:
 	var run: InstanceRun = make_run("templo_sol")
 	play_phase(game, run)
 	var hero_fighter: TankFighter = game.fighters[0]
-	check(game.pve and game.phase.index == 0 and enemies(game).size() == 2 and game.waves.size() == 1, "phase 1: two minions now, a second wave waiting")
+	var temple_waves: Array = InstanceRun.instance_def("templo_sol").phases[0].waves
+	check(game.pve and game.phase.index == 0 and enemies(game).size() == (temple_waves[0] as Array).size() and game.waves.size() == 1, "phase 1: the first minions now, a second wave waiting")
 	check(enemies(game).all(func(f: TankFighter) -> bool: return f.is_monster and f.rank == "minion" and not f.is_boss), "minions are monsters, not bosses")
 	check(hero_fighter.prone and not hero_fighter.is_monster, "the hero still battles lying prone")
 	check(is_equal_approx(game.turn_seconds, 20.0), "instances use 20 s turns")
 	for enemy in enemies(game):
 		enemy.hp = 0
-	check(not game.evaluate_winner() and enemies(game).filter(func(f: TankFighter) -> bool: return f.hp > 0).size() == 2 and game.waves.is_empty(), "clearing a wave brings the next one")
+	check(not game.evaluate_winner() and enemies(game).filter(func(f: TankFighter) -> bool: return f.hp > 0).size() == (temple_waves[1] as Array).size() and game.waves.is_empty(), "clearing a wave brings the next one")
 	var dropped: TankFighter = enemies(game)[-1]
 	check(not dropped.settled or dropped.position.y < game.terrain.surface_y(dropped.position.x), "the new wave falls from the sky")
 	# Minion AI acts by itself, with an ability instead of a shot (0.14)
@@ -105,13 +106,13 @@ func run_tests() -> void:
 		enemy.hp = 0
 	check(game.evaluate_winner() and game.winner_team == 0, "phase 1 is won when the last wave falls")
 
-	# --- Between phases: +30% life, POW kept, the fallen come back with 20%
+	# --- Between phases: +35% life (0.16), POW kept, the fallen come back with 20%
 	hero_fighter.hp = 1000
 	hero_fighter.pow_gauge = 70
 	var hero_max: int = hero_fighter.max_hp
 	var report: Dictionary = run.complete_phase(game)
 	check(run.phase_index == 1 and run.phases_won == 1, "the run advances to phase 2")
-	check(int(run.carry[0].hp) == mini(hero_max, 1000 + roundi(hero_max * 0.3)) and is_equal_approx(float(run.carry[0].pow), 70.0), "between phases life recovers 30% and POW is kept")
+	check(int(run.carry[0].hp) == mini(hero_max, 1000 + roundi(hero_max * 0.35)) and is_equal_approx(float(run.carry[0].pow), 70.0), "between phases life recovers 35% and POW is kept")
 	check(int(report.gold) > 0 and report.has("maps"), "each phase won gives gold and may drop maps")
 	play_phase(game, run)
 	hero_fighter = game.fighters[0]
@@ -156,7 +157,7 @@ func run_tests() -> void:
 	turn_of(game, boss)
 	check(game.boss_enraged and boss.weapon.damage == int(helio.fury_damage) and game.status_message.contains("FÚRIA"), "the boss enrages at half health")
 	boss.hp = 0
-	check(game.evaluate_winner() and game.winner_team == 0, "defeating the boss wins the instance")
+	check(enemies(game).any(func(f: TankFighter) -> bool: return f.hp > 0) and game.evaluate_winner() and game.winner_team == 0, "defeating the boss wins the instance, even with its minions still up")
 
 	# --- Map level and party scaling
 	var level5: InstanceRun = make_run("templo_sol", map_with([], 5))
@@ -173,7 +174,8 @@ func run_tests() -> void:
 	check(is_equal_approx(bots_only.hp_scale(), 1.0), "bots in the party do not scale the instance (players only)")
 	party4.phase_index = 2
 	var area_config: Dictionary = party4.phase_config(party4.members)
-	check(area_config.teams[1].size() == 4, "the extra minions join the boss phase")
+	var boss_wave: int = (InstanceRun.instance_def("templo_sol").phases[2].waves[0] as Array).size()
+	check(area_config.teams[1].size() == boss_wave + 3, "the extra minions join the boss phase")
 	area_config.seed = 5
 	game.start(area_config)
 	boss = enemies(game).filter(func(f: TankFighter) -> bool: return f.is_boss).front()
@@ -206,7 +208,7 @@ func run_tests() -> void:
 	game.start(threat_config)
 	boss = enemies(game).filter(func(f: TankFighter) -> bool: return f.is_boss).front()
 	check(is_equal_approx(game.turn_seconds, 15.0), "threat: 15 s turns instead of 20 s")
-	check(enemies(game).size() == 2 and boss.shield == 0.5, "threats: an extra minion and shielded enemies")
+	check(enemies(game).size() == boss_wave + 1 and boss.shield == 0.5, "threats: an extra minion and shielded enemies")
 	check(game.fighters[0].max_energy < 240, "threat: players with less energy")
 	turn_of(game, game.fighters[0])
 	check(absf(game.wind) >= float(balance.wind_max) * 0.7 - 0.05, "threat: the wind is always strong")

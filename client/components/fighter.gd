@@ -29,13 +29,17 @@ var fury_damage: int = 0
 var summon_entry: Dictionary = {}
 var turns_taken: int = 0
 # Monster abilities (0.14): turns left before each ability can be used again, the leap in
-# progress (no gravity while it flies), a war cry's bonus to the next attack and burning
-# (damage at the start of each of the next turns).
+# progress (no gravity while it flies) and a war cry's bonus to the next attack.
 var cooldowns: Dictionary = {}
 var leaping: bool = false
 var empower: float = 1.0
-var burn_turns: int = 0
-var burn_damage: int = 0
+# Status effects (0.16): id -> {"turns", "stacks", "power"} (see LocalMatch.add_status)
+# and, per status, the turns left of immunity after it wore off (thawed out of the ice).
+var statuses: Dictionary = {}
+var immune: Dictionary = {}
+# PvE elites (0.16): the affix (combat.json → elites.affixes), empty for a plain enemy.
+var elite: Dictionary = {}
+var exploded: bool = false
 var is_boss: bool:
 	get:
 		return rank == "boss"
@@ -51,7 +55,15 @@ var angle_range: Vector2 = Vector2(0, 90)
 var tilt: float = 0.0
 var velocity_y: float = 0.0
 var shield: float = 1.0
-var frozen: int = 0
+# Turns the fighter is frozen for (the "congelado" status): it loses the next turn.
+var frozen: int:
+	get:
+		return int(statuses.get("congelado", {}).get("turns", 0))
+	set(value):
+		if value > 0:
+			statuses["congelado"] = {"turns": value, "stacks": 1, "power": 0.0}
+		else:
+			statuses.erase("congelado")
 var fly_cooldown: int = 0
 var last_power: float = -1.0
 var tools: Array[String] = []
@@ -79,6 +91,8 @@ var east_texture: Texture2D
 var west_texture: Texture2D
 var south_texture: Texture2D
 var prone: bool = false
+# Drawn over the body: the status effects (flames, roots, ice, the seal...).
+var overlay: Node2D
 var pixel_scale: float = 0.76
 var body_size: Vector2 = Vector2(40, 72)
 var front_x: float = 30.0
@@ -168,6 +182,7 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 		if not clip.frames.is_empty():
 			rig.style(clip, clip.clip)
 	rig.source = shown_body
+	make_overlay()
 	update_pose()
 
 func shown_body() -> Dictionary:
@@ -220,6 +235,13 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 	art_faces_left = str(def.get("faces", "left")) == "left"
 	always_enraged = bool(entry.get("enraged", false))
 	shield = float(entry.get("shield", 1.0))
+	elite = StatusRules.affix(str(entry.get("elite", ""))).duplicate(true)
+	if not elite.is_empty():
+		# Elites wear their affix instead of the rank ("Elite Vampira") and start behind
+		# their armour when they have one.
+		rank_title = tr(str(elite.name))
+		if elite.has("shield"):
+			shield = minf(shield, float(elite.shield))
 	var limits: Array = def.get("angle", [25, 75])
 	angle_range = Vector2(limits[0], limits[1])
 	angle = clampf(45.0, angle_range.x, angle_range.y)
@@ -258,14 +280,26 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 		fit_monster_layer(layer, k)
 	walk_animation = null
 	body.visible = idle_animation.frames.is_empty()
+	if not elite.is_empty():
+		visual.scale = Vector2.ONE * float(StatusRules.rules().get("elites", {}).get("scale", 1.15))
+	make_overlay()
 	update_pose()
 
 static func rank_for(value: int) -> String:
 	var ranks: Array[String] = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]  # i18n
 	return Lang.t(ranks[clampi((value - 1) / 4, 0, ranks.size() - 1)])
 
+func make_overlay() -> void:
+	overlay = Node2D.new()
+	overlay.z_index = 1
+	overlay.draw.connect(draw_overlay)
+	add_child(overlay)
+
 func alive() -> bool:
 	return hp > 0
+
+func has_status(id: String) -> bool:
+	return statuses.has(id)
 
 func animate_attack() -> void:
 	turns_taken += 1
@@ -330,7 +364,7 @@ func update_pose() -> void:
 			if is_instance_valid(clip):
 				clip.flip_h = mirrored
 		modulate = Color("b8e8ff") if frozen > 0 else Color.WHITE
-		queue_redraw()
+		redraw()
 		return
 	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
 		if is_instance_valid(clip):
@@ -342,7 +376,12 @@ func update_pose() -> void:
 		body.region_rect = Rect2(body.texture.get_image().get_used_rect())
 		body.position.y = -body_size.y / 2 + (sin(pulse * 3.0) * 1.0 if gender == "f" else 0.0)
 	modulate = Color("b8e8ff") if frozen > 0 else Color.WHITE
+	redraw()
+
+func redraw() -> void:
 	queue_redraw()
+	if is_instance_valid(overlay):
+		overlay.queue_redraw()
 
 func hands() -> Vector2:
 	# Where the weapon is held, in the unrotated local frame.
@@ -450,7 +489,7 @@ func glow(color: Color) -> void:
 func hide_body() -> void:
 	if is_instance_valid(visual):
 		visual.hide()
-	queue_redraw()
+	redraw()
 
 func portrait() -> Texture2D:
 	return south_texture
@@ -465,6 +504,8 @@ func _draw() -> void:
 		draw_rect(Rect2(-6, -18, 12, 4), Color("5d6272"))
 		return
 	var color: Color = TEAM_COLORS[team]
+	if not elite.is_empty():
+		draw_elite_aura()
 	if active and not is_monster:
 		var origin: Vector2 = pivot()
 		var lo: float = angle_range.x + tilt * facing
@@ -472,9 +513,10 @@ func _draw() -> void:
 		var start: float = -deg_to_rad(lo) if facing > 0 else PI + deg_to_rad(lo)
 		var finish: float = -deg_to_rad(hi) if facing > 0 else PI + deg_to_rad(hi)
 		draw_arc(origin, 46, minf(start, finish), maxf(start, finish), 24, Color(0.95, 0.15, 0.1, 0.8), 3)
+		# Glare (0.16): a dazzled fighter does not see its aim line.
 		var aim: float = -deg_to_rad(drawn_effective_angle()) if facing > 0 else PI + deg_to_rad(drawn_effective_angle())
 		for i in range(2, 12):
-			if i % 2 == 0:
+			if i % 2 == 0 and not has_status("ofuscado"):
 				draw_line(origin + Vector2.from_angle(aim) * (i * 6), origin + Vector2.from_angle(aim) * (i * 6 + 5), Color("ffe95a"), 2)
 	if active:
 		var top: float = -monster_height - 20.0 if is_monster else -body_size.y - 18.0
@@ -490,15 +532,6 @@ func _draw() -> void:
 		draw_set_transform(Vector2(0, -2), 0, Vector2(1.0, 0.3))
 		draw_arc(Vector2.ZERO, body_size.x * 0.6 + 10.0 + beat * 4.0, 0, TAU, 32, Color(1.0, 0.3, 0.2, 0.8), 4.0)
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
-	if burn_turns > 0:
-		# Burning: small flames licking up over the body, on the 2 px grid.
-		var top_y: float = -monster_height if is_monster else -body_size.y
-		for i in range(5):
-			var t: float = fposmod(pulse * 1.6 + i * 0.21, 1.0)
-			var fx: float = (i - 2) * body_size.x * 0.16 + sin(pulse * 6.0 + i) * 2.0
-			var p: Vector2 = Vector2(fx, top_y * (0.25 + 0.6 * t)).snapped(Vector2(2, 2))
-			var s: float = snappedf(6.0 * (1.0 - t) + 2.0, 2.0)
-			draw_rect(Rect2(p - Vector2(s, s) / 2.0, Vector2(s, s)), Color(1.0, 0.55 + 0.4 * (1.0 - t), 0.15, 0.85 * (1.0 - t)))
 	var y: float = 6.0
 	draw_rect(Rect2(-26, y, 52, 6), Color("1a0f08"))
 	draw_rect(Rect2(-25, y + 1, 50.0 * hp / maxf(1, max_hp), 4), color)
@@ -510,4 +543,160 @@ func _draw() -> void:
 	draw_string_outline(font, Vector2(-18, y + 21), display_name, HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(13), 4, Color("10141f"))
 	draw_string(font, Vector2(-18, y + 21), display_name, HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(13), color.lightened(0.3))
 	draw_string_outline(font, Vector2(-18, y + 35), rank_title, HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), 3, Color("10141f"))
-	draw_string(font, Vector2(-18, y + 35), rank_title, HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), Color("9aff7a"))
+	draw_string(font, Vector2(-18, y + 35), rank_title, HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(11), Color(str(elite.color)).lightened(0.25) if not elite.is_empty() else Color("9aff7a"))
+	if not elite.is_empty():
+		var badge_icon: Texture2D = StatusRules.icon_path(str(elite.get("icon", "")))
+		if badge_icon != null:
+			draw_texture_rect(badge_icon, Rect2(-38, y + 25, 14, 14), false)
+	draw_status_row(font, y + 40)
+
+# ---------- status effects and elites (0.16) ----------
+
+func shown_size() -> Vector2:
+	# The body as drawn (elites are drawn bigger).
+	var scale: Vector2 = visual.scale if is_instance_valid(visual) else Vector2.ONE
+	return Vector2(body_size.x, monster_height if is_monster else body_size.y) * scale
+
+func draw_status_row(font: Font, y: float) -> void:
+	# Small icons under the name with the turns left (and the poison doses).
+	var list: Array = StatusRules.listed(self)
+	if list.is_empty():
+		return
+	var step: float = 17.0
+	var x: float = -list.size() * step / 2.0
+	for pair: Array in list:
+		var id: String = pair[0]
+		var entry: Dictionary = pair[1]
+		var rect: Rect2 = Rect2(x, y, 16, 16)
+		draw_rect(rect.grow(1), Color(0.05, 0.03, 0.02, 0.75))
+		var texture: Texture2D = StatusRules.icon(id)
+		if texture != null:
+			draw_texture_rect(texture, rect, false)
+		else:
+			draw_rect(rect.grow(-3), StatusRules.color(id))
+		var count: int = int(entry.get("stacks", 1)) if id == "veneno" else int(entry.get("turns", 0))
+		if count > 1:
+			draw_string_outline(font, Vector2(x + 9, y + 18), str(count), HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(10), 3, Color("10141f"))
+			draw_string(font, Vector2(x + 9, y + 18), str(count), HORIZONTAL_ALIGNMENT_LEFT, -1, UiKit.fs(10), Color.WHITE)
+		x += step
+
+func draw_elite_aura() -> void:
+	# An elite glows in its affix colour: a throbbing ring on the ground and motes rising.
+	var tint: Color = Color(str(elite.get("color", "ffd04a")))
+	var size: Vector2 = shown_size()
+	var beat: float = 0.5 + 0.5 * sin(pulse * 4.0)
+	var radius: float = size.x * 0.6 + 10.0
+	draw_set_transform(Vector2(0, -2), 0, Vector2(1.0, 0.3))
+	draw_circle(Vector2.ZERO, radius + 6.0, Color(tint, 0.14 + 0.08 * beat))
+	draw_arc(Vector2.ZERO, radius + beat * 4.0, 0, TAU, 40, Color(tint, 0.9), 4.0)
+	draw_arc(Vector2.ZERO, radius * 0.7, pulse * 1.5, pulse * 1.5 + PI * 1.3, 24, Color(tint.lightened(0.4), 0.6), 3.0)
+	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	for i in range(8):
+		var t: float = fposmod(pulse * 0.6 + i / 8.0, 1.0)
+		var p: Vector2 = Vector2(sin(i * 2.3 + pulse * 0.8) * size.x * 0.55, -size.y * 1.05 * t).snapped(Vector2(2, 2))
+		draw_rect(Rect2(p, Vector2(2, 2) if i % 3 else Vector2(4, 4)), Color(tint.lightened(0.35), 0.9 * (1.0 - t)))
+
+func draw_overlay() -> void:
+	# Each status effect over the body, on the 2 px art grid.
+	if hp <= 0 or not is_instance_valid(visual) or not visual.visible:
+		return
+	var size: Vector2 = shown_size()
+	var w: float = size.x
+	var h: float = size.y
+	for pair: Array in StatusRules.listed(self):
+		var id: String = pair[0]
+		var tint: Color = StatusRules.color(id)
+		match id:
+			"queimacao":
+				# Flames licking up over the body.
+				for i in range(6):
+					var t: float = fposmod(pulse * 1.6 + i * 0.19, 1.0)
+					var fx: float = (i - 2.5) * w * 0.14 + sin(pulse * 6.0 + i) * 2.0
+					var p: Vector2 = Vector2(fx, -h * (0.15 + 0.7 * t)).snapped(Vector2(2, 2))
+					var s: float = snappedf(6.0 * (1.0 - t) + 2.0, 2.0)
+					overlay.draw_rect(Rect2(p - Vector2(s, s) / 2.0, Vector2(s, s)), Color(1.0, 0.55 + 0.4 * (1.0 - t), 0.15, 0.85 * (1.0 - t)))
+			"veneno":
+				# Green bubbles rising and popping, more with every dose, and a sick tint
+				# pulsing over the body.
+				var doses: int = int(statuses[id].get("stacks", 1))
+				for i in range(4 + doses * 2):
+					var t: float = fposmod(pulse * 0.8 + i * 0.19, 1.0)
+					var p: Vector2 = Vector2(sin(i * 1.9) * w * 0.42 + sin(pulse * 3.0 + i) * 3.0, -h * (0.1 + 1.0 * t) - 4.0).snapped(Vector2(2, 2))
+					var r: float = 4.0 if t < 0.6 else 6.0
+					overlay.draw_rect(Rect2(p - Vector2(r, r) / 2.0 - Vector2(1, 1), Vector2(r + 2, r + 2)), Color(0.05, 0.2, 0.02, 0.6 * (1.0 - t)))
+					overlay.draw_rect(Rect2(p - Vector2(r, r) / 2.0, Vector2(r, r)), Color(tint.r, tint.g, tint.b, 0.95 * (1.0 - t * 0.5)))
+					overlay.draw_rect(Rect2(p - Vector2(r, r) / 2.0, Vector2(2, 2)), Color(0.9, 1.0, 0.8, 0.9 * (1.0 - t)))
+					if t > 0.9:
+						for dx: float in [-6.0, 4.0]:
+							overlay.draw_rect(Rect2(p + Vector2(dx, -2), Vector2(2, 2)), Color(tint.lightened(0.4), 0.8))
+			"congelado":
+				# Encased in a faceted crystal of ice, with shards spiking out of the top.
+				var tall: float = maxf(h, 46.0) * 1.05
+				var half: float = maxf(w * 0.6 + 6.0, 24.0)
+				var crystal: PackedVector2Array = PackedVector2Array()
+				var corners: Array[Vector2] = [Vector2(-1.0, 0.0), Vector2(-1.08, -0.45), Vector2(-0.78, -0.9), Vector2(-0.35, -1.12), Vector2(0.1, -0.98), Vector2(0.45, -1.18), Vector2(0.86, -0.85), Vector2(1.06, -0.4), Vector2(0.98, 0.0)]
+				for corner: Vector2 in corners:
+					crystal.append(Vector2(corner.x * half, corner.y * tall + 2.0).snapped(Vector2(2, 2)))
+				# Snapping can flatten a corner: only fill what still triangulates.
+				if not Geometry2D.triangulate_polygon(crystal).is_empty():
+					overlay.draw_colored_polygon(crystal, Color(0.62, 0.88, 1.0, 0.32))
+				overlay.draw_polyline(crystal + PackedVector2Array([crystal[0]]), Color("1a3a5a"), 4.0)
+				overlay.draw_polyline(crystal + PackedVector2Array([crystal[0]]), Color(0.86, 0.97, 1.0, 0.95), 2.0)
+				# Facets from a bright core.
+				var core: Vector2 = Vector2(-half * 0.15, -tall * 0.55).snapped(Vector2(2, 2))
+				for k: int in [1, 3, 5, 7]:
+					overlay.draw_line(core, crystal[k], Color(1, 1, 1, 0.45), 2.0)
+				var facet: PackedVector2Array = PackedVector2Array([crystal[2], crystal[3], core])
+				if not Geometry2D.triangulate_polygon(facet).is_empty():
+					overlay.draw_colored_polygon(facet, Color(1, 1, 1, 0.18))
+				for k in range(3):
+					var shine: Vector2 = Vector2(sin(pulse * 1.3 + k * 2.1) * half * 0.6, -tall * (0.3 + 0.2 * k)).snapped(Vector2(2, 2))
+					overlay.draw_rect(Rect2(shine, Vector2(2, 2)), Color(1, 1, 1, 0.5 + 0.5 * sin(pulse * 5.0 + k)))
+			"exaustao":
+				# Big sweat drops flying off the head.
+				for i in range(4):
+					var t: float = fposmod(pulse * 1.0 + i * 0.25, 1.0)
+					var side: float = -1.0 if i % 2 == 0 else 1.0
+					var p: Vector2 = Vector2(side * (w * 0.2 + t * 14.0), -h - 8.0 - sin(t * PI) * 10.0 + t * 12.0).snapped(Vector2(2, 2))
+					var fade: float = 1.0 - t
+					overlay.draw_rect(Rect2(p + Vector2(-1, -1), Vector2(6, 8)), Color(0.05, 0.1, 0.2, 0.6 * fade))
+					overlay.draw_rect(Rect2(p + Vector2(0, 2), Vector2(4, 4)), Color(0.55, 0.8, 1.0, fade))
+					overlay.draw_rect(Rect2(p + Vector2(1, 0), Vector2(2, 2)), Color(0.7, 0.9, 1.0, fade))
+					overlay.draw_rect(Rect2(p + Vector2(0, 2), Vector2(2, 2)), Color(1, 1, 1, fade))
+			"selado":
+				# A rune ring turning over the head.
+				var c: Vector2 = Vector2(0, -maxf(h, 40.0) - 18.0)
+				overlay.draw_set_transform(c, 0, Vector2(1.0, 0.4))
+				overlay.draw_arc(Vector2.ZERO, 16.0, 0, TAU, 28, Color(tint, 0.9), 2.0)
+				overlay.draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+				for i in range(6):
+					var a: float = pulse * 2.0 + TAU * i / 6.0
+					var p: Vector2 = (c + Vector2(cos(a) * 16.0, sin(a) * 6.4)).snapped(Vector2(2, 2))
+					overlay.draw_rect(Rect2(p - Vector2(2, 2), Vector2(4, 4)), tint.lightened(0.3))
+			"enraizado":
+				# Roots grown up around the feet.
+				for i in range(7):
+					var x: float = snappedf((i - 3) * w * 0.17, 2.0)
+					var tall: float = 8.0 + float((i * 5) % 4) * 3.0 + sin(pulse * 2.0 + i) * 1.5
+					var bend: float = 3.0 if i % 2 == 0 else -3.0
+					var points: PackedVector2Array = PackedVector2Array([Vector2(x, 2), Vector2(x + bend, -tall * 0.5), Vector2(x - bend * 0.5, -tall)])
+					overlay.draw_polyline(points, Color("5a3a1a"), 4.0)
+					overlay.draw_polyline(points, tint, 2.0)
+					if i % 3 == 0:
+						overlay.draw_rect(Rect2(Vector2(x - bend * 0.5, -tall).snapped(Vector2(2, 2)) + Vector2(0, -2), Vector2(4, 2)), Color("6ac84a"))
+			"marcado":
+				# A red crosshair locked on the body.
+				var c: Vector2 = Vector2(0, -h * 0.5)
+				var r: float = maxf(12.0, minf(w, h) * 0.45) + 2.0 * sin(pulse * 6.0)
+				overlay.draw_arc(c, r, 0, TAU, 32, Color(tint, 0.85), 2.0)
+				for k in range(4):
+					var dir: Vector2 = Vector2.from_angle(pulse * 0.8 + k * PI / 2.0)
+					overlay.draw_line(c + dir * (r - 5.0), c + dir * (r + 6.0), tint, 2.0)
+			"ofuscado":
+				# Sparkles of glare around the head.
+				for i in range(4):
+					var t: float = fposmod(pulse * 1.3 + i * 0.25, 1.0)
+					var p: Vector2 = Vector2(cos(i * 1.7 + pulse) * w * 0.4, -h * 0.9 + sin(i * 2.1 + pulse) * 8.0).snapped(Vector2(2, 2))
+					var s: float = snappedf(2.0 + 6.0 * sin(t * PI), 2.0)
+					overlay.draw_rect(Rect2(p - Vector2(s, 2) / 2.0, Vector2(s, 2)), Color(tint, 0.95))
+					overlay.draw_rect(Rect2(p - Vector2(2, s) / 2.0, Vector2(2, s)), Color(tint, 0.95))

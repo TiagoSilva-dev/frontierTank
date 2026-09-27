@@ -8,6 +8,7 @@ extends Control
 const SKILL_SOUNDS: Dictionary = {
 	"multi": "skill_multi", "power": "skill_power", "powmax": "skill_powmax", "heal": "tool_heal", "energy": "tool_energy",
 	"shield": "tool_shield", "plane": "fire_plane", "angel": "aux_angel", "pow": "pow_activate", "monster": "mob_cast",
+	"cleanse": "status_cleanse",
 }
 const EFFECT_SOUNDS: Dictionary = {
 	"lightning": "special_lightning", "beam": "special_beam", "bull": "special_bull", "heal": "special_heal",
@@ -15,10 +16,17 @@ const EFFECT_SOUNDS: Dictionary = {
 	"wave": "battle_start",
 }
 # Monster abilities (0.14): drawn by MonsterFx. Drops and the breath pick their sound by fx.
-const MONSTER_EFFECTS: Array[String] = ["ability_cast", "mark", "drop", "leap", "strike", "slam", "breath", "guard", "roar", "heal_allies", "burn"]
+const MONSTER_EFFECTS: Array[String] = ["ability_cast", "mark", "drop", "leap", "strike", "slam", "breath", "guard", "roar", "heal_allies", "burn",
+	"hex", "status", "poison", "cleanse", "elite_blast"]
 const MONSTER_SOUNDS: Dictionary = {
 	"leap": "mob_leap", "strike": "mob_strike", "slam": "mob_slam", "guard": "tool_shield",
 	"roar": "mob_roar", "heal_allies": "tool_heal", "burn": "mob_burn",
+	"hex": "status_hex", "poison": "status_poison", "cleanse": "status_cleanse", "elite_blast": "explosion_big",
+}
+# 0.16: each status effect lands with its own sound.
+const STATUS_SOUNDS: Dictionary = {
+	"queimacao": "mob_burn", "veneno": "status_poison", "congelado": "special_freeze", "exaustao": "status_exhaust",
+	"selado": "status_seal", "enraizado": "status_root", "marcado": "status_mark", "ofuscado": "status_blind",
 }
 
 var app: Node
@@ -219,10 +227,11 @@ func draw_backdrop() -> void:
 	backdrop.draw_rect(Rect2(0, 0, 1280, 720), Color(0.05, 0.08, 0.16, float(game.map.get("dim", 0.12))))
 
 func update_sound() -> void:
-	# Charge hum (quieter for others), countdown ticks and fighters going down.
+	# Charge hum (quieter for others, and flat: its pitch must not give their force
+	# away), countdown ticks and fighters going down.
 	var charging: bool = game.running and not game.paused and game.state == LocalMatch.State.PLAYER_CHARGING
 	var local_turn: bool = game.active_id == game.local_id and not game.auto_play
-	app.audio.set_charge(charging, game.power, -4.0 if local_turn else -11.0)
+	app.audio.set_charge(charging, game.power if game.active_id == game.local_id else 30.0, -4.0 if local_turn else -11.0)
 	if game.can_act() and game.remaining < 3.5 and game.remaining > 0.0:
 		var second: int = ceili(game.remaining)
 		if second != last_tick:
@@ -236,11 +245,13 @@ func update_sound() -> void:
 		alive[fighter.player_id] = fighter.hp > 0
 
 func update_pow_charge() -> void:
-	# POW charge phase: the armed fighter's aura grows with the force bar.
+	# POW charge phase: the armed fighter's aura grows with the force bar (another
+	# fighter's aura only throbs, so it does not give their force away).
 	var aura: Variant = pow_auras.get(game.active_id)
 	if aura != null and is_instance_valid(aura):
 		var charging: bool = game.state == LocalMatch.State.PLAYER_CHARGING and game.turn_pow
-		aura.charge = clampf(game.power / 100.0, 0.05, 1.0) if charging else 0.0
+		var shown: float = game.power / 100.0 if game.active_id == game.local_id else 0.55 + 0.15 * sin(Time.get_ticks_msec() / 150.0)
+		aura.charge = clampf(shown, 0.05, 1.0) if charging else 0.0
 
 func fire_sound(shooter: TankFighter, projectile: TankProjectile) -> String:
 	if projectile.fly:
@@ -405,6 +416,10 @@ func show_monster_effect(kind: String, point: Vector2, data: Dictionary) -> void
 			shake = 0.6
 		"strike":
 			shake = 0.35
+		"status":
+			sound = str(STATUS_SOUNDS.get(str(data.get("id", "")), ""))
+		"elite_blast":
+			shake = 0.8
 	if sound != "":
 		app.audio.play(sound, -1.0, randf_range(0.95, 1.05), 60)
 
@@ -430,11 +445,18 @@ func on_turn(fighter: TankFighter) -> void:
 	# An armed POW that was never fired (PASS, time out) is gone with the turn.
 	for id in pow_auras.keys():
 		clear_pow_aura(game.fighters[id])
+	var mine: bool = fighter.player_id == game.local_id and not game.auto_play
 	if game.skip_turn:
 		app.audio.play("special_freeze")
-	elif fighter.player_id == game.local_id and not game.auto_play:
+		if mine:
+			hud.flash(tr("CONGELADO!"), StatusRules.color("congelado"), tr("Você perde este turno."))
+	elif mine:
 		app.audio.play("your_turn", -3.0)
-		hud.flash(tr("SUA VEZ!"), Color("9aff7a"))
+		# 0.16: what weighs on this turn (seal, roots, exhaustion...) under the banner.
+		var weights: PackedStringArray = PackedStringArray()
+		for pair: Array in StatusRules.listed(fighter):
+			weights.append(tr(str(StatusRules.def(pair[0]).get("name", ""))))
+		hud.flash(tr("SUA VEZ!"), Color("9aff7a"), "  •  ".join(weights))
 
 func on_finished(winner: int) -> void:
 	if online:

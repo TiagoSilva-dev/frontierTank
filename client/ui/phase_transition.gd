@@ -2,7 +2,7 @@ class_name PhaseTransition
 extends Control
 
 # Between two phases of an instance: what was cleared, what dropped (maps and gold, kept
-# even if the party falls later), the rules of the pause (life +30%, POW kept, the fallen
+# even if the party falls later), the rules of the pause (life +35%, POW kept, the fallen
 # come back with little life) and the next phase. Advances by itself after a countdown.
 
 const WAIT: float = 8.0

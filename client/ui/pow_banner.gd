@@ -271,6 +271,9 @@ func draw_front(node: Control) -> void:
 		if life >= 1.0:
 			continue
 		var s: float = float(glint.size) * sin(life * PI)
+		if s < 0.5:
+			# A glint just born (or not yet) has no area to draw.
+			continue
 		var c: Color = Color(1, 1, 0.95, seen)
 		var p: Vector2 = glint.pos
 		node.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -s), p + Vector2(s * 0.2, 0), p + Vector2(0, s), p + Vector2(-s * 0.2, 0)]), c)

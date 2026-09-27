@@ -27,6 +27,7 @@
     skill: { list: () => D.skills, href: (e) => `#/habilidades/${e.id}`, icon: (e) => e.icon, cls: () => "" },
     tool: { list: () => D.tools, href: (e) => `#/ferramentas/${e.id}`, icon: (e) => e.icon, cls: () => "" },
     aux: { list: () => D.auxiliary, href: (e) => `#/auxiliares/${e.id}`, icon: (e) => e.icon, cls: () => "" },
+    status: { list: () => D.statuses, href: (e) => `#/efeitos/${e.id}`, icon: (e) => e.icon, cls: () => "" },
   };
 
   function ref(kind, id, withIcon) {
@@ -110,6 +111,7 @@
       case "skill": return simpleCard(L(e.name), T("Habilidade · tecla ", "Skill · key ") + e.key, e.icon, `<div>${esc(L(e.desc))}</div><div class="req">${T("Energia", "Energy")} ${e.energy} · Delay +${e.delay}</div>`);
       case "tool": return simpleCard(L(e.name), T("Ferramenta (Z X C)", "Tool (Z X C)"), e.icon, `<div>${esc(L(e.desc))}</div><div class="req">${n(e.price)} ${T("moedas", "gold")}</div>`);
       case "aux": return simpleCard(L(e.name), T("Item auxiliar (V)", "Support item (V)"), e.icon, `<div>${esc(L(e.desc))}</div>`);
+      case "status": return simpleCard(L(e.name), T("Efeito de estado", "Status effect"), e.icon, `<div>${esc(L(e.desc))}</div><div class="req">${e.turns === 1 ? T("1 turno", "1 turn") : T(`${e.turns} turnos`, `${e.turns} turns`)}</div>`, e.color);
       default: return "";
     }
   }
@@ -157,17 +159,29 @@
       guard: T(`Protege os aliados a até ${a.radius} px: o próximo dano que eles recebem cai para ${pct(a.shield)}.`, `Shields allies within ${a.radius} px: the next hit they take drops to ${pct(a.shield)}.`),
       roar: T(`Fortalece os aliados a até ${a.radius} px: +${pct(a.empower - 1)} de dano no próximo ataque.`, `Empowers allies within ${a.radius} px: +${pct(a.empower - 1)} damage on their next attack.`),
       heal: T(`Cura ${pct(a.heal)} da vida dos aliados a até ${a.radius} px.`, `Heals allies within ${a.radius} px for ${pct(a.heal)} of their HP.`),
+      hex: T("Maldição: um círculo de runas se fecha no alvo e aplica os efeitos, sem dano.", "Curse: a rune circle closes on the target and applies its effects, without damage."),
     };
     let text = (parts[a.kind] || "") + dmg;
     if (a.knockback) text += T(` Empurra ${a.knockback} px.`, ` Knocks back ${a.knockback} px.`);
-    if (a.burn) text += T(` Queima: ${pct(a.burn[0])} do golpe por turno, durante ${a.burn[1]} turnos.`, ` Burns: ${pct(a.burn[0])} of the hit per turn for ${a.burn[1]} turns.`);
+    if (a.status && a.status.length) text += " " + T("Efeitos", "Effects") + ": " + a.status.map(statusText).join(", ") + ".";
     if (a.cooldown) text += T(` Recarga: ${a.cooldown} turnos.`, ` Cooldown: ${a.cooldown} turns.`);
     if (a.targets === "all") text += T(" Atinge todos os jogadores.", " Hits every player.");
     if (a.fury) text += T(" Só em fúria.", " Fury only.");
     return text;
   }
 
-  const KIND_NAMES = { leap: ["Salto", "Leap"], dive: ["Mergulho", "Dive"], sky: ["Do céu", "Skyfall"], slam: ["Onda", "Slam"], breath: ["Sopro", "Breath"], guard: ["Proteção", "Guard"], roar: ["Grito", "Roar"], heal: ["Cura", "Heal"] };
+  // A status an ability (or an elite) applies: its link, the chance and the turns when they differ.
+  function statusText(s) {
+    const def = byId(D.statuses, s.id);
+    const turns = s.turns || (def && def.turns) || 1;
+    const extra = [];
+    if (s.chance != null && s.chance < 1) extra.push(pct(s.chance));
+    if (s.power) extra.push(T(`${pct(s.power)} do golpe por turno`, `${pct(s.power)} of the hit per turn`));
+    extra.push(turns === 1 ? T("1 turno", "1 turn") : T(`${turns} turnos`, `${turns} turns`));
+    return `${ref("status", s.id, true)} (${extra.join(", ")})`;
+  }
+
+  const KIND_NAMES = { leap: ["Salto", "Leap"], dive: ["Mergulho", "Dive"], sky: ["Do céu", "Skyfall"], slam: ["Onda", "Slam"], breath: ["Sopro", "Breath"], guard: ["Proteção", "Guard"], roar: ["Grito", "Roar"], heal: ["Cura", "Heal"], hex: ["Maldição", "Curse"] };
 
   // ---------- navigation ----------
 
@@ -200,6 +214,7 @@
       { title: T("Instâncias", "Dungeons"), items: [
         ["instancias", T("Instâncias", "Dungeons"), D.instances[0].map_icon],
         ["monstros", T("Monstros", "Monsters"), byId(D.enemies, "grifo_tempestade").sprite],
+        ["efeitos", T("Efeitos e elites", "Effects and elites"), D.statuses[0].icon],
         ["mapas", T("Mapas (itens)", "Maps (items)"), D.instances[2].map_icon],
         ["arenas", T("Arenas", "Arenas"), icons.crown],
       ] },
@@ -433,6 +448,23 @@
         `Take up to three tools into a match (keys Z, X and C). Each one is used once and adds ${D.combat.delay.tool} Delay that turn. Pick them in the room before starting.`)}</p>
       ${table([[T("Ferramenta", "Tool"), "text"], T("Efeito", "Effect"), [T("Preço", "Price"), "num"]], rows, { sortable: true })}`;
     return page(T("Ferramentas Z X C", "Tools Z X C"), [], body, { icon: D.tools[0].icon, focus });
+  }
+
+  function statuses(focus) {
+    // Where each effect comes from: the monster abilities that apply it.
+    const sources = (id) => D.enemies.flatMap((e) => e.abilities.filter((a) => (a.status || []).some((s) => s.id === id)).map((a) => `${esc(L(a.name))} · ${ref("enemy", e.id)}`));
+    const rows = D.statuses.map((s) => `<tr id="row-${s.id}">${td(`<span class="name" style="color:#${esc(s.color)}">${icon(s.icon, "ico sm")}${esc(L(s.name))}</span>`, L(s.name))}${td(esc(L(s.desc)))}${tdn(s.turns)}${td(sources(s.id).join("<br>") || "—")}</tr>`);
+    const E = D.elites;
+    const affixRows = E.affixes.map((a) => `<tr>${td(`<span class="name" style="color:#${esc(a.color)}">${icon(a.icon, "ico sm")}${esc(L(a.name))}</span>`, L(a.name))}${td(esc(L(a.desc)) + (a.status.length ? "<br>" + a.status.map(statusText).join(", ") : ""))}</tr>`);
+    const body = `
+      <p class="intro">${T("As habilidades dos monstros deixam efeitos que duram alguns turnos da vítima. O dano por turno (queimação, veneno) bate no começo do turno, e todo efeito conta um turno quando o turno termina. Quem é congelado perde a vez e depois fica 1 turno imune ao gelo. O <b>Elixir Purificador</b> (ferramenta) tira todos.",
+        "Monster abilities leave effects that last some of the victim's turns. Damage over time (burning, poison) hits at the start of the turn, and every effect counts one turn when the turn ends. A frozen fighter loses the turn and is then immune to ice for 1 turn. The <b>Purifying Elixir</b> (tool) removes them all.")}</p>
+      ${table([[T("Efeito", "Effect"), "text"], T("O que faz", "What it does"), [T("Turnos", "Turns"), "num"], T("Quem aplica", "Applied by")], rows, { sortable: true })}
+      <h2>${T("Elites", "Elites")}</h2>
+      <p>${T(`Lacaios (e às vezes o guardião) podem vir como elite: ${pct(E.hp - 1)} a mais de vida, ${pct(E.damage - 1)} a mais de dano, maiores e com uma aura na cor do afixo. Chance de ${pct(E.chance)} na entrada livre e +${pct(E.per_level)} por nível de mapa (metade para o guardião, nunca o chefe; até ${E.max_per_wave} por onda). A ameaça de mapa “inimigos de elite” aumenta a chance.`,
+        `Minions (and sometimes the guardian) may come as elites: ${pct(E.hp - 1)} more HP, ${pct(E.damage - 1)} more damage, bigger and with an aura in the affix colour. ${pct(E.chance)} chance at the free entry and +${pct(E.per_level)} per map level (half for the guardian, never the boss; up to ${E.max_per_wave} per wave). The “elite enemies” map threat raises the chance.`)}</p>
+      ${table([[T("Afixo", "Affix"), "text"], T("O que faz", "What it does")], affixRows, { sortable: true })}`;
+    return page(T("Efeitos e elites", "Effects and elites"), [], body, { icon: D.statuses[0].icon, focus });
   }
 
   function auxiliary(focus) {
@@ -690,6 +722,7 @@
     habilidades: (id) => skills(id),
     ferramentas: (id) => tools(id),
     auxiliares: (id) => auxiliary(id),
+    efeitos: (id) => statuses(id),
     instancias: (id) => (id ? instancePage(id) : instancesList()),
     monstros: (id) => (id ? monsterPage(id) : monstersList()),
     mapas: () => mapItems(),
@@ -782,6 +815,8 @@
     D.skills.forEach((s) => add(L(s.name), T("Habilidade ", "Skill ") + s.key, `#/habilidades/${s.id}`, s.icon, s.name.pt + " " + s.name.en));
     D.tools.forEach((t) => add(L(t.name), T("Ferramenta", "Tool"), `#/ferramentas/${t.id}`, t.icon, t.name.pt + " " + t.name.en));
     D.auxiliary.forEach((a) => add(L(a.name), T("Item auxiliar", "Support item"), `#/auxiliares/${a.id}`, a.icon, a.name.pt + " " + a.name.en));
+    D.statuses.forEach((s) => add(L(s.name), T("Efeito de estado", "Status effect"), `#/efeitos/${s.id}`, s.icon, s.name.pt + " " + s.name.en + " " + s.label.pt + " " + s.label.en));
+    D.elites.affixes.forEach((a) => add(L(a.name), T("Elite", "Elite"), "#/efeitos", a.icon, a.name.pt + " " + a.name.en));
     D.arenas.forEach((a) => add(L(a.name), T("Arena", "Arena"), `#/arenas/${a.id}`, a.thumb, a.name.pt + " " + a.name.en));
     D.achievements.forEach((a) => add(L(a.name), T("Conquista", "Achievement"), "#/conquistas", a.icon, a.name.pt + " " + a.name.en));
     D.strengthen.stones.forEach((s) => add(L(s.name), T("Pedra", "Stone"), "#/fortalecimento", s.icon, s.name.pt + " " + s.name.en));

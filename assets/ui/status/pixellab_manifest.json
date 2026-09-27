@@ -1,0 +1,21 @@
+{
+ "date": "2026-09-27",
+ "cost": 16,
+ "remaining_after": 66,
+ "images": [
+  {"name": "queimacao", "job_id": "43a07d97-878a-49fd-b611-35040fe4e9d1", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/queimacao.png"},
+  {"name": "veneno", "job_id": "a836604f-4d27-43c1-b5da-5a60d3826181", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/veneno.png"},
+  {"name": "congelado", "job_id": "e852d8a4-26b3-4100-b361-5aedaf5cf11e", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/congelado.png"},
+  {"name": "exaustao", "job_id": "c8972ce6-c7cf-437a-94c2-2f2ca8a916ba", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/exaustao.png", "note": "the yellow bolt recoloured to a drained grey-violet in code (hue 0.7, saturation x0.22) so it does not read as the energy icon"},
+  {"name": "selado", "job_id": "40febbd6-df3c-4fba-998c-5aeca53eaf8a", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/selado.png"},
+  {"name": "enraizado", "job_id": "ec672c62-ae49-4478-8bda-bb94897fb414", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/enraizado.png"},
+  {"name": "marcado", "job_id": "50a8f42b-283e-4400-94b6-e1d950498a44", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/marcado.png"},
+  {"name": "ofuscado", "job_id": "70d4b28c-0a30-4827-849f-a46419393126", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/ofuscado.png"},
+  {"name": "hex", "job_id": "346977ab-afce-4a42-bd96-819067a6fd58", "tool": "create_image_pixen", "size": "48x48", "target": "assets/effects/abilities/icons/hex.png"},
+  {"name": "vampira", "job_id": "25bc60b9-bc0a-4f30-b391-5b6fee57a40b", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/vampira.png", "note": "second try; the first (ecaa2d23) was a vampire face with a tongue"},
+  {"name": "explosiva", "job_id": "63caec38-cd3f-4629-afc1-fff2afd4a1ad", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/explosiva.png"},
+  {"name": "veloz", "job_id": "1a168a72-85ef-4189-9a47-6e2347971419", "tool": "create_image_pixen", "size": "32x32", "target": "assets/ui/status/veloz.png"},
+  {"name": "tool_cleanse", "job_id": "f3352675-0cb6-4ffa-a9cf-416dfb1fbfb3", "tool": "create_image_pixen", "size": "32x32", "target": "assets/expansion/combat/tool_cleanse.png"},
+  {"name": "drop_poison", "job_id": "3692339f-3d08-43e7-9a38-5679b86cd7d3", "tool": "create_image_pixen", "size": "48x48", "target": "assets/effects/abilities/drops/poison.png", "note": "flipped upside down so the stinger falls point first; the first try (e1ba41cb) looked like a flask"}
+ ]
+}

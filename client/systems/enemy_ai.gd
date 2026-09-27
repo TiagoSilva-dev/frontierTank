@@ -9,8 +9,10 @@ static func pick_target(shooter: TankFighter, fighters: Array[TankFighter]) -> T
 	for fighter in fighters:
 		if fighter.team == shooter.team or fighter.hp <= 0:
 			continue
-		# Prefer close and weakened enemies, as players usually do.
+		# Prefer close and weakened enemies, as players usually do, and marked prey (0.16).
 		var score: float = absf(fighter.position.x - shooter.position.x) + fighter.hp * 0.35
+		if fighter.has_status("marcado"):
+			score *= 0.6
 		if score < best_score:
 			best_score = score
 			best = fighter
@@ -65,7 +67,9 @@ static func choose_shot(shooter: TankFighter, target: TankFighter, terrain: Dest
 # enemies[].abilities), weighted, among those that make sense where everyone stands. A
 # leap needs the target within reach and ground to land beside it, a slam needs someone
 # close, a heal needs a hurt ally. Fury abilities only come while enraged (and are then
-# three times as likely). Uses the match's seeded rng, so every online copy picks the same.
+# three times as likely). A curse (hex, 0.16) needs a target its status effects would
+# still change, and abilities whose effects the target already carries are half as
+# likely. Uses the match's seeded rng, so every online copy picks the same.
 
 const FALLBACK_ABILITY: Dictionary = {"id": "ataque", "kind": "sky", "damage": 0.8, "radius": 36, "fx": "meteor"}
 
@@ -86,6 +90,8 @@ static func choose_ability(game: LocalMatch, fighter: TankFighter, target: TankF
 		var weight: float = float(ability.get("weight", 1.0))
 		if enraged and bool(ability.get("fury", false)):
 			weight *= 3.0
+		if ability.has("status") and not game.status_useful(target, ability.status):
+			weight *= 0.5
 		pool.append([ability, weight])
 		total += weight
 	if pool.is_empty():
@@ -124,6 +130,10 @@ static func ability_ready(game: LocalMatch, fighter: TankFighter, target: TankFi
 			return allies_near(game, fighter, radius).any(func(f: TankFighter) -> bool: return f.shield >= 1.0)
 		"roar":
 			return allies_near(game, fighter, radius).any(func(f: TankFighter) -> bool: return f.empower <= 1.0)
+		"hex":
+			if str(ability.get("targets", "one")) == "all":
+				return game.fighters.any(func(f: TankFighter) -> bool: return f.team != fighter.team and game.status_useful(f, ability.get("status", [])))
+			return game.status_useful(target, ability.get("status", []))
 	return true
 
 static func allies_near(game: LocalMatch, fighter: TankFighter, radius: float) -> Array[TankFighter]:

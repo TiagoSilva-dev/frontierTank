@@ -136,7 +136,7 @@ func extra_minions() -> int:
 
 func threats() -> Dictionary:
 	var list: Dictionary = {}
-	for id: String in ["strong_wind", "no_plane", "boss_enraged", "enemy_shield", "short_turn"]:
+	for id: String in ["strong_wind", "no_plane", "boss_enraged", "enemy_shield", "short_turn", "long_status"]:
 		if mods.has(id):
 			list[id] = true
 	if mods.has("low_energy"):
@@ -145,6 +145,39 @@ func threats() -> Dictionary:
 
 func turn_seconds(base: float) -> float:
 	return base * (0.75 if mods.has("short_turn") else 1.0)
+
+func elite_chance(rank: String) -> float:
+	# Elite monsters (0.16): more common with the map level and the "elites" threat; the
+	# guardian less often, never the boss or a totem.
+	var rules: Dictionary = balance.get("elites", {})
+	if rules.is_empty() or rank in ["boss", "totem"]:
+		return 0.0
+	var chance: float = (float(rules.chance) + float(rules.per_level) * level) * (1.0 + mods.get("elite_monsters", 0) / 100.0)
+	if rank == "guardian":
+		chance *= float(rules.get("guardian_scale", 0.5))
+	return clampf(chance, 0.0, 0.9)
+
+func make_elite(entry: Dictionary, affix_id: String) -> void:
+	var rules: Dictionary = balance.elites
+	entry.elite = affix_id
+	entry.hp = roundi(float(entry.hp) * float(rules.hp))
+	entry.damage = roundi(float(entry.damage) * float(rules.damage))
+	entry.fury_damage = roundi(float(entry.fury_damage) * float(rules.damage))
+
+func roll_elites(wave: Array) -> void:
+	# Each monster of a wave may come as an elite with a random affix (a few per wave).
+	var made: int = 0
+	for entry: Dictionary in wave:
+		if made >= int(balance.elites.get("max_per_wave", 2)):
+			return
+		var rank: String = ""
+		for def: Dictionary in balance.enemies:
+			if def.id == entry.enemy:
+				rank = str(def.get("rank", ""))
+		if rng.randf() < elite_chance(rank):
+			var affixes: Array = balance.elites.affixes
+			make_elite(entry, str(affixes[rng.randi() % affixes.size()].id))
+			made += 1
 
 func enemy_entry(id: String) -> Dictionary:
 	var def: Dictionary = {}
@@ -185,6 +218,9 @@ func phase_config(team: Array) -> Dictionary:
 	# Party size and the "extra minions" threat add minions to every phase.
 	for i in range(extra_minions()):
 		waves[0].append(enemy_entry(str(instance.minion)))
+	if balance.has("elites"):
+		for wave: Array in waves:
+			roll_elites(wave)
 	var first: Array = waves.pop_front()
 	var players_team: Array = []
 	for i in range(team.size()):

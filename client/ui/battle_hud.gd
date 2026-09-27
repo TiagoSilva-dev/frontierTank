@@ -7,7 +7,9 @@ extends Control
 # orb (bottom). 0.16: everything is drawn at the level of the POW cut-in with HudPaint —
 # bronze frames, glass wells, glossy gauges, the cut-in's layered digits — the skill
 # buttons are SkillSlot, POW is a round orb that fills (PowOrb) and the battle ends
-# with a full-screen moment (BattleOutcome).
+# with a full-screen moment (BattleOutcome). 0.16: the player's status effects sit by the
+# portrait (with their turns and what they do), every portrait in the turn queue shows
+# its own, the seal chains the skills, and glare hides the wind.
 
 const FORCE_STOPS: Array[Color] = [Color("fff27a"), Color("ffc02a"), Color("ff7a1a"), Color("ff2a1a")]
 const TOOL_KEYS: Array[String] = ["Z", "X", "C"]
@@ -32,6 +34,9 @@ var aux_button: SkillSlot
 var pow_button: PowOrb
 var trust_button: Button
 var used_row: HBoxContainer
+var status_row: HBoxContainer
+var seal_layer: Control
+var status_seen: String = "-"
 var banner: Control
 var outcome: Control
 var pause_box: Control
@@ -51,6 +56,7 @@ var sparks: Array[Dictionary] = []
 var trails: Dictionary = {}
 var was_mine: bool = false
 var flash_text: String = ""
+var flash_sub: String = ""
 var flash_color: Color = Color.WHITE
 var flash_age: float = 10.0
 
@@ -75,6 +81,11 @@ func build() -> void:
 	UiKit.label(self, me.display_name, Rect2(84, 2, 260, 26), 17, Color.WHITE, UiKit.INK)
 	medallion = layer(Rect2(8, 30, 120, 120), draw_medallion)
 	UiKit.art(self, me.portrait(), Rect2(12, 30, 110, 118))
+	status_row = HBoxContainer.new()
+	status_row.position = Vector2(134, 34)
+	status_row.add_theme_constant_override("separation", 4)
+	status_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(status_row)
 	log_label = RichTextLabel.new()
 	log_label.position = Vector2(8, 152)
 	log_label.size = Vector2(360, 116)
@@ -110,6 +121,8 @@ func build() -> void:
 		slot.tag_color = skill_tag_color(item)
 		slot.tooltip_text = tr("%s  (tecla %s)\n%s\nEnergia: %d") % [tr(str(item.name)), item.key, tr(str(item.desc)), int(item.energy)]
 		item_buttons.append(slot)
+	# Sealed (0.16): chains over the skills.
+	seal_layer = layer(Rect2(1210, 172, 68, 444), draw_seal)
 	fly_button = SkillSlot.create(self, Rect2(142, 590, 50, 46), load("res://assets/ui/icons/plane.png"), "F", game.toggle_fly)
 	fly_button.accent = Color("8af0ff")
 	fly_button.tooltip_text = tr("Avião de papel (F): voe até onde o disparo cair. %d de energia.") % int(game.balance.fly.energy)
@@ -223,8 +236,9 @@ func refresh_log() -> void:
 			lines.append("[color=#%s]%s[/color]" % [line.color.to_html(false), str(line.text).replace("[", "(").replace("]", ")")])
 		log_label.text = "\n".join(lines)
 
-func flash(text: String, color: Color) -> void:
+func flash(text: String, color: Color, sub: String = "") -> void:
 	flash_text = text
+	flash_sub = sub
 	flash_color = color
 	flash_age = 0.0
 	if is_instance_valid(banner):
@@ -319,14 +333,15 @@ func _process(delta: float) -> void:
 	ghost_energy = energy if ghost_energy < energy else move_toward(ghost_energy, energy, delta * maxf(40.0, (ghost_energy - energy) * 2.5))
 	ghost_life = float(me.hp) if ghost_life < me.hp else move_toward(ghost_life, float(me.hp), delta * maxf(120.0, (ghost_life - me.hp) * 1.8))
 	var full_pow: bool = me.pow_gauge >= float(game.balance.pow_max)
-	pow_button.disabled = not acting or not full_pow or game.turn_pow
+	var sealed: bool = me.has_status("selado")
+	pow_button.disabled = not acting or not full_pow or game.turn_pow or sealed
 	pow_button.set_state(me.pow_gauge / float(game.balance.pow_max), full_pow, game.turn_pow and mine)
 	for i in range(item_buttons.size()):
 		var item: Dictionary = game.balance.items[i]
 		var slot: SkillSlot = item_buttons[i]
-		slot.disabled = not acting or game.energy < float(item.energy) or game.turn_fly
+		slot.disabled = not acting or game.energy < game.energy_cost(me, float(item.energy)) or game.turn_fly or sealed
 		slot.used = game.turn_items.count(str(item.id)) if mine else 0
-	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty() or game.threats.get("no_plane", false)
+	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty() or game.threats.get("no_plane", false) or me.has_status("enraizado")
 	fly_button.used = 1 if game.turn_fly and mine else 0
 	fly_button.count_text = str(me.fly_cooldown) if me.fly_cooldown > 0 else ""
 	if is_instance_valid(goal_label):
@@ -341,9 +356,12 @@ func _process(delta: float) -> void:
 	trust_button.text = tr("Confiar ✓") if game.auto_play else tr("Confiar")
 	trust_button.add_theme_stylebox_override("normal", UiKit.frame("button_green" if game.auto_play else "button"))
 	refresh_used(mine)
+	refresh_statuses(me)
 	update_sparks(delta)
-	for node: Control in [queue_box, clock, minimap, dial, force, gauges, rail, medallion]:
+	for node: Control in [queue_box, clock, minimap, dial, force, gauges, rail, medallion, seal_layer]:
 		node.queue_redraw()
+	for chip: Control in status_row.get_children():
+		chip.queue_redraw()
 	if flash_age < 1.6:
 		banner.queue_redraw()
 
@@ -376,6 +394,66 @@ func refresh_used(mine: bool) -> void:
 		chip.pivot_offset = Vector2(16, 16)
 		chip.scale = Vector2.ONE * 1.6
 		create_tween().tween_property(chip, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func refresh_statuses(me: TankFighter) -> void:
+	# The player's status effects by the portrait: a glowing chip per effect with its
+	# icon and turns left (poison: its doses); hovering tells what it does.
+	var list: Array = StatusRules.listed(me) if me.hp > 0 else []
+	var signature: String = ",".join(list.map(func(pair: Array) -> String: return "%s%d%d" % [pair[0], int(pair[1].turns), int(pair[1].get("stacks", 1))]))
+	if signature == status_seen:
+		return
+	var before: Array = status_row.get_children().map(func(node: Node) -> String: return str(node.get_meta("id", "")))
+	status_seen = signature
+	for child in status_row.get_children():
+		status_row.remove_child(child)
+		child.queue_free()
+	for pair: Array in list:
+		var id: String = pair[0]
+		var entry: Dictionary = pair[1]
+		var chip: Control = Control.new()
+		chip.custom_minimum_size = Vector2(36, 36)
+		chip.mouse_filter = Control.MOUSE_FILTER_PASS
+		chip.tooltip_text = StatusRules.describe(id, entry)
+		chip.set_meta("id", id)
+		var tint: Color = StatusRules.color(id)
+		var count: String = ("x%d" % int(entry.get("stacks", 1))) if id == "veneno" else str(int(entry.turns))
+		chip.draw.connect(func() -> void:
+			var box: Rect2 = Rect2(Vector2.ZERO, chip.size)
+			HudPaint.glow_rect(chip, box, Color(tint, 0.35 + 0.25 * sin(time * 4.0)), 3.0, 2)
+			var inner: Rect2 = HudPaint.frame(chip, box, 0.6)
+			HudPaint.well(chip, inner, tint.darkened(0.82), tint.darkened(0.6))
+			var icon: Texture2D = StatusRules.icon(id)
+			if icon != null:
+				chip.draw_texture_rect(icon, Rect2(5, 4, 26, 26), false)
+			HudPaint.outlined(chip, Vector2(14, 35), count, 14, Color.WHITE, HudPaint.INK, 20, HORIZONTAL_ALIGNMENT_RIGHT, 4))
+		status_row.add_child(chip)
+		if not before.has(id):
+			# A new effect pops in.
+			chip.pivot_offset = Vector2(18, 18)
+			chip.scale = Vector2.ONE * 1.8
+			create_tween().tween_property(chip, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func draw_seal() -> void:
+	# Chains and a padlock across the skills while the player is sealed.
+	var me: TankFighter = game.local()
+	if not me.has_status("selado") or me.hp <= 0:
+		return
+	var tint: Color = StatusRules.color("selado")
+	var box: Rect2 = Rect2(Vector2(4, 4), seal_layer.size - Vector2(8, 8))
+	seal_layer.draw_rect(box, Color(tint.r * 0.25, tint.g * 0.1, tint.b * 0.35, 0.55))
+	for k in range(5):
+		var y: float = box.position.y + 30.0 + k * 92.0
+		var wobble: float = sin(time * 2.0 + k) * 2.0
+		for side: float in [-1.0, 1.0]:
+			var a: Vector2 = Vector2(box.position.x - 2, y + side * 14.0 + wobble)
+			var b: Vector2 = Vector2(box.end.x + 2, y - side * 14.0 - wobble)
+			seal_layer.draw_line(a, b, HudPaint.INK, 5.0)
+			seal_layer.draw_line(a, b, tint.lightened(0.2), 2.0)
+	var icon: Texture2D = StatusRules.icon("selado")
+	if icon != null:
+		var bob: float = sin(time * 3.0) * 3.0
+		HudPaint.glow(seal_layer, Vector2(34, 222 + bob), 34.0, Color(tint, 0.6))
+		seal_layer.draw_texture_rect(icon, Rect2(10, 198 + bob, 48, 48), false)
 
 func portrait_for(fighter: TankFighter) -> Texture2D:
 	if not portraits.has(fighter.player_id):
@@ -425,6 +503,17 @@ func draw_queue() -> void:
 		HudPaint.vgradient(queue_box, Rect2(bar.position + Vector2(1, 1), Vector2(width, 5)), team.lightened(0.35), team.darkened(0.25))
 		if fighter.player_id == game.local_id:
 			HudPaint.outlined(queue_box, rect.position + Vector2(4, 16), tr("EU"), 16, Color("ffe24a"), HudPaint.INK, -1, HORIZONTAL_ALIGNMENT_LEFT, 3)
+		# Status effects (0.16): small icons down the portrait's right edge; elites wear
+		# their affix colour around the portrait.
+		if not fighter.elite.is_empty():
+			queue_box.draw_rect(inner.grow(-0.5), Color(str(fighter.elite.color)), false, 2.0)
+		var shown: Array = StatusRules.listed(fighter)
+		for k in range(mini(shown.size(), 3)):
+			var icon: Texture2D = StatusRules.icon(shown[k][0])
+			var spot: Rect2 = Rect2(rect.end.x - 15, rect.position.y + 2 + k * 14, 13, 13)
+			queue_box.draw_rect(spot.grow(1), Color(0, 0, 0, 0.6))
+			if icon != null:
+				queue_box.draw_texture_rect(icon, spot, false)
 
 func wind_chevron(at: Vector2, right: bool, color: Color) -> void:
 	var s: float = 1.0 if right else -1.0
@@ -439,6 +528,10 @@ func draw_clock() -> void:
 	var wind: float = game.wind
 	var strength: float = absf(wind) / maxf(0.1, float(game.balance.wind_max))
 	var lit: int = 0 if absf(wind) < 0.05 else clampi(ceili(strength * 5.0 - 0.001), 1, 5)
+	var dazzled: bool = game.local().has_status("ofuscado") and game.local().hp > 0
+	if dazzled:
+		# Glare (0.16): the wind cannot be read.
+		lit = 0
 	for side: int in [-1, 1]:
 		for i in range(5):
 			var at: Vector2 = Vector2(84 + side * (30 + i * 10), 13)
@@ -448,7 +541,10 @@ func draw_clock() -> void:
 				var wave: float = 0.5 + 0.5 * sin(time * (6.0 + strength * 8.0) - i * 1.1)
 				color = Color("5cc8ff").lerp(Color("eafaff"), wave * 0.8)
 			wind_chevron(at, side > 0, color)
-	HudPaint.outlined(clock, Vector2(64, 19), "%.1f" % absf(wind), 16, Color("bfe8ff") if lit > 0 else Color("7a8a9a"), HudPaint.INK, 40, HORIZONTAL_ALIGNMENT_CENTER, 4)
+	if dazzled:
+		HudPaint.outlined(clock, Vector2(64, 19), "??", 16, StatusRules.color("ofuscado").lerp(Color.WHITE, 0.5 + 0.5 * sin(time * 6.0)), HudPaint.INK, 40, HORIZONTAL_ALIGNMENT_CENTER, 4)
+	else:
+		HudPaint.outlined(clock, Vector2(64, 19), "%.1f" % absf(wind), 16, Color("bfe8ff") if lit > 0 else Color("7a8a9a"), HudPaint.INK, 40, HORIZONTAL_ALIGNMENT_CENTER, 4)
 	# The round timer: a bronze medallion, a ring that empties clockwise in the colour
 	# of whoever plays (gold for the player), and the seconds as the cut-in's digits.
 	var c: Vector2 = Vector2(84, 72)
@@ -520,6 +616,8 @@ func draw_banner() -> void:
 	var width: float = HudPaint.text_width(flash_text, 64) * s
 	for side: float in [-1.0, 1.0]:
 		HudPaint.sparkle(banner, center + Vector2(side * (width / 2.0 + 18.0), -18.0), 12.0 * sin(clampf(flash_age / 0.8, 0.0, 1.0) * PI), Color(1, 1, 0.9, alpha))
+	if flash_sub != "":
+		HudPaint.outlined(banner, center + Vector2(-400, 64), flash_sub, 22, Color(1.0, 0.92, 0.8, alpha), HudPaint.INK, 800, HORIZONTAL_ALIGNMENT_CENTER, 5)
 
 # ---------- top-right ----------
 
@@ -686,12 +784,16 @@ static func force_color(t: float) -> Color:
 	var i: int = mini(int(x), FORCE_STOPS.size() - 2)
 	return FORCE_STOPS[i].lerp(FORCE_STOPS[i + 1], x - i)
 
+func visible_force() -> float:
+	# Only the player's own force is shown: an opponent's charge stays secret (DDTank).
+	return game.shown_power() if game.active_id == game.local_id else 0.0
+
 func force_room() -> Rect2:
 	return Rect2(76, 26, 610, 34)
 
 func update_sparks(delta: float) -> void:
-	# Sparks thrown off the tip of the force bar while it charges.
-	var value: float = game.shown_power()
+	# Sparks thrown off the tip of the force bar while the player charges.
+	var value: float = visible_force()
 	var charging: bool = game.state == LocalMatch.State.PLAYER_CHARGING and value > 0.0 and not game.paused
 	var room: Rect2 = force_room()
 	if charging:
@@ -721,7 +823,7 @@ func draw_force() -> void:
 		force.draw_rect(Rect2(x, room.position.y, 1, room.size.y), Color(1, 1, 1, 0.025))
 		x += 8.0
 	var mine: bool = game.active_id == game.local_id
-	var value: float = game.shown_power() if mine or game.state == LocalMatch.State.PLAYER_CHARGING else 0.0
+	var value: float = visible_force()
 	for i in range(1, 11):
 		var tx: float = room.position.x + room.size.x * i / 10.0
 		var near: bool = value > 0.0 and absf(value - i * 10.0) < 5.0
@@ -783,6 +885,10 @@ func draw_gauges() -> void:
 	var max_energy: float = maxf(1.0, float(me.max_energy))
 	var inner: Rect2 = HudPaint.gauge(gauges, Rect2(0, 2, 180, 30), energy / max_energy, Color("e4ff7a"), Color("4a8a10"), ghost_energy / max_energy, Color(0.55, 0.95, 1.0, 0.75), time)
 	HudPaint.outlined(gauges, Vector2(inner.position.x + 20, inner.end.y - 4), str(roundi(energy)), 16, Color.WHITE, HudPaint.INK, inner.size.x - 20, HORIZONTAL_ALIGNMENT_CENTER, 4)
+	if me.has_status("exaustao") and me.hp > 0:
+		# Exhausted (0.16): everything costs more; the multiplier sits on the bar.
+		var scale_text: String = "x%s" % str(snappedf(float(StatusRules.def("exaustao").get("cost_scale", 1.5)), 0.1))
+		HudPaint.outlined(gauges, Vector2(inner.end.x - 40, inner.end.y - 4), scale_text, 14, StatusRules.color("exaustao"), HudPaint.INK, 36, HORIZONTAL_ALIGNMENT_RIGHT, 4)
 	var life: Rect2 = Rect2(0, 36, 180, 38)
 	var ratio: float = float(me.hp) / maxf(1.0, float(me.max_hp))
 	if ratio < 0.25 and me.hp > 0:

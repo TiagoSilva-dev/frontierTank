@@ -78,7 +78,7 @@ func run_tests() -> void:
 	game.set_physics_process(false)
 
 	# --- Data: every monster that acts has abilities, and one it can use from afar
-	var kinds: Array[String] = ["leap", "dive", "slam", "sky", "breath", "heal", "guard", "roar"]
+	var kinds: Array[String] = ["leap", "dive", "slam", "sky", "breath", "heal", "guard", "roar", "hex"]
 	var data_ok: bool = true
 	var ranged_ok: bool = true
 	var icons_ok: bool = true
@@ -193,13 +193,16 @@ func run_tests() -> void:
 	place(game, helio, 420.0)
 	hero = game.fighters[0]
 	monster_turn(game, helio, "onda_de_calor")
-	check(hero.burn_turns == 2 and hero.burn_damage > 0, "the heat wave sets the hero on fire for 2 turns")
+	var burn: Dictionary = hero.statuses.get("queimacao", {})
+	check(int(burn.get("turns", 0)) == 2 and float(burn.get("power", 0)) > 0.0, "the heat wave sets the hero on fire for 2 turns")
 	hp = hero.hp
 	for other in game.fighters:
 		other.delay = 1000.0
 	hero.delay = 0.0
 	game.begin_turn()
-	check(hero.hp == hp - hero.burn_damage and hero.burn_turns == 1, "burning hurts at the start of the hero's turn")
+	check(hero.hp == hp - roundi(float(burn.power)), "burning hurts at the start of the hero's turn")
+	game.finish_turn()
+	check(int(hero.statuses.get("queimacao", {}).get("turns", 0)) == 1, "one turn of burning is spent when the hero's turn ends")
 
 	# --- Freeze: the Snow Queen's breath freezes on every second attack
 	battle(game, ["rainha_nevasca"], [300.0])

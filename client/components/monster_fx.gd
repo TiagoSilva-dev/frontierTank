@@ -6,6 +6,9 @@ extends Node2D
 # falling from the sky (PixelLab art in assets/effects/abilities/drops/<fx>.png), dust
 # of a leap, claw and axe marks of a strike, the shockwave of a slam, a breath from the
 # mouth to the target, and the support spells (guard, war cry, heal) on the allies.
+# 0.16: a curse's rune circle closing on its victim (hex), a status effect landing (its
+# icon pops over the victim and sinks in), poison bubbling, the Elixir Purificador and
+# an explosive elite's death blast.
 
 const DROPS: String = "res://assets/effects/abilities/drops/"
 const PALETTES: Dictionary = {
@@ -22,6 +25,7 @@ const PALETTES: Dictionary = {
 	"rock": ["ffd0a0", "c8603a", "6a3a20", "2a1a10"],
 	"axe": ["ffffff", "d8dce8", "8a8f9c", "5a3a20"],
 	"rune": ["ffffff", "a8f0ff", "4ad8ff", "1a6a9a"],
+	"poison": ["f0ffd0", "b8ff6a", "5ad82a", "1f6a14"],
 }
 
 var kind: String = ""
@@ -94,6 +98,22 @@ func _ready() -> void:
 		"burn":
 			life = 0.6
 			FxParticles.burst(self, Vector2.ZERO, {"amount": 22, "lifetime": 0.6, "speed": [30.0, 110.0], "direction": Vector2.UP, "spread": 50.0, "gravity": Vector2(0, -160), "size": [3.0, 6.0], "colors": ["fff26a", "ffb02e", "ff5a1f"]})
+		"poison":
+			life = 0.7
+			FxParticles.burst(self, Vector2.ZERO, {"amount": 20, "lifetime": 0.7, "speed": [20.0, 80.0], "direction": Vector2.UP, "spread": 60.0, "gravity": Vector2(0, -90), "size": [3.0, 6.0], "colors": ["e0ffb0", "8aff4a", "3aa81a"], "additive": false})
+		"hex":
+			life = float(data.get("time", 0.95)) + 0.35
+		"status":
+			life = 1.15
+			art = StatusRules.icon(str(data.get("id", "")))
+			FxParticles.burst(self, Vector2.ZERO, {"amount": 24, "lifetime": 0.7, "speed": [60.0, 170.0], "spread": 180.0, "gravity": Vector2(0, 120), "size": [2.0, 5.0], "colors": ["ffffff", color.lightened(0.3), color], "damping": 60.0})
+		"cleanse":
+			life = 1.0
+			FxParticles.burst(self, Vector2(0, 10), {"amount": 36, "lifetime": 0.9, "speed": [40.0, 150.0], "direction": Vector2.UP, "spread": 80.0, "gravity": Vector2(0, -120), "size": [2.0, 5.0], "colors": ["ffffff", "fff4c0", "ffd86a"]})
+		"elite_blast":
+			life = 0.9
+			var reach: float = float(data.get("radius", 150))
+			FxParticles.burst(self, Vector2.ZERO, {"amount": 60, "lifetime": 0.8, "speed": [reach * 0.8, reach * 2.2], "spread": 180.0, "gravity": Vector2(0, 260), "size": [3.0, 8.0], "colors": ["ffffff", colors[1], colors[2], "5a3a2a"], "damping": reach})
 
 func _process(delta: float) -> void:
 	age += delta
@@ -154,12 +174,74 @@ func _draw() -> void:
 					draw_arc(Vector2.ZERO, 30.0 + 260.0 * w, -PI * 0.9, -PI * 0.1, 24, Color(1.0, 0.35, 0.2, 0.8 * (1.0 - w)), 5.0)
 			for ally: Vector2 in data.get("allies", []):
 				draw_circle(ally - global_position, 26.0 * fade + 8.0, Color(1.0, 0.3, 0.2, 0.3 * fade))
+		"hex":
+			draw_hex()
+		"status":
+			draw_status(t, fade)
+		"cleanse":
+			var r: float = 20.0 + 60.0 * PowImpact.ease_out(t)
+			draw_arc(Vector2.ZERO, r, 0, TAU, 40, Color(1.0, 0.95, 0.7, 0.9 * fade), 4.0 * fade + 1.0)
+			draw_circle(Vector2.ZERO, 30.0 * fade, Color(1.0, 1.0, 0.9, 0.35 * fade))
+			for k in range(8):
+				var a: float = TAU * k / 8.0 + age * 2.0
+				var p: Vector2 = (Vector2.from_angle(a) * r * 0.8).snapped(Vector2(2, 2))
+				draw_rect(Rect2(p - Vector2(2, 6), Vector2(4, 12)), Color(1, 1, 0.85, fade))
+				draw_rect(Rect2(p - Vector2(6, 2), Vector2(12, 4)), Color(1, 1, 0.85, fade))
+		"elite_blast":
+			var reach: float = float(data.get("radius", 150))
+			for k in range(2):
+				var w: float = clampf((age - k * 0.1) / 0.55, 0.0, 1.0)
+				if w > 0.0 and w < 1.0:
+					draw_arc(Vector2.ZERO, reach * PowImpact.ease_out(w), 0, TAU, 56, Color(colors[1].r, colors[1].g, colors[1].b, 1.0 - w), 12.0 * (1.0 - w) + 2.0)
+			draw_circle(Vector2.ZERO, reach * 0.5 * fade, Color(1.0, 0.95, 0.8, 0.5 * fade * fade))
 		"heal_allies":
 			for ally: Vector2 in data.get("allies", []):
 				var local: Vector2 = ally - global_position + Vector2(0, -t * 60.0)
 				var s: float = 7.0
 				draw_rect(Rect2(local - Vector2(s, s / 3), Vector2(s * 2, s * 2 / 3)), Color(0.5, 1.0, 0.55, fade))
 				draw_rect(Rect2(local - Vector2(s / 3, s), Vector2(s * 2 / 3, s * 2)), Color(0.5, 1.0, 0.55, fade))
+
+func draw_hex() -> void:
+	# A curse: a rune circle closing on the victim, runes turning, then a flash.
+	var time: float = float(data.get("time", 0.95))
+	var u: float = clampf(age / time, 0.0, 1.0)
+	var r: float = lerpf(96.0, 30.0, PowImpact.ease_out(u))
+	var shown: float = 1.0 if age < time else 1.0 - (age - time) / (life - time)
+	var tint: Color = Color(color.r, color.g, color.b, 0.9 * shown)
+	draw_set_transform(Vector2(0, 8), 0, Vector2(1.0, 0.45))
+	draw_circle(Vector2.ZERO, r, Color(color.r * 0.3, color.g * 0.2, color.b * 0.4, 0.35 * shown))
+	draw_arc(Vector2.ZERO, r, 0, TAU, 48, tint, 4.0)
+	draw_arc(Vector2.ZERO, r * 0.72, -age * 4.0, -age * 4.0 + TAU, 40, Color(tint, 0.6 * shown), 2.0)
+	for k in range(8):
+		var a: float = TAU * k / 8.0 + age * 2.5
+		var p: Vector2 = (Vector2.from_angle(a) * r * 0.86).snapped(Vector2(2, 2))
+		draw_rect(Rect2(p - Vector2(3, 5), Vector2(6, 10)), Color(1, 1, 1, 0.85 * shown) if k % 2 == 0 else tint)
+	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	# Chains of light rising from the circle into the victim.
+	for k in range(4):
+		var x: float = (k - 1.5) * r * 0.45
+		draw_line(Vector2(x, 8), Vector2(x * 0.3, -30.0 * u), Color(tint, 0.5 * shown), 2.0)
+	if age > time:
+		var f: float = 1.0 - (age - time) / (life - time)
+		draw_circle(Vector2.ZERO, 44.0 * (1.0 - f) + 10.0, Color(1, 1, 1, 0.55 * f))
+
+func draw_status(t: float, fade: float) -> void:
+	# The status icon pops out over the victim, hangs a moment and sinks into it.
+	# Several effects landing together pop side by side.
+	var order: int = int(data.get("order", 0))
+	var side: float = [0.0, 44.0, -44.0, 88.0, -88.0][order % 5]
+	var pop: float = PowImpact.ease_out(minf(1.0, maxf(0.0, age - order * 0.08) / 0.2))
+	var sink: float = clampf((age - 0.6) / 0.45, 0.0, 1.0)
+	var at: Vector2 = Vector2(side, -64.0).lerp(Vector2.ZERO, sink * sink)
+	var scale: float = (0.6 + 0.9 * pop) * (1.0 - 0.55 * sink)
+	var ring: float = minf(1.0, age / 0.45)
+	draw_arc(at, 18.0 + 40.0 * ring, 0, TAU, 36, Color(color.r, color.g, color.b, 1.0 - ring), 4.0 * (1.0 - ring) + 1.0)
+	draw_circle(at, 22.0 * scale, Color(color.r, color.g, color.b, 0.35 * (1.0 - sink)))
+	if art != null:
+		var size: Vector2 = Vector2(32, 32) * scale
+		draw_texture_rect(art, Rect2(at - size / 2.0, size), false, Color(1, 1, 1, 1.0 - sink * 0.8))
+	if sink >= 1.0:
+		draw_circle(Vector2.ZERO, 26.0 * fade, Color(color.r, color.g, color.b, 0.4 * fade))
 
 func draw_mark() -> void:
 	# A reticle closing in on the target until the hit.

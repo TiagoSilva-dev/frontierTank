@@ -26,7 +26,7 @@ O site fica em `website/`: uma página inicial para chamar jogadores e uma wiki 
 Página única com rotas no endereço (`wiki/#/armas/quebra_tijolos`, `wiki/#/monstros/rainha_nevasca`...), para dar para compartilhar o link de qualquer página. Tem busca instantânea (tecla `/`, acentos opcionais, nos dois idiomas), cartão do item ao passar o mouse em qualquer link, tabelas que ordenam ao clicar no cabeçalho e menu lateral que vira gaveta no celular.
 
 - **Guias** (`js/wiki-guides.js`): primeiros passos, controles, turnos/Delay/energia/avião, mira/força/vento (com as fórmulas e uma tabela de alcance), dano e atributos (Ataque, Defesa, Sorte, Agilidade, Vida, com as fórmulas do `armory.gd`), POW, níveis e patentes.
-- **Referência** (`js/wiki.js`): armas (lista e página de cada uma, com o especial em detalhe e o dano de +0 a +12 em cada qualidade), qualidades, fortalecimento, bônus aleatórios (faixas F1–F5), visual, habilidades 1–9, ferramentas, itens auxiliares, instâncias (fases, ondas, chefe, baú e escala por grupo), monstros (habilidades explicadas e vida/dano por nível de mapa), mapas-item, arenas, moedas de criação, leilão, recompensas, loja e conquistas.
+- **Referência** (`js/wiki.js`): armas (lista e página de cada uma, com o especial em detalhe e o dano de +0 a +12 em cada qualidade), qualidades, fortalecimento, bônus aleatórios (faixas F1–F5), visual, habilidades 1–9, ferramentas, itens auxiliares, instâncias (fases, ondas, chefe, baú e escala por grupo), monstros (habilidades explicadas, com os efeitos que aplicam, e vida/dano por nível de mapa), efeitos de estado e elites (0.16: o que cada efeito faz, quem aplica e os afixos), mapas-item, arenas, moedas de criação, leilão, recompensas, loja e conquistas.
 
 ## Os números vêm do jogo
 
