@@ -1,0 +1,32 @@
+name: frontier-api-deploy
+services:
+  api:
+    image: frontier-tank-api:11f3e92
+    container_name: frontier-tank-api
+    restart: unless-stopped
+    env_file:
+      - api.env
+    environment:
+      PUBLIC_ADDR: ':8080'
+      INTERNAL_ADDR: ':8081'
+      ALLOW_ORIGIN: https://gustfire.online
+      TRUST_PROXY: '1'
+      LEGAL_VERSION: '2026-09-25'
+      GOMEMLIMIT: 80MiB
+      GOMAXPROCS: '1'
+    mem_limit: 128m
+    cpus: 0.5
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      proxy:
+        aliases:
+          - api
+          - frontier-api
+networks:
+  proxy:
+    external: true
+    name: frontier-web-proxy
