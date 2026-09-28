@@ -51,6 +51,11 @@ func stop_all() -> void:
 
 func make_player(bus: String) -> AudioStreamPlayer:
 	var player: AudioStreamPlayer = AudioStreamPlayer.new()
+	# Web defaults to Sample playback. Its JS bus graph can disconnect Master when
+	# add_bus() appends Music/SFX (Godot #119026). Stream uses Godot's mixer instead,
+	# keeping these buses, music fades and mute switches audible on the web.
+	if OS.has_feature("web"):
+		player.playback_type = AudioServer.PLAYBACK_TYPE_STREAM
 	player.bus = bus
 	add_child(player)
 	return player
