@@ -23,6 +23,7 @@ var rim_color: Color = Color("3a2418")
 # Colours of the ground blown away by the last crater (the explosion throws them).
 var last_debris: PackedColorArray = PackedColorArray()
 var world_size: Vector2 = Vector2(1280, 720)
+var destructible: bool = true
 
 func generate(map: Dictionary, seed_value: int = 1) -> void:
 	world_size = Vector2(map.size[0], map.size[1])
@@ -121,13 +122,15 @@ func slope_degrees(x: float, y: float) -> float:
 	return clampf(rad_to_deg(atan2(left - right, 24.0)), -22.0, 22.0)
 
 func crater(center: Vector2, radius: float) -> int:
+	last_debris.clear()
+	if not destructible:
+		return 0
 	var removed: int = 0
 	var c: Vector2 = center / PIXEL
 	var r: float = radius / PIXEL
 	var rim: Color = rim_color
 	# The hole gets a dark burnt lip and a softer scorch fading into the painting.
 	var reach: float = r + 8.0
-	last_debris.clear()
 	for y in range(maxi(0, floori(c.y - reach)), mini(height, ceili(c.y + reach) + 1)):
 		for x in range(maxi(0, floori(c.x - reach)), mini(width, ceili(c.x + reach) + 1)):
 			var dist: float = Vector2(x, y).distance_to(c)

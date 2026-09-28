@@ -79,6 +79,24 @@ func run_tests() -> void:
 		for phase: Dictionary in instance.phases:
 			maps_ok = maps_ok and balance.maps.any(func(m: Dictionary) -> bool: return m.id == phase.map)
 	check(maps_ok, "every phase has its battle map")
+	# Every instance phase protects both the visible terrain and its collision mask.
+	for instance: Dictionary in balance.instances:
+		var terrain_run: InstanceRun = make_run(str(instance.id))
+		for phase_index in range(terrain_run.phase_count()):
+			terrain_run.phase_index = phase_index
+			play_phase(game, terrain_run)
+			var before_terrain: PackedByteArray = game.terrain.mask.get_data()
+			var target: TankFighter = enemies(game)[0]
+			var ground: Vector2 = Vector2(target.position.x, game.terrain.surface_y(target.position.x))
+			check(game.terrain.solid(ground) and game.terrain.crater(ground, 100) == 0, "%s phase %d: ground cannot be destroyed" % [instance.id, phase_index + 1])
+			var hp_before: int = target.hp
+			game.explode(game.fighters[0], target.center(), 100, 100, false, {})
+			check(target.hp < hp_before, "instance explosions still damage enemies")
+			check(game.terrain.mask.get_data() == before_terrain and game.terrain.last_debris.is_empty(), "instance explosions preserve terrain and produce no terrain debris")
+	# Starting PvP after an instance restores destructible terrain.
+	game.start({"mode": "pvp", "map": "ilha_celeste", "seed": 321, "teams": [[hero()], [hero("Rival", false)]]})
+	var pvp_ground: Vector2 = game.fighters[0].position + Vector2(0, 10)
+	check(game.terrain.crater(pvp_ground, 42) > 0 and not game.terrain.solid(pvp_ground), "PvP terrain remains destructible after an instance")
 
 	# --- Phase 1: waves of minions (free entry)
 	var run: InstanceRun = make_run("templo_sol")

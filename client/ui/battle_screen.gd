@@ -47,6 +47,7 @@ var dragging: bool = false
 var end_timer: float = -1.0
 var results: ResultScreen
 var summary: Dictionary = {}
+var loot_queue: Array[Dictionary] = []
 var trails: ShotTrails
 var pow_auras: Dictionary = {}
 var skill_queue: Dictionary = {}
@@ -125,6 +126,8 @@ func _ready() -> void:
 	add_child(hud)
 	game.announce.connect(hud.log_line)
 	game.start(config)
+	if not online and game.pve and app.run != null:
+		game.monster_defeated.connect(on_monster_defeated)
 	if online:
 		game.remote = send_intent
 		driver = LockstepDriver.new()
@@ -587,6 +590,8 @@ func on_net(message: Dictionary) -> void:
 	if int(message.get("m", -1)) != match_id:
 		return
 	match str(message.get("t", "")):
+		"mob_loot":
+			show_mob_loot(message.get("rewards", []))
 		"ticks":
 			driver.receive(message)
 		"phase_end":
@@ -672,3 +677,37 @@ func show_catch_up() -> void:
 		catch_up = UiKit.label(self, tr("Sincronizando a batalha…"), Rect2(390, 300, 500, 60), 28, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	elif not catching and is_instance_valid(catch_up):
 		catch_up.queue_free()
+
+# Offline rewards are granted here; online only the authoritative server grants them.
+func on_monster_defeated(target: TankFighter, killer_id: int) -> void:
+	var run: InstanceRun = app.run
+	var rewards: Array[Dictionary] = run.grant_mob_drop(run.roll_mob_drop(target, true), true)
+	if killer_id == game.local_id:
+		rewards.append_array(run.grant_mob_drop(run.roll_mob_drop(target, false), false))
+	show_mob_loot(rewards)
+
+func show_mob_loot(rewards: Array) -> void:
+	for reward: Dictionary in rewards:
+		var text: String = "%s: %s" % [tr("GRUPO") if bool(reward.get("shared", false)) else tr("GOLPE FINAL"), tr(str(reward.name))]
+		hud.log_line(text, Color("ffd479") if bool(reward.get("shared", false)) else Color("8ce6ff"))
+		loot_queue.append(reward)
+	flush_loot_toasts()
+	if not rewards.is_empty():
+		app.audio.play("ui_loot")
+
+func flush_loot_toasts() -> void:
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+	# Queue bursts of area kills so notifications never cover the controls or leave the screen.
+	var used: Array = get_children().filter(func(node: Node) -> bool: return node is LootToast).map(func(node: LootToast) -> int: return int(node.get_meta("slot", 0)))
+	for slot in range(3):
+		if loot_queue.is_empty():
+			break
+		if used.has(slot):
+			continue
+		var toast: LootToast = LootToast.new()
+		toast.reward = loot_queue.pop_front()
+		toast.position = Vector2(944, 180 + slot * 68)
+		toast.set_meta("slot", slot)
+		toast.tree_exited.connect(flush_loot_toasts.call_deferred)
+		add_child(toast)

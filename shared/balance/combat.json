@@ -307,9 +307,9 @@
     "cards": [
       {"id": "coins_s", "name": "80 Moedas", "coins": 80, "weight": 34, "rarity": "common", "icon": "res://assets/items/moeda.png"},
       {"id": "coins_l", "name": "200 Moedas", "coins": 200, "weight": 12, "rarity": "rare", "icon": "res://assets/items/moeda.png"},
-      {"id": "stone_1", "name": "Pedra de Fortalecimento", "item": "pedra_fortalecimento", "weight": 18, "rarity": "common", "icon": "res://assets/items/pedra_i.png"},
-      {"id": "stone_2", "name": "Pedra de Fortalecimento II", "item": "strength_stone_ii", "weight": 10, "rarity": "rare", "icon": "res://assets/items/pedra_ii.png"},
-      {"id": "stone_3", "name": "Pedra de Fortalecimento III", "item": "strength_stone_iii", "weight": 5, "rarity": "epic", "icon": "res://assets/items/pedra_iii.png"},
+      {"id": "stone_1", "name": "Pedra de Fortalecimento nível 1", "item": "pedra_fortalecimento", "weight": 18, "rarity": "common", "icon": "res://assets/items/forge/stone_01.png"},
+      {"id": "stone_2", "name": "Pedra de Fortalecimento nível 2", "item": "strength_stone_ii", "weight": 10, "rarity": "rare", "icon": "res://assets/items/forge/stone_02.png"},
+      {"id": "stone_3", "name": "Pedra de Fortalecimento nível 3", "item": "strength_stone_iii", "weight": 5, "rarity": "epic", "icon": "res://assets/items/forge/stone_03.png"},
       {"id": "egg", "name": "Ovo de Mascote", "item": "pet_egg", "weight": 2, "rarity": "legendary", "icon": "res://assets/expansion/items/pet_egg.png"},
       {"id": "potion", "name": "Poção de Vida", "tool": "hp", "weight": 14, "rarity": "common", "icon": "res://assets/expansion/combat/tool_hp.png"}
     ],

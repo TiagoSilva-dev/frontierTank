@@ -1,0 +1,7 @@
+{
+  "provider": "PixelLab",
+  "model": "pro",
+  "stones_job": "644f0a41-20aa-434e-aeaf-944221a342d2",
+  "workshop_job": "e52cc010-e782-4e85-9fd7-03d7f1562a37",
+  "processing": "Stone sheet split in 4x3 cells, cropped to alpha bounds and centered."
+}

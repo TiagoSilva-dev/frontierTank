@@ -37,12 +37,13 @@ static func settle(game: LocalMatch, me: TankFighter, balance: Dictionary, profi
 	var summary: Dictionary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
 	if game.pve and run != null:
 		summary.loot = loot
-		summary.instance = {"name": Lang.t(str(run.instance.name)), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true)}
+		summary.instance = {"name": Lang.t(str(run.instance.name)), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true), "mob_drops": run.mob_drops.duplicate(true)}
 	return summary
 
 # The 8 cards of a PvP battle (0.10: a little currency, Brasa and Coroa, among them).
 static func pvp_cards(balance: Dictionary, rng: RandomNumberGenerator) -> Array:
 	var pool: Array = balance.rewards.cards + balance.rewards.get("pvp_cards", [])
+	pool = pool.filter(func(card: Dictionary) -> bool: return Armory.stone_def(str(card.get("item", ""))).is_empty())
 	var cards: Array = []
 	for i in range(8):
 		cards.append(roll(pool, rng))

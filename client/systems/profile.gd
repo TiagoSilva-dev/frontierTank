@@ -378,6 +378,8 @@ func buy_stone(id: String, amount: int = 1) -> String:
 	var stone: Dictionary = Armory.stone_def(id)
 	if stone.is_empty() or amount < 1 or amount > 99:
 		return tr("Item desconhecido.")
+	if bool(stone.get("drop_only", false)):
+		return tr("Pedras de fortalecimento são encontradas nas instâncias.")
 	var price: int = int(stone.price) * amount
 	if coins < price:
 		return tr("Moedas insuficientes.")
@@ -430,18 +432,13 @@ func maps_for(instance_id: String) -> Array[Dictionary]:
 
 # ---------- Ferreiro ----------
 
-func stone_points() -> int:
-	var total: int = 0
-	for stone: Dictionary in Armory.data().strengthen.stones:
-		total += int(items.get(stone.id, 0)) * int(stone.points)
-	return total
-
 func strengthen_cost(inst: Dictionary) -> Dictionary:
 	var rules: Dictionary = Armory.data().strengthen
 	var level: int = int(inst.get("level", 0))
 	if level >= int(rules.max):
 		return {}
-	return {"points": int(rules.points[level]), "coins": int(rules.coins[level])}
+	var stone: Dictionary = rules.stones[level]
+	return {"stone": str(stone.id), "level": level + 1, "amount": 1, "coins": int(rules.coins[level]), "chance": float(rules.success_chance[level])}
 
 func strengthen(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
@@ -450,26 +447,15 @@ func strengthen(uid: int) -> String:
 	var cost: Dictionary = strengthen_cost(inst)
 	if cost.is_empty():
 		return tr("Este item já está no +12.")
-	if stone_points() < int(cost.points):
-		return tr("Pedras insuficientes: precisa de %d pontos de pedra, você tem %d.") % [int(cost.points), stone_points()]
+	if int(items.get(cost.stone, 0)) < 1:
+		return tr("Você precisa de uma Pedra de Fortalecimento nível %d.") % int(cost.level)
 	if coins < int(cost.coins):
 		return tr("Moedas insuficientes.")
 	coins -= int(cost.coins)
-	# Spend the smallest stones first; a bigger stone breaks into points when needed.
-	var needed: int = int(cost.points)
-	var stones: Array = Armory.data().strengthen.stones
-	for stone: Dictionary in stones:
-		while needed > 0 and int(items.get(stone.id, 0)) > 0 and int(stone.points) <= needed:
-			items[stone.id] = int(items[stone.id]) - 1
-			needed -= int(stone.points)
-	for stone: Dictionary in stones:
-		if needed > 0 and int(items.get(stone.id, 0)) > 0:
-			items[stone.id] = int(items[stone.id]) - 1
-			var change: int = int(stone.points) - needed
-			needed = 0
-			# Give the leftover back as level I stones.
-			add_item(str(stones[0].id), change)
-	inst.level = int(inst.level) + 1
+	items[cost.stone] = int(items[cost.stone]) - 1
+	# The authority rolls once; a failed attempt spends the stone and fee but keeps the item.
+	if rng.randf() < float(cost.chance):
+		inst.level = int(inst.level) + 1
 	save_profile()
 	return ""
 

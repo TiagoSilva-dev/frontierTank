@@ -52,22 +52,39 @@ func run_tests() -> void:
 	check(profile.equip(int(samurai.uid)) != "", "outfits respect the character's gender")
 	profile.gender = "m"
 	check(profile.unequip("arma") != "", "the weapon slot is never empty")
-	# Coupon grants everything once.
+	# Test coupon grants every currency and every instance level, including on reuse.
 	var message: String = profile.redeem("testartudo")
 	check(message.begins_with("Todas") and profile.has_item("cabeca_de_boi", "super") and profile.has_item("asas_fenix"), "TESTARTUDO unlocks all weapons and cosmetics")
-	check(profile.redeem("TESTARTUDO").begins_with("Este cupom"), "a coupon works once per account")
+	for currency: Dictionary in data.currencies:
+		check(int(profile.items.get(str(currency.id), 0)) == 200, "TESTARTUDO grants 200 " + str(currency.id))
+	check(profile.maps.size() == 80, "TESTARTUDO grants 80 instance maps")
+	var map_pairs: Dictionary = {}
+	for map: Dictionary in profile.maps:
+		map_pairs["%s:%d" % [map.instance, int(map.level)]] = true
+	var all_levels: bool = true
+	for instance: Dictionary in InstanceRun.rules().instances:
+		for level in range(1, 17):
+			all_levels = all_levels and map_pairs.has("%s:%d" % [instance.id, level])
+	check(all_levels and map_pairs.size() == 80, "all five instances have maps at every level from 1 to 16")
+	check(profile.apply_op("redeem", ["TESTARTUDO"], {}, true).error == "" and profile.maps.size() == 160, "TESTARTUDO can be redeemed again by an existing account")
+	for currency: Dictionary in data.currencies:
+		check(int(profile.items.get(str(currency.id), 0)) == 400, "repeat redemption replenishes " + str(currency.id))
 	check(profile.redeem("NAOEXISTE") == "Cupom inválido.", "unknown coupons are rejected")
 	profile.redeem("AURAS")
+	check(profile.redeem("AURAS").begins_with("Este cupom"), "single-use coupons still work once per account")
 	var auras: Array = profile.inventory.filter(func(inst: Dictionary) -> bool: return inst.id == "quebra_tijolos" and inst.quality == "verdadeira" and int(inst.level) in [3, 7, 10, 12])
 	check(auras.size() == 4, "AURAS coupon gives +3/+7/+10/+12 weapons")
 	# Ferreiro.
 	var weapon: Dictionary = profile.add_instance("fogo_intenso", "excelente")
-	var points: int = profile.stone_points()
+	var stones_before: int = int(profile.items.pedra_fortalecimento)
 	var attack_before: int = int(Armory.item_attrs(weapon).ataque)
 	var damage_before: int = int(Armory.build_weapon(weapon).damage)
-	check(profile.strengthen(int(weapon.uid)) == "" and int(weapon.level) == 1 and profile.stone_points() == points - 1, "strengthen +1 spends 1 stone point")
+	check(profile.strengthen(int(weapon.uid)) == "" and int(weapon.level) == 1 and int(profile.items.pedra_fortalecimento) == stones_before - 1, "strengthen +1 spends one level 1 stone")
 	check(int(Armory.item_attrs(weapon).ataque) > attack_before and int(Armory.build_weapon(weapon).damage) > damage_before, "strengthening raises the weapon attributes and damage")
-	for i in range(11):
+	profile.rng.seed = 314
+	for i in range(200):
+		if int(weapon.level) == 12:
+			break
 		profile.strengthen(int(weapon.uid))
 	check(int(weapon.level) == 12 and profile.strengthen(int(weapon.uid)) != "", "strengthen stops at +12")
 	var stones_i: int = int(profile.items.pedra_fortalecimento)

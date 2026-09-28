@@ -117,7 +117,7 @@ func account_tests(alice: Node, bob: Node) -> void:
 	check(outcome.error != "", "the server refuses a purchase the player cannot pay")
 	check(alice.profile.coins == server_profile(alice).coins and alice.profile.coins < 1000, "the client's copy is replaced by the server's")
 	check((await alice.do_op("redeem", ["PEDRAS"])).error == "", "test coupons work on a test server")
-	check(server_profile(alice).stone_points() > 0 and alice.profile.stone_points() == server_profile(alice).stone_points(), "the coupon reached the server's profile")
+	check(int(server_profile(alice).items.get("pedra_fortalecimento", 0)) > 0 and alice.profile.items == server_profile(alice).items, "the coupon reached the server's profile")
 	check((await alice.do_op("redeem", ["PEDRAS"])).error != "", "a coupon is used once online too")
 	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving), 5)
 	var stored: Dictionary = server.api.memory_profiles.get(alice.my_account(), {})
@@ -258,10 +258,34 @@ func pve_tests(alice: Node, bob: Node) -> void:
 	var a: BattleScreen = alice.screen
 	var b: BattleScreen = bob.screen
 	check(a.game.pve and a.game.fighters.filter(func(f: TankFighter) -> bool: return f.human).size() == 2, "the party fights together")
+	var loot_a: Array = []
+	var loot_b: Array = []
+	var observe_a: Callable = func(event: Dictionary) -> void:
+		if event.get("t", "") == "mob_loot":
+			loot_a.append_array(event.rewards)
+	var observe_b: Callable = func(event: Dictionary) -> void:
+		if event.get("t", "") == "mob_loot":
+			loot_b.append_array(event.rewards)
+	alice.net.event.connect(observe_a)
+	bob.net.event.connect(observe_b)
+	var drop_rules: Dictionary = Armory.data().strengthen.mob_drops
+	var old_party: float = float(drop_rules.party_chance)
+	var old_killer: float = float(drop_rules.killer_chance)
+	drop_rules.party_chance = 1.0
+	drop_rules.killer_chance = 1.0
 	a.game.set_auto_play(true)
 	b.game.set_auto_play(true)
 	var cleared: bool = await wait_until(func() -> bool: return a.in_phase_break() and b.in_phase_break() or (a.ending_shown and b.ending_shown), 300)
 	check(cleared, "the first phase ends for both")
+	drop_rules.party_chance = old_party
+	drop_rules.killer_chance = old_killer
+	alice.net.event.disconnect(observe_a)
+	bob.net.event.disconnect(observe_b)
+	var shared_a: Array = loot_a.filter(func(entry: Dictionary) -> bool: return bool(entry.shared))
+	var shared_b: Array = loot_b.filter(func(entry: Dictionary) -> bool: return bool(entry.shared))
+	check(not shared_a.is_empty() and shared_a == shared_b, "server sends the same shared monster rewards to both clients")
+	check(loot_a.size() + loot_b.size() > shared_a.size() + shared_b.size(), "last-hit rewards also reach their owner over the network")
+	check(alice.profile.items == server_profile(alice).items and bob.profile.items == server_profile(bob).items, "monster rewards are already in the authoritative and client inventories")
 	check(not a.driver.drift_reported and not b.driver.drift_reported, "the party's copies stay identical")
 	if a.in_phase_break():
 		check(int(a.phase_report.gold) > 0 and int(b.phase_report.gold) > 0, "each player gets their own phase loot")

@@ -12,10 +12,6 @@ extends Control
 # right click) equips too. Selecting only redraws the cells, it never rebuilds the page.
 
 const ITEM_NAMES: Dictionary = {
-	"pedra_fortalecimento": ["Pedra de Fortalecimento I", "res://assets/items/pedra_i.png"],  # i18n
-	"strength_stone_ii": ["Pedra de Fortalecimento II", "res://assets/items/pedra_ii.png"],  # i18n
-	"strength_stone_iii": ["Pedra de Fortalecimento III", "res://assets/items/pedra_iii.png"],  # i18n
-	"strength_stone_iv": ["Pedra de Fortalecimento IV", "res://assets/items/pedra_iv.png"],  # i18n
 	"pet_egg": ["Ovo de Mascote", "res://assets/expansion/items/pet_egg.png"],  # i18n
 }
 const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]  # i18n
@@ -245,6 +241,10 @@ func all_entries() -> Array[Dictionary]:
 	for def: Dictionary in Crafting.currencies():
 		if app.profile.currency_count(str(def.id)) > 0:
 			list.append({"key": "item:" + str(def.id), "name": Crafting.currency_name(str(def.id)), "icon": str(def.icon), "count": app.profile.currency_count(str(def.id))})
+	for stone: Dictionary in Armory.data().strengthen.stones:
+		var count: int = int(app.profile.items.get(stone.id, 0))
+		if count > 0:
+			list.append({"key": "item:" + str(stone.id), "name": tr(str(stone.name)), "icon": str(stone.icon), "count": count})
 	for id: String in ITEM_NAMES:
 		if int(app.profile.items.get(id, 0)) > 0:
 			list.append({"key": "item:" + id, "name": tr(ITEM_NAMES[id][0]), "icon": ITEM_NAMES[id][1], "count": int(app.profile.items[id])})
@@ -492,7 +492,7 @@ func refresh_selection() -> void:
 		if Crafting.is_currency(id) and selected.begins_with("item:"):
 			selected_label.text += "\n%s\n%s" % [Crafting.currency_desc(id), tr("Use no Ferreiro, aba Moedas, em equipamentos e mapas.")]
 		elif not stone.is_empty():
-			selected_label.text += tr("\nVale %d ponto(s) de fortalecimento no Ferreiro.") % int(stone.points)
+			selected_label.text += tr("\nUma pedra: +%d → +%d. Encontrada nas instâncias.") % [int(stone.level) - 1, int(stone.level)]
 		elif selected.begins_with("tool:"):
 			selected_label.text += tr("\nFerramenta de batalha (Z/X/C).")
 

@@ -115,13 +115,13 @@ func card(def: Dictionary, rect: Rect2) -> void:
 			buy.disabled = app.profile.coins < price
 		UiKit.label(box, tr("Verdadeira: instâncias"), Rect2(4, 208, 180, 24), 12, Color("c99bff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		return
+	if tab == "pedras":
+		UiKit.label(box, tr("Encontrada nas instâncias"), Rect2(4, 148, 180, 28), 14, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, "+%d → +%d" % [int(def.level) - 1, int(def.level)], Rect2(4, 178, 180, 24), 18, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Você tem %d") % int(app.profile.items.get(def.id, 0)), Rect2(4, 206, 180, 24), 14, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		return
 	var price_value: int = int(def.get("price", 0))
 	UiKit.label(box, tr("%d moedas") % price_value, Rect2(4, 148, 180, 28), 16, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	if tab == "pedras":
-		UiKit.label(box, tr("%d ponto(s) • você tem %d") % [int(def.points), int(app.profile.items.get(def.id, 0))], Rect2(4, 174, 180, 24), 13, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.button(box, "x1", Rect2(8, 202, 80, 30), buy_stone.bind(str(def.id), 1), "button_green", 14)
-		UiKit.button(box, "x10", Rect2(100, 202, 80, 30), buy_stone.bind(str(def.id), 10), "button_green", 14)
-		return
 	var owned: bool = app.profile.has_item(def.id)
 	var buy_button: Button = UiKit.button(box, tr("COMPRADO") if owned and tab != "auxiliar" else tr("COMPRAR"), Rect2(24, 190, 140, 38), buy_item.bind(str(def.id), "normal"), "button_green", 16)
 	buy_button.disabled = (owned and tab != "auxiliar") or app.profile.coins < price_value

@@ -371,21 +371,21 @@
     const rows = Array.from({ length: S.max }, (_, i) => {
       const lv = i + 1;
       const a = aura(lv);
-      return `<tr>${td(`<b>+${lv}</b>`, lv)}${tdn(S.points[i])}${tdn(S.coins[i])}${tdn(S.damage_bonus[lv], "+" + pct(S.damage_bonus[lv]))}
+      return `<tr>${td(`<b>+${lv}</b>`, lv)}${tdn(S.success_chance[i], pct(S.success_chance[i]))}${tdn(S.coins[i])}${tdn(S.damage_bonus[lv], "+" + pct(S.damage_bonus[lv]))}
         ${tdn(S.attr_per_level * lv, "+" + pct(S.attr_per_level * lv))}${tdn(S.defense_per_level * lv, "+" + n(S.defense_per_level * lv))}${tdn(S.hp_per_level * lv, "+" + n(S.hp_per_level * lv))}
         ${td(a ? `<span style="color:#${a.color}">■</span> ${esc(L(a.name))}` : "—", null)}</tr>`;
     });
-    const stones = S.stones.map((s) => `<tr>${td(`<span class="name">${icon(s.icon, "ico sm")}${esc(L(s.name))}</span>`, null)}${tdn(s.points)}${tdn(s.price)}</tr>`);
-    const total = S.points.reduce((a, b) => a + b, 0);
+    const stones = S.stones.map((s) => `<tr>${td(`<span class="name">${icon(s.icon, "ico sm")}${esc(L(s.name))}</span>`, null)}${tdn(s.level)}${tdn(s.min_instance_level)}</tr>`);
+    const total = S.max;
     const coins = S.coins.reduce((a, b) => a + b, 0);
     const body = `
-      <p class="intro">${T(`No Ferreiro, armas, roupas e chapéus sobem até +${S.max}. Cada nível custa pontos de pedra e moedas de ouro e <b>sempre dá certo</b>: não há chance de falha nem de perder o item.`,
-        `At the Blacksmith, weapons, outfits and hats go up to +${S.max}. Each level costs stone points and gold and <b>always succeeds</b>: there is no chance to fail or lose the item.`)}</p>
-      ${table([[T("Nível", "Level"), "num"], [T("Pontos de pedra", "Stone points"), "num"], [T("Moedas", "Gold"), "num"], [T("Dano da arma", "Weapon damage"), "num"], [T("Atributos do item", "Item attributes"), "num"], [T("Defesa (roupa/chapéu)", "Defence (outfit/hat)"), "num"], [T("Vida (roupa/chapéu)", "HP (outfit/hat)"), "num"], T("Aura", "Aura")], rows)}
-      <p>${T(`Do +0 ao +${S.max}: <b>${n(total)}</b> pontos de pedra e <b>${n(coins)}</b> moedas.`, `From +0 to +${S.max}: <b>${n(total)}</b> stone points and <b>${n(coins)}</b> gold.`)}</p>
+      <p class="intro">${T(`No Ferreiro, armas, roupas e chapéus sobem até +${S.max}. Cada tentativa usa <b>uma pedra do nível desejado</b> e moedas. Pode falhar: a pedra e as moedas são consumidas, mas o nível do item é preservado.`,
+        `At the Blacksmith, weapons, outfits and hats go up to +${S.max}. Each attempt uses <b>one stone of the target level</b> and gold. Attempts can fail: the stone and gold are consumed, but the item keeps its level.`)}</p>
+      ${table([[T("Nível", "Level"), "num"], [T("Chance de sucesso", "Success chance"), "num"], [T("Moedas", "Gold"), "num"], [T("Dano da arma", "Weapon damage"), "num"], [T("Atributos do item", "Item attributes"), "num"], [T("Defesa (roupa/chapéu)", "Defence (outfit/hat)"), "num"], [T("Vida (roupa/chapéu)", "HP (outfit/hat)"), "num"], T("Aura", "Aura")], rows)}
+      <p>${T(`Sem falhas: uma pedra de cada nível e <b>${n(coins)}</b> moedas do +0 ao +${S.max}.`, `With no failures: one stone of each level and <b>${n(coins)}</b> gold from +0 to +${S.max}.`)}</p>
       <h2>${T("Pedras de Fortalecimento", "Strengthening Stones")}</h2>
-      ${table([T("Pedra", "Stone"), [T("Pontos", "Points"), "num"], [T("Preço", "Price"), "num"]], stones)}
-      <p>${T("O Ferreiro gasta primeiro as pedras menores; se uma pedra grande sobrar, o troco volta como Pedras I.", "The Blacksmith spends the smallest stones first; if a big stone is left over, the change comes back as level I stones.")}</p>
+      ${table([T("Pedra", "Stone"), [T("Nível", "Level"), "num"], [T("Nível mínimo do mapa", "Minimum map level"), "num"]], stones)}
+      <p>${T("Pedras caem dos monstros das instâncias. Mapas mais difíceis liberam pedras mais raras. Há drops exclusivos do golpe final e drops que cada participante recebe. Chefes garantem uma pedra para cada integrante.", "Stones drop from instance monsters. Harder maps unlock rarer stones. Last-hit loot belongs to the killer; party loot gives every participant a copy. Bosses guarantee a stone for each member.")}</p>
       <h2>${T("Auras", "Auras")}</h2>
       <p>${T("A arma fortalecida ganha uma aura atrás do personagem (fora da batalha: na sala, no salão e na Mochila).", "A strengthened weapon gets an aura behind your character (outside battles: in the room, the hall and the Bag).")}</p>
       <div class="pills">${D.auras.map((a) => `<span class="pill" style="color:#${a.color}">■ ${esc(L(a.name))} · +${a.from}${a.to > a.from ? "–" + a.to : ""}</span>`).join("")}</div>

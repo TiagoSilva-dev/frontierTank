@@ -27,6 +27,24 @@ func has_next_phase() -> bool:
 func run_for(account: int) -> InstanceRun:
 	return runs.get(account)
 
+# Each eligible account receives a full copy of the shared roll. Personal loot only
+# goes to the player credited with the kill; disconnected participants stay eligible.
+func reward_monster(target: TankFighter, killer_account: int, eligible: Array) -> Dictionary:
+	var shared: Array[Dictionary] = leader.roll_mob_drop(target, true)
+	var personal: Array[Dictionary] = []
+	if eligible.has(killer_account) and runs.has(killer_account):
+		personal = leader.roll_mob_drop(target, false)
+	var reports: Dictionary = {}
+	for account: int in eligible:
+		var run: InstanceRun = run_for(account)
+		if run == null:
+			continue
+		var rewards: Array[Dictionary] = run.grant_mob_drop(shared, true)
+		if account == killer_account:
+			rewards.append_array(run.grant_mob_drop(personal, false))
+		reports[account] = rewards
+	return reports
+
 # A phase before the boss was won: every player gets their own drops (already in their
 # profile) and a report for the transition screen.
 func complete_phase(game: LocalMatch) -> Dictionary:

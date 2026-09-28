@@ -244,6 +244,6 @@ func build_material(entry: Dictionary, profile: PlayerProfile, balance: Dictiona
 		lines.append(Crafting.currency_desc(id))
 		lines.append(paint(tr("Use no Ferreiro, aba Moedas, em equipamentos e mapas."), MUTED))
 	elif not Armory.stone_def(id).is_empty():
-		lines.append(tr("Vale %d ponto(s) de fortalecimento no Ferreiro.") % int(Armory.stone_def(id).points))
+		lines.append(tr("Uma pedra: +%d → +%d. Encontrada nas instâncias.") % [int(Armory.stone_def(id).level) - 1, int(Armory.stone_def(id).level)])
 	header(entry, str(entry.get("name", id)), Color("ffe6a0"), subtitle)
 	section("\n".join(lines))

@@ -27,6 +27,7 @@ var carry: Array = []
 var phases_won: int = 0
 var drops: Array[Dictionary] = []
 var currency_drops: Array[Dictionary] = []
+var mob_drops: Array[Dictionary] = []
 var gold: int = 0
 var chest: Array[Dictionary] = []
 var finished: bool = false
@@ -297,6 +298,51 @@ static func currency_entry(id: String) -> Dictionary:
 	var def: Dictionary = Crafting.currency_def(id)
 	return {"id": "currency_" + id, "name": Lang.t(str(def.get("name", id))), "currency": id, "amount": 1, "rarity": str(def.get("rarity", "rare")), "icon": str(def.get("icon", ""))}
 
+# Uses the expedition's loot RNG, never the lockstep combat RNG.
+func roll_stone() -> Dictionary:
+	var pool: Array = Armory.data().strengthen.stones.filter(func(stone: Dictionary) -> bool: return effective_level() >= int(stone.min_instance_level))
+	var total: float = 0.0
+	for stone: Dictionary in pool:
+		total += float(stone.weight) * (1.0 + rarity() * int(stone.level))
+	var ticket: float = rng.randf() * total
+	var chosen: Dictionary = pool[0]
+	for stone: Dictionary in pool:
+		ticket -= float(stone.weight) * (1.0 + rarity() * int(stone.level))
+		if ticket <= 0.0:
+			chosen = stone
+			break
+	return {"id": str(chosen.id), "item": str(chosen.id), "name": Lang.t(str(chosen.name)), "icon": str(chosen.icon), "amount": 1, "stone_level": int(chosen.level), "rarity": "legendary" if int(chosen.level) >= 9 else "epic" if int(chosen.level) >= 5 else "rare"}
+
+func roll_mob_drop(target: TankFighter, shared: bool) -> Array[Dictionary]:
+	var rules: Dictionary = Armory.data().strengthen.mob_drops
+	var chance: float = float(rules.party_chance if shared else rules.killer_chance)
+	chance *= 1.0 + quantity()
+	if target.rank == "guardian":
+		chance *= float(rules.guardian_scale)
+	if not target.elite.is_empty():
+		chance *= float(rules.elite_scale)
+	if target.is_boss and shared and bool(rules.boss_guaranteed):
+		return [roll_stone()]
+	if rng.randf() >= minf(chance, 1.0):
+		return []
+	var roll: float = rng.randf()
+	if roll < 0.75:
+		return [roll_stone()]
+	if roll < 0.95:
+		return [currency_entry(Crafting.roll_currency(level, rng))]
+	return [weapon_card()]
+
+func grant_mob_drop(entries: Array, shared: bool) -> Array[Dictionary]:
+	var granted: Array[Dictionary] = []
+	for entry: Dictionary in entries:
+		var reward: Dictionary = entry.duplicate(true)
+		reward.shared = shared
+		mob_drops.append(reward)
+		granted.append(reward)
+		if profile != null:
+			Rewards.grant(profile, reward)
+	return granted
+
 func drop_level() -> int:
 	if level == 0:
 		return 1
@@ -415,6 +461,9 @@ func roll_card() -> Dictionary:
 	var pool: Array = []
 	var boost: float = 1.0 + rarity()
 	for card: Dictionary in balance.rewards.cards:
+		var stone: Dictionary = Armory.stone_def(str(card.get("item", "")))
+		if not stone.is_empty() and effective_level() < int(stone.min_instance_level):
+			continue
 		var entry: Dictionary = card.duplicate()
 		if entry.has("coins"):
 			entry.coins = roundi(float(entry.coins) * gold_scale())

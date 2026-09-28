@@ -742,7 +742,7 @@ func on_net_event(message: Dictionary) -> void:
 			on_match_start(message)
 		"mail":
 			mail_count = maxi(0, int(message.get("count", 0)))
-		"ticks", "phase_end", "match_end", "cards":
+		"ticks", "phase_end", "match_end", "cards", "mob_loot":
 			if message.get("profile") is Dictionary:
 				apply_profile(message.profile)
 			if screen_name == "battle" and is_instance_valid(screen):

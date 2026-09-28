@@ -205,8 +205,11 @@ func run_tests() -> void:
 	await process_frame
 	var smith: SmithScreen = bag.get_children().filter(func(n: Node) -> bool: return n is SmithScreen).front()
 	smith.selected_uid = int(thunder.uid)
-	for i in range(3):
-		smith.do_strengthen()
+	app.profile.rng.seed = 314
+	for i in range(20):
+		if int(thunder.level) >= 3:
+			break
+		await smith.do_strengthen()
 	check(int(app.profile.find_instance(int(thunder.uid)).level) == 3 and app.profile.look().weapon_level == 3, "Ferreiro strengthens the equipped weapon (green aura)")
 	# Moedas (0.10): currencies used on gear and maps from the Ferreiro.
 	app.profile.redeem("MOEDAS")
@@ -269,6 +272,14 @@ func run_tests() -> void:
 	check(app.profile.find_map(int(chosen.uid)).is_empty(), "the map is consumed on entry")
 	check(game.pve and game.phase.index == 0 and int(game.phase.level) == int(chosen.level) and game.fighters.any(func(f: TankFighter) -> bool: return f.rank == "minion"), "the Instância starts at phase 1 with minions")
 	check(app.screen.hud.find_child("PhasePanel", true, false) != null, "the HUD shows the phase and its objective")
+	var sample_drop: Dictionary = {"name": "Pedra de Fortalecimento nível 12", "icon": "res://assets/items/forge/stone_12.png", "shared": true}
+	app.screen.show_mob_loot([sample_drop, sample_drop, sample_drop, sample_drop])
+	check(app.screen.get_children().filter(func(n: Node) -> bool: return n is LootToast).size() == 3 and app.screen.loot_queue.size() == 1, "area-kill loot shows at most three toasts and queues the rest")
+	var old_toast: LootToast = app.screen.get_children().filter(func(n: Node) -> bool: return n is LootToast)[0]
+	old_toast.queue_free()
+	await process_frame
+	await process_frame
+	check(app.screen.loot_queue.is_empty() and app.screen.get_children().filter(func(n: Node) -> bool: return n is LootToast).size() == 3, "the next queued reward fills a free toast slot")
 	check(app.audio.music_track == "instance", "the Instância plays its own theme")
 	game.waves.clear()
 	for fighter in game.fighters:

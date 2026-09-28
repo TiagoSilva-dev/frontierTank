@@ -94,16 +94,24 @@ func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
 	UiKit.label(box, tr("%s  •  %s  •  Fases %d/%d") % [tr(str(info.name)), tr("Nível %d") % int(info.level) if int(info.level) > 0 else tr("Entrada livre"), int(info.phases), int(info.count)], Rect2(10, 2, 600, 28), 18, Color("ffd04a"), UiKit.INK)
 	UiKit.art(box, "res://assets/items/moeda.png", Rect2(10, 36, 22, 22))
 	UiKit.label(box, tr("+%d moedas") % int(info.gold), Rect2(36, 34, 160, 26), 16, Color("ffd46b"), UiKit.INK)
-	var found: Array = info.get("chest", []) + info.get("currency", []) + info.get("drops", [])
+	var found: Array = info.get("chest", []) + info.get("mob_drops", []) + info.get("currency", []) + info.get("drops", [])
 	if found.is_empty():
 		UiKit.label(box, tr("Nenhum mapa, moeda ou Super Verdadeira desta vez."), Rect2(10, 70, 600, 28), 16, Color("c8b8a0"), UiKit.INK)
 	if not found.is_empty():
-		UiKit.label(box, tr("Baú do chefe, moedas e mapas das fases (já na Mochila)"), Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
+		var note: Label = UiKit.label(box, tr("%d recompensas recebidas • já na Mochila") % found.size(), Rect2(10, 88, 600, 26), 16, Color("c8b8a0"), UiKit.INK)
+		note.mouse_filter = Control.MOUSE_FILTER_PASS
+		var details: Array[String] = []
+		for drop: Dictionary in info.get("mob_drops", []):
+			details.append((tr("GRUPO") if bool(drop.get("shared", false)) else tr("GOLPE FINAL")) + ": " + tr(str(drop.name)))
+		note.tooltip_text = "\n".join(details)
 	for i in range(mini(found.size(), 7)):
 		var entry: Dictionary = found[i]
 		var slot: Panel = UiKit.panel(box, Rect2(200 + i * 58, 32, 54, 54), "slot")
 		slot.mouse_filter = Control.MOUSE_FILTER_PASS
-		if entry.has("weapon"):
+		if entry.has("item"):
+			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
+			slot.tooltip_text = tr(str(entry.name))
+		elif entry.has("weapon"):
 			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
 			slot.tooltip_text = tr("Baú do chefe: %s\n%s") % [tr(str(entry.name)), "\n".join(Crafting.describe(entry))]
 		elif entry.has("currency"):

@@ -9,7 +9,7 @@
   ],
   "strengthen": {
     "max": 12,
-    "points": [1, 5, 15, 35, 70, 150, 230, 330, 450, 600, 750, 900],
+    "success_chance": [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.65, 0.55, 0.45, 0.35, 0.25, 0.2],
     "coins": [10, 20, 30, 50, 80, 120, 160, 220, 300, 400, 520, 700],
     "damage_bonus": [0, 0.04, 0.08, 0.12, 0.16, 0.21, 0.26, 0.32, 0.38, 0.45, 0.52, 0.6, 0.7],
     "attr_per_level": 0.1,
@@ -17,11 +17,20 @@
     "hp_per_level": 25,
     "slots": ["arma", "roupa", "chapeu"],
     "stones": [
-      {"id": "pedra_fortalecimento", "name": "Pedra de Fortalecimento I", "points": 1, "price": 30, "icon": "res://assets/items/pedra_i.png"},
-      {"id": "strength_stone_ii", "name": "Pedra de Fortalecimento II", "points": 5, "price": 140, "icon": "res://assets/items/pedra_ii.png"},
-      {"id": "strength_stone_iii", "name": "Pedra de Fortalecimento III", "points": 25, "price": 650, "icon": "res://assets/items/pedra_iii.png"},
-      {"id": "strength_stone_iv", "name": "Pedra de Fortalecimento IV", "points": 125, "price": 3000, "icon": "res://assets/items/pedra_iv.png"}
+      {"id": "pedra_fortalecimento", "name": "Pedra de Fortalecimento nível 1", "level": 1, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_01.png", "color": "8ef0ae", "min_instance_level": 1, "weight": 100.0},
+      {"id": "strength_stone_ii", "name": "Pedra de Fortalecimento nível 2", "level": 2, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_02.png", "color": "60e8bb", "min_instance_level": 1, "weight": 72.0},
+      {"id": "strength_stone_iii", "name": "Pedra de Fortalecimento nível 3", "level": 3, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_03.png", "color": "59dfdd", "min_instance_level": 2, "weight": 51.84},
+      {"id": "strength_stone_iv", "name": "Pedra de Fortalecimento nível 4", "level": 4, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_04.png", "color": "67d9ff", "min_instance_level": 3, "weight": 37.32},
+      {"id": "strength_stone_5", "name": "Pedra de Fortalecimento nível 5", "level": 5, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_05.png", "color": "80adff", "min_instance_level": 4, "weight": 26.87},
+      {"id": "strength_stone_6", "name": "Pedra de Fortalecimento nível 6", "level": 6, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_06.png", "color": "9d90ff", "min_instance_level": 5, "weight": 19.35},
+      {"id": "strength_stone_7", "name": "Pedra de Fortalecimento nível 7", "level": 7, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_07.png", "color": "ba83ff", "min_instance_level": 7, "weight": 13.93},
+      {"id": "strength_stone_8", "name": "Pedra de Fortalecimento nível 8", "level": 8, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_08.png", "color": "e17aff", "min_instance_level": 8, "weight": 10.03},
+      {"id": "strength_stone_9", "name": "Pedra de Fortalecimento nível 9", "level": 9, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_09.png", "color": "ff749a", "min_instance_level": 10, "weight": 7.22},
+      {"id": "strength_stone_10", "name": "Pedra de Fortalecimento nível 10", "level": 10, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_10.png", "color": "ffad64", "min_instance_level": 12, "weight": 5.2},
+      {"id": "strength_stone_11", "name": "Pedra de Fortalecimento nível 11", "level": 11, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_11.png", "color": "ffdb7b", "min_instance_level": 14, "weight": 3.74},
+      {"id": "strength_stone_12", "name": "Pedra de Fortalecimento nível 12", "level": 12, "drop_only": true, "price": 0, "icon": "res://assets/items/forge/stone_12.png", "color": "fff1c1", "min_instance_level": 16, "weight": 2.7}
     ],
+    "mob_drops": {"killer_chance": 0.3, "party_chance": 0.12, "guardian_scale": 2.0, "elite_scale": 1.5, "boss_guaranteed": true},
     "transfer_coins": 100
   },
   "affixes": {
@@ -161,7 +170,7 @@
     {"id": "cabelo_aurora", "slot": "cabelo", "gender": "u", "name": "Cabelo Aurora", "dye": "36e0b8", "price": 0, "premium": true, "attrs": {}}
   ],
   "coupons": [
-    {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível e 99.999 moedas.", "all": true, "coins": 99999, "stones": 200},
+    {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16 e 99.999 moedas. Cupom reutilizável.", "all": true, "coins": 99999, "stones": 200, "currencies": {"brasa": 200, "coroa": 200, "estrela": 200, "tormenta": 200, "solar": 200, "eclipse": 200, "espelho": 200}, "maps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], "repeat": true},
     {"code": "AURAS", "test": true, "desc": "Quatro Tijolaços Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras.", "weapons": [["quebra_tijolos", "verdadeira", 3], ["quebra_tijolos", "verdadeira", 7], ["quebra_tijolos", "verdadeira", 10], ["quebra_tijolos", "verdadeira", 12]]},
     {"code": "PEDRAS", "test": true, "desc": "50 pedras de cada nível.", "stones": 50},
     {"code": "MOEDAS", "test": true, "desc": "30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste.", "currencies": {"brasa": 30, "coroa": 20, "estrela": 10, "tormenta": 10, "solar": 5, "eclipse": 10, "espelho": 1}, "repeat": true},

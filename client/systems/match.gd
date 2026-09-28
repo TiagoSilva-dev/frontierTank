@@ -18,6 +18,9 @@ signal damage_text(point: Vector2, text: String, color: Color)
 signal shot_fired(projectile: TankProjectile)
 signal turn_started(fighter: TankFighter)
 signal announce(text: String, color: Color)
+signal monster_defeated(target: TankFighter, killer_id: int)
+var defeated_mobs: Dictionary = {}
+var last_hit_by: Dictionary = {}
 signal special(point: Vector2, texture_path: String)
 # Weapon POW visuals (beam, lightning, heal, bull, hearts, tornado) and, in instances,
 # the monsters' abilities (ability_cast, mark, drop, leap, strike, slam, breath, guard,
@@ -119,6 +122,8 @@ func _init() -> void:
 	rng.randomize()
 
 func start(config: Dictionary) -> void:
+	defeated_mobs.clear()
+	last_hit_by.clear()
 	for fighter in fighters:
 		fighter.queue_free()
 	fighters.clear()
@@ -144,6 +149,8 @@ func start(config: Dictionary) -> void:
 	survived = 0
 	hitstop = 0.0
 	terrain = DestructibleTerrain.new()
+	# Instances keep their ground intact for every shot and monster ability.
+	terrain.destructible = not pve
 	add_child(terrain)
 	terrain.generate(map, rng.randi() % 100000)
 	var teams: Array = config.get("teams", [[], []])
@@ -919,6 +926,10 @@ func damage_area(shooter: TankFighter, point: Vector2, damage_value: int, radius
 # shield, POW gauges, statistics, freeze and the rules' shove, knockback and burning.
 # Returns the damage dealt to an enemy (0 for friendly fire).
 func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: Vector2, freeze: bool, rules: Dictionary) -> int:
+	if target.hp <= 0:
+		return 0
+	if damage > 0 and shooter.team != target.team:
+		last_hit_by[target.player_id] = shooter.player_id
 	var kind: String = str(rules.get("kind", ""))
 	var dealt: int = 0
 	# Attributes from gear: Ataque raises, Defesa lowers, Sorte may crit.
@@ -959,12 +970,24 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 		heal_fighter(shooter, roundi(damage * float(shooter.elite.lifesteal)))
 		effect.emit("hearts", shooter.center(), {})
 	if target.hp <= 0:
+		record_monster_defeat(target, shooter.player_id)
 		if target.team != shooter.team:
 			shooter.stats.kills += 1
 		announce.emit(tr("%s derrotou %s!") % [shooter.display_name, target.display_name], Color("ff8a6a"))
 		if target.elite.has("explode") and not target.exploded:
 			elite_explode(target)
 	return dealt
+
+func record_monster_defeat(target: TankFighter, killer_id: int = -1) -> void:
+	if not pve or not target.is_monster or target.team != 1 or target.hp > 0 or defeated_mobs.has(target.player_id):
+		return
+	defeated_mobs[target.player_id] = true
+	# Summons never yield loot: a boss cannot be farmed indefinitely.
+	if target.get_meta("summoned", false):
+		return
+	if killer_id < 0 or killer_id >= fighters.size() or fighters[killer_id].team != 0:
+		killer_id = -1
+	monster_defeated.emit(target, killer_id)
 
 func shove(target: TankFighter, amount: float) -> void:
 	var x: float = clampf(target.position.x + amount, 8, terrain.world_size.x - 8)
@@ -1005,6 +1028,8 @@ func resolve_miss(projectile: TankProjectile) -> void:
 func evaluate_winner() -> bool:
 	var alive_teams: Dictionary = {}
 	for fighter in fighters:
+		if fighter.hp <= 0:
+			record_monster_defeat(fighter, int(last_hit_by.get(fighter.player_id, -1)))
 		if fighter.hp > 0 and fighter.rank != "totem":
 			alive_teams[fighter.team] = true
 	if pve and alive_teams.has(0):
@@ -1252,6 +1277,7 @@ func plan_monster(fighter: TankFighter) -> bool:
 			entry.team = fighter.team
 			entry.x = clampf(fighter.position.x - fighter.facing * rng.randf_range(90, 160), 40, terrain.world_size.x - 40)
 			var minion: TankFighter = spawn_fighter(entry, 0, 1, true)
+			minion.set_meta("summoned", true)
 			minion.delay = fighter.delay + 50.0
 			announce.emit(tr("%s invoca %s!") % [fighter.display_name, minion.display_name], Color("ff8a4a"))
 			effect.emit("summon", minion.position, {})
@@ -1595,7 +1621,7 @@ func add_status(target: TankFighter, id: String, source: TankFighter = null, ent
 			power = float(info.get("per_stack", 0.03))
 		"queimacao":
 			power = maxf(float(old.get("power", 0.0)), maxf(1.0, hit * float(entry.get("power", info.get("power", 0.12)))))
-	target.statuses[id] = {"turns": maxi(turns, int(old.get("turns", 0))), "stacks": stacks, "power": power}
+	target.statuses[id] = {"turns": maxi(turns, int(old.get("turns", 0))), "stacks": stacks, "power": power, "source": source.player_id if source != null else -1}
 	var color: Color = StatusRules.color(id)
 	if status_round != round_number:
 		status_round = round_number
@@ -1620,6 +1646,7 @@ func tick_statuses(fighter: TankFighter) -> void:
 		damage_text.emit(fighter.center(), "-%d" % amount, StatusRules.color(id))
 		effect.emit("burn" if id == "queimacao" else "poison", fighter.center(), {"color": StatusRules.color(id)})
 		if fighter.hp <= 0:
+			record_monster_defeat(fighter, int(entry.get("source", -1)))
 			var line: String = tr("%s não resistiu às chamas!") if id == "queimacao" else tr("%s não resistiu ao veneno!")
 			announce.emit(line % fighter.display_name, Color("ff8a6a"))
 

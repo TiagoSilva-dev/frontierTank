@@ -83,6 +83,8 @@ func start_phase(phase_config: Dictionary) -> void:
 	add_child(game)
 	game.start(config)
 	game.finished.connect(on_finished)
+	if expedition != null:
+		game.monster_defeated.connect(on_monster_defeated)
 	for account: int in seats:
 		var session: PlayerSession = players.get(account)
 		if session == null or session.lingering or gone.has(account):
@@ -100,6 +102,20 @@ func send_start(session: PlayerSession, resume: bool = false) -> void:
 		message.history = history
 		message.u = tick
 	session.send(message)
+
+func on_monster_defeated(target: TankFighter, killer_id: int) -> void:
+	var killer_account: int = -1
+	var eligible: Array = seats.keys().filter(func(account: int) -> bool: return not gone.has(account))
+	for account: int in eligible:
+		if int(seats[account]) == killer_id:
+			killer_account = account
+	var reports: Dictionary = expedition.reward_monster(target, killer_account, eligible)
+	for account: int in reports:
+		var session: PlayerSession = players.get(account)
+		var rewards: Array = reports[account]
+		if session != null and not rewards.is_empty():
+			session.send({"t": "mob_loot", "m": match_id, "rewards": rewards, "profile": session.profile.to_data()})
+			server.audit(session, "mob_loot", {"match": match_id, "phase": expedition.leader.phase_index, "monster": target.player_id, "killer": killer_id, "rewards": rewards})
 
 func queue_input(fighter: int, action: String, data: Dictionary) -> void:
 	# Applied and sent exactly as every copy will read it back (JSON numbers).

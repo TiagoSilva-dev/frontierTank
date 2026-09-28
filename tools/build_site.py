@@ -243,7 +243,7 @@ def build_data():
         affix_out[group] = [{"id": a["id"], "text": T(a["text"]), "values": a["values"]} for a in affixes[group]]
 
     strengthen = dict(items["strengthen"])
-    strengthen["stones"] = [{"id": s["id"], "name": T(s["name"]), "points": s["points"], "price": s["price"],
+    strengthen["stones"] = [{"id": s["id"], "name": T(s["name"]), "level": s["level"], "min_instance_level": s["min_instance_level"],
                              "icon": art(s["icon"], f"items/{s['id']}.png")} for s in items["strengthen"]["stones"]]
 
     rewards = combat["rewards"]
