@@ -158,7 +158,7 @@ msgstr ""
 msgid "bora sala 4x4!!"
 msgstr ""
 
-#: client/scripts/main.gd:299 client/systems/lobby.gd:11 server/game/game_server.gd:638
+#: client/scripts/main.gd:299 client/systems/lobby.gd:11 server/game/game_server.gd:640
 msgid "Guerra de equipes, diversão sem limite"
 msgstr ""
 
@@ -190,7 +190,7 @@ msgstr ""
 msgid "MISSÃO"
 msgstr ""
 
-#: client/scripts/main.gd:532 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:199
+#: client/scripts/main.gd:532 client/ui/bottom_bar.gd:17 client/ui/city_screen.gd:201
 msgid "PET"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:572 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/mail_screen.gd:40
+#: client/scripts/main.gd:572 client/ui/auction_screen.gd:73 client/ui/bottom_bar.gd:17 client/ui/exchange_screen.gd:82
 msgid "CORREIO"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Conquista: %s"
 msgstr ""
 
-#: client/scripts/main.gd:646 client/ui/shop_screen.gd:148 server/game/game_server.gd:1297
+#: client/scripts/main.gd:646 client/ui/shop_screen.gd:148 server/game/game_server.gd:1299
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr ""
 
@@ -280,6 +280,14 @@ msgstr ""
 
 #: client/scripts/main.gd:791
 msgid "Música ligada"
+msgstr ""
+
+#: client/scripts/main.gd:814 client/ui/exchange_screen.gd:56
+msgid "CASA DE CÂMBIO"
+msgstr ""
+
+#: client/scripts/main.gd:814
+msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
 msgstr ""
 
 #: client/systems/armory.gd:12 client/ui/character_screen.gd:204
@@ -374,63 +382,71 @@ msgstr ""
 msgid "há %d dias"
 msgstr ""
 
-#: client/systems/auction.gd:240
+#: client/systems/auction.gd:237
+msgid "Câmbio: saldo devolvido"
+msgstr ""
+
+#: client/systems/auction.gd:237
+msgid "Câmbio: troca realizada"
+msgstr ""
+
+#: client/systems/auction.gd:242
 msgid "item"
 msgstr ""
 
-#: client/systems/auction.gd:241
+#: client/systems/auction.gd:243
 msgid "Vendido no leilão: %s"
 msgstr ""
 
-#: client/systems/auction.gd:243
+#: client/systems/auction.gd:245
 msgid "Comprado no leilão: %s"
 msgstr ""
 
-#: client/systems/auction.gd:245
+#: client/systems/auction.gd:247
 msgid "Loja Steam: %s"
 msgstr ""
 
-#: client/systems/auction.gd:248
+#: client/systems/auction.gd:250
 msgid "Anúncio cancelado: %s"
 msgstr ""
 
-#: client/systems/auction.gd:248
+#: client/systems/auction.gd:250
 msgid "Anúncio vencido: %s"
 msgstr ""
 
-#: client/systems/auction.gd:249
+#: client/systems/auction.gd:251
 msgid "Correio"
 msgstr ""
 
-#: client/systems/auction.gd:260 client/ui/shop_screen.gd:124
+#: client/systems/auction.gd:263 client/ui/shop_screen.gd:124
 msgid "%d moedas"
 msgstr ""
 
-#: client/systems/auction.gd:265
+#: client/systems/auction.gd:268
 msgid "comissão %s"
 msgstr ""
 
-#: client/systems/auction.gd:270 server/game/game_server.gd:1079
+#: client/systems/auction.gd:273 server/game/game_server.gd:1081
 msgid "Este anúncio não está mais à venda."
 msgstr ""
 
-#: client/systems/auction.gd:271
+#: client/systems/auction.gd:274
 msgid "O preço deste anúncio mudou. Atualize a busca."
 msgstr ""
 
-#: client/systems/auction.gd:272
+#: client/systems/auction.gd:275
 msgid "Você não pode comprar o seu próprio anúncio."
 msgstr ""
 
-#: client/systems/auction.gd:273
+#: client/systems/auction.gd:276
 msgid "Este anúncio não é seu."
 msgstr ""
 
-#: client/systems/auction.gd:274
+#: client/systems/auction.gd:277
 msgid "Você chegou ao limite de anúncios ao mesmo tempo."
 msgstr ""
 
-#: client/systems/auction.gd:275
+#: client/systems/auction.gd:278
 msgid "Esta carta já foi recebida."
 msgstr ""
 
@@ -552,6 +568,22 @@ msgstr ""
 
 #: client/systems/crafting.gd:67
 msgid "F%d"
+msgstr ""
+
+#: client/systems/currency_exchange.gd:25
+msgid "Escolha duas moedas ou pedras diferentes."
+msgstr ""
+
+#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1371
+msgid "Use quantidades inteiras entre 1 e 1.000.000."
+msgstr ""
+
+#: client/systems/currency_exchange.gd:29
+msgid "Você não tem saldo suficiente para reservar esta oferta."
+msgstr ""
+
+#: client/systems/currency_exchange.gd:31
+msgid "Você não tem ouro suficiente para a taxa."
 msgstr ""
 
 #: client/systems/instance_run.gd:470
@@ -878,7 +910,7 @@ msgstr ""
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr ""
 
-#: client/systems/profile.gd:714 server/game/game_server.gd:451
+#: client/systems/profile.gd:714 server/game/game_server.gd:453
 msgid "Operação desconhecida."
 msgstr ""
 
@@ -946,7 +978,7 @@ msgstr ""
 msgid "Excluindo…"
 msgstr ""
 
-#: client/ui/account_screen.gd:162 server/game/game_server.gd:1226
+#: client/ui/account_screen.gd:162 server/game/game_server.gd:1228
 msgid "Digite a sua senha."
 msgstr ""
 
@@ -1194,7 +1226,7 @@ msgstr ""
 msgid "Este anúncio é seu."
 msgstr ""
 
-#: client/ui/auction_screen.gd:336 server/game/game_server.gd:1081
+#: client/ui/auction_screen.gd:336 server/game/game_server.gd:1083
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr ""
 
@@ -1867,22 +1899,14 @@ msgid "Centro Comercial: roupas e armas"
 msgstr ""
 
 #: client/ui/city_screen.gd:15 client/ui/city_screen.gd:27
-msgid "Namoro"
+msgid "Casa de Câmbio"
 msgstr ""
 
 #: client/ui/city_screen.gd:15 client/ui/city_screen.gd:27
-msgid "Namoro: encontre seu par"
+msgid "Câmbio: troque moedas e pedras com jogadores"
 msgstr ""
 
-#: client/ui/city_screen.gd:197
-msgid "Casamento e equipamentos de casal ainda não estão disponíveis."
-msgstr ""
-
-#: client/ui/city_screen.gd:197
-msgid "NAMORO"
-msgstr ""
-
-#: client/ui/city_screen.gd:199
+#: client/ui/city_screen.gd:201
 msgid "A Casa dos Mascotes ainda não está disponível nesta versão offline."
 msgstr ""
 
@@ -1894,35 +1918,35 @@ msgstr ""
 msgid "Casa dos Mascotes: em breve"
 msgstr ""
 
-#: client/ui/city_screen.gd:287
+#: client/ui/city_screen.gd:289
 msgid "CRIE SEU PERSONAGEM"
 msgstr ""
 
-#: client/ui/city_screen.gd:288
+#: client/ui/city_screen.gd:290
 msgid "Uma conta, um personagem. Escolha a aparência e o nome."
 msgstr ""
 
-#: client/ui/city_screen.gd:294
+#: client/ui/city_screen.gd:296
 msgid "Feminino"
 msgstr ""
 
-#: client/ui/city_screen.gd:294
+#: client/ui/city_screen.gd:296
 msgid "Masculino"
 msgstr ""
 
-#: client/ui/city_screen.gd:295
+#: client/ui/city_screen.gd:297
 msgid "Nome:"
 msgstr ""
 
-#: client/ui/city_screen.gd:304
+#: client/ui/city_screen.gd:306
 msgid "CRIAR PERSONAGEM"
 msgstr ""
 
-#: client/ui/city_screen.gd:316 client/ui/city_screen.gd:320
+#: client/ui/city_screen.gd:318 client/ui/city_screen.gd:322
 msgid "NOME"
 msgstr ""
 
-#: client/ui/city_screen.gd:316
+#: client/ui/city_screen.gd:318
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr ""
 
@@ -1988,6 +2012,158 @@ msgstr ""
 
 #: client/ui/coupon_dialog.gd:8
 msgid "RESGATAR CUPOM"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:113
+msgid "Reservar %d · Receber %d\nTaxa: %d ouro"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:119
+msgid "LIVRO DE OFERTAS"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:120
+msgid "Disponíveis"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:121
+msgid "Concorrentes"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:123
+msgid "Melhores taxas primeiro · até 50 ofertas"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:125
+msgid "Nenhuma oferta neste par.\nDefina sua taxa e abra o mercado."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:139
+msgid "%d por %d · %d lotes"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:142
+msgid "Selecionar esta proporção. A execução depende do saldo disponível e de lotes inteiros."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:148
+msgid "MINHAS OFERTAS"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:149
+msgid "Até 10 ativas · continuam com você offline"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:153
+msgid "Suas ofertas aparecerão aqui."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:157
+msgid "Ativa"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:157
+msgid "Cancelada"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:157
+msgid "Concluída"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:159
+msgid "Parcial"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:164
+msgid "%d de %d lotes pendentes"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:164
+msgid "%d lotes devolvidos"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:195
+msgid "Oferta criada. Resgate as trocas realizadas no Correio."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:208
+msgid "Oferta cancelada. O saldo não negociado está no Correio."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:259
+msgid "ESCOLHA UMA MOEDA OU PEDRA"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:264
+msgid "Buscar pelo nome"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:270 client/ui/smith_screen.gd:8
+msgid "Moedas"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:270 client/ui/shop_screen.gd:12
+msgid "Pedras"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:270
+msgid "Tudo"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:276
+msgid "Tenho saldo"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:318
+msgid "Nenhum item neste filtro. Desative Tenho saldo para ver todos."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:57
+msgid "Moedas e pedras. Um mercado entre aventureiros."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:64
+msgid "NOVA OFERTA"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:65
+msgid "EU TENHO"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:66
+msgid "EU QUERO"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:67
+msgid "por lote"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:70
+msgid "Quantidade de lotes"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:72
+msgid "INVERTER"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:73
+msgid "USAR COTAÇÃO"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:76
+msgid "CRIAR OFERTA"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:80
+msgid "A taxa em ouro não é devolvida. Trocas e cancelamentos chegam ao Correio."
+msgstr ""
+
+#: client/ui/exchange_screen.gd:83
+msgid "ATUALIZAR"
+msgstr ""
+
+#: client/ui/exchange_screen.gd:95 client/ui/exchange_screen.gd:306
+msgid "Saldo: %d"
 msgstr ""
 
 #: client/ui/forge_outcome.gd:53
@@ -2690,7 +2866,7 @@ msgstr ""
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr ""
 
-#: client/ui/room_screen.gd:358 server/game/game_server.gd:778
+#: client/ui/room_screen.gd:358 server/game/game_server.gd:780
 msgid "Não há vagas livres na sua equipe."
 msgstr ""
 
@@ -2764,10 +2940,6 @@ msgstr ""
 
 #: client/ui/shop_screen.gd:12
 msgid "Cabelos"
-msgstr ""
-
-#: client/ui/shop_screen.gd:12
-msgid "Pedras"
 msgstr ""
 
 #: client/ui/shop_screen.gd:12
@@ -2963,10 +3135,6 @@ msgid "Fortalecer"
 msgstr ""
 
 #: client/ui/smith_screen.gd:8
-msgid "Moedas"
-msgstr ""
-
-#: client/ui/smith_screen.gd:8
 msgid "Transferência"
 msgstr ""
 
@@ -3074,147 +3242,151 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: server/game/game_server.gd:1033
+#: server/game/game_server.gd:1035 server/game/game_server.gd:1379
 msgid "Aguarde um instante para buscar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1220
+#: server/game/game_server.gd:1222
 msgid "Saia da batalha antes de excluir a conta."
 msgstr ""
 
-#: server/game/game_server.gd:1231
+#: server/game/game_server.gd:1233
 msgid "Muitas tentativas. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:1239
+#: server/game/game_server.gd:1241
 msgid "Não foi possível excluir a conta agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1239
+#: server/game/game_server.gd:1241
 msgid "Senha incorreta."
 msgstr ""
 
-#: server/game/game_server.gd:1263
+#: server/game/game_server.gd:1265
 msgid "Produto desconhecido."
 msgstr ""
 
-#: server/game/game_server.gd:1269
+#: server/game/game_server.gd:1271
 msgid "Você já tem estes itens."
 msgstr ""
 
-#: server/game/game_server.gd:1299
+#: server/game/game_server.gd:1301
 msgid "A Steam não respondeu. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1301
+#: server/game/game_server.gd:1303
 msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1303
+#: server/game/game_server.gd:1305
 msgid "Este pedido já foi encerrado."
 msgstr ""
 
-#: server/game/game_server.gd:1305
+#: server/game/game_server.gd:1307
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:1306
+#: server/game/game_server.gd:1308
 msgid "Não foi possível concluir a compra agora."
 msgstr ""
 
-#: server/game/game_server.gd:429 server/game/game_server.gd:469
+#: server/game/game_server.gd:1384
+msgid "Não foi possível consultar o câmbio. Tente novamente."
+msgstr ""
+
+#: server/game/game_server.gd:431 server/game/game_server.gd:471
 msgid "Este nome já está em uso. Escolha outro."
 msgstr ""
 
-#: server/game/game_server.gd:456 server/game/game_server.gd:631 server/game/game_server.gd:654 server/game/game_server.gd:981
+#: server/game/game_server.gd:458 server/game/game_server.gd:633 server/game/game_server.gd:656 server/game/game_server.gd:983
 msgid "Você está numa batalha."
 msgstr ""
 
-#: server/game/game_server.gd:459 server/game/game_server.gd:795 server/game/game_server.gd:985 server/game/game_server.gd:1223
+#: server/game/game_server.gd:461 server/game/game_server.gd:797 server/game/game_server.gd:987 server/game/game_server.gd:1225
 msgid "Aguarde a operação anterior terminar."
 msgstr ""
 
-#: server/game/game_server.gd:466
+#: server/game/game_server.gd:468
 msgid "Servidor indisponível. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:498 server/game/game_server.gd:569
+#: server/game/game_server.gd:500 server/game/game_server.gd:571
 msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
 msgstr ""
 
-#: server/game/game_server.gd:502
+#: server/game/game_server.gd:504
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:526 server/game/game_server.gd:983 server/game/game_server.gd:1266
+#: server/game/game_server.gd:528 server/game/game_server.gd:985 server/game/game_server.gd:1268
 msgid "Crie o seu personagem primeiro."
 msgstr ""
 
-#: server/game/game_server.gd:529
+#: server/game/game_server.gd:531
 msgid "Escolha o motivo da denúncia."
 msgstr ""
 
-#: server/game/game_server.gd:537
+#: server/game/game_server.gd:539
 msgid "Esta mensagem é antiga demais para ser denunciada."
 msgstr ""
 
-#: server/game/game_server.gd:541
+#: server/game/game_server.gd:543
 msgid "Você não pode denunciar a sua própria mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:544
+#: server/game/game_server.gd:546
 msgid "Você já denunciou esta mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:549
+#: server/game/game_server.gd:551
 msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:577
+#: server/game/game_server.gd:579
 msgid "Não foi possível enviar a denúncia agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:656
+#: server/game/game_server.gd:658
 msgid "Sala não encontrada neste canal."
 msgstr ""
 
-#: server/game/game_server.gd:658
+#: server/game/game_server.gd:660
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr ""
 
-#: server/game/game_server.gd:660
+#: server/game/game_server.gd:662
 msgid "A sala está cheia."
 msgstr ""
 
-#: server/game/game_server.gd:671
+#: server/game/game_server.gd:673
 msgid "%s entrou na sala."
 msgstr ""
 
-#: server/game/game_server.gd:687
+#: server/game/game_server.gd:689
 msgid "%s saiu da sala."
 msgstr ""
 
-#: server/game/game_server.gd:706
+#: server/game/game_server.gd:708
 msgid "Somente o dono da sala pode fazer isso."
 msgstr ""
 
-#: server/game/game_server.gd:709
+#: server/game/game_server.gd:711
 msgid "A sala está em batalha."
 msgstr ""
 
-#: server/game/game_server.gd:747
+#: server/game/game_server.gd:749
 msgid "Você não está numa sala."
 msgstr ""
 
-#: server/game/game_server.gd:761
+#: server/game/game_server.gd:763
 msgid "Jogador não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:790
+#: server/game/game_server.gd:792
 msgid "Todos os jogadores precisam estar preparados."
 msgstr ""
 
-#: server/game/game_server.gd:932
+#: server/game/game_server.gd:934
 msgid "Carta indisponível."
 msgstr ""
 

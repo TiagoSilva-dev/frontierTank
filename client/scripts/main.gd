@@ -807,3 +807,13 @@ func _process(_delta: float) -> void:
 			await RenderingServer.frame_post_draw
 			get_viewport().get_texture().get_image().save_png(str(args.out))
 			get_tree().quit()
+
+func open_exchange(parent: Node = null) -> ExchangeScreen:
+	var host: Node = parent if parent != null else ui
+	if not online:
+		UiKit.notice(host, tr("CASA DE CÂMBIO"), tr("Entre em um servidor online para trocar moedas e pedras com outros jogadores."))
+		return null
+	var exchange: ExchangeScreen = ExchangeScreen.new()
+	exchange.app = self
+	host.add_child(exchange)
+	return exchange

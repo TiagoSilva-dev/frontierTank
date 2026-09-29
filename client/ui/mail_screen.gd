@@ -69,10 +69,10 @@ func letter_row(mail: Dictionary, rect: Rect2) -> void:
 	var bundle: Dictionary = mail.get("currencies", {}) if mail.get("currencies") is Dictionary else {}
 	if item is Dictionary:
 		icon = Auction.item_icon(str(mail.get("item_kind", "item")), item)
-	elif int(bundle.get("solar", 0)) > 0:
-		icon = load(str(Crafting.currency_def("solar").icon))
-	elif int(bundle.get("estrela", 0)) > 0:
-		icon = load(str(Crafting.currency_def("estrela").icon))
+	elif not bundle.is_empty():
+		var definition: Dictionary = CurrencyExchange.definition(str(bundle.keys()[0]))
+		if definition.has("icon"):
+			icon = load(str(definition.icon))
 	UiKit.art(box, icon, Rect2(8, 5, 48, 48))
 	UiKit.clipped(box, Auction.mail_title(mail), Rect2(64, 2, 600, 28), 16, UiKit.TEXT_DARK)
 	UiKit.clipped(box, Auction.mail_contents(mail), Rect2(64, 28, 600, 26), 14, Color("2f6a1f"))

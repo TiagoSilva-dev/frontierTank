@@ -85,6 +85,7 @@ func (a *API) internalRoutes() http.Handler {
 	mux.HandleFunc("POST /internal/presence/claim", a.claimPresence)
 	mux.HandleFunc("POST /internal/presence/release", a.releasePresence)
 	a.auctionRoutes(mux)
+	a.exchangeRoutes(mux)
 	a.privacyInternalRoutes(mux)
 	a.reportRoutes(mux)
 	a.storeRoutes(mux)

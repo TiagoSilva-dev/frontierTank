@@ -457,3 +457,9 @@ func memory_claim(account: int, ids: Array, profile: Dictionary) -> Dictionary:
 	for mail in chosen:
 		mail.claimed = true
 	return {"version": version, "claimed": ids}
+
+# The exchange requires persistent SQL custody. LAN memory mode has no public market.
+func exchange_call(action: String, data: Dictionary) -> Dictionary:
+	if is_memory():
+		return {"error": "exchange_unavailable"}
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/exchange/" + action, data))

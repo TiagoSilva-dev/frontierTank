@@ -222,6 +222,8 @@ func run_tests() -> void:
 	check(brasa_button != null and not brasa_button.disabled and coroa_button.disabled, "the Moedas tab only enables the currencies that fit the item")
 	brasa_button.pressed.emit()
 	check(crown.quality == "excelente" and crown.mods.size() == 1 and smith.message.begins_with("Usou Brasa"), "a Brasa makes a hat Excelente with one bonus")
+	# TESTARTUDO now grants every map; this fixture isolates map crafting/pagination.
+	app.profile.maps.clear()
 	var loose_map: Dictionary = app.profile.add_map(InstanceRun.make_map("ilha_ruinas", 3, RandomNumberGenerator.new(), 0.0, "normal"))
 	smith.select_target("map")
 	smith.pick_craft(int(loose_map.uid))
@@ -231,7 +233,7 @@ func run_tests() -> void:
 	check(loose_map.quality == "excelente" and loose_map.mods.size() == 1, "a Brasa turns a map Excelente")
 	smith.close()
 	bag.filter_items("Materiais")
-	check(bag.entries().any(func(e: Dictionary) -> bool: return e.key == "item:solar" and int(e.count) == 5), "currencies show in the Materiais tab")
+	check(bag.entries().any(func(e: Dictionary) -> bool: return e.key == "item:solar" and int(e.count) == app.profile.currency_count("solar")), "currencies show in the Materiais tab")
 	bag.select_item("item:solar")
 	check(bag.selected_label.text.contains("Rerola só os valores"), "a selected currency explains its use")
 	bag.select_item("uid:%d" % int(crown.uid))

@@ -140,7 +140,7 @@ static func grant_mail(profile: PlayerProfile, mail: Dictionary) -> Dictionary:
 	if bundle is Dictionary:
 		for id: Variant in bundle:
 			var amount: int = int(bundle[id])
-			if Crafting.is_currency(str(id)) and amount > 0:
+			if CurrencyExchange.valid_asset(str(id)) and amount > 0:
 				profile.add_item(str(id), amount)
 				undo.items[str(id)] = int(undo.items.get(str(id), 0)) + amount
 	var coins: int = maxi(0, int(mail.get("coins", 0)))
@@ -233,6 +233,8 @@ static func time_ago(seconds: int) -> String:
 
 # The heading of a mail: what happened and to which item.
 static func mail_title(mail: Dictionary) -> String:
+	if str(mail.get("kind", "")).begins_with("exchange_"):
+		return Lang.t("Câmbio: saldo devolvido") if mail.kind == "exchange_return" else Lang.t("Câmbio: troca realizada")
 	var detail: Dictionary = mail.get("detail", {}) if mail.get("detail") is Dictionary else {}
 	match str(mail.get("kind", "")):
 		"sale":
@@ -252,8 +254,9 @@ static func mail_title(mail: Dictionary) -> String:
 static func mail_contents(mail: Dictionary) -> String:
 	var parts: Array[String] = []
 	var bundle: Dictionary = mail.get("currencies", {}) if mail.get("currencies") is Dictionary else {}
-	if int(bundle.get("solar", 0)) > 0 or int(bundle.get("estrela", 0)) > 0:
-		parts.append(price_text(int(bundle.get("solar", 0)), int(bundle.get("estrela", 0))))
+	for id: String in bundle:
+		if int(bundle[id]) > 0 and CurrencyExchange.valid_asset(id):
+			parts.append("%d %s" % [int(bundle[id]), CurrencyExchange.title(id)])
 	if mail.get("item") is Dictionary:
 		parts.append(item_name(str(mail.get("item_kind", "item")), mail.item))
 	if int(mail.get("coins", 0)) > 0:

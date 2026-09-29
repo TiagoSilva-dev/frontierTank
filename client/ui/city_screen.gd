@@ -12,7 +12,7 @@ const BUILDINGS: Array[Dictionary] = [
 	{"id": "smith", "name": "Ferreiro", "rect": [100, 300, 190, 180], "label": [196, 330], "tip": "Ferreiro: fortaleça suas armas"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [1040, 60, 200, 330], "label": [1140, 175], "tip": "Leilão: compre e venda itens"},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [900, 360, 230, 200], "label": [1010, 450], "tip": "Centro Comercial: roupas e armas"},  # i18n
-	{"id": "dating", "name": "Namoro", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Namoro: encontre seu par"},  # i18n
+	{"id": "exchange", "name": "Casa de Câmbio", "rect": [0, 40, 165, 300], "label": [84, 130], "tip": "Câmbio: troque moedas e pedras com jogadores"},  # i18n
 ]
 # Layout for the PixelLab city: a 640x360 painting shown at exactly 2x with the
 # Salão on the central plaza and six paved lots around it, one 1x sprite per building.
@@ -24,7 +24,7 @@ const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
 	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
-	{"id": "dating", "name": "Namoro", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Namoro: encontre seu par", "fx": {"hearts": [78, 44]}},  # i18n
+	{"id": "exchange", "name": "Casa de Câmbio", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Câmbio: troque moedas e pedras com jogadores", "fx": {"twinkle": true}},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
 ]
 
@@ -63,7 +63,7 @@ func _ready() -> void:
 	for i in range(buildings.size()):
 		var building: Dictionary = buildings[i]
 		var r: Array = building.rect
-		var sprite_path: String = "res://assets/city/buildings/%s.png" % building.id
+		var sprite_path: String = "res://assets/city/buildings/%s.png" % ("auction" if building.id == "exchange" else building.id)
 		if ResourceLoader.exists(sprite_path):
 			var sprite: TextureRect = UiKit.art(self, sprite_path, Rect2(r[0], r[1], r[2], r[3]))
 			sprite.name = "Sprite_" + str(building.id)
@@ -193,8 +193,10 @@ func enter(id: String) -> void:
 			shop.app = app
 			shop.closed.connect(app.show_city)
 			add_child(shop)
-		"dating":
-			UiKit.notice(self, tr("NAMORO"), tr("Casamento e equipamentos de casal ainda não estão disponíveis."))
+		"exchange":
+			var exchange: ExchangeScreen = app.open_exchange(self)
+			if exchange != null:
+				exchange.closed.connect(app.show_city)
 		"pet":
 			UiKit.notice(self, tr("PET"), tr("A Casa dos Mascotes ainda não está disponível nesta versão offline."))
 

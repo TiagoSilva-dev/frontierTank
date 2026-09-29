@@ -4,6 +4,10 @@ Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou impor
 
 Jogo de artilharia por turnos em pixel art, com cidade, salas, instâncias e economia de itens. Joga **online** (conta, servidor de jogo, salas, chat e batalhas com outros jogadores) ou no **modo offline** contra bots.
 
+## Casa de Câmbio (0.17)
+
+Na cidade, a Casa de Câmbio substitui Namoro. Jogadores anunciam trocas entre as 7 moedas especiais e as 12 pedras de fortalecimento, com cotação própria, ofertas parciais, taxa em ouro e entrega pelo Correio. O PostgreSQL guarda as ofertas e o saldo reservado, inclusive com o vendedor offline. Regras, testes e publicação em [docs/CAMBIO.md](docs/CAMBIO.md).
+
 ## Site oficial e wiki — Gustfire
 O jogo ganhou nome novo, **Gustfire** (*gust* = rajada de vento, *fire* = disparo), com logotipo em pixel art e site oficial em `website/`: página inicial com o botão **JOGAR**, uma mini batalha jogável com a física do jogo e uma **wiki** no estilo do poedb (armas, POW, instâncias, monstros, mapas, moedas, bônus, fortalecimento e as fórmulas do combate), em português e inglês. Os números da wiki saem dos arquivos de balanceamento: depois de mudar o jogo, rode `python tools/build_site.py`. Abra `website/index.html` ou suba o Docker (site em `/`, jogo em `/jogar/`). Tudo em [docs/SITE.md](docs/SITE.md). O jogo inteiro usa o nome e o logotipo novos: tela de entrada, janela, ícone, executáveis (`Gustfire.exe`, `Gustfire.x86_64`), textos legais, página e cápsulas da Steam e o servidor padrão (**S1 · Ilha Celeste**). O jogo se chamava *Frontier Tank: Nova Era*; na primeira vez que o Gustfire abre, o save offline, o idioma, o áudio e a conta lembrada da pasta antiga são copiados (`client/systems/legacy_data.gd`). Os nomes internos (pasta do projeto, projeto do Docker `frontier-tank`, banco `frontier`, identidade Steam `frontiertank`) ficaram iguais para não perder dados.
 

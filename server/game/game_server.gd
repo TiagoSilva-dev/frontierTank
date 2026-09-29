@@ -272,6 +272,8 @@ func handle(session: PlayerSession, text: String) -> void:
 			pick_card(session, message)
 		"desync":
 			audit(session, "desync", {"match": int(message.get("m", 0)), "tick": int(message.get("tick", 0))})
+		"exchange_book", "exchange_create", "exchange_cancel":
+			exchange_request(session, message)
 		"auction_search":
 			auction_search(session, message)
 		"auction_list":
@@ -1353,3 +1355,57 @@ func shutdown() -> void:
 		await api.release(session.account_id)
 	await flush_audit()
 	get_tree().quit()
+
+func exchange_request(session: PlayerSession, message: Dictionary) -> void:
+	var action: String = str(message.get("t", "")).trim_prefix("exchange_")
+	var error: String = trade_guard(session)
+	var give: String = str(message.get("give_id", ""))
+	var want: String = str(message.get("want_id", ""))
+	var amount: int = number(message, "give_unit", 0)
+	var wanted: int = number(message, "want_unit", 0)
+	var lots: int = number(message, "lots", 0)
+	if error == "" and action == "create":
+		for field: String in ["give_unit", "want_unit", "lots"]:
+			var value: Variant = message.get(field)
+			if not (value is int or value is float) or not is_finite(float(value)) or float(value) != floorf(float(value)):
+				error = Lang.t("Use quantidades inteiras entre 1 e 1.000.000.")
+	if error == "" and action == "create":
+		error = CurrencyExchange.reason(session.profile, give, want, amount, wanted, lots)
+	if error != "":
+		reply(session, message, {"error": error})
+		return
+	if action == "book":
+		if now() - session.last_search < 0.3:
+			reply(session, message, {"error": Lang.t("Aguarde um instante para buscar de novo.")})
+			return
+		session.last_search = now()
+		var book: Dictionary = await api.exchange_call("book", {"account_id": session.account_id, "give_id": give, "want_id": want})
+		if book.has("error"):
+			book = {"error": Lang.t("Não foi possível consultar o câmbio. Tente novamente.")}
+		reply(session, message, book)
+		return
+	await begin_trade(session)
+	var payload: Dictionary = {"op_id": new_op_id(session), "server_id": server_id, "account_id": session.account_id, "id": number(message, "id", 0)}
+	if action == "create":
+		session.profile.items[give] = session.profile.currency_count(give) - amount * lots
+		session.profile.coins -= CurrencyExchange.fee(amount, lots)
+		payload.profile = profile_write(session)
+		payload.order = {"give_id": give, "want_id": want, "give_unit": amount, "want_unit": wanted, "lots": lots}
+	var result: Dictionary = await trade_call(session, api.exchange_call.bind(action, payload))
+	if result.has("error"):
+		if action == "create" and not session.discard:
+			session.profile.items[give] = session.profile.currency_count(give) + amount * lots
+			session.profile.coins += CurrencyExchange.fee(amount, lots)
+			session.dirty = true
+		end_trade(session)
+		reply(session, message, {"error": trade_error(result), "profile": session.profile.to_data()})
+		return
+	if result.has("version"):
+		session.version = int(result.version)
+	end_trade(session)
+	for account: Variant in result.get("notify", []):
+		var recipient: PlayerSession = accounts.get(int(account))
+		if recipient != null:
+			notify_mail(recipient)
+	reply(session, message, {"order": result.order, "profile": session.profile.to_data()})
+	after_trade(session)

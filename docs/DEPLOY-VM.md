@@ -1,6 +1,15 @@
 # Frontier Tank na VM
 
-## Atualizacao publicada
+## Correcao do acesso online (28/09/2026)
+
+- Web, API e multiplayer publicados no commit `c0e24cd`. Servidor `s1`, **S1 · Ilha Celeste**, em `wss://gustfire.online/ws`; cupons de teste habilitados.
+- Corrigido o proxy HTTPS: `gzip off` na rota `/v1/`. O navegador ja descompactava a resposta, mas Godot tentava descompacta-la novamente (`stream_peer_gzip.cpp`), fazendo a tela mostrar apenas o modo offline mesmo com a API funcionando.
+- A mesma regra foi adicionada a `server/docker/web.nginx.conf` para os proximos deployments. O proxy externo da VM tambem precisa conservar essa regra.
+- Validacao no navegador: `/v1/servers` retorna 200 sem erro de descompactacao; a tela exibe S1 e os campos de login. WebSocket verificado com HTTP 101.
+- Banco ativo: `gustfire`, usuario `gustfire_app`, esquema `public` no PostgreSQL Railway. Cinco migracoes aplicadas e 13 tabelas: `access_log`, `accounts`, `auction_listings`, `auction_ops`, `audit_log`, `chat_reports`, `game_servers`, `mail`, `presence`, `profiles`, `schema_migrations`, `sessions`, `store_orders`.
+- Operacao: `.deploy/compose.api.yaml` e `.deploy/compose.game.yaml` na VM. Assets do multiplayer importados localmente antes de construir a imagem, devido a memoria limitada da VM. Registro: `.deploy/release-c0e24cd.json`.
+
+## Historico da atualizacao anterior
 
 - Commit ativo no site e jogo: `11f3e92` (`melhorias`). Pull fast-forward aplicado na VM e no checkout local.
 - Exportacao web concluida; `tests/launch_tests.gd`: 126 verificacoes, zero falhas.
