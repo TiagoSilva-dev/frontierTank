@@ -528,9 +528,12 @@ func shortcut(id: String) -> void:
 			CouponDialog.open(ui, self)
 		"mail":
 			open_mail()
-		"pet", "mission":
-			var names: Dictionary = {"pet": "PET", "mission": "MISSÃO"}  # i18n
-			UiKit.notice(ui, tr(names[id]), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
+		"mission":
+			var missions: MissionScreen = MissionScreen.new()
+			missions.app = self
+			ui.add_child(missions)
+		"pet":
+			UiKit.notice(ui, tr("PET"), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
 
 # The controls, the legal texts and the account (launch checklist: LGPD/GDPR).
 func open_help() -> Control:

@@ -1,0 +1,65 @@
+{
+    "version": 1,
+    "daily": [
+        {
+            "id": "pvp_wins",
+            "name": "Vitórias no PvP",
+            "description": "Vença 5 partidas PvP.",
+            "type": "pvp_wins",
+            "target": 5,
+            "reward": {
+                "coins": 120,
+                "exp": 120
+            }
+        },
+        {
+            "id": "damage",
+            "name": "Dano de Artilharia",
+            "description": "Cause 10.000 de dano em batalhas.",
+            "type": "damage",
+            "target": 10000,
+            "reward": {
+                "coins": 100,
+                "exp": 100
+            }
+        },
+        {
+            "id": "expedition",
+            "name": "Além da Fronteira",
+            "description": "Conclua uma expedição derrotando o chefe final.",
+            "type": "expedition",
+            "target": 1,
+            "reward": {
+                "coins": 180,
+                "exp": 180
+            }
+        },
+        {
+            "id": "boss_helio",
+            "name": "Queda do Rei Hélio",
+            "description": "Derrote o Rei Hélio no Templo do Sol.",
+            "type": "boss",
+            "boss": "rei_helio",
+            "target": 1,
+            "reward": {
+                "coins": 150,
+                "exp": 150
+            }
+        },
+        {
+            "id": "pow_uses",
+            "name": "Poder de Fogo",
+            "description": "Use POW 10 vezes.",
+            "type": "pow_uses",
+            "target": 10,
+            "reward": {
+                "coins": 100,
+                "exp": 100
+            }
+        }
+    ],
+    "daily_bonus": {
+        "coins": 300,
+        "exp": 250
+    }
+}

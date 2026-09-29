@@ -76,6 +76,7 @@ var auto_play: bool = false
 var turn_items: Array[String] = []
 var turn_fly: bool = false
 var turn_pow: bool = false
+var pow_uses: Dictionary = {}
 var tools_used: int = 0
 var moved_distance: float = 0.0
 var passed: bool = false
@@ -124,6 +125,7 @@ func _init() -> void:
 func start(config: Dictionary) -> void:
 	defeated_mobs.clear()
 	last_hit_by.clear()
+	pow_uses.clear()
 	for fighter in fighters:
 		fighter.queue_free()
 	fighters.clear()
@@ -713,6 +715,7 @@ func apply_pow(fighter: TankFighter) -> bool:
 
 func arm_pow(fighter: TankFighter) -> void:
 	turn_pow = true
+	pow_uses[fighter.player_id] = int(pow_uses.get(fighter.player_id, 0)) + 1
 	fighter.set_pow_armed(true)
 	skill_used.emit(fighter, {"id": "pow", "name": tr(str(fighter.weapon.get("pow", {}).get("name", "POW"))), "icon": "pow", "kind": "pow"})
 

@@ -7,7 +7,7 @@ extends SceneTree
 
 var failures: int = 0
 var checks: int = 0
-const JSON_KEYS: Array[String] = ["name", "desc", "text", "label", "attack", "fury_name"]
+const JSON_KEYS: Array[String] = ["name", "desc", "description", "text", "label", "attack", "fury_name"]
 const LETTERS: Dictionary = {
 	"pt": "ÁÀÂÃÇÉÊÍÓÔÕÚÜáàâãçéêíóôõúü",
 	"es": "ÁÉÍÓÚÜÑáéíóúüñ¡¿",
@@ -67,7 +67,7 @@ func code_keys() -> Dictionary:
 				var text: String = found_match.get_string(1).c_unescape()
 				if keeps(text, marked):
 					found[text] = path
-	for path in ["res://shared/balance/items.json", "res://shared/balance/combat.json", "res://shared/balance/store.json", "res://shared/balance/achievements.json"]:
+	for path in ["res://shared/balance/items.json", "res://shared/balance/combat.json", "res://shared/balance/store.json", "res://shared/balance/achievements.json", "res://shared/balance/missions.json"]:
 		walk(JSON.parse_string(FileAccess.get_file_as_string(path)), found, path)
 	return found
 

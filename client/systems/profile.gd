@@ -16,6 +16,7 @@ extends RefCounted
 # maps bought or returned by the auction arrive through `receive_instance`/`receive_map`.
 # Composição (Cristal Dourado) and Fusão of stones were removed: the currencies give gear
 # its extra attributes. Old saves drop their `compose` bonus and crystal counter on load.
+# v6 stores daily mission progress and reward claims.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -36,6 +37,7 @@ var next_uid: int = 1
 var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
+var missions: Dictionary = {}
 # 0.15: how the player arranged the Mochila, cell by cell ("" = empty cell). Only the
 # order is kept here; CharacterScreen fits new and vanished items into it.
 var bag: Array[String] = []
@@ -119,6 +121,7 @@ func load_data(data: Dictionary) -> bool:
 	if saved_pity is Dictionary:
 		for key: String in saved_pity:
 			pity[key] = maxi(0, int(saved_pity[key]))
+	missions = MissionsBoard.clean_state(data.get("missions", {}))
 	bag = clean_bag(data.get("bag", []))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
@@ -147,7 +150,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 5, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "bag": bag}
+	return {"version": 6, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -629,7 +632,7 @@ func sell_tool(slot: int, balance: Dictionary) -> String:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -695,6 +698,10 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			# Cosmetic only: the new arrangement of the Mochila (an empty list sorts it).
 			bag = clean_bag(args[0] if not args.is_empty() else [])
 			save_profile()
+		"mission_claim":
+			var result: Dictionary = MissionsBoard.claim(self, arg_str(args, 0))
+			error = str(result.error)
+			message = str(result.message)
 		"buy_tool":
 			error = buy_tool(arg_str(args, 0), balance)
 		"sell_tool":
@@ -712,6 +719,6 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				save_profile()
 		_:
 			error = tr("Operação desconhecida.")
-	if error == "" and op in ["toggle_equip", "sell"]:
+	if error == "" and op in ["toggle_equip", "sell", "mission_claim"]:
 		save_profile()
 	return {"error": error, "message": message}

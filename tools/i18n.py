@@ -27,7 +27,7 @@ import sys
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 POT = os.path.join(ROOT, "locale", "messages.pot")
 PO = os.path.join(ROOT, "locale", "en.po")
-JSON_KEYS = {"name", "desc", "text", "label", "attack", "fury_name"}
+JSON_KEYS = {"name", "desc", "description", "text", "label", "attack", "fury_name"}
 LITERAL = r'"((?:[^"\\]|\\.)*)"'
 CALL = re.compile(r'(?:\btr|\bLang\.t)\(\s*' + LITERAL + r'\s*\)')
 ANY = re.compile(LITERAL)

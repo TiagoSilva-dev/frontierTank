@@ -25,6 +25,7 @@ static func settle(game: LocalMatch, me: TankFighter, balance: Dictionary, profi
 		loot = run.finish(won)
 	var merit: int = int(rules.merit_win if won else rules.merit_loss) + int(me.stats.kills) * int(rules.merit_per_kill)
 	var level_before: int = profile.level()
+	MissionsBoard.progress_match(profile, game, me, run)
 	profile.tools = ["", "", ""]
 	for i in range(mini(3, me.tools.size())):
 		profile.tools[i] = me.tools[i]
@@ -35,6 +36,7 @@ static func settle(game: LocalMatch, me: TankFighter, balance: Dictionary, profi
 			var fighter_exp: int = int(rules.win_exp if won else rules.loss_exp) + roundi(float(fighter.stats.damage) * float(rules.exp_per_damage)) + int(fighter.stats.kills) * int(rules.exp_per_kill)
 			roster.append({"name": fighter.display_name, "exp": fighter_exp, "merit": int(rules.merit_win if won else rules.merit_loss) + int(fighter.stats.kills) * int(rules.merit_per_kill)})
 	var summary: Dictionary = {"won": won, "draw": game.winner_team < 0, "pve": game.pve, "kill_exp": kill_exp, "hurt_exp": hurt_exp, "result_exp": result_exp, "bonus_exp": bonus_exp, "merit": merit, "exp": kill_exp + hurt_exp + result_exp + bonus_exp, "roster": roster, "level_before": level_before, "level_after": profile.level(), "damage": int(me.stats.damage), "kills": int(me.stats.kills)}
+	summary.missions = profile.missions.duplicate(true)
 	if game.pve and run != null:
 		summary.loot = loot
 		summary.instance = {"name": Lang.t(str(run.instance.name)), "id": str(run.instance.id), "level": run.level, "map": InstanceRun.map_name(run.map_item), "phases": run.phases_won, "count": run.phase_count(), "drops": run.drops.duplicate(true), "currency": run.currency_drops.duplicate(true), "gold": run.gold, "chest": run.chest.duplicate(true), "mob_drops": run.mob_drops.duplicate(true)}
