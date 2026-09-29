@@ -109,12 +109,12 @@ func rich(text: String, width: float = WIDTH) -> RichTextLabel:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.custom_minimum_size = Vector2(width, 0)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.add_theme_font_override("normal_font", UiKit.font())
-	label.add_theme_font_override("bold_font", UiKit.font())
+	label.add_theme_font_override("normal_font", UiKit.reading_font())
+	label.add_theme_font_override("bold_font", UiKit.reading_font(true))
 	label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
 	label.add_theme_font_size_override("bold_font_size", UiKit.fs(14))
 	label.add_theme_color_override("default_color", UiKit.CREAM)
-	label.add_theme_constant_override("line_separation", 1)
+	label.add_theme_constant_override("line_separation", 3)
 	label.text = text
 	return label
 

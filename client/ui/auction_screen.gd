@@ -140,7 +140,7 @@ func spin(rect: Rect2, low: int, high: int, value: int, on_change: Callable) -> 
 	node.size = rect.size
 	node.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var field: LineEdit = node.get_line_edit()
-	field.add_theme_font_override("font", UiKit.font(true))
+	field.add_theme_font_override("font", UiKit.reading_font())
 	field.add_theme_font_size_override("font_size", UiKit.fs(16))
 	node.value_changed.connect(func(number: float) -> void: on_change.call(int(number)))
 	contents.add_child(node)

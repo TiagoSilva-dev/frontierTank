@@ -92,10 +92,11 @@ func build() -> void:
 	log_label.bbcode_enabled = true
 	log_label.scroll_following = true
 	log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	log_label.add_theme_font_override("normal_font", UiKit.font(true))
+	log_label.add_theme_font_override("normal_font", UiKit.reading_font())
+	log_label.add_theme_font_override("bold_font", UiKit.reading_font(true))
 	log_label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
 	log_label.add_theme_color_override("font_outline_color", Color("140a04"))
-	log_label.add_theme_constant_override("outline_size", 4)
+	log_label.add_theme_constant_override("outline_size", 1)
 	add_child(log_label)
 	# --- top-center: turn order, wind, the round timer and PASS
 	queue_box = layer(Rect2(390, 2, 500, 62), draw_queue)

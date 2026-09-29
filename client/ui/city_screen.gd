@@ -300,7 +300,7 @@ func build_creation() -> void:
 	name_input.size = Vector2(340, 36)
 	name_input.max_length = 14
 	name_input.text = app.profile.player_name
-	name_input.add_theme_font_override("font", UiKit.font(true))
+	name_input.add_theme_font_override("font", UiKit.reading_font())
 	name_input.add_theme_font_size_override("font_size", UiKit.fs(18))
 	creation.add_child(name_input)
 	UiKit.button(creation, tr("CRIAR PERSONAGEM"), Rect2(520, 500, 240, 48), confirm_creation, "button_green", 18)

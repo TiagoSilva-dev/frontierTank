@@ -29,11 +29,12 @@ func _ready() -> void:
 	log_label.size = Vector2(390, 150)
 	log_label.bbcode_enabled = true
 	log_label.scroll_following = true
-	log_label.add_theme_font_override("normal_font", UiKit.font(true))
+	log_label.add_theme_font_override("normal_font", UiKit.reading_font())
+	log_label.add_theme_font_override("bold_font", UiKit.reading_font(true))
 	log_label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
 	log_label.add_theme_color_override("default_color", Color.WHITE)
 	log_label.add_theme_color_override("font_outline_color", Color("140a04"))
-	log_label.add_theme_constant_override("outline_size", 3)
+	log_label.add_theme_constant_override("outline_size", 1)
 	log_label.meta_underlined = false
 	log_label.meta_clicked.connect(on_meta)
 	add_child(log_label)
@@ -48,7 +49,7 @@ func _ready() -> void:
 	input.size = Vector2(300, 26)
 	input.placeholder_text = tr("Escreva e pressione Enter")
 	input.max_length = 80
-	input.add_theme_font_override("font", UiKit.font(false))
+	input.add_theme_font_override("font", UiKit.reading_font())
 	input.add_theme_font_size_override("font_size", UiKit.fs(14))
 	input.text_submitted.connect(send)
 	add_child(input)

@@ -14,7 +14,7 @@ static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Con
 	field.size = Vector2(480, 42)
 	field.max_length = 24
 	field.placeholder_text = Lang.t("Ex.: TESTARTUDO")
-	field.add_theme_font_override("font", UiKit.font())
+	field.add_theme_font_override("font", UiKit.reading_font())
 	field.add_theme_font_size_override("font_size", UiKit.fs(22))
 	root.add_child(field)
 	var hint: String = Lang.t("Para testes: TESTARTUDO libera todas as armas e cosméticos; AURAS mostra as quatro auras.") if app.test_coupons() else ""

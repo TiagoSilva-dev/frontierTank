@@ -44,12 +44,17 @@ const FRAMES: Dictionary = {
 }
 
 static var _font: FontVariation
+static var _reading_regular: FontFile
+static var _reading_bold: FontFile
+static var _symbols: FontFile
 static var _styles: Dictionary = {}
 static var _smooth: ShaderMaterial
 
 # Pixel Operator Bold (CC0) replaced Jersey 10 for legibility: it is drawn on a 16px
 # grid, so sizes below 16 are raised to 16 and the rest stay close to the request.
 const FONT_PATH: String = "res://assets/fonts/PixelOperator-Bold.ttf"
+const READING_REGULAR_PATH: String = "res://assets/fonts/AtkinsonHyperlegible-Regular.ttf"
+const READING_BOLD_PATH: String = "res://assets/fonts/AtkinsonHyperlegible-Bold.ttf"
 # The arrows and marks Pixel Operator lacks (← → ↑ ↓ ▶ ◀ ► ⇄ ↵ ✓), from DejaVu Sans Bold.
 # The desktop could find them in the system fonts; the browser has none.
 const SYMBOLS_PATH: String = "res://assets/fonts/DejaVuSans-Bold-Symbols.ttf"
@@ -60,13 +65,28 @@ static func font(_bold: bool = true) -> Font:
 		base.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 		base.hinting = TextServer.HINTING_NONE
 		base.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
-		var symbols: FontFile = load(SYMBOLS_PATH)
-		symbols.antialiasing = TextServer.FONT_ANTIALIASING_NONE
-		symbols.hinting = TextServer.HINTING_NONE
-		base.fallbacks = [symbols]
+		base.fallbacks = [symbols_font()]
 		_font = FontVariation.new()
 		_font.base_font = base
 	return _font
+
+static func reading_font(bold: bool = false) -> Font:
+	if bold:
+		if _reading_bold == null:
+			_reading_bold = load(READING_BOLD_PATH)
+			_reading_bold.fallbacks = [symbols_font()]
+		return _reading_bold
+	if _reading_regular == null:
+		_reading_regular = load(READING_REGULAR_PATH)
+		_reading_regular.fallbacks = [symbols_font()]
+	return _reading_regular
+
+static func symbols_font() -> FontFile:
+	if _symbols == null:
+		_symbols = load(SYMBOLS_PATH)
+		_symbols.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+		_symbols.hinting = TextServer.HINTING_NONE
+	return _symbols
 
 static func fs(value: int) -> int:
 	if value <= 16:
@@ -75,9 +95,11 @@ static func fs(value: int) -> int:
 
 static func make_theme() -> Theme:
 	var theme: Theme = Theme.new()
-	theme.default_font = font(true)
+	theme.default_font = reading_font()
 	theme.default_font_size = fs(16)
 	theme.set_color("font_color", "Label", CREAM)
+	theme.set_font("font", "Button", font(true))
+	theme.set_font("font", "OptionButton", font(true))
 	for state: String in ["normal", "hover", "pressed", "disabled"]:
 		var kind: String = "button" if state == "normal" else "button_" + state
 		theme.set_stylebox(state, "Button", frame(kind))
@@ -190,12 +212,12 @@ static func label(parent: Node, text: String, rect: Rect2, font_size: int = 16, 
 	node.size = rect.size
 	node.horizontal_alignment = align
 	node.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	node.add_theme_font_override("font", font(true))
+	node.add_theme_font_override("font", reading_font())
 	node.add_theme_font_size_override("font_size", fs(font_size))
 	node.add_theme_color_override("font_color", color)
 	if outline.a > 0:
 		node.add_theme_color_override("font_outline_color", outline)
-		node.add_theme_constant_override("outline_size", clampi(font_size / 5, 3, 8))
+		node.add_theme_constant_override("outline_size", clampi(font_size / 8, 1, 3))
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(node)
 	return node
@@ -216,7 +238,9 @@ static func wrap(node: Label, box: Vector2) -> Label:
 	return node
 
 static func title(parent: Node, text: String, rect: Rect2, font_size: int = 24, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER) -> Label:
-	return label(parent, text, rect, font_size, GOLD, INK, align)
+	var node: Label = label(parent, text, rect, font_size, GOLD, INK, align)
+	node.add_theme_font_override("font", font(true))
+	return node
 
 static func button(parent: Node, text: String, rect: Rect2, action: Callable = Callable(), kind: String = "button", font_size: int = 16) -> Button:
 	var node: Button = Button.new()

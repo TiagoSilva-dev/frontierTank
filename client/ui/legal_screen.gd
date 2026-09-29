@@ -34,8 +34,8 @@ func _ready() -> void:
 	text_view.bbcode_enabled = true
 	text_view.selection_enabled = true
 	text_view.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	text_view.add_theme_font_override("normal_font", UiKit.font(false))
-	text_view.add_theme_font_override("bold_font", UiKit.font(true))
+	text_view.add_theme_font_override("normal_font", UiKit.reading_font())
+	text_view.add_theme_font_override("bold_font", UiKit.reading_font(true))
 	text_view.add_theme_font_size_override("normal_font_size", UiKit.fs(16))
 	text_view.add_theme_font_size_override("bold_font_size", UiKit.fs(16))
 	text_view.add_theme_color_override("default_color", UiKit.TEXT_DARK)

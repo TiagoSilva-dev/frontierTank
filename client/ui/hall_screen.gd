@@ -218,7 +218,7 @@ func search_room() -> void:
 	field.size = Vector2(180, 36)
 	field.max_length = 3
 	field.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	field.add_theme_font_override("font", UiKit.font(true))
+	field.add_theme_font_override("font", UiKit.reading_font())
 	field.add_theme_font_size_override("font_size", UiKit.fs(20))
 	dialog.add_child(field)
 	var submit: Callable = func() -> void:

@@ -375,7 +375,7 @@ func build_inventory() -> void:
 	selected_label.position = Vector2(92, 4)
 	selected_label.size = Vector2(466, 128)
 	selected_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	selected_label.add_theme_font_override("normal_font", UiKit.font())
+	selected_label.add_theme_font_override("normal_font", UiKit.reading_font())
 	selected_label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
 	selected_label.add_theme_color_override("default_color", Color.WHITE)
 	selected_label.add_theme_constant_override("line_separation", -2)
