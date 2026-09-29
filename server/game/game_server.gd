@@ -14,7 +14,7 @@ extends Node
 
 const PROTOCOL: int = 1
 const HELLO_SECONDS: float = 10.0
-const IDLE_SECONDS: float = 45.0
+const IDLE_SECONDS: float = 300.0
 const CARD_SECONDS: float = 40.0
 const SAVE_SECONDS: float = 2.0
 const HEARTBEAT_SECONDS: float = 10.0
