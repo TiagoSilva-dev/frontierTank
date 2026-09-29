@@ -21,8 +21,11 @@ RUN (GODOT_BIN=/usr/local/bin/godot python3 tools/web_build.py export > /tmp/exp
 	|| (tail -60 /tmp/export.log; exit 1)
 
 FROM nginx:1.29-alpine
-COPY server/docker/web.nginx.conf /etc/nginx/conf.d/default.conf
+COPY server/docker/web.nginx.conf /etc/nginx/templates/default.conf.template
+COPY server/docker/start-web.sh /usr/local/bin/start-web
+RUN chmod +x /usr/local/bin/start-web
 # The website is static and already built (tools/build_site.py writes it into the repo).
 COPY website /usr/share/nginx/html
 COPY --from=export /game/build/web /usr/share/nginx/html/jogar
 EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/start-web"]

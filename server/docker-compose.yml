@@ -94,6 +94,10 @@ services:
     depends_on:
       - api
       - game
+    environment:
+      API_HOST: api
+      GAME_HOST: game
+      DNS_RESOLVER: 127.0.0.11
     ports:
       - "${WEB_PORT:-8000}:80"
 
