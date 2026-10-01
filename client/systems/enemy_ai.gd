@@ -3,7 +3,9 @@ extends RefCounted
 
 # Bots aim by simulating the real ballistics (30 Hz) over the weapon's angle range.
 
-static func pick_target(shooter: TankFighter, fighters: Array[TankFighter]) -> TankFighter:
+static func pick_target(shooter: TankFighter, fighters: Array[TankFighter], rng: RandomNumberGenerator = null) -> TankFighter:
+	if rng != null:
+		return pick_random_target(shooter, fighters, rng)
 	var best: TankFighter = null
 	var best_score: float = INF
 	for fighter in fighters:
@@ -17,6 +19,28 @@ static func pick_target(shooter: TankFighter, fighters: Array[TankFighter]) -> T
 			best_score = score
 			best = fighter
 	return best
+
+# Monsters pick any living enemy at random (the match's seeded rng, so lockstep stays in sync);
+# marked prey is three times as likely, so the mark still draws fire.
+static func pick_random_target(shooter: TankFighter, fighters: Array[TankFighter], rng: RandomNumberGenerator) -> TankFighter:
+	var pool: Array[TankFighter] = []
+	var weights: Array[float] = []
+	var total: float = 0.0
+	for fighter in fighters:
+		if fighter.team == shooter.team or fighter.hp <= 0 or fighter.rank == "totem":
+			continue
+		var weight: float = 3.0 if fighter.has_status("marcado") else 1.0
+		pool.append(fighter)
+		weights.append(weight)
+		total += weight
+	if pool.is_empty():
+		return pick_target(shooter, fighters)
+	var roll: float = rng.randf() * total
+	for i in range(pool.size()):
+		roll -= weights[i]
+		if roll < 0.0:
+			return pool[i]
+	return pool[pool.size() - 1]
 
 static func score_shot(shooter: TankFighter, relative_angle: float, power: float, target: TankFighter, terrain: DestructibleTerrain, wind_accel: float, balance: Dictionary) -> float:
 	var point: Vector2 = shooter.muzzle_at(relative_angle)

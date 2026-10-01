@@ -186,7 +186,13 @@ func run_tests() -> void:
 	hp = far.hp
 	game.hit_fighter(raider, far, 100, far.center(), false, {})
 	check(hp - far.hp == roundi(plain * 1.3), "marked: +30% damage taken")
-	check(EnemyAI.pick_target(raider, game.fighters) == far, "monsters go for the marked prey")
+	var rolls: Dictionary = {}
+	var dice: RandomNumberGenerator = RandomNumberGenerator.new()
+	dice.seed = 7
+	for i in range(300):
+		var pick: TankFighter = EnemyAI.pick_target(raider, game.fighters, dice)
+		rolls[pick] = int(rolls.get(pick, 0)) + 1
+	check(int(rolls.get(far, 0)) > int(rolls.get(near, 0)) and int(rolls.get(near, 0)) > 30, "monsters pick targets at random, favouring the marked prey")
 	near.statuses.clear()
 
 	# --- Curse (hex): the Temple Guardian's Julgamento Solar marks for 2 turns

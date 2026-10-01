@@ -1204,7 +1204,7 @@ func plan_ai(fighter: TankFighter) -> void:
 	ai_time = 0
 	ai_planned = true
 	ai_think = float(balance.pve.think_seconds) if fighter.is_monster else rng.randf_range(float(balance.bots.think_min), float(balance.bots.think_max))
-	var target: TankFighter = EnemyAI.pick_target(fighter, fighters)
+	var target: TankFighter = EnemyAI.pick_target(fighter, fighters, rng if fighter.is_monster else null)
 	if target == null:
 		ai_plan = Vector3(45, 50, INF)
 		return
@@ -1359,7 +1359,7 @@ func ability_targets(fighter: TankFighter, target: TankFighter) -> Array[TankFig
 func begin_ability(fighter: TankFighter) -> void:
 	var target: TankFighter = fighters[ability_target] if ability_target >= 0 and ability_target < fighters.size() else null
 	if target == null or target.hp <= 0 or target.team == fighter.team:
-		target = EnemyAI.pick_target(fighter, fighters)
+		target = EnemyAI.pick_target(fighter, fighters, rng)
 	if ability.is_empty():
 		ability = EnemyAI.choose_ability(self, fighter, target, false)
 	var kind: String = str(ability.get("kind", "sky"))
