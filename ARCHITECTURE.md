@@ -105,6 +105,9 @@ Três camadas, cada uma com um papel: as **regras** ficam no GDScript do jogo, a
 
 Por que o perfil vai junto: o perfil inteiro é um JSON com versão (0.11). Se o anúncio fosse gravado numa transação e o perfil sem o item em outra, uma queda entre as duas deixaria o item em dois lugares. Gravando os dois juntos, com a versão, a cópia do servidor de jogo que divergir do banco nunca consegue ser gravada.
 
+## Founder Pack (Paladino do Sol)
+Conjunto cosmético limitado, só aparência (`docs/FOUNDER_PACK.md`, arte em `docs/PIXELLAB_FOUNDER.md`). Quem tem o item `selo_fundador` (entregue pelo Correio com o produto `founder_pack` de `store.json`) é Fundador (`PlayerProfile.is_founder`, ids e ajudantes em `systems/founder.gd`). O servidor monta `look.founder` (selo + chaves `aura`, `pet`, `foot`, `lobby`, que o Fundador liga e desliga com a operação `founder_fx`), então todos na partida veem o mesmo. `LookRig` cria um `FounderFx` (halo, aura, pet, footsteps) para a skin ou para o `look.founder`; o dono diz o que está fazendo com `rig.fx_state` e `rig.fx_event`. A arma Solaris (`tiers` próprios: +0/+6/+10/+12) usa o projétil animado da Estrela do Amanhecer, a explosão `SunBlast` (metade da largura da arte = raio real) e o POW `FounderCutin` (cut-in de anime próprio, `battle_hud.founder_cutin`) + `FounderPow` (linha do tempo: cut-in, vinheta, carga e disparo; a partida segura o tiro por `visual.founder_cutin`) + `FounderImpact`; a sequência só desenha, o dano, o raio e o acerto são os de `LocalMatch` (o lockstep não muda). O emote é a ação `emote` (só aceita de quem tem o selo). A tela de venda é `FounderScreen`; badge, título e moldura em `FounderUi`. `tools/founder_art.py` desenha as peças geométricas e `tools/jev_review.py` usa o Jev para julgar opções de design.
+
 ## Lançamento (0.13)
 Checklist do item 4 do roadmap: web para testes fechados, revisão de nomes, privacidade, denúncia no chat e Steam.
 

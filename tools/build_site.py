@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Battle ranks shown under the name (client/components/fighter.gd).
 RANKS = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]
 ATTR_NAMES = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}
-SLOT_NAMES = {"arma": "Arma", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "asas": "Asas", "cabelo": "Cabelo"}
+SLOT_NAMES = {"arma": "Arma", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "asas": "Asas", "cabelo": "Cabelo", "selo": "Selo"}
 
 
 # ---------- translations ----------
@@ -157,7 +157,7 @@ def build_data():
         proj = w["projectile"]
         proj_src = f"res://assets/projectiles/{proj['sprite']}.png" if proj.get("sprite") != "icon" else f"res://assets/weapons/{w['id']}/tier0.png"
         weapons.append({
-            "id": w["id"], "name": T(w["name"]), "super": bool(w.get("super", False)),
+            "id": w["id"], "name": T(w["name"]), "super": bool(w.get("super", False)), "premium": bool(w.get("premium", False)),
             "angle": w["angle"], "damage": w["damage"], "radius": w["radius"], "price": w["price"],
             "attrs": w["attrs"], "color": w["color"],
             "icon": art(f"res://assets/weapons/{w['id']}/tier0.png", f"weapons/{w['id']}_0.png"),

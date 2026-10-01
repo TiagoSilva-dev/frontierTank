@@ -76,8 +76,11 @@ func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 	# Everyone shows up dressed: outfit, hat, wings, weapon on the back and auras.
 	AvatarView.create(slot, member_look(member), Rect2(10, 30, 190, 140))
 	UiKit.panel(slot, Rect2(6, 6, 198, 28), "dark")
-	UiKit.label(slot, str(member.name), Rect2(40, 6, 160, 28), 16, Color("9aff7a") if app.online and app.is_me(member) else (Color("ffd04a") if member.get("human", false) else Color.WHITE), UiKit.INK)
+	var founder: bool = FounderPack.is_founder(member_look(member))
+	UiKit.label(slot, str(member.name), Rect2(66 if founder else 40, 6, 134 if founder else 160, 28), 16, Color("9aff7a") if app.online and app.is_me(member) else (Color("ffd04a") if member.get("human", false) else Color.WHITE), UiKit.INK)
 	UiKit.level_badge(slot, int(member.level), Rect2(8, 8, 30, 24))
+	if founder:
+		FounderUi.badge(slot, Rect2(40, 8, 24, 24))
 	if index == int(room.owner):
 		UiKit.panel(slot, Rect2(6, 168, 70, 30), "plate")
 		UiKit.label(slot, tr("Dono"), Rect2(6, 168, 70, 30), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)

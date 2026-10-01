@@ -84,6 +84,12 @@ var body: Sprite2D
 var idle_animation: PixelAnimation
 var attack_animation: PixelAnimation
 var walk_animation: PixelAnimation
+# Premium skins (Paladino do Sol) also ship hit / victory / defeat / pow clips.
+var extra_animations: Dictionary = {}
+var clip_hold: float = 0.0
+# A sequence (Julgamento do Sol) can pin the effects state ("pow") for its duration.
+var fx_lock: String = ""
+var celebrating: bool = false
 var attack_time: float = 0.0
 var walk_time: float = 0.0
 var pulse: float = 0.0
@@ -167,6 +173,14 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	idle_animation.fps = 5.0 if prone else 7.0
 	walk_animation = add_animation(pose_root + ("/crawl" if prone else "/walk"), clip_height)
 	attack_animation = add_animation(root + "/attack" if not prone else pose_root + "/shoot", clip_height)
+	if prone:
+		for extra: String in ["hit", "victory", "defeat", "pow"]:
+			if ResourceLoader.exists("%s/%s/frame_00.png" % [pose_root, extra]):
+				var clip: PixelAnimation = add_animation("%s/%s" % [pose_root, extra], clip_height)
+				clip.hide()
+				clip.fps = 10.0
+				clip.loop = extra == "victory"
+				extra_animations[extra] = clip
 	if not idle_animation.frames.is_empty():
 		body.hide()
 	walk_animation.hide()
@@ -178,9 +192,11 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	visual.move_child(rig.back, 0)
 	visual.add_child(rig)
 	rig.style(body)
-	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
+	for clip: PixelAnimation in clips():
 		if not clip.frames.is_empty():
 			rig.style(clip, clip.clip)
+	if rig.founder_fx != null:
+		rig.founder_fx.fighter = self
 	rig.source = shown_body
 	make_overlay()
 	update_pose()
@@ -189,7 +205,7 @@ func shown_body() -> Dictionary:
 	# The sprite currently drawn and, for clips, how far its head moved from the static pose.
 	if rig == null:
 		return {}
-	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
+	for clip: PixelAnimation in clips():
 		if is_instance_valid(clip) and clip.visible and not clip.frames.is_empty():
 			var offsets: Array = rig.anchors.get("clips", {}).get(clip.clip, {}).get("offsets", [])
 			var offset: Vector2 = Vector2.ZERO
@@ -206,10 +222,36 @@ func add_animation(folder: String, height: float) -> PixelAnimation:
 	visual.add_child(animation)
 	return animation
 
+func clips() -> Array[PixelAnimation]:
+	var list: Array[PixelAnimation] = [idle_animation, walk_animation, attack_animation]
+	for clip: Variant in extra_animations.values():
+		list.append(clip)
+	return list
+
+# One-shot clip (hit, pow) held for `seconds` and then back to idle; "victory" loops.
+func play_clip(name: String, seconds: float = 0.4) -> bool:
+	var clip: Variant = extra_animations.get(name)
+	if not is_instance_valid(clip) or hp <= 0 and name != "defeat":
+		return false
+	clip.elapsed = 0.0
+	clip_hold = seconds
+	show_animation(clip)
+	return true
+
+# The match is won: Founder skins take the victory pose, everyone's effects swell.
+func celebrate() -> void:
+	if celebrating or hp <= 0:
+		return
+	celebrating = true
+	play_clip("victory", 999.0)
+	if is_instance_valid(rig):
+		rig.fx_state = "victory"
+		rig.fx_event("victory")
+
 func show_animation(animation: PixelAnimation) -> void:
 	# Falls back to the idle loop (or the static sprite) when a clip has no frames.
 	var chosen: PixelAnimation = animation if is_instance_valid(animation) and not animation.frames.is_empty() else idle_animation
-	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
+	for clip: PixelAnimation in clips():
 		if is_instance_valid(clip):
 			clip.visible = clip == chosen and not clip.frames.is_empty()
 	body.visible = chosen == null or chosen.frames.is_empty()
@@ -303,6 +345,8 @@ func has_status(id: String) -> bool:
 
 func animate_attack() -> void:
 	turns_taken += 1
+	if is_instance_valid(rig):
+		rig.fx_event("attack")
 	if is_instance_valid(attack_animation) and not attack_animation.frames.is_empty():
 		attack_time = maxf(0.8, attack_animation.frames.size() / attack_animation.fps)
 		attack_animation.elapsed = 0
@@ -366,7 +410,7 @@ func update_pose() -> void:
 		modulate = Color("b8e8ff") if frozen > 0 else Color.WHITE
 		redraw()
 		return
-	for clip: PixelAnimation in [idle_animation, walk_animation, attack_animation]:
+	for clip: PixelAnimation in clips():
 		if is_instance_valid(clip):
 			clip.flip_h = facing < 0
 	if prone:
@@ -415,6 +459,12 @@ func center() -> Vector2:
 
 func step_fall(delta: float, terrain: DestructibleTerrain, gravity: float) -> void:
 	pulse += delta
+	if clip_hold > 0.0 and not celebrating:
+		clip_hold -= delta
+		if clip_hold <= 0.0:
+			show_animation(idle_animation)
+	if is_instance_valid(rig) and not celebrating:
+		rig.fx_state = fx_lock if fx_lock != "" else "attack" if attack_time > 0.0 else ("walk" if walk_time > 0.0 else ("aim" if active and hp > 0 else "idle"))
 	if attack_time > 0:
 		attack_time -= delta
 		if attack_time <= 0:
@@ -463,7 +513,7 @@ func move_ground(amount: float, terrain: DestructibleTerrain) -> bool:
 	position.x = next_x
 	if top <= position.y + 6:
 		position.y = top - 1
-	if walk_time <= 0 and attack_time <= 0 and is_instance_valid(walk_animation) and not walk_animation.frames.is_empty():
+	if walk_time <= 0 and attack_time <= 0 and clip_hold <= 0.0 and is_instance_valid(walk_animation) and not walk_animation.frames.is_empty():
 		show_animation(walk_animation)
 	walk_time = 0.15
 	tilt = terrain.slope_degrees(position.x, position.y)
@@ -473,6 +523,10 @@ func move_ground(amount: float, terrain: DestructibleTerrain) -> bool:
 func take_damage(amount: int) -> void:
 	hp = maxi(0, hp - amount)
 	stats.taken += amount
+	if amount > 0 and is_instance_valid(rig):
+		rig.fx_event("hit")
+	if amount > 0 and hp > 0:
+		play_clip("hit", 0.35)
 	if amount > 0 and is_instance_valid(visual):
 		visual.modulate = Color("ff877a")
 		create_tween().tween_property(visual, "modulate", Color.WHITE, 0.4)

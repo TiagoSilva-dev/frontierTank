@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "visual": {"projectile_scale": 1.5, "pow_projectile_scale": 1.6, "back_weapon_scale": 1.5, "pow_hitstop": 0.08, "pow_cutin": 1.15},
+  "visual": {"projectile_scale": 1.5, "pow_projectile_scale": 1.6, "back_weapon_scale": 1.5, "pow_hitstop": 0.08, "pow_cutin": 1.15, "founder_cutin": 1.95, "founder_cutin_close": 1.45},
   "qualities": [
     {"id": "normal", "label": "Normal", "damage": 1.0, "attrs": 1.0, "price": 1.0, "color": "f4ead6"},
     {"id": "excelente", "label": "Excelente", "damage": 1.1, "attrs": 1.3, "price": 3.0, "color": "7ad8ff"},
@@ -127,7 +127,11 @@
     {"id": "lanca_antiga", "name": "Super Lança de Jade", "angle": [20, 65], "damage": 295, "radius": 44, "price": 0, "super": true,
      "attrs": {"ataque": 70, "defesa": 40, "agilidade": 30, "sorte": 40}, "color": "7affc0",
      "projectile": {"sprite": "icon", "align": true, "align_offset": 45, "trail": "jade", "size": 32, "wind_scale": 0.7},
-     "pow": {"name": "Chuva de Lanças", "kind": "rain", "damage_scale": 1.0, "drops": 5, "drop_scale": 0.55, "drop_sprite": "icon", "spacing": 40, "desc": "Cinco lanças caem do céu em fila sobre o alvo."}}
+     "pow": {"name": "Chuva de Lanças", "kind": "rain", "damage_scale": 1.0, "drops": 5, "drop_scale": 0.55, "drop_sprite": "icon", "spacing": 40, "desc": "Cinco lanças caem do céu em fila sobre o alvo."}},
+    {"id": "solaris", "name": "Solaris", "angle": [20, 60], "damage": 255, "radius": 46, "price": 0, "premium": true, "founder": true, "tiers": [0, 6, 10, 12],
+     "attrs": {}, "color": "ffc24a",
+     "projectile": {"sprite": "estrela_amanhecer", "frames": "res://assets/founder/projectile", "trail": "sun", "size": 26, "pow_frames": "res://assets/founder/lance", "pow_size": 128, "pow_align": true},
+     "pow": {"name": "Julgamento do Sol", "kind": "judgment", "damage_scale": 1.3, "radius_scale": 1.15, "desc": "Uma lança celestial cruza a tela e um feixe de luz solar desce sobre o alvo. Exclusivo do Founder Pack."}}
   ],
   "auxiliary": [
     {"id": "dom_de_anjo", "name": "Bálsamo", "price": 500, "uses": 2, "heal_ratio": 0.2, "icon": "res://assets/aux/dom_de_anjo.png", "desc": "Recupera 20% da vida. 2 usos por partida (tecla V)."},
@@ -167,10 +171,13 @@
     {"id": "cabelo_rosa_neon", "slot": "cabelo", "gender": "u", "name": "Cabelo Rosa Neon", "dye": "ff4fc8", "price": 0, "premium": true, "attrs": {}},
     {"id": "cabelo_branco_gelo", "slot": "cabelo", "gender": "u", "name": "Cabelo Branco Gelo", "dye": "e6f2ff", "price": 0, "premium": true, "attrs": {}},
     {"id": "cabelo_chama", "slot": "cabelo", "gender": "u", "name": "Cabelo Chama", "dye": "ff6a1a", "price": 0, "premium": true, "attrs": {}},
-    {"id": "cabelo_aurora", "slot": "cabelo", "gender": "u", "name": "Cabelo Aurora", "dye": "36e0b8", "price": 0, "premium": true, "attrs": {}}
+    {"id": "cabelo_aurora", "slot": "cabelo", "gender": "u", "name": "Cabelo Aurora", "dye": "36e0b8", "price": 0, "premium": true, "attrs": {}},
+    {"id": "roupa_paladino_sol", "slot": "roupa", "gender": "u", "name": "Paladino do Sol", "skin": "roupa_paladino_sol", "price": 0, "premium": true, "founder": true, "attrs": {}},
+    {"id": "asas_aurora", "slot": "asas", "gender": "u", "name": "Asas da Aurora", "art": "asas_aurora", "price": 0, "premium": true, "founder": true, "attrs": {}, "root": [118, 100]},
+    {"id": "selo_fundador", "slot": "selo", "gender": "u", "name": "Selo de Fundador", "art": "selo_fundador", "price": 0, "premium": true, "founder": true, "attrs": {}}
   ],
   "coupons": [
-    {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16 e 99.999 moedas. Cupom reutilizável.", "all": true, "coins": 99999, "stones": 200, "currencies": {"brasa": 200, "coroa": 200, "estrela": 200, "tormenta": 200, "solar": 200, "eclipse": 200, "espelho": 200}, "maps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], "repeat": true},
+    {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas e o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador). Cupom reutilizável.", "all": true, "coins": 99999, "stones": 200, "currencies": {"brasa": 200, "coroa": 200, "estrela": 200, "tormenta": 200, "solar": 200, "eclipse": 200, "espelho": 200}, "maps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], "founder": true, "repeat": true},
     {"code": "AURAS", "test": true, "desc": "Quatro Tijolaços Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras.", "weapons": [["quebra_tijolos", "verdadeira", 3], ["quebra_tijolos", "verdadeira", 7], ["quebra_tijolos", "verdadeira", 10], ["quebra_tijolos", "verdadeira", 12]]},
     {"code": "PEDRAS", "test": true, "desc": "50 pedras de cada nível.", "stones": 50},
     {"code": "MOEDAS", "test": true, "desc": "30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste.", "currencies": {"brasa": 30, "coroa": 20, "estrela": 10, "tormenta": 10, "solar": 5, "eclipse": 10, "espelho": 1}, "repeat": true},

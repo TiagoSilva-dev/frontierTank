@@ -21,6 +21,7 @@ const STYLES: Dictionary = {
 	"cabeca_de_boi": {"colors": ["ffe0fa", "ff7ae0", "d02aa8", "7a1060"], "shape": "horns", "smoke": "5a2a4a"},
 	"bumerangue_amor": {"colors": ["ffffff", "ffd0f0", "ff7ac8", "ff3a8a"], "shape": "hearts", "smoke": "ffb8e0"},
 	"lanca_antiga": {"colors": ["ffffff", "e0fff0", "7affc0", "2ab87a"], "shape": "shards", "smoke": "3a6a50"},
+	"solaris": {"colors": ["fffbe0", "ffe36a", "ffb02e", "c8300f"], "shape": "sun", "smoke": "5a3a20"},
 	"boss": {"colors": ["fffbe0", "ffe36a", "ffb02e", "c8300f"], "shape": "sun", "smoke": "5a3a20"},
 }
 

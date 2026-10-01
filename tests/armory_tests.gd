@@ -24,7 +24,8 @@ func run_tests() -> void:
 	if FileAccess.file_exists(PlayerProfile.path_override):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PlayerProfile.path_override))
 	var data: Dictionary = Armory.data()
-	check(data.weapons.size() == 12, "12 DDTank weapons (9 classic + 3 super)")
+	check(data.weapons.filter(func(w: Dictionary) -> bool: return not w.get("premium", false)).size() == 12, "12 DDTank weapons (9 classic + 3 super)")
+	check(data.weapons.filter(func(w: Dictionary) -> bool: return w.get("premium", false)).size() == 1, "one premium weapon: the Founder Solaris")
 	check(data.weapons.filter(func(w: Dictionary) -> bool: return w.get("super", false)).size() == 3, "three drop-only Super Verdadeira weapons")
 	for weapon: Dictionary in data.weapons:
 		check(ResourceLoader.exists(Armory.weapon_icon(str(weapon.id), 0)) and ResourceLoader.exists("res://assets/weapons/%s/tier3.png" % weapon.id), "%s has base and +12 art" % weapon.name)

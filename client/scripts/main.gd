@@ -15,6 +15,8 @@ var audio: GameAudio
 var lobby: LobbyDirectory
 var ui: Control
 var screen: Control
+# The Founder lobby entrance plays once per session (HallScreen).
+var founder_entered: bool = false
 var screen_name: String = ""
 var bag: Control
 var room: Dictionary = {}
@@ -103,7 +105,15 @@ func _ready() -> void:
 func demo_loadout(kind: String) -> void:
 	# Capture helper (--demo=1): everything unlocked and a showcase set equipped.
 	profile.redeem("TESTARTUDO")
+	var founder_demo: bool = kind == "founder"
+	if founder_demo:
+		# Founder Pack showcase: the pack's items (normally bought with the Steam Wallet).
+		for id: String in FounderPack.ITEMS:
+			if not profile.has_item(id):
+				profile.add_instance(id, "normal", 0)
 	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "roupa": ["roupa_samurai" if profile.gender == "m" else "roupa_princesa", 7], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0]}
+	if founder_demo:
+		wanted = {"arma": [FounderPack.WEAPON, int(args.get("wlevel", "12"))], "roupa": [FounderPack.SKIN, 0], "asas": [FounderPack.WINGS, 0], "auxiliar": ["dom_de_anjo_v", 0]}
 	for slot: String in wanted:
 		var id: String = wanted[slot][0]
 		for inst: Dictionary in profile.inventory:
@@ -150,6 +160,9 @@ func open_named(target: String) -> void:
 	match target:
 		"hall":
 			show_hall()
+		"founder":
+			show_city()
+			FounderScreen.open(self)
 		"room":
 			create_room("pvp")
 			for i in range(2):

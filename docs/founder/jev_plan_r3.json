@@ -1,0 +1,51 @@
+{
+ "context": "Gustfire is a 2D side-view artillery game. A shot explodes at a point on the terrain and damages fighters within a circular radius R around it (R is about 50 px on screen; fighters are about 40 px wide). Players must never think the damage area is bigger than it is. The Founder POW 'Julgamento do Sol' wants an ENORME (huge) sun symbol at impact, a beam of light from the sky and gold waves across the scenery, as a spectacle.",
+ "groups": [
+  {
+   "id": "huge_sigil",
+   "title": "Where may the huge sun symbol live without misleading the damage area?",
+   "questions": {
+    "misleads": {
+     "type": "noul",
+     "instructions": "Could a player reasonably believe the damage area is larger than it really is, after seeing this effect?",
+     "criteria": {
+      "true": "A big shape on or near the ground, or any bright ring/area touching the ground beyond R, that looks like the zone that hurts",
+      "false": "Everything that touches the ground stays inside R; big shapes are clearly in the sky, vertical, and far from the ground"
+     }
+    },
+    "spectacle": {
+     "type": "score",
+     "instructions": "How enormous and spectacular does the impact moment feel?",
+     "criteria": [
+      "Plain",
+      "Nice",
+      "Striking",
+      "Epic and huge"
+     ]
+    }
+   },
+   "weights": {
+    "misleads": -3.0,
+    "spectacle": 1.5
+   },
+   "options": [
+    {
+     "id": "S1_ground_small",
+     "text": "Only a sun sigil on the ground at 0.97 R, a narrow beam, rings that stop at R. Nothing else big."
+    },
+    {
+     "id": "S2_sky_mandala",
+     "text": "A huge sun mandala, about 8 R wide, drawn VERTICALLY in the sky centred 6 R above the impact point, behind the narrow beam of light, fading in 0.7 s. It never touches the ground. The ground effects stay inside R."
+    },
+    {
+     "id": "S3_ground_huge",
+     "text": "A huge sun sigil lying on the ground about 3 R wide that expands outward, with rings crossing the whole scenery."
+    },
+    {
+     "id": "S4_sky_mandala_low",
+     "text": "A huge sun mandala about 4 R wide drawn vertically, its bottom edge touching the ground at the impact point, like a rising sun."
+    }
+   ]
+  }
+ ]
+}

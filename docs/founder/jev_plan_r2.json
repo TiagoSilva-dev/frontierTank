@@ -1,0 +1,75 @@
+{
+ "context": "Gustfire is a 2D pixel-art artillery game (DDTank style). In battle every fighter lies prone on the ground, about 80 px tall on a 640x360 view, with a weapon cannon on the back, and fires parabolic shots at terrain and enemies while a wind arrow and a dashed shot line must stay readable. The Founder Pack is a limited-time, never-again premium cosmetic set ('Paladino do Sol', celestial golden-white-royal-blue warrior tied to sun and stars, NOT a generic medieval knight). It must convey exclusivity, prestige, rarity, visual power and status, while staying purely cosmetic: no permanent competitive advantage, gameplay readability (trajectory, damage area) must never suffer, and every other player must recognise a Founder at a glance.",
+ "groups": [
+  {
+   "id": "pow_timeline_r2",
+   "title": "POW timeline, round 2 (refinements after round 1 found every forced sequence costs pace and legibility)",
+   "questions": {
+    "epic": {
+     "type": "score",
+     "instructions": "How epic and memorable does this POW sequence feel, enough that everyone in the match realises a Founder used it?",
+     "criteria": [
+      "Forgettable",
+      "Decent",
+      "Impressive",
+      "Unforgettable signature moment"
+     ]
+    },
+    "pace": {
+     "type": "score",
+     "instructions": "How much does this sequence interrupt the rhythm of a turn-based artillery match, considering players see it every time a Founder fires a POW (several times per match)?",
+     "criteria": [
+      "Barely interrupts",
+      "Short pause, acceptable",
+      "Clearly slows the match",
+      "Badly stalls the match and gets annoying on repeat"
+     ]
+    },
+    "legible": {
+     "type": "score",
+     "instructions": "How well does the sequence keep gameplay readable, so players can still see where the shot lands and what it hits?",
+     "criteria": [
+      "Unreadable",
+      "Often confusing",
+      "Mostly readable",
+      "Fully readable"
+     ]
+    },
+    "fatigue": {
+     "type": "score",
+     "instructions": "How likely is the sequence to cause fatigue or annoyance for the opponents who must watch it, after seeing it several times?",
+     "criteria": [
+      "No fatigue",
+      "Slight",
+      "Noticeable",
+      "Strong annoyance"
+     ]
+    }
+   },
+   "weights": {
+    "epic": 2.0,
+    "pace": -2.0,
+    "legible": 1.5,
+    "fatigue": -1.5
+   },
+   "options": [
+    {
+     "id": "T1_2s_fast",
+     "text": "Total 2.0 s. Activation with slight screen dimming 0.3 s, halo grows into a mandala 0.4 s, charge with small shake 0.3 s, fire and celestial lance crossing the screen 0.4 s, impact with sun symbol, beam of light and gold shockwaves 0.4 s, final feather and particles 0.2 s. Gameplay control returns right after."
+    },
+    {
+     "id": "T5_2_4s_readable",
+     "text": "Total 2.4 s and built around readability. The screen is not dimmed as a whole: only a soft vignette darkens the EDGES for 0.5 s while the terrain, the enemies, the wind arrow and the shot line stay at normal brightness. Activation pose 0.35 s, the halo grows into a solar mandala behind the character 0.35 s, charge 0.35 s (weapon opens, energy flows in, at most a 2 px screen shake), fire 0.1 s, the celestial lance crosses the screen in a flight the camera follows for 0.6 s with rings, stars and a faint heat distortion that never covers the trajectory, impact 0.5 s (sun symbol drawn exactly inside the real damage radius, a narrow beam of light, gold shockwave rings that stop at the real radius), final 0.15 s with a falling feather. Control returns immediately after impact."
+    },
+    {
+     "id": "T6_2_2s_tight",
+     "text": "Total 2.2 s. Same as a readable sequence: only edge vignette, no full-screen dimming, phases of 0.3 s (activation pose), 0.3 s (mandala awakening), 0.3 s (charge, tiny shake), 0.5 s (lance flight followed by camera), 0.6 s (impact inside the real damage radius) and 0.2 s (feather). The shooter's own screen shows exactly the same sequence as the opponents'."
+    },
+    {
+     "id": "T7_2_4s_held_shot",
+     "text": "Total 2.4 s like a readable sequence with only an edge vignette; the shot itself launches at 1.15 s (during the charge and awakening phases the match simply waits, exactly like the existing cut-in hold) and the remaining 1.25 s is the lance flight, impact inside the real radius and the feather."
+    }
+   ]
+  }
+ ]
+}

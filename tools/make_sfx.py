@@ -878,6 +878,111 @@ def render(name: str) -> None:
     print(f"{name:26s} {x.shape[-1] / SR:5.2f}s  peak {peak_db(x):6.1f} dB  rms {rms_db(body * db(level - rms_db(body))):6.1f} dB  {'stereo' if x.ndim == 2 else 'mono'}")
 
 
+# ---------------------------------------------------------------- Founder Pack (Solaris)
+
+@sound("fire_solaris", -14, 0.3)
+def fire_solaris():
+    """Solaris: a warm thump, a bright bell ring (E5-B5) and a rising sun shimmer."""
+    r = rng(91)
+    ring = chime(["E5", "B5", "E6"], 0.045, 1.1, 0.5)
+    rise = whoosh(0.5, 900, 4200, 0.6, 0.3, r)
+    return stack((thump(0.2, 170, 60, r), 0, 1.0), (ring, 0.0, 0.7), (stereo(rise), 0.02, 0.5), (sparkle(0.5, 40, 3500, 9000, r), 0.05, 0.5))
+
+
+@sound("impact_solaris", -16, 0.3)
+def impact_solaris():
+    """The sun lands: a low boom under a chord of bells that opens upwards."""
+    r = rng(92)
+    chord = chime(["G4", "D5", "G5", "B5"], 0.07, 1.4, 0.5)
+    return stack((boom(0.7, 95, 36, 0.3, r), 0, 0.8), (chord, 0.03, 0.8), (crackle(0.4, 120, 3000, 9000, 0.12, r), 0.02, 0.4), (sparkle(0.8, 50, 3000, 9500, r), 0.08, 0.5))
+
+
+@sound("pow_solaris_awaken", -15, 0.4)
+def pow_solaris_awaken():
+    """Julgamento do Sol, phase 1-2: the music sinks and a choir and a bell swell rise."""
+    r = rng(93)
+    dur = 1.1
+    n = samples(dur)
+    tt = timeline(n)
+    pad = np.zeros(n)
+    for k, midi in enumerate([note("D3"), note("A3"), note("D4"), note("F#4")]):
+        pad += saw(glide(hz(midi) * 0.97, hz(midi), n, 1.2), n) / (2 + k)
+    pad = lp(pad, 1800) * np.sin(np.clip(tt / dur, 0, 1) * np.pi / 2) ** 2 * 0.6
+    choir = formant(choir_voice(note("D4"), 1.0, 0.8, 0.3, 0.5, 5, r) + choir_voice(note("A4"), 1.0, 0.7, 0.3, 0.5, 5, r), "a")
+    ring = chime(["D5", "A5", "D6"], 0.12, 1.2, 0.45)
+    return stack((pad, 0, 0.7), (choir, 0.05, 0.6), (ring, 0.35, 0.6), (sparkle(0.9, 35, 3000, 8500, r), 0.2, 0.4))
+
+
+@sound("pow_solaris_cutin", -11, 0.45)
+def pow_solaris_cutin():
+    """Julgamento do Sol's anime cut-in (1.9 s): two sword-cut whooshes, the Paladino lands
+    with a taiko and a bell chord at 0.3 s, a choir holds while a riser builds, and the
+    white-out at 1.45 s closes it with a swell and a sparkle."""
+    r = rng(99)
+    n_total = 1.9
+    cut1 = whoosh(0.22, 3500, 9000, 0.7, 0.05, r)
+    cut2 = whoosh(0.22, 9000, 3500, 0.7, 0.05, r)
+    chord = chime(["D4", "A4", "D5", "F#5", "A5"], 0.05, 1.6, 0.55)
+    choir = formant(choir_voice(note("D4"), 1.4, 0.8, 0.1, 0.5, 5, r) + choir_voice(note("A4"), 1.4, 0.7, 0.1, 0.5, 5, r)
+                    + choir_voice(note("D5"), 1.4, 0.6, 0.1, 0.5, 5, r), "a")
+    n = samples(1.2)
+    tt = timeline(n)
+    riser = (sine(glide(200, 1600, n, 2.2), n) * 0.35 + whoosh(1.2, 600, 8000, 0.7, 0.85, r) * 0.6) * (tt / 1.2) ** 1.6
+    close = whoosh(0.5, 1200, 9000, 0.6, 0.2, r)
+    return stack((stereo(cut1), 0.05, 0.7), (stereo(cut2), 0.14, 0.7), (stereo(taiko(1.0, 0.9, 1.4, r)), 0.3, 1.0),
+                 (stereo(boom(1.0, 90, 32, 0.5, r)), 0.3, 0.8), (chord, 0.3, 0.8), (choir, 0.35, 0.6), (stereo(riser), 0.35, 0.7),
+                 (cymbal(0.5, 2.0, r), 0.3, 0.3), (stereo(close), 1.4, 0.6), (thump(0.3, 180, 50, r), 1.45, 0.9),
+                 (sparkle(0.9, 50, 3500, 9500, r), 1.0, 0.5))
+
+
+@sound("pow_solaris_charge", -15, 0.25)
+def pow_solaris_charge():
+    """Energy flows into the Solaris core: a rising sweep with inward twinkles."""
+    r = rng(94)
+    dur = 0.55
+    n = samples(dur)
+    tt = timeline(n)
+    sweep_up = sweep(white(n, r), "bandpass", 400, 6500, 0.6, curve=1.0) * (tt / dur) ** 1.4
+    tone = sine(glide(220, 880, n, 1.3), n) * (tt / dur) ** 2 * 0.5
+    return stack((stereo(sweep_up), 0, 0.8), (tone, 0, 0.6), (sparkle(0.5, 45, 3500, 9000, r), 0.0, 0.4))
+
+
+@sound("pow_solaris_lance", -13, 0.4)
+def pow_solaris_lance():
+    """The celestial lance crosses the screen: a long bright whoosh over a ringing shimmer."""
+    r = rng(95)
+    cross = whoosh(1.0, 1200, 7000, 0.6, 0.15, r)
+    shimmer = chime(["B5", "F#6", "B6", "D7"], 0.09, 1.0, 0.35)
+    return stack((stereo(cross), 0, 1.0), (thump(0.25, 200, 70, r), 0, 0.7), (shimmer, 0.05, 0.6), (sparkle(1.0, 60, 4000, 10000, r), 0.05, 0.5))
+
+
+@sound("pow_solaris_impact", -12, 0.45)
+def pow_solaris_impact():
+    """Julgamento do Sol lands: taiko and boom, a bell chord and a choir, then sparkles."""
+    r = rng(96)
+    chord = chime(["D4", "A4", "D5", "F#5", "A5"], 0.06, 1.8, 0.6)
+    choir = formant(choir_voice(note("D4"), 1.2, 0.9, 0.05, 0.8, 5, r) + choir_voice(note("A4"), 1.2, 0.8, 0.05, 0.8, 5, r)
+                    + choir_voice(note("F#5"), 1.2, 0.6, 0.05, 0.8, 5, r), "a")
+    return stack((stereo(taiko(1.0, 1.1, 1.6, r)), 0, 1.0), (stereo(boom(1.3, 85, 30, 0.5, r)), 0, 0.9), (chord, 0.02, 0.8),
+                 (choir, 0.03, 0.6), (cymbal(0.6, 2.4, r), 0, 0.4), (sparkle(1.4, 50, 3000, 9500, r), 0.15, 0.5))
+
+
+@sound("founder_reveal", -16, 0.3)
+def founder_reveal():
+    """The Founder screen and the lobby entrance: a soft landing thump and a bell phrase."""
+    r = rng(97)
+    phrase = chime(["D5", "F#5", "A5", "D6"], 0.11, 1.5, 0.5)
+    return stack((thump(0.22, 140, 55, r), 0, 0.6), (phrase, 0.05, 0.8), (sparkle(1.0, 35, 3500, 9000, r), 0.2, 0.4))
+
+
+@sound("founder_emote", -17, 0.2)
+def founder_emote():
+    """Paladino Approved: two quick bells and a sparkle."""
+    r = rng(98)
+    return stack((chime(["A5", "E6"], 0.07, 0.8, 0.5), 0, 0.9), (sparkle(0.4, 40, 4000, 9500, r), 0.05, 0.5))
+
+
+
 if __name__ == "__main__":
     wanted = sys.argv[1:] or list(SOUNDS)
     for key in wanted:

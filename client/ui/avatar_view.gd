@@ -48,3 +48,29 @@ func show_look(look_data: Dictionary) -> void:
 	stage.add_child(rig)
 	rig.style(body)
 	rig.follow(body)
+
+# The Founder entrance (docs/FOUNDER_PACK.md, item 18, 1.4 s): the halo opens, solar
+# particles rise, the character drops in and lands, the wings fold shut. Once per session
+# (the caller decides), and only for the full Founder set.
+func play_entrance(app: Node) -> void:
+	if body == null or rig == null or not is_instance_valid(body):
+		return
+	var rest: Vector2 = body.position
+	rig.source = func() -> Dictionary: return {"node": body, "offset": Vector2.ZERO}
+	body.position = rest + Vector2(0, -size.y * 0.5)
+	body.modulate.a = 0.0
+	rig.wing_open = 1.0
+	if rig.founder_fx != null:
+		rig.founder_fx.play_entrance(0.9)
+	var feet: Vector2 = Vector2(rest.x, rest.y + body.texture.get_height() * 0.3)
+	FxParticles.burst(self, Vector2(size.x / 2.0, size.y * 0.5), {"amount": 36, "lifetime": 1.0, "speed": [20.0, 90.0], "direction": Vector2.UP, "spread": 180.0, "gravity": Vector2(0, -30), "size": [2.0, 4.0], "colors": ["ffffff", "fff0a8", "ffd25a"], "radius": size.x * 0.2, "z": 5})
+	var tween: Tween = create_tween()
+	tween.tween_property(body, "modulate:a", 1.0, 0.15)
+	tween.parallel().tween_property(body, "position", rest, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		FxParticles.burst(self, Vector2(size.x / 2.0, size.y * 0.95), {"amount": 22, "lifetime": 0.5, "speed": [40.0, 130.0], "direction": Vector2.UP, "spread": 80.0, "gravity": Vector2(0, 220), "size": [2.0, 4.0], "colors": ["fff0a8", "ffd25a", "f0a62c"], "box": Vector2(size.x * 0.2, 3), "z": 5})
+		if is_instance_valid(app) and is_instance_valid(app.audio):
+			app.audio.play("founder_reveal", -3.0))
+	tween.tween_property(body, "position:y", rest.y - 7.0, 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(body, "position:y", rest.y, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void: rig.source = Callable())

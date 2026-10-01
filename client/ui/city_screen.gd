@@ -127,7 +127,12 @@ func build_player_card() -> void:
 	var portrait: Panel = UiKit.panel(card, Rect2(12, 12, 62, 62), Color(0, 0, 0, 0))
 	portrait.clip_contents = true
 	AvatarView.create(portrait, app.profile.look(), Rect2(-34, -50, 130, 190))
-	UiKit.label(card, app.profile.player_name, Rect2(86, 6, 166, 26), 17, Color.WHITE, UiKit.INK)
+	if app.profile.is_founder():
+		FounderUi.frame(card, Rect2(12, 12, 62, 62))
+		FounderUi.badge(card, Rect2(86, 8, 22, 22))
+		UiKit.label(card, app.profile.player_name, Rect2(112, 6, 140, 26), 17, Color.WHITE, UiKit.INK)
+	else:
+		UiKit.label(card, app.profile.player_name, Rect2(86, 6, 166, 26), 17, Color.WHITE, UiKit.INK)
 	UiKit.level_badge(card, app.profile.level(), Rect2(86, 34, 34, 22))
 	UiKit.label(card, TankFighter.rank_for(app.profile.level()), Rect2(126, 32, 126, 26), 13, Color("9aff7a"), UiKit.INK)
 	UiKit.art(card, "res://assets/items/moeda.png", Rect2(86, 58, 22, 22))
@@ -136,6 +141,12 @@ func build_player_card() -> void:
 	coupon.name = "CouponButton"
 	coupon.tooltip_text = tr("Resgatar cupom (TESTARTUDO libera tudo para testes)")
 	UiKit.button(self, tr("MOCHILA"), Rect2(1146, 126, 126, 34), app.open_bag, "button_green", 15)
+	# Founder Pack: the limited shop window (or, for a Founder, the set and its switches).
+	var entry: Dictionary = PremiumStore.product(FounderPack.SKU)
+	if app.profile.is_founder() or (not entry.is_empty() and PremiumStore.on_sale(entry)):
+		var founder: Button = UiKit.button(self, "✦ " + tr("FOUNDER PACK") + " ✦", Rect2(1016, 164, 256, 36), func() -> void: FounderScreen.open(app), "button_blue", 16)
+		founder.name = "FounderButton"
+		founder.tooltip_text = tr("Edição Paladino do Sol")
 
 func set_hover(index: int) -> void:
 	hovered = index

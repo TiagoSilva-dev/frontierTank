@@ -1,0 +1,1488 @@
+{
+ "silhouette": {
+  "title": "Skin silhouette: which Paladino do Sol design works best in the game?",
+  "ranking": [
+   "A_chibi_halo_layer",
+   "D_giant_halo",
+   "B_baked_wings",
+   "C_robed_priest"
+  ],
+  "totals": {
+   "A_chibi_halo_layer": 6.2233,
+   "D_giant_halo": 5.89,
+   "B_baked_wings": 5.15,
+   "C_robed_priest": 5.0417
+  },
+  "normalised": {
+   "A_chibi_halo_layer": {
+    "readable": 0.77,
+    "identity": 0.83,
+    "prestige": 0.95,
+    "feasible": 0.67,
+    "clutter": 0.54
+   },
+   "D_giant_halo": {
+    "readable": 0.87,
+    "identity": 0.83,
+    "prestige": 0.97,
+    "feasible": 0.52,
+    "clutter": 0.75
+   },
+   "B_baked_wings": {
+    "readable": 0.74,
+    "identity": 0.79,
+    "prestige": 0.86,
+    "feasible": 0.08,
+    "clutter": 0.64
+   },
+   "C_robed_priest": {
+    "readable": 0.47,
+    "identity": 0.77,
+    "prestige": 0.46,
+    "feasible": 0.54,
+    "clutter": 0.33
+   }
+  },
+  "raw": {
+   "C_robed_priest": {
+    "readable": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.43,
+     "legend": {
+      "0": "Blends into the map; unreadable",
+      "1": "Recognisable only after staring",
+      "2": "Recognisable at a glance with some effort",
+      "3": "Instantly recognisable, unique shape"
+     },
+     "probabilities": {
+      "0": 0.08,
+      "1": 0.47,
+      "2": 0.41,
+      "3": 0.04
+     }
+    },
+    "identity": {
+     "type": "score",
+     "score": 2.32,
+     "confidence": 0.64,
+     "legend": {
+      "0": "Generic medieval knight",
+      "1": "Knight with a few celestial accessories",
+      "2": "Clearly celestial, partly generic",
+      "3": "Unmistakably a unique celestial sun paladin"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.02,
+      "2": 0.64,
+      "3": 0.34
+     }
+    },
+    "prestige": {
+     "type": "score",
+     "score": 1.37,
+     "confidence": 0.58,
+     "legend": {
+      "0": "Looks ordinary",
+      "1": "Looks nice but common",
+      "2": "Looks rare and valuable",
+      "3": "Looks legendary, the rarest item in the game"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.59,
+      "2": 0.37,
+      "3": 0.01
+     }
+    },
+    "feasible": {
+     "type": "score",
+     "score": 1.61,
+     "confidence": 0.4,
+     "legend": {
+      "0": "Needs a rebuilt rig and hundreds of hand-drawn frames",
+      "1": "Large extra work",
+      "2": "Fits the rig with moderate work",
+      "3": "Fits the rig directly"
+     },
+     "probabilities": {
+      "0": 0.08,
+      "1": 0.33,
+      "2": 0.48,
+      "3": 0.11
+     }
+    },
+    "clutter": {
+     "type": "score",
+     "score": 1.0,
+     "confidence": 0.55,
+     "legend": {
+      "0": "No risk",
+      "1": "Slight risk",
+      "2": "Noticeable risk",
+      "3": "High risk; oversized effects cover the screen"
+     },
+     "probabilities": {
+      "0": 0.23,
+      "1": 0.5599999999999999,
+      "2": 0.2,
+      "3": 0.01
+     }
+    }
+   },
+   "A_chibi_halo_layer": {
+    "readable": {
+     "type": "score",
+     "score": 2.31,
+     "confidence": 0.53,
+     "legend": {
+      "0": "Blends into the map; unreadable",
+      "1": "Recognisable only after staring",
+      "2": "Recognisable at a glance with some effort",
+      "3": "Instantly recognisable, unique shape"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.07,
+      "2": 0.54,
+      "3": 0.39
+     }
+    },
+    "identity": {
+     "type": "score",
+     "score": 2.49,
+     "confidence": 0.49,
+     "legend": {
+      "0": "Generic medieval knight",
+      "1": "Knight with a few celestial accessories",
+      "2": "Clearly celestial, partly generic",
+      "3": "Unmistakably a unique celestial sun paladin"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.03,
+      "2": 0.45,
+      "3": 0.52
+     }
+    },
+    "prestige": {
+     "type": "score",
+     "score": 2.86,
+     "confidence": 0.86,
+     "legend": {
+      "0": "Looks ordinary",
+      "1": "Looks nice but common",
+      "2": "Looks rare and valuable",
+      "3": "Looks legendary, the rarest item in the game"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.14,
+      "3": 0.86
+     }
+    },
+    "feasible": {
+     "type": "score",
+     "score": 2.02,
+     "confidence": 0.72,
+     "legend": {
+      "0": "Needs a rebuilt rig and hundreds of hand-drawn frames",
+      "1": "Large extra work",
+      "2": "Fits the rig with moderate work",
+      "3": "Fits the rig directly"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.12,
+      "2": 0.72,
+      "3": 0.15
+     }
+    },
+    "clutter": {
+     "type": "score",
+     "score": 1.62,
+     "confidence": 0.45,
+     "legend": {
+      "0": "No risk",
+      "1": "Slight risk",
+      "2": "Noticeable risk",
+      "3": "High risk; oversized effects cover the screen"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.38,
+      "2": 0.49,
+      "3": 0.09
+     }
+    }
+   },
+   "D_giant_halo": {
+    "readable": {
+     "type": "score",
+     "score": 2.62,
+     "confidence": 0.62,
+     "legend": {
+      "0": "Blends into the map; unreadable",
+      "1": "Recognisable only after staring",
+      "2": "Recognisable at a glance with some effort",
+      "3": "Instantly recognisable, unique shape"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.07,
+      "2": 0.21,
+      "3": 0.71
+     }
+    },
+    "identity": {
+     "type": "score",
+     "score": 2.5,
+     "confidence": 0.5,
+     "legend": {
+      "0": "Generic medieval knight",
+      "1": "Knight with a few celestial accessories",
+      "2": "Clearly celestial, partly generic",
+      "3": "Unmistakably a unique celestial sun paladin"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.03,
+      "2": 0.43,
+      "3": 0.54
+     }
+    },
+    "prestige": {
+     "type": "score",
+     "score": 2.9,
+     "confidence": 0.9,
+     "legend": {
+      "0": "Looks ordinary",
+      "1": "Looks nice but common",
+      "2": "Looks rare and valuable",
+      "3": "Looks legendary, the rarest item in the game"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.09,
+      "3": 0.91
+     }
+    },
+    "feasible": {
+     "type": "score",
+     "score": 1.56,
+     "confidence": 0.46,
+     "legend": {
+      "0": "Needs a rebuilt rig and hundreds of hand-drawn frames",
+      "1": "Large extra work",
+      "2": "Fits the rig with moderate work",
+      "3": "Fits the rig directly"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.4,
+      "2": 0.5,
+      "3": 0.05
+     }
+    },
+    "clutter": {
+     "type": "score",
+     "score": 2.24,
+     "confidence": 0.24,
+     "legend": {
+      "0": "No risk",
+      "1": "Slight risk",
+      "2": "Noticeable risk",
+      "3": "High risk; oversized effects cover the screen"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.14,
+      "2": 0.4,
+      "3": 0.43
+     }
+    }
+   },
+   "B_baked_wings": {
+    "readable": {
+     "type": "score",
+     "score": 2.23,
+     "confidence": 0.23,
+     "legend": {
+      "0": "Blends into the map; unreadable",
+      "1": "Recognisable only after staring",
+      "2": "Recognisable at a glance with some effort",
+      "3": "Instantly recognisable, unique shape"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.15,
+      "2": 0.4,
+      "3": 0.43
+     }
+    },
+    "identity": {
+     "type": "score",
+     "score": 2.37,
+     "confidence": 0.5,
+     "legend": {
+      "0": "Generic medieval knight",
+      "1": "Knight with a few celestial accessories",
+      "2": "Clearly celestial, partly generic",
+      "3": "Unmistakably a unique celestial sun paladin"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.06,
+      "2": 0.51,
+      "3": 0.43
+     }
+    },
+    "prestige": {
+     "type": "score",
+     "score": 2.58,
+     "confidence": 0.58,
+     "legend": {
+      "0": "Looks ordinary",
+      "1": "Looks nice but common",
+      "2": "Looks rare and valuable",
+      "3": "Looks legendary, the rarest item in the game"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.03,
+      "2": 0.34,
+      "3": 0.63
+     }
+    },
+    "feasible": {
+     "type": "score",
+     "score": 0.24,
+     "confidence": 0.76,
+     "legend": {
+      "0": "Needs a rebuilt rig and hundreds of hand-drawn frames",
+      "1": "Large extra work",
+      "2": "Fits the rig with moderate work",
+      "3": "Fits the rig directly"
+     },
+     "probabilities": {
+      "0": 0.8,
+      "1": 0.16,
+      "2": 0.02,
+      "3": 0.01
+     }
+    },
+    "clutter": {
+     "type": "score",
+     "score": 1.93,
+     "confidence": 0.46,
+     "legend": {
+      "0": "No risk",
+      "1": "Slight risk",
+      "2": "Noticeable risk",
+      "3": "High risk; oversized effects cover the screen"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.21,
+      "2": 0.51,
+      "3": 0.23
+     }
+    }
+   }
+  }
+ },
+ "pow_timeline": {
+  "title": "POW Julgamento do Sol: which timeline is epic without breaking match rhythm?",
+  "ranking": [
+   "T1_2s_fast",
+   "T4_3s_skippable_compact",
+   "T2_3s_balanced",
+   "T3_4s_full"
+  ],
+  "totals": {
+   "T1_2s_fast": 3.6017,
+   "T4_3s_skippable_compact": 2.81,
+   "T2_3s_balanced": 2.5283,
+   "T3_4s_full": 2.3433
+  },
+  "normalised": {
+   "T1_2s_fast": {
+    "epic": 0.95,
+    "pace": 0.7,
+    "legible": 0.45,
+    "fatigue": 0.72
+   },
+   "T4_3s_skippable_compact": {
+    "epic": 0.39,
+    "pace": 0.74,
+    "legible": 0.67,
+    "fatigue": 0.66
+   },
+   "T2_3s_balanced": {
+    "epic": 0.99,
+    "pace": 0.95,
+    "legible": 0.2,
+    "fatigue": 0.91
+   },
+   "T3_4s_full": {
+    "epic": 0.79,
+    "pace": 0.96,
+    "legible": 0.34,
+    "fatigue": 0.88
+   }
+  },
+  "raw": {
+   "T1_2s_fast": {
+    "legible": {
+     "type": "score",
+     "score": 1.34,
+     "confidence": 0.38,
+     "legend": {
+      "0": "Unreadable",
+      "1": "Often confusing",
+      "2": "Mostly readable",
+      "3": "Fully readable"
+     },
+     "probabilities": {
+      "0": 0.14,
+      "1": 0.48,
+      "2": 0.28,
+      "3": 0.1
+     }
+    },
+    "fatigue": {
+     "type": "score",
+     "score": 2.15,
+     "confidence": 0.55,
+     "legend": {
+      "0": "No fatigue",
+      "1": "Slight",
+      "2": "Noticeable",
+      "3": "Strong annoyance"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.13,
+      "2": 0.56,
+      "3": 0.3
+     }
+    },
+    "epic": {
+     "type": "score",
+     "score": 2.86,
+     "confidence": 0.86,
+     "legend": {
+      "0": "Forgettable",
+      "1": "Decent",
+      "2": "Impressive",
+      "3": "Unforgettable signature moment"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.13,
+      "3": 0.87
+     }
+    },
+    "pace": {
+     "type": "score",
+     "score": 2.1,
+     "confidence": 0.37,
+     "legend": {
+      "0": "Barely interrupts",
+      "1": "Short pause, acceptable",
+      "2": "Clearly slows the match",
+      "3": "Badly stalls the match and gets annoying on repeat"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.22,
+      "2": 0.39,
+      "3": 0.37
+     }
+    }
+   },
+   "T2_3s_balanced": {
+    "epic": {
+     "type": "score",
+     "score": 2.98,
+     "confidence": 0.98,
+     "legend": {
+      "0": "Forgettable",
+      "1": "Decent",
+      "2": "Impressive",
+      "3": "Unforgettable signature moment"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.02,
+      "3": 0.98
+     }
+    },
+    "pace": {
+     "type": "score",
+     "score": 2.84,
+     "confidence": 0.84,
+     "legend": {
+      "0": "Barely interrupts",
+      "1": "Short pause, acceptable",
+      "2": "Clearly slows the match",
+      "3": "Badly stalls the match and gets annoying on repeat"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.02,
+      "2": 0.12,
+      "3": 0.86
+     }
+    },
+    "legible": {
+     "type": "score",
+     "score": 0.59,
+     "confidence": 0.41,
+     "legend": {
+      "0": "Unreadable",
+      "1": "Often confusing",
+      "2": "Mostly readable",
+      "3": "Fully readable"
+     },
+     "probabilities": {
+      "0": 0.51,
+      "1": 0.42,
+      "2": 0.05,
+      "3": 0.02
+     }
+    },
+    "fatigue": {
+     "type": "score",
+     "score": 2.72,
+     "confidence": 0.72,
+     "legend": {
+      "0": "No fatigue",
+      "1": "Slight",
+      "2": "Noticeable",
+      "3": "Strong annoyance"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.01,
+      "2": 0.24,
+      "3": 0.75
+     }
+    }
+   },
+   "T3_4s_full": {
+    "epic": {
+     "type": "score",
+     "score": 2.36,
+     "confidence": 0.36,
+     "legend": {
+      "0": "Forgettable",
+      "1": "Decent",
+      "2": "Impressive",
+      "3": "Unforgettable signature moment"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.12,
+      "2": 0.29,
+      "3": 0.55
+     }
+    },
+    "pace": {
+     "type": "score",
+     "score": 2.88,
+     "confidence": 0.88,
+     "legend": {
+      "0": "Barely interrupts",
+      "1": "Short pause, acceptable",
+      "2": "Clearly slows the match",
+      "3": "Badly stalls the match and gets annoying on repeat"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.02,
+      "2": 0.08,
+      "3": 0.9
+     }
+    },
+    "legible": {
+     "type": "score",
+     "score": 1.03,
+     "confidence": 0.29,
+     "legend": {
+      "0": "Unreadable",
+      "1": "Often confusing",
+      "2": "Mostly readable",
+      "3": "Fully readable"
+     },
+     "probabilities": {
+      "0": 0.34,
+      "1": 0.4,
+      "2": 0.15,
+      "3": 0.11
+     }
+    },
+    "fatigue": {
+     "type": "score",
+     "score": 2.65,
+     "confidence": 0.65,
+     "legend": {
+      "0": "No fatigue",
+      "1": "Slight",
+      "2": "Noticeable",
+      "3": "Strong annoyance"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.03,
+      "2": 0.26,
+      "3": 0.7
+     }
+    }
+   },
+   "T4_3s_skippable_compact": {
+    "epic": {
+     "type": "score",
+     "score": 1.16,
+     "confidence": 0.41,
+     "legend": {
+      "0": "Forgettable",
+      "1": "Decent",
+      "2": "Impressive",
+      "3": "Unforgettable signature moment"
+     },
+     "probabilities": {
+      "0": 0.22,
+      "1": 0.46,
+      "2": 0.27,
+      "3": 0.05
+     }
+    },
+    "pace": {
+     "type": "score",
+     "score": 2.21,
+     "confidence": 0.43,
+     "legend": {
+      "0": "Barely interrupts",
+      "1": "Short pause, acceptable",
+      "2": "Clearly slows the match",
+      "3": "Badly stalls the match and gets annoying on repeat"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.15,
+      "2": 0.44,
+      "3": 0.39
+     }
+    },
+    "legible": {
+     "type": "score",
+     "score": 2.01,
+     "confidence": 0.39,
+     "legend": {
+      "0": "Unreadable",
+      "1": "Often confusing",
+      "2": "Mostly readable",
+      "3": "Fully readable"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.22,
+      "2": 0.43,
+      "3": 0.31
+     }
+    },
+    "fatigue": {
+     "type": "score",
+     "score": 1.99,
+     "confidence": 0.5,
+     "legend": {
+      "0": "No fatigue",
+      "1": "Slight",
+      "2": "Noticeable",
+      "3": "Strong annoyance"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.2,
+      "2": 0.52,
+      "3": 0.25
+     }
+    }
+   }
+  }
+ },
+ "explosion_honesty": {
+  "title": "Explosion VFX: which radius policy never misleads the player about the real damage area?",
+  "ranking": [
+   "E1_exact_ring",
+   "E4_inner_plus_outer_marker",
+   "E3_wide_stars",
+   "E2_big_ring"
+  ],
+  "totals": {
+   "E1_exact_ring": 3.38,
+   "E4_inner_plus_outer_marker": 1.85,
+   "E3_wide_stars": 1.63,
+   "E2_big_ring": 1.33
+  },
+  "normalised": {
+   "E1_exact_ring": {
+    "misleads": 0.16,
+    "spectacle": 0.57
+   },
+   "E4_inner_plus_outer_marker": {
+    "misleads": 0.62,
+    "spectacle": 0.47
+   },
+   "E3_wide_stars": {
+    "misleads": 0.85,
+    "spectacle": 0.79
+   },
+   "E2_big_ring": {
+    "misleads": 0.86,
+    "spectacle": 0.61
+   }
+  },
+  "raw": {
+   "E1_exact_ring": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 1.72,
+     "confidence": 0.55,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Stunning and unique"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.31,
+      "2": 0.57,
+      "3": 0.09
+     }
+    }
+   },
+   "E2_big_ring": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.86
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 1.82,
+     "confidence": 0.61,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Stunning and unique"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.22,
+      "2": 0.64,
+      "3": 0.11
+     }
+    }
+   },
+   "E4_inner_plus_outer_marker": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.62
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 1.42,
+     "confidence": 0.5,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Stunning and unique"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.53,
+      "2": 0.4,
+      "3": 0.03
+     }
+    }
+   },
+   "E3_wide_stars": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.85
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 2.36,
+     "confidence": 0.57,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Stunning and unique"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.03,
+      "2": 0.58,
+      "3": 0.39
+     }
+    }
+   }
+  }
+ },
+ "priority": {
+  "title": "Production priority: how much does each element help everyone in a match notice a Founder?",
+  "ranking": [
+   "skin",
+   "frame",
+   "title",
+   "badge",
+   "pet",
+   "explosion",
+   "pow",
+   "weapon_solaris",
+   "projectile",
+   "wings",
+   "lobby_entry",
+   "emote",
+   "footstep",
+   "aura",
+   "store_screen"
+  ],
+  "totals": {
+   "skin": 2.5567,
+   "frame": 2.2367,
+   "title": 2.2233,
+   "badge": 2.1767,
+   "pet": 2.0633,
+   "explosion": 2.0367,
+   "pow": 2.0167,
+   "weapon_solaris": 2.0133,
+   "projectile": 1.85,
+   "wings": 1.8067,
+   "lobby_entry": 1.6167,
+   "emote": 1.3867,
+   "footstep": 1.3267,
+   "aura": 1.2267,
+   "store_screen": 1.1167
+  },
+  "normalised": {
+   "skin": {
+    "notice": 0.93,
+    "frequency": 0.7
+   },
+   "frame": {
+    "notice": 0.84,
+    "frequency": 0.56
+   },
+   "title": {
+    "notice": 0.77,
+    "frequency": 0.69
+   },
+   "badge": {
+    "notice": 0.73,
+    "frequency": 0.71
+   },
+   "pet": {
+    "notice": 0.67,
+    "frequency": 0.73
+   },
+   "explosion": {
+    "notice": 0.81,
+    "frequency": 0.42
+   },
+   "pow": {
+    "notice": 0.88,
+    "frequency": 0.26
+   },
+   "weapon_solaris": {
+    "notice": 0.66,
+    "frequency": 0.69
+   },
+   "projectile": {
+    "notice": 0.71,
+    "frequency": 0.42
+   },
+   "wings": {
+    "notice": 0.58,
+    "frequency": 0.64
+   },
+   "lobby_entry": {
+    "notice": 0.66,
+    "frequency": 0.3
+   },
+   "emote": {
+    "notice": 0.53,
+    "frequency": 0.33
+   },
+   "footstep": {
+    "notice": 0.39,
+    "frequency": 0.55
+   },
+   "aura": {
+    "notice": 0.31,
+    "frequency": 0.6
+   },
+   "store_screen": {
+    "notice": 0.41,
+    "frequency": 0.3
+   }
+  },
+  "raw": {
+   "skin": {
+    "notice": {
+     "type": "score",
+     "score": 2.78,
+     "confidence": 0.78,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.02,
+      "2": 0.17,
+      "3": 0.81
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 2.11,
+     "confidence": 0.51,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.16,
+      "2": 0.53,
+      "3": 0.3
+     }
+    }
+   },
+   "weapon_solaris": {
+    "notice": {
+     "type": "score",
+     "score": 1.98,
+     "confidence": 0.39,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.26,
+      "2": 0.41,
+      "3": 0.3
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 2.08,
+     "confidence": 0.53,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.1,
+      "2": 0.57,
+      "3": 0.28
+     }
+    }
+   },
+   "projectile": {
+    "notice": {
+     "type": "score",
+     "score": 2.14,
+     "confidence": 0.14,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.22,
+      "2": 0.35,
+      "3": 0.41000000000000003
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.27,
+     "confidence": 0.54,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.59,
+      "2": 0.26,
+      "3": 0.05
+     }
+    }
+   },
+   "explosion": {
+    "notice": {
+     "type": "score",
+     "score": 2.43,
+     "confidence": 0.43,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.13,
+      "2": 0.26,
+      "3": 0.59
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.25,
+     "confidence": 0.6,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.08,
+      "1": 0.61,
+      "2": 0.29,
+      "3": 0.02
+     }
+    }
+   },
+   "pow": {
+    "notice": {
+     "type": "score",
+     "score": 2.64,
+     "confidence": 0.64,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.07,
+      "2": 0.14,
+      "3": 0.76
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 0.77,
+     "confidence": 0.52,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.36,
+      "1": 0.55,
+      "2": 0.06,
+      "3": 0.03
+     }
+    }
+   },
+   "aura": {
+    "notice": {
+     "type": "score",
+     "score": 0.94,
+     "confidence": 0.86,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.87,
+      "2": 0.03,
+      "3": 0.0
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.8,
+     "confidence": 0.47,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.11,
+      "1": 0.14,
+      "2": 0.59,
+      "3": 0.16
+     }
+    }
+   },
+   "wings": {
+    "notice": {
+     "type": "score",
+     "score": 1.75,
+     "confidence": 0.42,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.36,
+      "2": 0.44,
+      "3": 0.17
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.92,
+     "confidence": 0.3,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.13,
+      "1": 0.12,
+      "2": 0.44,
+      "3": 0.31
+     }
+    }
+   },
+   "pet": {
+    "notice": {
+     "type": "score",
+     "score": 2.0,
+     "confidence": 0.54,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.21,
+      "2": 0.55,
+      "3": 0.23
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 2.19,
+     "confidence": 0.55,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.07,
+      "2": 0.58,
+      "3": 0.32
+     }
+    }
+   },
+   "footstep": {
+    "notice": {
+     "type": "score",
+     "score": 1.16,
+     "confidence": 0.72,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.74,
+      "2": 0.17,
+      "3": 0.03
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.66,
+     "confidence": 0.47,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.32,
+      "2": 0.52,
+      "3": 0.1
+     }
+    }
+   },
+   "frame": {
+    "notice": {
+     "type": "score",
+     "score": 2.51,
+     "confidence": 0.51,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.08,
+      "2": 0.3,
+      "3": 0.61
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 1.69,
+     "confidence": 0.0,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.17,
+      "1": 0.26,
+      "2": 0.27,
+      "3": 0.3
+     }
+    }
+   },
+   "badge": {
+    "notice": {
+     "type": "score",
+     "score": 2.2,
+     "confidence": 0.45,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.15,
+      "2": 0.46,
+      "3": 0.38
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 2.13,
+     "confidence": 0.13,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.29,
+      "2": 0.18,
+      "3": 0.49
+     }
+    }
+   },
+   "title": {
+    "notice": {
+     "type": "score",
+     "score": 2.3,
+     "confidence": 0.3,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.16,
+      "2": 0.33,
+      "3": 0.5
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 2.07,
+     "confidence": 0.37,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.15,
+      "2": 0.44,
+      "3": 0.35
+     }
+    }
+   },
+   "emote": {
+    "notice": {
+     "type": "score",
+     "score": 1.59,
+     "confidence": 0.34,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.48,
+      "2": 0.34,
+      "3": 0.14
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 0.98,
+     "confidence": 0.46,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.28,
+      "1": 0.54,
+      "2": 0.1,
+      "3": 0.08
+     }
+    }
+   },
+   "lobby_entry": {
+    "notice": {
+     "type": "score",
+     "score": 1.98,
+     "confidence": 0.44,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.25,
+      "2": 0.46,
+      "3": 0.27
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 0.89,
+     "confidence": 0.54,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.28,
+      "1": 0.57,
+      "2": 0.13,
+      "3": 0.02
+     }
+    }
+   },
+   "store_screen": {
+    "notice": {
+     "type": "score",
+     "score": 1.23,
+     "confidence": 0.0,
+     "legend": {
+      "0": "Not noticed by others at all",
+      "1": "Noticed only by someone who looks closely",
+      "2": "Noticed by most players who look at the wearer",
+      "3": "Noticed by everyone in the match almost immediately"
+     },
+     "probabilities": {
+      "0": 0.52,
+      "1": 0.08,
+      "2": 0.06,
+      "3": 0.34
+     }
+    },
+    "frequency": {
+     "type": "score",
+     "score": 0.89,
+     "confidence": 0.11,
+     "legend": {
+      "0": "Almost never",
+      "1": "Occasionally",
+      "2": "Every match",
+      "3": "Constantly in every match and in the lobby"
+     },
+     "probabilities": {
+      "0": 0.61,
+      "1": 0.06,
+      "2": 0.14,
+      "3": 0.19
+     }
+    }
+   }
+  }
+ }
+}

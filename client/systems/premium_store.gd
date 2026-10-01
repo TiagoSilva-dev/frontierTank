@@ -43,6 +43,15 @@ static func valid(entry: Dictionary) -> bool:
 			return false
 	return true
 
+# A limited pack (the Founder Pack) stops selling after `sale_until` (YYYY-MM-DD, empty =
+# no end date yet). Players who bought it keep everything.
+static func on_sale(entry: Dictionary, today: String = "") -> bool:
+	var until: String = str(entry.get("sale_until", ""))
+	if until == "":
+		return true
+	var now: String = today if today != "" else Time.get_date_string_from_system()
+	return now <= until
+
 static func owns_all(profile: PlayerProfile, entry: Dictionary) -> bool:
 	for id: Variant in entry.get("items", []):
 		if not profile.has_item(str(id)):

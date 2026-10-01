@@ -68,7 +68,7 @@
       </div>
       <div class="sec">${attrLines(w.attrs, q.attrs)}</div>
       <div class="sec pow"><b>POW · ${esc(L(w.pow.name))}</b><br>${esc(L(w.pow.desc))}</div>
-      <div class="sec req">${w.super ? T("Só no baú do chefe", "Boss chest only") : T(`Loja: ${n(w.price)} moedas`, `Shop: ${n(w.price)} gold`)}</div>
+      <div class="sec req">${w.super ? T("Só no baú do chefe", "Boss chest only") : w.premium ? T("Founder Pack · só aparência", "Founder Pack · cosmetic only") : T(`Loja: ${n(w.price)} moedas`, `Shop: ${n(w.price)} gold`)}</div>
     </div>`;
   }
 
@@ -281,14 +281,14 @@
 
   function weaponsList(filter) {
     const tabs = [["all", T("Todas", "All")], ["shop", T("Da loja", "Shop")], ["super", T("Super Verdadeiras", "Super True")]];
-    const list = D.weapons.filter((w) => filter === "super" ? w.super : filter === "shop" ? !w.super : true);
+    const list = D.weapons.filter((w) => filter === "super" ? w.super : filter === "shop" ? !w.super && !w.premium : true);
     const rows = list.map((w) => `<tr id="row-${w.id}">
       ${td(`<span class="name">${icon(w.super ? w.tiers[3] : w.icon)}${ref("weapon", w.id)}</span>`, L(w.name))}
       ${tdn(w.damage)}${tdn(w.radius)}
       ${td(`${w.angle[0]}°–${w.angle[1]}°`, w.angle[0], "num")}
       ${td(`<b>${esc(L(w.pow.name))}</b><br><span class="muted">${esc(L(w.pow.desc))}</span>`, L(w.pow.name))}
       ${td(Object.entries(w.attrs).map(([k, v]) => `${esc(attrName(k).slice(0, 3))} ${v}`).join(" · "), null)}
-      ${td(w.super ? `<span class="muted">${T("baú do chefe", "boss chest")}</span>` : n(w.price), w.super ? 1e9 : w.price, "num")}
+      ${td(w.super ? `<span class="muted">${T("baú do chefe", "boss chest")}</span>` : w.premium ? `<span class="pill gold">Founder</span>` : n(w.price), w.super || w.premium ? 1e9 : w.price, "num")}
     </tr>`);
     const body = `
       <p class="intro">${T("Cada arma tem ângulo, dano, raio de explosão, atributos e um especial POW próprios. As da loja vêm em Normal e Excelente; a Verdadeira cai nas instâncias e as três Super Verdadeiras só no baú dos chefes.",

@@ -141,6 +141,16 @@ func fade_deck(index: int, target: float, seconds: float, stop_after: bool) -> v
 		tween.tween_callback(player.stop)
 	fades[index] = tween
 
+# Julgamento do Sol: the music sinks for a moment while the sequence plays, then returns.
+func duck(amount_db: float, seconds: float) -> void:
+	var player: AudioStreamPlayer = decks[deck]
+	if not player.playing or not enabled:
+		return
+	var tween: Tween = create_tween()
+	tween.tween_property(player, "volume_db", -amount_db, 0.25).set_trans(Tween.TRANS_SINE)
+	tween.tween_interval(seconds)
+	tween.tween_property(player, "volume_db", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
+
 func set_charge(active: bool, power: float, volume_db: float = -4.0) -> void:
 	# Hum that rises with the force bar while SPACE is held.
 	if not enabled or not active:

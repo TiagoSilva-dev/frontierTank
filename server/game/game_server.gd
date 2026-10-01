@@ -471,8 +471,8 @@ func profile_op(session: PlayerSession, message: Dictionary) -> void:
 				reply(session, message, {"error": Lang.t("Este nome já está em uso. Escolha outro.")})
 				return
 	var result: Dictionary = session.profile.apply_op(op, args, balance, test_coupons)
-	if op == "bag_layout":
-		# Arranging the Mochila moves nothing of value: no audit entry, no lobby update.
+	if op == "bag_layout" or op == "founder_fx":
+		# Arranging the Mochila or switching a Founder effect moves nothing of value: no audit entry, no lobby update.
 		reply(session, message, {"error": result.error, "message": result.message, "profile": session.profile.to_data()})
 		return
 	audit(session, "op." + op, {"args": args, "error": result.error, "coins": session.profile.coins})
@@ -506,7 +506,7 @@ func chat(session: PlayerSession, message: Dictionary) -> void:
 	session.chat_times.append(moment)
 	text = filter_text(text)
 	# The id lets players report the line; the account says who wrote it.
-	var entry: Dictionary = {"id": next_chat_id, "account": session.account_id, "author": session.profile.player_name, "text": text, "channel": "Atual"}
+	var entry: Dictionary = {"id": next_chat_id, "account": session.account_id, "author": session.profile.player_name, "text": text, "channel": "Atual", "founder": session.profile.is_founder()}
 	next_chat_id += 1
 	chat_history.append(entry)
 	if chat_history.size() > CHAT_KEEP:
@@ -1263,6 +1263,9 @@ func store_buy(session: PlayerSession, message: Dictionary) -> void:
 	var entry: Dictionary = PremiumStore.product(str(message.get("sku", "")))
 	if not PremiumStore.valid(entry):
 		reply(session, message, {"error": Lang.t("Produto desconhecido.")})
+		return
+	if not PremiumStore.on_sale(entry):
+		reply(session, message, {"error": Lang.t("Este pacote não está mais à venda.")})
 		return
 	if not session.profile.created:
 		reply(session, message, {"error": Lang.t("Crie o seu personagem primeiro.")})

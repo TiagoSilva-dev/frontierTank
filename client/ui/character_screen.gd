@@ -109,8 +109,14 @@ func layer() -> Control:
 func build_profile() -> void:
 	var head: Panel = UiKit.panel(profile_root, Rect2(48, 148, 564, 40), "dark")
 	UiKit.level_badge(head, app.profile.level(), Rect2(6, 5, 40, 30))
-	UiKit.label(head, app.profile.player_name, Rect2(54, 0, 260, 40), 22, Color.WHITE, UiKit.INK)
-	UiKit.label(head, TankFighter.rank_for(app.profile.level()), Rect2(320, 0, 130, 40), 16, Color("9aff7a"), UiKit.INK)
+	if app.profile.is_founder():
+		# Founder: the Sun badge before the name and the title where the rank goes.
+		FounderUi.badge(head, Rect2(50, 4, 32, 32))
+		UiKit.label(head, app.profile.player_name, Rect2(88, 0, 230, 40), 22, Color.WHITE, UiKit.INK)
+		FounderUi.title_label(head, Rect2(318, 0, 130, 40), 15)
+	else:
+		UiKit.label(head, app.profile.player_name, Rect2(54, 0, 260, 40), 22, Color.WHITE, UiKit.INK)
+		UiKit.label(head, TankFighter.rank_for(app.profile.level()), Rect2(320, 0, 130, 40), 16, Color("9aff7a"), UiKit.INK)
 	UiKit.label(head, tr("Ranking %d") % app.profile.ranking(), Rect2(440, 0, 118, 40), 16, Color("ffb0a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	if tab_name == "Perfil":
 		build_equipment()

@@ -5,7 +5,8 @@ The zip is the character group download (https://api.pixellab.ai/mcp/characters/
 which holds one <State_Name>/ folder per state with rotations and animations.
 
 Usage: python tools/import_pixellab_skin.py <group.zip> <Standing_State> <Prone_State> <skin>
-Prone clips named prone_idle / prone_crawl / prone_shoot become prone/{idle,crawl,shoot}/.
+Prone clips named prone_idle / prone_crawl / prone_shoot (and, for premium skins, prone_hit /
+prone_victory / prone_defeat / prone_pow) become prone/{idle,crawl,shoot,hit,victory,defeat,pow}/.
 If the prone east view faces left (head on the left) east/west are swapped and clips mirrored.
 """
 import io
@@ -47,7 +48,7 @@ def main(archive, standing, prone, skin):
         west.save(os.path.join(target, "prone", "west.png"))
         for direction in ("south", "north"):
             read(f"{prone}/rotations/{direction}.png").save(os.path.join(target, "prone", f"{direction}.png"))
-        for clip in ("idle", "crawl", "shoot"):
+        for clip in ("idle", "crawl", "shoot", "hit", "victory", "defeat", "pow"):
             prefix = f"{prone}/animations/prone_{clip}/east/"
             frames = sorted(n for n in names if n.startswith(prefix) and n.endswith(".png"))
             if not frames:

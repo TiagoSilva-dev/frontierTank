@@ -91,8 +91,16 @@ static func can_strengthen(id: String) -> bool:
 
 # ---------- levels, tiers and auras ----------
 
-static func tier_for_level(level: int) -> int:
-	# Weapon art evolves at +9, +10 and +12, like the DDTank icons.
+static func tier_for_level(level: int, weapon_id: String = "") -> int:
+	# Weapon art evolves at +9, +10 and +12, like the DDTank icons. A weapon may set its
+	# own levels (`tiers`: Solaris evolves at +6, +10 and +12) in its definition.
+	var own: Array = weapon_def(weapon_id).get("tiers", []) if weapon_id != "" else []
+	if not own.is_empty():
+		var tier: int = 0
+		for i in range(own.size()):
+			if level >= int(own[i]):
+				tier = i
+		return tier
 	if level >= 12:
 		return 3
 	if level >= 10:
@@ -136,7 +144,7 @@ static func quality_color(inst: Dictionary) -> Color:
 	return Color(str(quality_def(str(inst.get("quality", "normal"))).color))
 
 static func weapon_icon(id: String, level: int = 0) -> String:
-	for tier in range(tier_for_level(level), -1, -1):
+	for tier in range(tier_for_level(level, id), -1, -1):
 		var path: String = "res://assets/weapons/%s/tier%d.png" % [id, tier]
 		if ResourceLoader.exists(path):
 			return path
@@ -211,7 +219,7 @@ static func build_weapon(inst: Dictionary) -> Dictionary:
 	weapon.name = item_name(inst)
 	weapon.level = level
 	weapon.quality = quality.id
-	weapon.tier = tier_for_level(level)
+	weapon.tier = tier_for_level(level, str(def.id))
 	return weapon
 
 static func weapon_for_entry(entry: Dictionary) -> Dictionary:

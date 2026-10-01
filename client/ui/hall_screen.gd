@@ -132,14 +132,23 @@ func build_user_info() -> void:
 	UiKit.label(box, tr("Informações do usuário"), Rect2(0, 6, 368, 26), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.panel(box, Rect2(12, 34, 344, 256), "paper")
 	UiKit.panel(box, Rect2(18, 40, 332, 28), "dark")
-	UiKit.label(box, app.profile.player_name, Rect2(26, 40, 316, 28), 17, Color.WHITE, UiKit.INK)
+	if app.profile.is_founder():
+		FounderUi.badge(box, Rect2(22, 42, 24, 24))
+		UiKit.label(box, app.profile.player_name, Rect2(52, 40, 170, 28), 17, Color.WHITE, UiKit.INK)
+		FounderUi.title_label(box, Rect2(210, 40, 138, 28), 13, HORIZONTAL_ALIGNMENT_RIGHT)
+	else:
+		UiKit.label(box, app.profile.player_name, Rect2(26, 40, 316, 28), 17, Color.WHITE, UiKit.INK)
 	UiKit.label(box, tr("Ranking"), Rect2(22, 72, 70, 22), 13, Color("c0402f"))
 	UiKit.label(box, str(app.profile.ranking()), Rect2(92, 72, 70, 22), 15, UiKit.TEXT_DARK)
 	UiKit.label(box, tr("Méritos"), Rect2(186, 72, 70, 22), 13, Color("1f6fd0"))
 	UiKit.label(box, str(app.profile.merits), Rect2(256, 72, 80, 22), 15, UiKit.TEXT_DARK)
 	var stage: Panel = UiKit.panel(box, Rect2(60, 94, 220, 148), Color(0, 0, 0, 0))
 	stage.clip_contents = true
-	AvatarView.create(stage, app.profile.look(), Rect2(0, 0, 220, 148))
+	var avatar: AvatarView = AvatarView.create(stage, app.profile.look(), Rect2(0, 0, 220, 148))
+	if app.profile.is_founder() and not app.founder_entered and FounderPack.complete(app.profile.look()) and bool(app.profile.founder_fx.get("lobby", true)):
+		# The full Founder set gets a short entrance, once per session.
+		app.founder_entered = true
+		avatar.play_entrance(app)
 	UiKit.level_badge(box, app.profile.level(), Rect2(292, 100, 44, 30))
 	UiKit.label(box, TankFighter.rank_for(app.profile.level()), Rect2(250, 132, 100, 22), 13, Color("2f8a1f"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var goals: Array[int] = [1, 5, 10, 25, 50, 100]

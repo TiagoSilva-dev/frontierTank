@@ -50,6 +50,8 @@ var summary: Dictionary = {}
 var loot_queue: Array[Dictionary] = []
 var trails: ShotTrails
 var pow_auras: Dictionary = {}
+var founder_pow: FounderPow
+var last_emote: int = -10000
 var skill_queue: Dictionary = {}
 var alive: Dictionary = {}
 var last_tick: int = -1
@@ -115,6 +117,7 @@ func _ready() -> void:
 	game.special.connect(show_special)
 	game.effect.connect(show_effect)
 	game.pow_impact.connect(show_pow_impact)
+	game.emote.connect(show_emote)
 	# Deferred: secondary projectiles get their stage right after they are created.
 	game.shot_fired.connect(func(projectile: TankProjectile) -> void: on_shot.call_deferred(projectile))
 	game.skill_used.connect(on_skill)
@@ -344,11 +347,21 @@ func show_blast(point: Vector2, radius: float) -> void:
 	blast.radius = radius
 	blast.debris = game.terrain.last_debris.duplicate()
 	blast.position = point
+	if str(game.active().weapon.get("id", "")) == FounderPack.WEAPON:
+		# Founder explosion: the sun sigil, pillar of light and ring, all inside the real radius.
+		blast.sun = true
+		var sun_blast: SunBlast = SunBlast.new()
+		sun_blast.radius = radius
+		sun_blast.position = point
+		effects.add_child(sun_blast)
 	effects.add_child(blast)
 
 func show_special(point: Vector2, _path: String) -> void:
 	# The POW shot: burst of light at the fighter, "POW!" banner, zoom punch and shake.
 	var shooter: TankFighter = game.active()
+	if str(shooter.weapon.get("id", "")) == FounderPack.WEAPON and not shooter.is_monster:
+		show_founder_pow(shooter)
+		return
 	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
 	app.audio.play("pow_fire")
 	# 0.15: the cut-in with the shooter's portrait; the match holds the shot while it
@@ -370,7 +383,44 @@ func show_special(point: Vector2, _path: String) -> void:
 	shake = 0.45
 	kick = 0.5
 
+func show_emote(fighter: TankFighter, _id: String) -> void:
+	var fx: EmoteFx = EmoteFx.new()
+	fx.fighter = fighter
+	effects.add_child(fx)
+	app.audio.play("founder_emote", -3.0, 1.0, 400)
+
+func show_founder_pow(shooter: TankFighter) -> void:
+	# Julgamento do Sol (FounderPow): its own sequence replaces the cut-in banner.
+	clear_pow_aura(shooter)
+	if is_instance_valid(founder_pow):
+		founder_pow.finish()
+	hud.founder_cutin(tr(str(shooter.weapon.get("pow", {}).get("name", ""))), {} if shooter.is_monster else shooter.look, shooter.display_name, str(shooter.weapon.get("name", "")))
+	founder_pow = FounderPow.new()
+	founder_pow.screen = self
+	founder_pow.fighter = shooter
+	add_child(founder_pow)
+	founder_pow.start()
+	get_tree().create_timer(maxf(0.05, game.hitstop - 0.05)).timeout.connect(func() -> void:
+		if is_instance_valid(shooter):
+			shooter.recoil(10.0, 0.4)
+		shake = maxf(shake, 0.3))
+
+func show_founder_impact(point: Vector2, radius: float) -> void:
+	var impact: FounderImpact = FounderImpact.new()
+	impact.radius = radius
+	impact.position = point
+	impact.top = camera.position.y - 420.0 - point.y
+	effects.add_child(impact)
+	app.audio.play("pow_solaris_impact", 1.0, 1.0, 120)
+	if is_instance_valid(founder_pow):
+		founder_pow.release()
+	shake = 0.5
+	kick = 0.4
+
 func show_pow_impact(point: Vector2, radius: float, weapon_id: String) -> void:
+	if weapon_id == FounderPack.WEAPON:
+		show_founder_impact(point, radius)
+		return
 	# The POW lands: each weapon's own shape, colours and particles, a heavy shake and
 	# a second camera punch (the match itself holds for LocalMatch.hitstop).
 	var impact: PowImpact = PowImpact.new()
@@ -462,6 +512,10 @@ func on_turn(fighter: TankFighter) -> void:
 		hud.flash(tr("SUA VEZ!"), Color("9aff7a"), "  •  ".join(weights))
 
 func on_finished(winner: int) -> void:
+	# The winners celebrate (Founder skins take the victory pose; halos and auras swell).
+	for fighter: TankFighter in game.fighters:
+		if fighter.team == winner and fighter.hp > 0 and not fighter.is_monster:
+			fighter.celebrate()
 	if online:
 		finished_here = true
 		settle_online()
@@ -571,6 +625,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		game.pass_turn()
 	elif key == KEY_Q:
 		game.flip_aim()
+	elif key == KEY_E and Time.get_ticks_msec() - last_emote > 2500 and FounderPack.is_founder(game.local().look):
+		last_emote = Time.get_ticks_msec()
+		game.emote_now("paladino")
 
 func _gui_input(event: InputEvent) -> void:
 	# Right or middle drag pans the camera across the map, like dragging the view.

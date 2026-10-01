@@ -1,0 +1,81 @@
+{
+  "context": "Gustfire is a 2D pixel-art artillery game (DDTank style). In battle every fighter lies prone on the ground, about 80 px tall on a 640x360 view, with a weapon cannon on the back, and fires parabolic shots at terrain and enemies while a wind arrow and a dashed shot line must stay readable. The Founder Pack is a limited-time, never-again premium cosmetic set ('Paladino do Sol', celestial golden-white-royal-blue warrior tied to sun and stars, NOT a generic medieval knight). It must convey exclusivity, prestige, rarity, visual power and status, while staying purely cosmetic: no permanent competitive advantage, gameplay readability (trajectory, damage area) must never suffer, and every other player must recognise a Founder at a glance.",
+  "groups": [
+    {
+      "id": "silhouette",
+      "title": "Skin silhouette: which Paladino do Sol design works best in the game?",
+      "questions": {
+        "readable": {"type": "score", "instructions": "When this character is drawn only about 80 px tall, lying prone on a busy battle map, how quickly would a player recognise its silhouette?", "criteria": ["Blends into the map; unreadable", "Recognisable only after staring", "Recognisable at a glance with some effort", "Instantly recognisable, unique shape"]},
+        "identity": {"type": "score", "instructions": "How distinct is this design from a generic medieval knight, while clearly reading as a celestial sun warrior?", "criteria": ["Generic medieval knight", "Knight with a few celestial accessories", "Clearly celestial, partly generic", "Unmistakably a unique celestial sun paladin"]},
+        "prestige": {"type": "score", "instructions": "How strongly does this design convey exclusivity, rarity and status for a player who joined at the very beginning?", "criteria": ["Looks ordinary", "Looks nice but common", "Looks rare and valuable", "Looks legendary, the rarest item in the game"]},
+        "feasible": {"type": "score", "instructions": "How feasible is it to produce this as pixel art that works inside the existing paper-doll rig (body sprite clips + separately layered wings, weapon, aura), without redrawing wings and halo into every frame?", "criteria": ["Needs a rebuilt rig and hundreds of hand-drawn frames", "Large extra work", "Fits the rig with moderate work", "Fits the rig directly"]},
+        "clutter": {"type": "score", "instructions": "How much does this design risk hiding the shot line, the wind arrow, the projectile or enemies during normal play?", "criteria": ["No risk", "Slight risk", "Noticeable risk", "High risk; oversized effects cover the screen"]}
+      },
+      "weights": {"readable": 2.0, "identity": 2.0, "prestige": 1.5, "feasible": 1.0, "clutter": -2.0},
+      "options": [
+        {"id": "A_chibi_halo_layer", "text": "Chibi armoured paladin. White and gold plate with royal-blue trim, a winged crown-helm with a central blue crystal, pauldrons, short cape, gauntlets, boots. The solar halo is NOT part of the body sprite: it is a separate additive layer floating behind the head and shoulders that spins slowly, leaves particles when moving, flares on attack and becomes a huge mandala during POW. Wings are a separate small cosmetic layer that folds when crawling and opens on victory."},
+        {"id": "B_baked_wings", "text": "Chibi armoured paladin with oversized celestial wings and a long flowing cape painted into the body sprite and into every animation frame, and the halo painted into the sprite as well (so it cannot animate independently from the body)."},
+        {"id": "C_robed_priest", "text": "Solar priest in a long white and gold robe with a thin halo-shaped headband, no armour pieces and no crown; a staff-like cannon. Soft silhouette."},
+        {"id": "D_giant_halo", "text": "Chibi armoured paladin whose halo is permanently huge (about twice the body size) and always covered in particles and rays, plus large wings, so the character is very flashy even while idle."}
+      ]
+    },
+    {
+      "id": "pow_timeline",
+      "title": "POW Julgamento do Sol: which timeline is epic without breaking match rhythm?",
+      "questions": {
+        "epic": {"type": "score", "instructions": "How epic and memorable does this POW sequence feel, enough that everyone in the match realises a Founder used it?", "criteria": ["Forgettable", "Decent", "Impressive", "Unforgettable signature moment"]},
+        "pace": {"type": "score", "instructions": "How much does this sequence interrupt the rhythm of a turn-based artillery match, considering players see it every time a Founder fires a POW (several times per match)?", "criteria": ["Barely interrupts", "Short pause, acceptable", "Clearly slows the match", "Badly stalls the match and gets annoying on repeat"]},
+        "legible": {"type": "score", "instructions": "How well does the sequence keep gameplay readable, so players can still see where the shot lands and what it hits?", "criteria": ["Unreadable", "Often confusing", "Mostly readable", "Fully readable"]},
+        "fatigue": {"type": "score", "instructions": "How likely is the sequence to cause fatigue or annoyance for the opponents who must watch it, after seeing it several times?", "criteria": ["No fatigue", "Slight", "Noticeable", "Strong annoyance"]}
+      },
+      "weights": {"epic": 2.0, "pace": -2.0, "legible": 1.5, "fatigue": -1.5},
+      "options": [
+        {"id": "T1_2s_fast", "text": "Total 2.0 s. Activation with slight screen dimming 0.3 s, halo grows into a mandala 0.4 s, charge with small shake 0.3 s, fire and celestial lance crossing the screen 0.4 s, impact with sun symbol, beam of light and gold shockwaves 0.4 s, final feather and particles 0.2 s. Gameplay control returns right after."},
+        {"id": "T2_3s_balanced", "text": "Total 3.0 s. Activation with the screen dimming lightly and ambience lowered while the character takes a special pose 0.5 s, awakening (halo becomes a huge rotating solar mandala, symbols spin, gold fragments rise, wings fully open) 0.6 s, charge (weapon opens, energy flows into the core, small screen shake) 0.4 s, fire and celestial solar lance crossing the screen with rings, stars and a light distortion 0.6 s, impact (huge sun symbol, beam of light from the sky, explosion, gold waves across the scenery) 0.6 s, final (particles fade, a celestial feather falls) 0.3 s. The camera follows the shot and the player can not skip it."},
+        {"id": "T3_4s_full", "text": "Total 4.0 s. The same six phases as a cinematic: activation 0.8 s, awakening 0.8 s, charge 0.6 s, fire and flight 0.7 s, impact 0.7 s, final 0.4 s. Everyone must watch it; no skip."},
+        {"id": "T4_3s_skippable_compact", "text": "Total 3.0 s with the same six phases as a balanced sequence, but for opponents the dimming is weaker and the whole sequence compresses to 1.6 s from the fourth time that player has used it in the same match; the firing player always sees the full 3.0 s version."}
+      ]
+    },
+    {
+      "id": "explosion_honesty",
+      "title": "Explosion VFX: which radius policy never misleads the player about the real damage area?",
+      "questions": {
+        "misleads": {"type": "noul", "instructions": "Could a player reasonably believe the damage area is larger than it really is, after seeing this explosion effect?", "criteria": {"true": "The visible ring, flash or decoration extends clearly beyond the real damage radius and looks like the damage zone", "false": "Everything that looks like the damage zone stays inside or exactly at the real radius"}},
+        "spectacle": {"type": "score", "instructions": "How spectacular and exclusive does this explosion look?", "criteria": ["Plain", "Nice", "Striking", "Stunning and unique"]}
+      },
+      "weights": {"misleads": -3.0, "spectacle": 1.5},
+      "options": [
+        {"id": "E1_exact_ring", "text": "Real damage radius R. The sun-symbol decal on the ground is drawn at 0.8 R and the expanding energy ring ends exactly at R, then fades. The vertical pillar of light is narrow (under 0.25 R wide) and only rises upward, it is not a horizontal area. Decorative stars fly upward and outward but fade and never travel beyond R along the ground; they are tiny and dim."},
+        {"id": "E2_big_ring", "text": "Real damage radius R. The energy ring expands to 1.5 R with a bright solid outline for impact, and the sun symbol is drawn at 1.3 R."},
+        {"id": "E3_wide_stars", "text": "Real damage radius R. The ring ends exactly at R but bright stars and gold fragments spray along the ground out to 2 R."},
+        {"id": "E4_inner_plus_outer_marker", "text": "Real damage radius R. The bright solid ring ends exactly at R. A second very faint, thin, purely decorative shimmer ring continues to 1.4 R for 0.1 s."}
+      ]
+    },
+    {
+      "id": "priority",
+      "title": "Production priority: how much does each element help everyone in a match notice a Founder?",
+      "questions": {
+        "notice": {"type": "score", "instructions": "How strongly does this element make other players in the same match, or in the lobby, immediately identify the wearer as a Founder who joined at the very beginning?", "criteria": ["Not noticed by others at all", "Noticed only by someone who looks closely", "Noticed by most players who look at the wearer", "Noticed by everyone in the match almost immediately"]},
+        "frequency": {"type": "score", "instructions": "How often do other players see this element in normal play?", "criteria": ["Almost never", "Occasionally", "Every match", "Constantly in every match and in the lobby"]}
+      },
+      "weights": {"notice": 2.0, "frequency": 1.0},
+      "options": [
+        {"id": "skin", "text": "The Paladino do Sol character skin with its solar halo worn in every battle."},
+        {"id": "weapon_solaris", "text": "The Solaris weapon art on the character's back and its +0/+6/+10/+12 visual evolution."},
+        {"id": "projectile", "text": "The Estrela do Amanhecer projectile with golden trail."},
+        {"id": "explosion", "text": "The exclusive golden sun-symbol explosion when a shot lands."},
+        {"id": "pow", "text": "The POW Julgamento do Sol full sequence with celestial lance, sun symbol and beam of light."},
+        {"id": "aura", "text": "The Aura do Primeiro Sol magic circle under the feet, very subtle in battle."},
+        {"id": "wings", "text": "The Asas da Aurora small celestial wings on the back."},
+        {"id": "pet", "text": "The pet Solis, a small celestial guardian following the character."},
+        {"id": "footstep", "text": "Solar symbols that appear on the ground for 0.4 s when the character moves."},
+        {"id": "badge", "text": "The Founder sun badge shown in profile, ranking, lobby, friends list and chat."},
+        {"id": "frame", "text": "The Founder profile frame with gold, wings and a blue crystal."},
+        {"id": "title", "text": "The title FUNDADOR displayed with the player name."},
+        {"id": "emote", "text": "The Paladino Approved emote: pixel head of the paladin with a shining star."},
+        {"id": "lobby_entry", "text": "A 1-2 second entrance in the lobby: halo appears, solar particles, character lands, wings fold; not repeated constantly."},
+        {"id": "store_screen", "text": "The premium Founder Pack promo screen for buying."}
+      ]
+    }
+  ]
+}

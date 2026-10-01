@@ -88,6 +88,8 @@ func refresh() -> void:
 		var author: String = str(message.get("author", "")).replace("[", "(").replace("]", ")")
 		if reportable(message):
 			author = "[url=%d]%s[/url]" % [int(message.id), author]
+		if bool(message.get("founder", false)):
+			author = FounderUi.chat_badge() + author
 		if channel == "system":
 			lines.append("[color=#8cff7a]%s[/color]" % text)
 		elif channel == "alto-falante":
@@ -112,6 +114,6 @@ func send(text: String) -> void:
 	text = text.strip_edges()
 	if text == "" or app == null:
 		return
-	app.lobby.post(app.profile.player_name, text, "Privado" if tab == "Privado" else "Atual")
+	app.lobby.post(app.profile.player_name, text, "Privado" if tab == "Privado" else "Atual", {"founder": app.profile.is_founder()})
 	input.text = ""
 	input.release_focus()

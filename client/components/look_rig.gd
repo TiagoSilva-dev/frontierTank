@@ -38,6 +38,18 @@ var time: float = 0.0
 var flip: bool = false
 var wing_dir: float = 1.0
 var body_rect: Rect2 = Rect2()
+# Founder Pack (FounderFx): where the head is this frame, where the feet are and what the
+# owner is doing ("idle", "walk", "aim", "attack", "hit", "victory", "defeat", "pow").
+var founder_fx: FounderFx
+var fx_state: String = "idle"
+var head_center: Vector2 = Vector2.ZERO
+var head_dims: Vector2 = Vector2.ZERO
+var ground_y: float = 0.0
+# Asas da Aurora: 0..1 opening (victory, POW) on top of the flap; a partial fold while crawling.
+var wing_open: float = 0.0
+# Extra growth of the weapon on the back (Solaris "opening" during the POW charge).
+var weapon_bump: float = 0.0
+var wing_fold: float = 0.0
 # Optional: returns {"node": Sprite2D, "offset": Vector2} for the body shown this frame.
 var source: Callable
 
@@ -56,7 +68,7 @@ func setup(look_data: Dictionary, pose: String) -> void:
 	var art_view: String = "side" if view == "prone" else "front"
 	var prone: bool = view == "prone"
 	var level: int = int(look.get("weapon_level", 0))
-	if level > 0 and not prone:
+	if level > 0 and not prone and not bool(look.get("no_aura", false)):
 		aura = AuraRing.new()
 		back.add_child(aura)
 		aura.setup(Armory.aura_color(level), level, 64.0)
@@ -85,6 +97,16 @@ func setup(look_data: Dictionary, pose: String) -> void:
 	if str(look.get("hat", "")) != "":
 		hat = make_layer(self, Armory.cosmetic_art(str(look.hat), art_view))
 	glow_color = Color.TRANSPARENT if prone else Armory.aura_color(int(look.get("clothes_level", 0)))
+	if FounderPack.wears_skin(look) or FounderPack.is_founder(look):
+		founder_fx = FounderFx.new()
+		founder_fx.rig = self
+		back.add_child(founder_fx)
+		# Behind the wings and the weapon, but in front of the weapon aura of the menus.
+		back.move_child(founder_fx, 1 if aura != null else 0)
+
+func fx_event(kind: String) -> void:
+	if founder_fx != null:
+		founder_fx.event(kind)
 
 func make_layer(parent: Node2D, path: String) -> Sprite2D:
 	if not ResourceLoader.exists(path):
@@ -202,12 +224,12 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 		if prone:
 			# Lying down: both wings rise from the back; the far one sits a little
 			# forward, higher and darker.
-			var s: float = head_w * 1.05 / wing_root.x
+			var s: float = head_w * 1.05 / wing_root.x * (1.0 + 0.35 * wing_open - 0.12 * wing_fold)
 			pin_wing(wing_a, flip, back + Vector2(-dir * head_w * 0.12, -head_w * 0.04), s)
 			pin_wing(wing_b, flip, back + Vector2(dir * head_w * 0.12, -head_w * 0.1), s * 0.9)
 			wing_b.modulate = Color(0.72, 0.72, 0.8)
 		else:
-			var s: float = head_w * 1.2 / wing_root.x
+			var s: float = head_w * 1.2 / wing_root.x * (1.0 + 0.35 * wing_open - 0.12 * wing_fold)
 			var shoulder: Vector2 = back + Vector2(0, -head_h * 0.3)
 			pin_wing(wing_a, false, shoulder + Vector2(-head_w * 0.1, 0), s)
 			pin_wing(wing_b, true, shoulder + Vector2(head_w * 0.1, 0), s)
@@ -221,7 +243,7 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 		var grow: float = Armory.visual("back_weapon_scale") if prone else 1.0
 		var size: float = head_w * (1.15 if not prone else 0.95) * grow
 		var used: Rect2 = art_bounds(back_weapon.texture)
-		var s: float = size / maxf(used.size.x, used.size.y)
+		var s: float = size / maxf(used.size.x, used.size.y) * (1.0 + weapon_bump)
 		back_weapon.scale = Vector2(s, s)
 		back_weapon.flip_h = flip
 		var shift: Vector2 = used.get_center() - back_weapon.texture.get_size() / 2.0
@@ -236,6 +258,9 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 			weapon_shine.scale = Vector2.ONE * (1.08 + 0.06 * sin(time * 12.0))
 			weapon_shine.modulate = Color(1.0, 0.9, 0.55, weapon_glow * (0.65 + 0.35 * sin(time * 9.0)))
 	body_rect = Rect2(Vector2(top.x - head_w, top.y), Vector2(head_w * 2.0, bottom - top.y))
+	head_center = Vector2(top.x, top.y + head_h * 0.55)
+	head_dims = Vector2(head_w, head_h)
+	ground_y = bottom
 	if aura != null:
 		# Like the DDTank profile: the circle sits behind the head and shoulders.
 		var diameter: float = head_w * 2.5
@@ -270,8 +295,15 @@ func _process(delta: float) -> void:
 			follow(shown.node, shown.offset)
 	if wing_a != null:
 		# Flapping: each wing turns around its shoulder, the two in opposite directions.
-		var flap: float = 0.13 * sin(time * 3.4) - 0.03
-		var lift: float = flap + wing_tilt
+		var aurora: bool = str(look.get("wings", "")) == FounderPack.WINGS
+		if aurora:
+			# Aurora wings fold a little while crawling and open wide on a win or a POW.
+			var folded: float = 1.0 if fx_state == "walk" else 0.0
+			var opened: float = 1.0 if fx_state in ["victory", "pow"] else 0.0
+			wing_fold = move_toward(wing_fold, folded, get_process_delta_time() * 5.0)
+			wing_open = move_toward(wing_open, opened, get_process_delta_time() * 2.5)
+		var flap: float = (0.13 * sin(time * 3.4) - 0.03) * (1.0 - 0.6 * wing_fold) * (1.0 + wing_open)
+		var lift: float = flap + wing_tilt + wing_open * 0.25 - wing_fold * 0.3
 		if view == "prone":
 			wing_a.rotation = wing_dir * lift
 			wing_b.rotation = wing_dir * (lift * 0.8 + 0.28)

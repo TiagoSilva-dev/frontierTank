@@ -14,6 +14,8 @@ const GRAVITY: float = 900.0
 static var _frames: Array[Texture2D] = []
 
 var radius: float = 40.0
+# Founder explosion (SunBlast draws the blast): only the ground chunks and a little dust.
+var sun: bool = false
 var debris: PackedColorArray = PackedColorArray()
 var age: float = 0.0
 var life: float = 1.2
@@ -41,6 +43,7 @@ func _ready() -> void:
 	var fit: float = radius * 3.0 / float(art[0].get_width())
 	fire.scale = Vector2.ONE * maxf(1.0, roundf(fit * 2.0) / 2.0)
 	fire.z_index = 1
+	fire.visible = not sun
 	add_child(fire)
 	life = maxf(0.9, art.size() * FRAME_TIME + 0.25) if art.size() > 1 else 0.8
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -62,7 +65,7 @@ func _process(delta: float) -> void:
 	var art: Array[Texture2D] = frames()
 	if art.size() > 1:
 		var index: int = int(age / FRAME_TIME)
-		fire.visible = index < art.size()
+		fire.visible = index < art.size() and not sun
 		if fire.visible:
 			fire.texture = art[index]
 	else:
@@ -79,6 +82,9 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if sun:
+		draw_chunks()
+		return
 	if age < 0.14:
 		var t: float = age / 0.14
 		draw_circle(Vector2.ZERO, radius * (0.9 + t * 0.7), Color(1.0, 0.97, 0.8, 0.85 * (1.0 - t)))
@@ -94,6 +100,9 @@ func _draw() -> void:
 		var p: Vector2 = puff.pos.snapped(Vector2(2, 2))
 		draw_circle(p, r, Color(shade, shade * 0.95, shade * 0.92, 0.55 * (1.0 - t)))
 		draw_circle(p + Vector2(-r * 0.3, -r * 0.3), r * 0.55, Color(shade + 0.2, shade + 0.18, shade + 0.15, 0.4 * (1.0 - t)))
+	draw_chunks()
+
+func draw_chunks() -> void:
 	var fade: float = clampf((life - age) / 0.3, 0.0, 1.0)
 	for chunk: Dictionary in chunks:
 		var s: float = chunk.size

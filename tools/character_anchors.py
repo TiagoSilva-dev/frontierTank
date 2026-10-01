@@ -5,7 +5,7 @@ For assets/characters/<skin>/ it writes anchors.json with, in pixel coordinates 
 each image:
   south: head box, eye line and upper-back point of the standing front view (menus);
   prone: the same for the prone east view used in battle;
-  clips: per-frame head position for prone/{idle,crawl,shoot} (tracked by template
+  clips: per-frame head position for prone/{idle,crawl,shoot,hit,victory,defeat,pow} (tracked by template
          matching against the static prone sprite), so hats and glasses follow the head;
   hair:  hex colours of the hair, used by the hair-dye shader.
 
@@ -20,6 +20,7 @@ import numpy as np
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "assets", "characters")
+NO_DYE = {"roupa_paladino_sol"}
 
 
 def load(path):
@@ -155,13 +156,14 @@ def analyse(skin):
     result = {}
     south = load(os.path.join(folder, "south.png"))
     result["south"] = south_anchors(south)
-    result["hair"] = hair_palette(south, result["south"]["head"])
+    # Skins whose "hair" is part of a helm (gold crown-helm) must ignore the hair dye.
+    result["hair"] = [] if skin in NO_DYE else hair_palette(south, result["south"]["head"])
     prone_path = os.path.join(folder, "prone", "east.png")
     if os.path.exists(prone_path):
         prone = load(prone_path)
         result["prone"] = prone_anchors(prone)
         clips = {}
-        for clip in ("idle", "crawl", "shoot"):
+        for clip in ("idle", "crawl", "shoot", "hit", "victory", "defeat", "pow"):
             clip_dir = os.path.join(folder, "prone", clip)
             if not os.path.isdir(clip_dir):
                 continue

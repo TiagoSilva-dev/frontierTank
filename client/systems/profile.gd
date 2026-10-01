@@ -41,6 +41,8 @@ var missions: Dictionary = {}
 # 0.15: how the player arranged the Mochila, cell by cell ("" = empty cell). Only the
 # order is kept here; CharacterScreen fits new and vanished items into it.
 var bag: Array[String] = []
+# Founder Pack: which of the Founder effects are on (FounderPack.FX_KEYS).
+var founder_fx: Dictionary = FounderPack.clean_fx({})
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var remote: bool = false
 var on_save: Callable = Callable()
@@ -123,6 +125,7 @@ func load_data(data: Dictionary) -> bool:
 			pity[key] = maxi(0, int(saved_pity[key]))
 	missions = MissionsBoard.clean_state(data.get("missions", {}))
 	bag = clean_bag(data.get("bag", []))
+	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
 	if saved_coupons is Array:
@@ -150,7 +153,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 6, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag}
+	return {"version": 6, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -287,6 +290,8 @@ func equip(uid: int) -> String:
 	if inst.is_empty():
 		return tr("Item não encontrado.")
 	var id: String = str(inst.id)
+	if not Armory.slot_of(id) in Armory.EQUIP_SLOTS:
+		return tr("Este item não se equipa.")
 	if Armory.kind_of(id) == "cosmetic":
 		var wanted: String = str(Armory.cosmetic_def(id).gender)
 		if wanted != "u" and wanted != gender:
@@ -315,7 +320,8 @@ func remove_instance(uid: int) -> void:
 
 func sell(uid: int) -> int:
 	var inst: Dictionary = find_instance(uid)
-	if inst.is_empty() or is_equipped(uid):
+	# The Founder seal is the proof of the Founder Pack: it is never sold off.
+	if inst.is_empty() or is_equipped(uid) or str(inst.get("id", "")) == FounderPack.SEAL:
 		return 0
 	var value: int = sell_value(inst)
 	coins += value
@@ -395,7 +401,13 @@ func stats(balance: Dictionary) -> Dictionary:
 	return Armory.character_stats(level(), equipped_list(), balance)
 
 func look() -> Dictionary:
-	return Armory.look_for(gender, equipped_list())
+	var result: Dictionary = Armory.look_for(gender, equipped_list())
+	if is_founder():
+		result["founder"] = FounderPack.look_extras(self)
+	return result
+
+func is_founder() -> bool:
+	return FounderPack.owns(self)
 
 func entry(balance: Dictionary) -> Dictionary:
 	# Battle roster entry for this character.
@@ -558,6 +570,8 @@ func redeem(code: String) -> String:
 	var before: int = next_uid
 	if bool(coupon.get("all", false)):
 		for def: Dictionary in Armory.data().weapons:
+			if bool(def.get("founder", false)):
+				continue  # the Founder Pack comes with the "founder" flag below
 			if bool(def.get("super", false)):
 				if not has_item(def.id):
 					add_instance(def.id, "super")
@@ -572,6 +586,11 @@ func redeem(code: String) -> String:
 			# Premium cosmetics only come from the Steam shop.
 			if not has_item(def.id) and not bool(def.get("premium", false)):
 				add_instance(def.id)
+	if bool(coupon.get("founder", false)):
+		# The whole Founder Pack for testing; Solaris comes at +12 to show every form.
+		for id: String in FounderPack.ITEMS:
+			if not has_item(id):
+				add_instance(id, "normal", 12 if id == FounderPack.WEAPON else 0)
 	for raw: Variant in coupon.get("weapons", []):
 		add_instance(str(raw[0]), str(raw[1]), int(raw[2]))
 	var stones: int = int(coupon.get("stones", 0))
@@ -632,7 +651,7 @@ func sell_tool(slot: int, balance: Dictionary) -> String:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -666,7 +685,9 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				error = unequip(Armory.slot_of(str(inst.id))) if is_equipped(uid) else equip(uid)
 		"sell":
 			var value: int = sell(arg_int(args, 0))
-			if value <= 0:
+			if str(find_instance(arg_int(args, 0)).get("id", "")) == FounderPack.SEAL:
+				error = tr("O Selo de Fundador não pode ser vendido.")
+			elif value <= 0:
 				error = tr("Item não encontrado.")
 			else:
 				message = tr("+%d moedas") % value
@@ -698,6 +719,16 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			# Cosmetic only: the new arrangement of the Mochila (an empty list sorts it).
 			bag = clean_bag(args[0] if not args.is_empty() else [])
 			save_profile()
+		"founder_fx":
+			# Cosmetic only: turn one Founder effect on or off (Founders only).
+			var key: String = arg_str(args, 0)
+			if not is_founder():
+				error = tr("Só Fundadores têm efeitos do Founder Pack.")
+			elif not key in FounderPack.FX_KEYS:
+				error = tr("Efeito desconhecido.")
+			else:
+				founder_fx[key] = args.size() > 1 and args[1] == true
+				save_profile()
 		"mission_claim":
 			var result: Dictionary = MissionsBoard.claim(self, arg_str(args, 0))
 			error = str(result.error)

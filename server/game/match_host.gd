@@ -12,7 +12,7 @@ const SEND_EVERY: int = 2
 const SUM_EVERY: int = 60
 # "FASE CONCLUÍDA" (1.6 s) plus the transition screen (8 s) on the players' side.
 const PHASE_PAUSE: float = 10.0
-const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pass", "flip", "auto"]
+const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pass", "flip", "auto", "emote"]
 # Pending intents per player; more than this in one tick is flooding.
 const MAX_PENDING: int = 12
 
@@ -130,6 +130,8 @@ func receive(session: PlayerSession, message: Dictionary) -> void:
 	if not action in ACTIONS or not raw is Dictionary:
 		return
 	var fighter: int = int(seats[session.account_id])
+	if action == "emote" and not session.profile.is_founder():
+		return
 	if pending.filter(func(entry: Array) -> bool: return int(entry[0]) == fighter).size() >= MAX_PENDING:
 		return
 	var data: Dictionary = {}

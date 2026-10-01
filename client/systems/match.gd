@@ -35,6 +35,8 @@ signal skill_used(fighter: TankFighter, info: Dictionary)
 # A POW shot landed (0.8): the screen plays the weapon's own impact; the match holds
 # still for `hitstop` seconds.
 signal pow_impact(point: Vector2, radius: float, weapon_id: String)
+# Founder emote (cosmetic): a Founder asked for "Paladino Approved".
+signal emote(fighter: TankFighter, id: String)
 
 enum State { WAITING_FOR_TURN, TURN_STARTED, PLAYER_MOVING, PLAYER_AIMING, PLAYER_CHARGING, PROJECTILE_FLYING, RESOLVING_DAMAGE, TURN_FINISHED, MATCH_FINISHED, MONSTER_ACTING }
 
@@ -476,7 +478,8 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		fighter.pow_gauge = 0
 		# 0.15: the battle holds the shot while the POW cut-in plays (the same on every
 		# copy of the match, so lockstep stays in step).
-		hitstop = maxf(hitstop, Armory.visual("pow_cutin"))
+		# Julgamento do Sol has a longer scene: the cut-in, then the Solaris charges.
+		hitstop = maxf(hitstop, Armory.visual("founder_cutin" if str(weapon.get("id", "")) == FounderPack.WEAPON else "pow_cutin"))
 		announce.emit(tr("%s usou POW: %s!") % [fighter.display_name, tr(str(pow_rules.name))], Color("ffd04a"))
 		special.emit(fighter.center(), str(pow_rules.get("effect", "")))
 	return {"damage": roundi(float(weapon.damage) * scale * (1.0 + bonus)), "base_damage": roundi(float(weapon.damage) * (1.0 + bonus) * (scale / float(pow_plan.get("damage_scale", 1.0)))), "radius": float(weapon.radius) * radius_scale, "base_radius": float(weapon.radius), "balls": balls, "spread": spread, "extra": extra, "fly": false, "freeze": freeze, "pow": pow_plan}
@@ -502,7 +505,11 @@ func fire_volley() -> void:
 			projectile.set_powered(PowImpact.colors_for(str(fighter.weapon.get("id", ""))))
 			var art: String = PowFx.projectile_art(str(fighter.weapon.get("id", "")))
 			if art != "":
-				projectile.use_pow_art(load(art), bool(style.get("align", false)))
+				projectile.use_pow_art(load(art), bool(style.get("align", false)) or bool(style.get("pow_align", false)))
+			if style.has("pow_frames"):
+				# Founder lance: animated art, drawn larger (visual only, like every POW shot).
+				projectile.set_frames(FounderPack.folder_frames(str(style.pow_frames)))
+				projectile.sprite_size = float(style.get("pow_size", projectile.sprite_size))
 		projectile.base_damage = int(shot_plan.get("base_damage", shot_plan.damage))
 		projectile.base_radius = float(shot_plan.get("base_radius", shot_plan.radius))
 	fighter.stats.shots += 1
@@ -674,6 +681,14 @@ func apply_aux(fighter: TankFighter) -> bool:
 	changed.emit()
 	return true
 
+# The Founder emote key: online it travels as an intent (everyone sees it at the same tick).
+func emote_now(id: String) -> void:
+	if not running or local_id < 0:
+		return
+	if send_intent("emote", {"id": id}):
+		return
+	apply_input(local_id, "emote", {"id": id})
+
 func toggle_fly() -> bool:
 	if not can_act():
 		return false
@@ -770,6 +785,11 @@ func apply_input(id: int, action: String, data: Dictionary) -> void:
 			# The player left or dropped: the AI plays for them until the end.
 			fighter.left = true
 			apply_auto(id, true)
+			return
+		"emote":
+			# Cosmetic and allowed at any time; only a Founder's look can ask for it.
+			if str(data.get("id", "")) == "paladino" and FounderPack.is_founder(fighter.look) and fighter.hp > 0:
+				emote.emit(fighter, "paladino")
 			return
 	if id != active_id or is_ai_controlled(fighter) or paused:
 		return

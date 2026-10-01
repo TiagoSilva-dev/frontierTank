@@ -258,6 +258,17 @@ func pow_banner(title: String, tint: Color, art_path: String = "", look: Diction
 	if is_instance_valid(pause_box):
 		move_child(pause_box, -1)
 
+func founder_cutin(title: String, look: Dictionary, shooter_name: String, weapon_name: String) -> void:
+	var cutin: FounderCutin = FounderCutin.new()
+	cutin.title = title
+	cutin.look = look
+	cutin.shooter_name = shooter_name
+	cutin.weapon_name = weapon_name
+	cutin.close = Armory.visual("founder_cutin_close")
+	add_child(cutin)
+	if is_instance_valid(pause_box):
+		move_child(pause_box, -1)
+
 func toggle_trust() -> void:
 	game.set_auto_play(not game.auto_play)
 

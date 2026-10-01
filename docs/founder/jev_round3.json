@@ -1,0 +1,129 @@
+{
+ "huge_sigil": {
+  "title": "Where may the huge sun symbol live without misleading the damage area?",
+  "ranking": [
+   "S2_sky_mandala",
+   "S1_ground_small",
+   "S4_sky_mandala_low",
+   "S3_ground_huge"
+  ],
+  "totals": {
+   "S2_sky_mandala": 3.98,
+   "S1_ground_small": 2.535,
+   "S4_sky_mandala_low": 2.065,
+   "S3_ground_huge": 1.7
+  },
+  "normalised": {
+   "S2_sky_mandala": {
+    "misleads": 0.15,
+    "spectacle": 0.95
+   },
+   "S1_ground_small": {
+    "misleads": 0.26,
+    "spectacle": 0.21
+   },
+   "S4_sky_mandala_low": {
+    "misleads": 0.8,
+    "spectacle": 0.98
+   },
+   "S3_ground_huge": {
+    "misleads": 0.93,
+    "spectacle": 0.99
+   }
+  },
+  "raw": {
+   "S3_ground_huge": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.93
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 2.98,
+     "confidence": 0.98,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Epic and huge"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.01,
+      "3": 0.99
+     }
+    }
+   },
+   "S4_sky_mandala_low": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.8
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 2.93,
+     "confidence": 0.93,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Epic and huge"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.01,
+      "2": 0.05,
+      "3": 0.94
+     }
+    }
+   },
+   "S2_sky_mandala": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.15
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 2.86,
+     "confidence": 0.86,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Epic and huge"
+     },
+     "probabilities": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.13,
+      "3": 0.87
+     }
+    }
+   },
+   "S1_ground_small": {
+    "misleads": {
+     "type": "noul",
+     "noul": 0.26
+    },
+    "spectacle": {
+     "type": "score",
+     "score": 0.63,
+     "confidence": 0.37,
+     "legend": {
+      "0": "Plain",
+      "1": "Nice",
+      "2": "Striking",
+      "3": "Epic and huge"
+     },
+     "probabilities": {
+      "0": 0.6,
+      "1": 0.24,
+      "2": 0.09,
+      "3": 0.07
+     }
+    }
+   }
+  }
+ }
+}

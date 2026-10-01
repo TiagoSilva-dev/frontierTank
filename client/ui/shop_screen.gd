@@ -76,7 +76,8 @@ func items() -> Array:
 	var list: Array = []
 	match tab:
 		"arma":
-			list = Armory.data().weapons.duplicate()
+			# Premium weapons (Solaris) live in the Premium tab, never in the gold shop.
+			list = Armory.data().weapons.filter(func(def: Dictionary) -> bool: return not bool(def.get("premium", false)))
 		"auxiliar":
 			list = Armory.data().auxiliary.duplicate()
 		"pedras":
