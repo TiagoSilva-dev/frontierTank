@@ -14,7 +14,7 @@ const LOGO: String = "res://assets/title/logo.png"
 const LOGO_EN: String = "res://assets/title/logo_en.png"
 const LOGO_TOP: float = 44.0
 const VERSION: String = NetClient.GAME_VERSION
-const OFFLINE: Dictionary = {"name": "Modo offline", "state": "Sozinho", "color": "c8b8a0", "offline": true}  # i18n
+const OFFLINE: Dictionary = {"name": "Modo offline", "state": "Sozinho", "color": "6a4424", "offline": true}  # i18n
 
 var app: Node
 var time: float = 0.0
@@ -103,7 +103,7 @@ func build_servers() -> void:
 		UiKit.label(row, tr(str(server.state)), Rect2(250, 0, 178, 36), 15, Color(str(server.color)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		server_buttons.append(row)
 	if searching:
-		UiKit.label(server_box, tr("Buscando servidores…"), Rect2(8, 92, 440, 32), 15, Color("7a5a3a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(server_box, tr("Buscando servidores…"), Rect2(8, 92, 440, 32), 15, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	pick(clampi(chosen, 0, servers.size() - 1))
 
 func build_account() -> void:
@@ -120,7 +120,7 @@ func build_account() -> void:
 		return
 	var auth: AuthClient = app.auth
 	if auth.token != "":
-		UiKit.label(account_box, tr("Conta"), Rect2(16, 16, 424, 26), 15, Color("7a5a3a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(account_box, tr("Conta"), Rect2(16, 16, 424, 26), 15, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.label(account_box, auth.username, Rect2(16, 42, 424, 34), 24, Color("5a2408"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var other: Button = UiKit.button(account_box, tr("Trocar de conta"), Rect2(44, 92, 176, 38), switch_account, "button", 15)
 		other.name = "SwitchAccount"
@@ -174,7 +174,7 @@ func refresh_servers() -> void:
 		if server is Dictionary:
 			var online: int = int(server.get("online", 0))
 			var full: bool = online >= int(server.get("capacity", 1)) * 0.9
-			list.append({"name": str(server.name), "url": str(server.url), "state": tr("Cheio") if full else tr("%d online") % online, "color": "ff8a6a" if full else ("8cff6a" if online > 0 else "7ad8ff")})
+			list.append({"name": str(server.name), "url": str(server.url), "state": tr("Cheio") if full else tr("%d online") % online, "color": "8f2016" if full else ("175a0c" if online > 0 else "12448c")})
 	list.append(OFFLINE)
 	servers = list
 	# The first online server is the default; alone, the offline mode.

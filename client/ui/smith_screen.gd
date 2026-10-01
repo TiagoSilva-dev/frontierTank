@@ -407,7 +407,7 @@ func build_currency_buttons(subject: Dictionary) -> void:
 		button.tooltip_text = "%s\n%s%s" % [Crafting.currency_name(id), Crafting.currency_desc(id), "\n\n" + reason if reason != "" else ""]
 		var icon: TextureRect = UiKit.art(button, str(def.icon), Rect2(44, 8, 56, 56))
 		UiKit.label(button, Crafting.currency_name(id), Rect2(0, 64, 144, 26), 16, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(button, "x%d" % count, Rect2(0, 90, 144, 26), 16, Color("2f7a1f") if count > 0 else Color("8a7a6a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(button, "x%d" % count, Rect2(0, 90, 144, 26), 16, Color("8cff7a") if count > 0 else Color("b4a690"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		if button.disabled:
 			icon.modulate = Color(0.55, 0.52, 0.5)
 

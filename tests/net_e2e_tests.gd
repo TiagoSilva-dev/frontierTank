@@ -133,7 +133,42 @@ func chat_tests(alice: Node, bob: Node) -> void:
 	await wait_until(func() -> bool: return false, 0.5)
 	var spam: int = bob.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text).begins_with("spam")).size()
 	check(spam < 8, "chat flooding is limited")
+	await whisper_tests(alice, bob)
 	await report_tests(alice, bob)
+
+# Player menu (0.18): private messages through the server, the public profile and friends.
+func whisper_tests(alice: Node, bob: Node) -> void:
+	await wait_until(func() -> bool: return false, 1.0)
+	var to_bob: Dictionary = {"name": bob.profile.player_name, "account": bob.my_account()}
+	alice.lobby.whisper(to_bob, "oi bob, é segredo", alice.profile.player_name)
+	var got: bool = await wait_until(func() -> bool: return bob.lobby.history.any(func(entry: Dictionary) -> bool: return str(entry.text) == "oi bob, é segredo"), 5)
+	check(got, "a private message reaches the other player")
+	var secret: Dictionary = bob.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text) == "oi bob, é segredo").back() if got else {}
+	check(got and str(secret.channel) == "Privado" and str(secret.author) == alice.profile.player_name and str(secret.to) == bob.profile.player_name, "it is on the Privado channel, from Alice, to Bob")
+	check(bob.lobby.unread_private >= 1 and alice.lobby.unread_private == 0, "the receiver has an unread private line, the sender none")
+	check(alice.lobby.history.any(func(entry: Dictionary) -> bool: return str(entry.text) == "oi bob, é segredo" and str(entry.channel) == "Privado"), "the sender sees the line too")
+	var everyone_else: bool = true
+	for entry: Dictionary in alice.lobby.history:
+		if str(entry.text) == "oi bob, é segredo" and str(entry.channel) != "Privado":
+			everyone_else = false
+	check(everyone_else, "a private message never reaches the public channel")
+	await wait_until(func() -> bool: return false, 1.0)
+	var before: int = alice.lobby.history.size()
+	alice.lobby.whisper({"name": "Fantasma", "account": 987654}, "tem alguém aí?", alice.profile.player_name)
+	check(await wait_until(func() -> bool: return alice.lobby.history.slice(before).any(func(entry: Dictionary) -> bool: return str(entry.channel) == "system" and str(entry.text).contains("Fantasma")), 5), "a message to someone offline is answered with a notice")
+	var info: Dictionary = await alice.lobby.profile_of({"account": bob.my_account()})
+	check(str(info.get("name", "")) == bob.profile.player_name and info.get("look") is Dictionary and int(info.get("level", 0)) >= 1 and info.has("attrs"), "the profile of another player comes from the server")
+	var missing: Dictionary = await alice.lobby.profile_of({"account": 987654})
+	check(missing.has("error"), "the profile of someone not online is an error")
+	alice.friends.path = "user://test_e2e_friends.json"
+	alice.friends.use_scope("acc%d" % alice.my_account())
+	check(alice.friends.add({"name": bob.profile.player_name, "account": bob.my_account(), "level": 1, "gender": "m"}) == "" and alice.friends.has(bob.profile.player_name), "Bob is added as a friend")
+	alice.friends.use_scope("offline")
+	check(not alice.friends.has(bob.profile.player_name), "the offline channel keeps its own list")
+	alice.friends.use_scope("acc%d" % alice.my_account())
+	check(alice.friends.has(bob.profile.player_name), "the friends of an account are kept")
+	alice.friends.remove(bob.profile.player_name)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://test_e2e_friends.json"))
 
 # Launch checklist: reporting a chat line. The server keeps who wrote each line, sends
 # the report with its context and mutes the author after reports from `report-mute`
@@ -145,13 +180,18 @@ func report_tests(alice: Node, bob: Node) -> void:
 	var line: Dictionary = bob.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text) == "linha denunciada").back()
 	check(line.has("id") and int(line.account) == alice.my_account(), "online lines carry their id and author")
 	var chat: ChatBox = bob.screen.find_children("*", "ChatBox", true, false).front() if not bob.screen.find_children("*", "ChatBox", true, false).is_empty() else null
-	check(chat != null and chat.log_label.text.contains("[url=%d]Alice[/url]" % int(line.id)), "another player's name is a report link")
+	check(chat != null and chat.log_label.text.contains("]Alice[/url]") and chat.log_label.text.contains("[url=m:"), "another player's name is a link to the player menu")
 	var own: Dictionary = alice.lobby.history.filter(func(entry: Dictionary) -> bool: return str(entry.text) == "linha denunciada").back()
 	check(not (alice.screen.find_children("*", "ChatBox", true, false).front() as ChatBox).reportable(own), "your own lines are not reportable")
 	check(not (await alice.net.request("chat_report", {"id": int(line.id), "reason": "ofensa"})).ok, "the server refuses reporting your own line")
 	check(not (await bob.net.request("chat_report", {"id": int(line.id), "reason": "inventado"})).ok, "a report needs a known reason")
 	check(not (await bob.net.request("chat_report", {"id": 999999, "reason": "ofensa"})).ok, "an unknown line cannot be reported")
-	chat.on_meta(str(line.id))
+	var line_index: int = bob.lobby.history.find(line)
+	chat.on_meta("m:%d" % line_index)
+	await process_frame
+	var menu: PlayerMenu = bob.ui.get_node_or_null("PlayerMenu")
+	check(menu != null and menu.find_child("Menu_report", true, false) != null and menu.find_child("Menu_whisper", true, false) != null and menu.find_child("Menu_profile", true, false) != null, "the name opens the player menu, with the report for a line of someone else")
+	menu.find_child("Menu_report", true, false).pressed.emit()
 	await process_frame
 	var dialog: ReportDialog = null
 	for node in bob.ui.get_children():

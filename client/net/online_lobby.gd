@@ -5,7 +5,6 @@ extends LobbyDirectory
 # and players come from the server's "lobby" messages and the chat is the players'.
 
 var net: NetClient
-var my_name: String = ""
 
 func _ready() -> void:
 	pass
@@ -14,11 +13,23 @@ func _process(_delta: float) -> void:
 	pass
 
 func post(author: String, text: String, channel: String = "Atual", extra: Dictionary = {}) -> void:
-	if author == my_name and channel in ["Atual", "Privado"] and extra.is_empty():
-		# The server sends it back to everyone (us included), filtered.
+	if author == my_name and channel == "Atual" and not extra.has("id"):
+		# The server sends it back to everyone (us included), filtered. (Lines that came from
+		# the server carry their id; the badge flag of the chat box does not make it local.)
 		net.send_kind("chat", {"text": text})
 		return
 	super.post(author, text, channel, extra)
+
+func whisper(target: Dictionary, text: String, _my_name: String) -> void:
+	# The server sends the line back to both players (it carries the receiver's name).
+	net.send_kind("whisper", {"account": int(target.get("account", 0)), "name": str(target.get("name", "")), "text": text})
+
+# The profile window of a player online: the server tells what the others may see.
+func profile_of(person: Dictionary) -> Dictionary:
+	var reply: Dictionary = await net.request("player_profile", {"account": int(person.get("account", 0))})
+	if reply.get("info") is Dictionary:
+		return reply.info
+	return {"error": str(reply.get("error", "offline"))}
 
 # Lines from the server itself (joins, drops, the alto-falante) come as a Portuguese key
 # with arguments and are translated here; what players write is shown as written.
@@ -36,6 +47,8 @@ func add(entry: Dictionary) -> void:
 	var extra: Dictionary = {}
 	if entry.has("id") and entry.has("account"):
 		extra = {"id": int(entry.id), "account": int(entry.account)}
+	if entry.has("to"):
+		extra["to"] = str(entry.to)
 	super.post(str(entry.get("author", "")), text_of(entry), str(entry.get("channel", "Atual")), extra)
 
 func receive(message: Dictionary) -> void:

@@ -34,7 +34,7 @@ func build() -> void:
 	var bonus: Dictionary = MissionsBoard.data().daily_bonus
 	UiKit.panel(self, Rect2(160, 594, 960, 54), "paper")
 	UiKit.label(self, tr("BÔNUS DIÁRIO  ·  %d/%d contratos resgatados") % [claimed_count, MissionsBoard.mission_count()], Rect2(176, 601, 570, 36), 17, UiKit.TEXT_DARK)
-	UiKit.label(self, tr("Moedas: %d   EXP: %d") % [int(bonus.coins), int(bonus.exp)], Rect2(750, 601, 348, 36), 17, Color("8b5b25"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
+	UiKit.label(self, tr("Moedas: %d   EXP: %d") % [int(bonus.coins), int(bonus.exp)], Rect2(750, 601, 348, 36), 17, UiKit.GOLD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
 	if message != "":
 		UiKit.label(self, message, Rect2(160, 652, 960, 22), 14, Color("fff4a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	update_reset_label()
@@ -58,14 +58,14 @@ func mission_row(mission: Dictionary, state: Dictionary, rect: Rect2) -> void:
 	var row: Panel = UiKit.panel(self, rect, "slot_light" if not claimed else "slot")
 	row.name = "Mission_" + id
 	UiKit.clipped(row, tr(str(mission.name)), Rect2(14, 4, 470, 26), 17, UiKit.TEXT_DARK)
-	UiKit.clipped(row, tr(str(mission.description)), Rect2(14, 34, 540, 26), 14, Color("6d5946"))
+	UiKit.clipped(row, tr(str(mission.description)), Rect2(14, 34, 540, 26), 14, UiKit.TEXT_MUTED)
 	UiKit.label(row, "%s / %s" % [format_count(progress), format_count(target)], Rect2(550, 12, 112, 22), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var bar_back: Panel = UiKit.panel(row, Rect2(554, 39, 104, 12), "dark")
 	var fill_width: float = 100.0 * float(progress) / float(maxi(1, target))
 	if fill_width > 0.0:
 		UiKit.panel(bar_back, Rect2(2, 2, fill_width, 8), "button_green")
 	var reward: Dictionary = mission.reward
-	UiKit.label(row, tr("+%d moedas\n+%d EXP") % [int(reward.coins), int(reward.exp)], Rect2(672, 8, 142, 54), 14, Color("2f6a1f"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(row, tr("+%d moedas\n+%d EXP") % [int(reward.coins), int(reward.exp)], Rect2(672, 8, 142, 54), 14, UiKit.GOOD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var button_text: String = tr("RESGATADA") if claimed else (tr("RESGATAR") if complete else tr("EM ANDAMENTO"))
 	var claim_button: Button = UiKit.button(row, button_text, Rect2(824, 16, 122, 42), claim.bind(id), "button_green" if complete and not claimed else "button", 14)
 	claim_button.name = "ClaimMission_" + id

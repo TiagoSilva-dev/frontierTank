@@ -9,6 +9,13 @@ const GOLD: Color = Color("ffd46b")
 const CREAM: Color = Color("fff4d6")
 const BROWN: Color = Color("5a2e10")
 const TEXT_DARK: Color = Color("4a2a12")
+# Colours for text on the light paper/card panels (all above 4.5:1 on them; see
+# tools/contrast_audit.gd). The bright ones of the dark panels (gold, cream) vanish there.
+const TEXT_MUTED: Color = Color("6a4424")
+const GOOD_ON_LIGHT: Color = Color("175a0c")
+const BAD_ON_LIGHT: Color = Color("8f2016")
+const INFO_ON_LIGHT: Color = Color("12448c")
+const GOLD_ON_LIGHT: Color = Color("86500a")
 const BLUE_TEAM: Color = Color("5cc8ff")
 const RED_TEAM: Color = Color("ff6a5c")
 const PIXEL_SCALE: int = 2
@@ -22,6 +29,7 @@ const FRAMES: Dictionary = {
 	"card_busy": {"rings": ["2f1e12", "cdb89a", "8f7355"], "top": "d9c7a6", "bottom": "b79d78", "radius": 4},
 	"dark": {"rings": ["120904", "7a5230"], "top": "2e1c10", "bottom": "1d1109", "radius": 2, "alpha": 0.9},
 	"glass": {"rings": ["120904", "5a3a22"], "top": "1c120a", "bottom": "120b06", "radius": 2, "alpha": 0.62},
+	"log": {"rings": ["120904", "6a4528"], "top": "1e130a", "bottom": "140c06", "radius": 2, "alpha": 0.82},
 	"slot": {"rings": ["2a1608", "c98b45", "5a3417"], "top": "4a3220", "bottom": "2e1d10", "radius": 2},
 	"slot_hover": {"rings": ["2a1608", "f2c27a", "6e4020"], "top": "5e4028", "bottom": "3a2515", "radius": 2},
 	"tooltip": {"rings": ["0d0703", "d9a45a", "4a2c14"], "top": "2a1a0e", "bottom": "150c06", "radius": 3, "alpha": 0.97},
@@ -36,7 +44,7 @@ const FRAMES: Dictionary = {
 	"plate": {"rings": ["2a1608", "f2b65a", "6e3510"], "top": "a4541c", "bottom": "7b3b12", "radius": 3},
 	"tab": {"rings": ["2a1608", "c98b45"], "top": "7a4420", "bottom": "5a2e12", "radius": 2},
 	"tab_active": {"rings": ["2a1608", "fff0b0"], "top": "ffc94f", "bottom": "e0701a", "radius": 2, "shine": true},
-	"badge": {"rings": ["0f1a3a", "a8dcff"], "top": "4f8ff0", "bottom": "1f4fb0", "radius": 5},
+	"badge": {"rings": ["0f1a3a", "a8dcff"], "top": "2f66c8", "bottom": "143c92", "radius": 5},
 	"badge_gold": {"rings": ["3a1d0a", "fff1b0"], "top": "ffd04a", "bottom": "d98a1a", "radius": 5},
 	"banner": {"rings": ["3a0f08", "ffd0a0"], "top": "f06a3a", "bottom": "b8321c", "radius": 3, "alpha": 0.95},
 	"mode_green": {"rings": ["0c2a10", "8cff9a", "1f7a2c"], "top": "2f6a38", "bottom": "173d1f", "radius": 3},
@@ -217,10 +225,14 @@ static func label(parent: Node, text: String, rect: Rect2, font_size: int = 16, 
 	node.add_theme_color_override("font_color", color)
 	if outline.a > 0:
 		node.add_theme_color_override("font_outline_color", outline)
-		node.add_theme_constant_override("outline_size", clampi(font_size / 8, 1, 3))
+		node.add_theme_constant_override("outline_size", outline_for(font_size))
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(node)
 	return node
+
+# Light text over art and mid-tone wood needs a real outline: 2 px from 16 px up, 4 px big.
+static func outline_for(font_size: int) -> int:
+	return clampi(font_size / 6, 2, 4)
 
 # A label that cuts a long text with "…" instead of growing past its box.
 static func clipped(parent: Node, text: String, rect: Rect2, font_size: int = 16, color: Color = CREAM, outline: Color = Color.TRANSPARENT, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
@@ -359,7 +371,7 @@ static func bar(parent: Node, rect: Rect2, color: Color, back: Color = Color("1a
 
 static func level_badge(parent: Node, level: int, rect: Rect2) -> Panel:
 	var node: Panel = panel(parent, rect, "badge")
-	label(node, "%02d" % level, Rect2(Vector2.ZERO, rect.size), int(rect.size.y * 0.55), GOLD, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	label(node, "%02d" % level, Rect2(Vector2.ZERO, rect.size), int(rect.size.y * 0.55), Color.WHITE, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	return node
 
 # Extra chibi skins generated with PixelLab live in assets/characters/<skin>/; bots pick

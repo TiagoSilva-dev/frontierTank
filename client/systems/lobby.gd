@@ -21,6 +21,16 @@ const CHAT_LINES: Array[String] = [
 	"GG pessoal, boa partida",  # i18n
 	"alguém sabe a força pra meia tela no ângulo 50?",  # i18n
 ]
+# What a simulated player answers to a private message (the offline channel).
+const WHISPER_REPLIES: Array[String] = [
+	"oi! tudo bem?",  # i18n
+	"valeu pela mensagem!",  # i18n
+	"bora jogar uma partida?",  # i18n
+	"agora estou em batalha, falo contigo depois",  # i18n
+	"GG! foi uma boa partida",  # i18n
+	"vou criar uma sala 2x2, entra lá!",  # i18n
+	"tô sem moedas hoje, haha",  # i18n
+]
 const SPEAKER_LINES: Array[String] = [
 	"Parabéns [%s] por abrir o Baú do Templo e ganhar um Ovo de Mascote!",  # i18n
 	"Parabéns! [%s] ganhou [Cristal Dourado] através de Instância.",  # i18n
@@ -38,6 +48,12 @@ var room_timer: float = 9.0
 var player_level: int = 1
 # Players whose lines this player hid (report dialog), by account; only this session.
 var ignored: Dictionary = {}
+# The player a private message goes to ({"name", "account"}; empty: none picked yet) and the
+# private lines that arrived while the Privado tab was not open.
+var whisper_target: Dictionary = {}
+var unread_private: int = 0
+# This player's own name (the lines of others are the unread ones).
+var my_name: String = ""
 
 func _ready() -> void:
 	rng.randomize()
@@ -125,10 +141,33 @@ func open_room() -> Dictionary:
 func post(author: String, text: String, channel: String = "Atual", extra: Dictionary = {}) -> void:
 	var message: Dictionary = {"author": author, "text": text, "channel": channel}
 	message.merge(extra)
+	if channel == "Privado" and author != my_name and not bool(extra.get("mine", false)):
+		unread_private += 1
 	history.append(message)
 	if history.size() > 60:
 		history.remove_at(0)
 	chat_added.emit(message)
+
+# A private message from this player. The offline channel answers for the simulated ones.
+func whisper(target: Dictionary, text: String, sender: String) -> void:
+	post(sender, text, "Privado", {"to": str(target.get("name", "")), "mine": true})
+	var reply_to: String = str(target.get("name", ""))
+	if not is_inside_tree():
+		return
+	await get_tree().create_timer(rng.randf_range(1.4, 3.6)).timeout
+	if is_inside_tree():
+		post(reply_to, tr(WHISPER_REPLIES[rng.randi() % WHISPER_REPLIES.size()]), "Privado", {"to": sender})
+
+# The public profile of a player of the list: the simulated ones are known here, the online
+# ones are asked from the server (OnlineLobby).
+func profile_of(person: Dictionary) -> Dictionary:
+	var level: int = int(person.get("level", 1))
+	var info: Dictionary = person.duplicate(true)
+	info["victories"] = int(person.get("victories", level * 3 + (str(person.get("name", "")).hash() % 7)))
+	info["matches"] = int(person.get("matches", int(info.victories) * 2 + 4))
+	info["merits"] = int(person.get("merits", level * 11))
+	info["ranking"] = int(person.get("ranking", maxi(0, int(info.victories) / 3)))
+	return info
 
 func ignore(account: int) -> void:
 	ignored[account] = true

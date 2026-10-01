@@ -9,7 +9,6 @@ var page: int = 0
 var filter: int = 0
 var grid: Control
 var page_label: Label
-var player_rows: VBoxContainer
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -50,7 +49,11 @@ func _ready() -> void:
 	UiKit.button(self, tr("◀ Anterior"), Rect2(600, 460, 140, 36), func() -> void: turn_page(-1), "button", 15)
 	UiKit.button(self, tr("Próximo ▶"), Rect2(748, 460, 140, 36), func() -> void: turn_page(1), "button", 15)
 	build_user_info()
-	build_player_list()
+	var players: PlayerList = PlayerList.new()
+	players.app = app
+	players.position = Vector2(906, 336)
+	players.name = "PlayerList"
+	add_child(players)
 	build_actions()
 	var chat: ChatBox = ChatBox.new()
 	chat.app = app
@@ -61,8 +64,6 @@ func _ready() -> void:
 	bar.position = Vector2(714, 656)
 	add_child(bar)
 	app.lobby.rooms_changed.connect(build_rooms)
-	# Online the players list comes with the rooms from the server.
-	app.lobby.rooms_changed.connect(fill_players)
 	build_rooms()
 
 func visible_rooms() -> Array[Dictionary]:
@@ -101,16 +102,16 @@ func room_card(room: Dictionary, rect: Rect2) -> void:
 	var card: Button = UiKit.button(grid, "", rect, func() -> void: try_join(room), "card_busy" if busy else "card")
 	card.name = "Room_%d" % int(room.id)
 	card.tooltip_text = tr("Sala %d — %s") % [int(room.id), tr(str(room.title))]
-	UiKit.label(card, tr("Desafio"), Rect2(12, 2, 150, 24), 17, Color("ffd04a"), Color("6a2a08"))
-	UiKit.label(card, tr("das Lutas"), Rect2(12, 20, 150, 24), 17, Color("ffd04a"), Color("6a2a08"))
-	UiKit.label(card, "#%d" % int(room.id), Rect2(128, 6, 80, 20), 13, Color("7a4a20"))
-	var title: Label = UiKit.label(card, tr(str(room.title)), Rect2(12, 46, 212, 22), 13, Color("5a2e10"))
+	UiKit.label(card, tr("Desafio"), Rect2(12, 2, 150, 24), 17, Color("4a1c06"))
+	UiKit.label(card, tr("das Lutas"), Rect2(12, 20, 150, 24), 17, Color("4a1c06"))
+	UiKit.label(card, "#%d" % int(room.id), Rect2(128, 6, 80, 20), 14, UiKit.TEXT_DARK)
+	var title: Label = UiKit.label(card, tr(str(room.title)), Rect2(12, 46, 212, 22), 14, UiKit.TEXT_DARK)
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.size = Vector2(212, 22)
 	UiKit.label(card, "%d/%d" % [room.members.size(), int(room.capacity)], Rect2(228, 44, 60, 24), 17, Color("3a1a06"))
 	var status: String = tr("Em jogo") if room.playing else (tr("Cheia") if full else tr("Aberta"))
-	UiKit.label(card, status, Rect2(228, 8, 70, 22), 13, Color("c0402f") if busy else Color("2f8a1f"))
+	UiKit.label(card, status, Rect2(228, 8, 70, 22), 14, UiKit.BAD_ON_LIGHT if busy else UiKit.GOOD_ON_LIGHT)
 	UiKit.panel(card, Rect2(296, 8, 118, 58), "slot")
 	UiKit.art(card, PixelIcons.get_icon("star"), Rect2(302, 12, 22, 22))
 	var map_name: String = tr("Mapa\nAleatório") if str(room.map) == "" else str(room.map)
@@ -138,9 +139,9 @@ func build_user_info() -> void:
 		FounderUi.title_label(box, Rect2(210, 40, 138, 28), 13, HORIZONTAL_ALIGNMENT_RIGHT)
 	else:
 		UiKit.label(box, app.profile.player_name, Rect2(26, 40, 316, 28), 17, Color.WHITE, UiKit.INK)
-	UiKit.label(box, tr("Ranking"), Rect2(22, 72, 70, 22), 13, Color("c0402f"))
+	UiKit.label(box, tr("Ranking"), Rect2(22, 72, 70, 22), 14, UiKit.BAD_ON_LIGHT)
 	UiKit.label(box, str(app.profile.ranking()), Rect2(92, 72, 70, 22), 15, UiKit.TEXT_DARK)
-	UiKit.label(box, tr("Méritos"), Rect2(186, 72, 70, 22), 13, Color("1f6fd0"))
+	UiKit.label(box, tr("Méritos"), Rect2(186, 72, 70, 22), 14, UiKit.INFO_ON_LIGHT)
 	UiKit.label(box, str(app.profile.merits), Rect2(256, 72, 80, 22), 15, UiKit.TEXT_DARK)
 	var stage: Panel = UiKit.panel(box, Rect2(60, 94, 220, 148), Color(0, 0, 0, 0))
 	stage.clip_contents = true
@@ -150,7 +151,7 @@ func build_user_info() -> void:
 		app.founder_entered = true
 		avatar.play_entrance(app)
 	UiKit.level_badge(box, app.profile.level(), Rect2(292, 100, 44, 30))
-	UiKit.label(box, TankFighter.rank_for(app.profile.level()), Rect2(250, 132, 100, 22), 13, Color("2f8a1f"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, TankFighter.rank_for(app.profile.level()), Rect2(250, 132, 100, 22), 14, UiKit.GOOD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var goals: Array[int] = [1, 5, 10, 25, 50, 100]
 	for i in range(goals.size()):
 		var slot: Panel = UiKit.panel(box, Rect2(22 + i * 54, 244, 46, 40), "slot")
@@ -159,41 +160,6 @@ func build_user_info() -> void:
 		icon.modulate = Color.WHITE if unlocked else Color(1, 1, 1, 0.35)
 		slot.mouse_filter = Control.MOUSE_FILTER_PASS
 		slot.tooltip_text = tr("Conquista: %d vitória(s)") % goals[i]
-
-func build_player_list() -> void:
-	var box: Panel = UiKit.panel(self, Rect2(906, 336, 368, 316), "wood")
-	UiKit.panel(box, Rect2(10, 8, 348, 30), "plate")
-	UiKit.label(box, tr("Nível"), Rect2(20, 8, 120, 30), 15, Color("ffe6a0"), UiKit.INK)
-	UiKit.label(box, tr("Sexo"), Rect2(270, 8, 80, 30), 15, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.panel(box, Rect2(10, 42, 348, 264), "paper")
-	var scroll: ScrollContainer = ScrollContainer.new()
-	scroll.position = Vector2(14, 46)
-	scroll.size = Vector2(340, 256)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(scroll)
-	player_rows = VBoxContainer.new()
-	player_rows.custom_minimum_size = Vector2(324, 0)
-	player_rows.add_theme_constant_override("separation", 2)
-	scroll.add_child(player_rows)
-	fill_players()
-
-func fill_players() -> void:
-	for child in player_rows.get_children():
-		child.queue_free()
-	var everyone: Array[Dictionary] = app.lobby.bots.duplicate()
-	everyone.append({"name": app.profile.player_name, "level": app.profile.level(), "gender": app.profile.gender, "me": true})
-	everyone.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
-	for person: Dictionary in everyone:
-		var row: Control = Control.new()
-		row.custom_minimum_size = Vector2(324, 30)
-		var tint: ColorRect = ColorRect.new()
-		tint.color = Color("fff0c0") if person.get("me", false) else Color(1, 1, 1, 0.0)
-		tint.size = Vector2(324, 30)
-		row.add_child(tint)
-		UiKit.level_badge(row, int(person.level), Rect2(4, 3, 34, 24))
-		UiKit.label(row, str(person.name), Rect2(46, 2, 200, 26), 16, Color("ffd04a") if not person.get("me", false) else Color("2f8a1f"), Color("5a2408"))
-		UiKit.art(row, PixelIcons.get_icon("male" if person.gender == "m" else "female"), Rect2(282, 4, 22, 22))
-		player_rows.add_child(row)
 
 func build_actions() -> void:
 	UiKit.panel(self, Rect2(512, 510, 388, 144), "wood")

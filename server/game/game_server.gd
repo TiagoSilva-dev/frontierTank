@@ -239,6 +239,10 @@ func handle(session: PlayerSession, text: String) -> void:
 			profile_op(session, message)
 		"chat":
 			chat(session, message)
+		"whisper":
+			whisper(session, message)
+		"player_profile":
+			player_profile(session, message)
 		"lobby":
 			session.watching_lobby = bool(message.get("on", true))
 			if session.watching_lobby:
@@ -518,6 +522,43 @@ func chat(session: PlayerSession, message: Dictionary) -> void:
 		if not other.lingering:
 			other.send({"t": "chat", "message": entry})
 	audit(session, "chat", {"text": text})
+
+# A private message to a player who is online. The lines keep their id and go to the chat
+# log, so the receiver can report them like any other line (they are not audited as text).
+func whisper(session: PlayerSession, message: Dictionary) -> void:
+	var text: String = str(message.get("text", "")).strip_edges().substr(0, 80)
+	if text == "" or not session.profile.created:
+		return
+	var moment: float = now()
+	if float(muted_until.get(session.account_id, 0.0)) > moment:
+		session.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."), "args": [ceili((float(muted_until[session.account_id]) - moment) / 60.0)], "channel": "system"}})
+		return
+	session.chat_times = session.chat_times.filter(func(at: float) -> bool: return moment - at < 10.0)
+	if session.chat_times.size() >= 5 or (not session.chat_times.is_empty() and moment - session.chat_times.back() < 0.8):
+		session.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("Calma! Aguarde um pouco para falar de novo."), "channel": "system"}})
+		return
+	var target: PlayerSession = accounts.get(int(message.get("account", 0)))
+	if target == null or target.lingering or not target.profile.created or target.account_id == session.account_id:
+		session.send({"t": "chat", "message": {"author": "Sistema", "text": Lang.t("%s não está online."), "args": [str(message.get("name", "?")).substr(0, 20)], "channel": "system"}})
+		return
+	session.chat_times.append(moment)
+	text = filter_text(text)
+	var entry: Dictionary = {"id": next_chat_id, "account": session.account_id, "author": session.profile.player_name, "to": target.profile.player_name, "text": text, "channel": "Privado", "founder": session.profile.is_founder()}
+	next_chat_id += 1
+	chat_log.append({"id": entry.id, "account": session.account_id, "author": entry.author, "text": text, "at": int(moment), "reported_by": []})
+	if chat_log.size() > CHAT_LOG_KEEP:
+		chat_log.remove_at(0)
+	target.send({"t": "chat", "message": entry})
+	session.send({"t": "chat", "message": entry})
+	audit(session, "whisper", {"to": target.account_id})
+
+# The public face of a player who is online (the profile window of the channel list).
+func player_profile(session: PlayerSession, message: Dictionary) -> void:
+	var target: PlayerSession = accounts.get(int(message.get("account", 0)))
+	if target == null or target.lingering or not target.profile.created:
+		reply(session, message, {"error": "Jogador não encontrado."})
+		return
+	reply(session, message, {"info": target.public_profile(balance)})
 
 # A player reports a line of the chat. The report goes to the API with the lines around
 # it; reports from several players in a short time mute the author for a while.

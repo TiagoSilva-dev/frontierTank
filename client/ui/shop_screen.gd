@@ -67,7 +67,7 @@ func build_preview() -> void:
 	stage.clip_contents = true
 	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
-	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, Color("a86a10"), Color.TRANSPARENT)
+	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, UiKit.GOLD_ON_LIGHT, Color.TRANSPARENT)
 	var hint: String = tr("Só aparência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam.") if tab == "premium" else tr("Clique num item para provar.\nVerdadeiras e Super armas só caem nas instâncias.")
 	UiKit.label(contents, hint, Rect2(70, 596, 332, 50), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
@@ -100,12 +100,12 @@ func card(def: Dictionary, rect: Rect2) -> void:
 	var icon: Texture2D = load(str(def.icon)) if tab == "pedras" else Armory.load_icon(inst)
 	var picture: TextureRect = UiKit.art(box, icon, Rect2(44, 8, 100, 92))
 	picture.modulate = Armory.icon_tint(inst)
-	var title: Label = UiKit.label(box, tr(str(def.name)), Rect2(4, 100, 180, 44), 15, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	var title: Label = UiKit.label(box, tr(str(def.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if tab == "arma":
 		if def.get("super", false):
-			UiKit.label(box, tr("SUPER VERDADEIRA\nSó no baú do chefe"), Rect2(4, 146, 180, 60), 13, Color("ffb347"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-			UiKit.label(box, tr("Você tem") if app.profile.has_item(def.id) else "", Rect2(4, 204, 180, 28), 14, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(box, tr("SUPER VERDADEIRA\nSó no baú do chefe"), Rect2(4, 146, 180, 60), 13, Color("8a3a00"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(box, tr("Você tem") if app.profile.has_item(def.id) else "", Rect2(4, 204, 180, 28), 14, UiKit.GOOD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 			return
 		# 0.9: the shop sells Normal and Excelente only; Verdadeira comes from instances.
 		for q in range(2):
@@ -114,15 +114,15 @@ func card(def: Dictionary, rect: Rect2) -> void:
 			var label_text: String = "%s  %d" % [Armory.quality_label(quality), price]
 			var buy: Button = UiKit.button(box, label_text, Rect2(8, 146 + q * 30, 172, 28), buy_item.bind(str(def.id), quality), ["button", "button_blue"][q], 13)
 			buy.disabled = app.profile.coins < price
-		UiKit.label(box, tr("Verdadeira: instâncias"), Rect2(4, 208, 180, 24), 12, Color("c99bff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Verdadeira: instâncias"), Rect2(4, 208, 180, 24), 13, Color("5a2aa0"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	if tab == "pedras":
-		UiKit.label(box, tr("Encontrada nas instâncias"), Rect2(4, 148, 180, 28), 14, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(box, "+%d → +%d" % [int(def.level) - 1, int(def.level)], Rect2(4, 178, 180, 24), 18, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(box, tr("Você tem %d") % int(app.profile.items.get(def.id, 0)), Rect2(4, 206, 180, 24), 14, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Encontrada nas instâncias"), Rect2(4, 148, 180, 28), 14, UiKit.GOLD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, "+%d → +%d" % [int(def.level) - 1, int(def.level)], Rect2(4, 178, 180, 24), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Você tem %d") % int(app.profile.items.get(def.id, 0)), Rect2(4, 206, 180, 24), 14, UiKit.INFO_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	var price_value: int = int(def.get("price", 0))
-	UiKit.label(box, tr("%d moedas") % price_value, Rect2(4, 148, 180, 28), 16, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, tr("%d moedas") % price_value, Rect2(4, 148, 180, 28), 16, UiKit.GOLD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var owned: bool = app.profile.has_item(def.id)
 	var buy_button: Button = UiKit.button(box, tr("COMPRADO") if owned and tab != "auxiliar" else tr("COMPRAR"), Rect2(24, 190, 140, 38), buy_item.bind(str(def.id), "normal"), "button_green", 16)
 	buy_button.disabled = (owned and tab != "auxiliar") or app.profile.coins < price_value
@@ -136,10 +136,10 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
 	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 8, 100, 92))
 	picture.modulate = Armory.icon_tint(inst)
-	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
+	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var count: int = (entry.items as Array).size()
-	UiKit.label(box, PremiumStore.price_text(entry) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, Color("9ae8ff"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, PremiumStore.price_text(entry) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var owned: bool = PremiumStore.owns_all(app.profile, entry)
 	var ready: bool = bool(app.online) and app.steam.available
 	var buy: Button = UiKit.button(box, tr("VOCÊ TEM") if owned else tr("COMPRAR NA STEAM"), Rect2(14, 190, 160, 38), buy_premium.bind(str(entry.sku)), "button_blue", 14)
@@ -147,7 +147,7 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	buy.disabled = owned or not ready
 	if not ready and not owned:
 		buy.tooltip_text = tr("Compras só na versão Steam, com a conta ligada à Steam.")
-		UiKit.label(box, tr("Só na versão Steam"), Rect2(4, 170, 180, 20), 12, Color("ffd46b"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Só na versão Steam"), Rect2(4, 170, 180, 20), 12, UiKit.GOLD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 
 func buy_premium(sku: String) -> void:
 	message = tr("Aprove a compra na janela da Steam…")

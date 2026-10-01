@@ -280,9 +280,9 @@ func row(listing: Dictionary, rect: Rect2, index: int) -> void:
 	var detail: String = facts(kind, item)
 	if is_mine(listing):
 		detail = tr("Seu anúncio")
-	UiKit.clipped(box, detail, Rect2(58, 26, 364, 24), 13, Color("6a4a2a"))
+	UiKit.clipped(box, detail, Rect2(58, 26, 364, 24), 13, UiKit.TEXT_MUTED)
 	price_row(box, int(listing.price_solar), int(listing.price_estrela), Rect2(330, 4, 160, 26), 17)
-	UiKit.label(box, Auction.time_left(int(listing.expires_at) - server_now()), Rect2(424, 28, 66, 22), 13, Color("6a4a2a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
+	UiKit.label(box, Auction.time_left(int(listing.expires_at) - server_now()), Rect2(424, 28, 66, 22), 13, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
 
 func is_mine(listing: Dictionary) -> bool:
 	return listing.get("seller_id") != null and int(listing.seller_id) == int(app.my_account())
@@ -317,7 +317,7 @@ func build_details() -> void:
 	for i in range(mini(history.size(), 3)):
 		var sale: Dictionary = history[i]
 		var line: String = "%s  •  %s" % [Auction.listing_price(sale), Auction.time_ago(server_now() - int(sale.get("closed_at", server_now())))]
-		UiKit.clipped(contents, line, Rect2(868, 432 + i * 22, 344, 22), 13, Color("6a4a2a"))
+		UiKit.clipped(contents, line, Rect2(868, 432 + i * 22, 344, 22), 13, UiKit.TEXT_MUTED)
 	var price_panel: Panel = UiKit.panel(contents, Rect2(858, 504, 354, 50), "dark")
 	UiKit.label(price_panel, tr("Preço"), Rect2(12, 0, 100, 50), 18, Color("ffe6a0"), UiKit.INK)
 	price_row(price_panel, int(selected.price_solar), int(selected.price_estrela), Rect2(110, 8, 234, 34), 20)
@@ -552,7 +552,7 @@ func build_sell_form() -> void:
 	var shown: Array[String] = []
 	for sale: Dictionary in history.slice(0, 3):
 		shown.append(Auction.listing_price(sale))
-	UiKit.clipped(contents, "  •  ".join(shown) if not shown.is_empty() else tr("Nenhuma venda ainda."), Rect2(610, 594, 600, 24), 14, Color("6a4a2a"))
+	UiKit.clipped(contents, "  •  ".join(shown) if not shown.is_empty() else tr("Nenhuma venda ainda."), Rect2(610, 594, 600, 24), 14, UiKit.TEXT_MUTED)
 
 func set_price(value: int, currency: String) -> void:
 	if currency == "solar":

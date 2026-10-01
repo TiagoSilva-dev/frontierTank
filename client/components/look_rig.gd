@@ -13,6 +13,15 @@ extends Node2D
 
 const LOOK_SHADER: Shader = preload("res://client/shaders/look.gdshader")
 
+# How each hat and pair of glasses is worn (assets/cosmetics/fit.json, tuned with
+# tools/cosmetic_sheet.gd). The art is drawn like a shop icon, so the rig wears only the part
+# that belongs on a head: `crop` [x, y, w, h] of the art, `base` [x, y] the art point that rests
+# on the head, `span` the art width that stands for the head, `width` how many head widths that
+# span is, `drop` how far down the head (fraction of its height, from the top) the base rests,
+# `dx` a shift towards where the character faces (fraction of the head width). Glasses sit on
+# the eye line (`drop` is then a shift from the eyes). Views: "front" (menus) and "side" (prone).
+const FIT_PATH: String = "res://assets/cosmetics/fit.json"
+static var _fit: Dictionary = {}
 static var _anchor_cache: Dictionary = {}
 static var _bounds_cache: Dictionary = {}
 
@@ -33,6 +42,8 @@ var weapon_glow: float = 0.0
 var weapon_shine: Sprite2D
 var glasses: Sprite2D
 var hat: Sprite2D
+var glasses_fit: Dictionary = {}
+var hat_fit: Dictionary = {}
 var glow_color: Color = Color.TRANSPARENT
 var time: float = 0.0
 var flip: bool = false
@@ -52,6 +63,18 @@ var weapon_bump: float = 0.0
 var wing_fold: float = 0.0
 # Optional: returns {"node": Sprite2D, "offset": Vector2} for the body shown this frame.
 var source: Callable
+
+# The fit of one piece of headwear in one view, with the defaults filled in.
+static func fit_for(art: String, view: String, glasses: bool, texture: Texture2D) -> Dictionary:
+	if _fit.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(FIT_PATH)) if FileAccess.file_exists(FIT_PATH) else {}
+		_fit = parsed if parsed is Dictionary else {"_": {}}
+	var size: Vector2 = texture.get_size()
+	var side: bool = view == "prone"
+	var entry: Dictionary = (_fit.get(art, {}) as Dictionary).get("side" if side else "front", {})
+	var crop: Array = entry.get("crop", [0, 0, size.x, size.y])
+	var base: Array = entry.get("base", [crop[0] + crop[2] / 2.0, (crop[1] + crop[3] / 2.0) if glasses else (crop[1] + crop[3])])
+	return {"crop": Rect2(crop[0], crop[1], crop[2], crop[3]), "base": Vector2(base[0], base[1]), "span": float(entry.get("span", crop[2])), "width": float(entry.get("width", (0.42 if side else 0.74) if glasses else (0.86 if side else 1.0))), "drop": float(entry.get("drop", 0.0 if glasses else (0.24 if side else 0.34))), "dx": float(entry.get("dx", 0.0))}
 
 static func load_anchors(skin: String) -> Dictionary:
 	if not _anchor_cache.has(skin):
@@ -94,8 +117,16 @@ func setup(look_data: Dictionary, pose: String) -> void:
 			back_weapon.add_child(weapon_shine)
 	if str(look.get("glasses", "")) != "":
 		glasses = make_layer(self, Armory.cosmetic_art(str(look.glasses), art_view))
+		if glasses != null:
+			glasses_fit = fit_for(str(look.glasses), view, true, glasses.texture)
+			glasses.region_enabled = true
+			glasses.region_rect = glasses_fit.crop
 	if str(look.get("hat", "")) != "":
 		hat = make_layer(self, Armory.cosmetic_art(str(look.hat), art_view))
+		if hat != null:
+			hat_fit = fit_for(str(look.hat), view, false, hat.texture)
+			hat.region_enabled = true
+			hat.region_rect = hat_fit.crop
 	glow_color = Color.TRANSPARENT if prone else Armory.aura_color(int(look.get("clothes_level", 0)))
 	if FounderPack.wears_skin(look) or FounderPack.is_founder(look):
 		founder_fx = FounderFx.new()
@@ -206,19 +237,9 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 	var bottom: float = map_point(body, Vector2(0, float(points.bottom)) + offset).y
 	var prone: bool = view == "prone"
 	if hat != null:
-		var def: Dictionary = cosmetic_for("hat")
-		var width: float = head_w * float(def.get("scale", 1.0 if not prone else 0.86))
-		var s: float = width / hat.texture.get_width()
-		hat.scale = Vector2(s, s)
-		hat.flip_h = flip
-		var sink: float = float(def.get("sink", 0.34 if not prone else 0.24))
-		hat.position = top + Vector2(-dir * head_w * (0.04 if prone else 0.0), head_h * sink - hat.texture.get_height() * s / 2.0)
+		wear(hat, hat_fit, top + Vector2(dir * head_w * float(hat_fit.dx), head_h * float(hat_fit.drop)), head_w, dir)
 	if glasses != null:
-		var width: float = head_w * (0.74 if not prone else 0.42)
-		var s: float = width / glasses.texture.get_width()
-		glasses.scale = Vector2(s, s)
-		glasses.flip_h = flip
-		glasses.position = eyes + Vector2(dir * head_w * (0.06 if prone else 0.0), -head_h * (0.08 if prone else 0.0))
+		wear(glasses, glasses_fit, eyes + Vector2(dir * head_w * float(glasses_fit.dx), head_h * float(glasses_fit.drop)), head_w, dir)
 	if wing_a != null:
 		wing_dir = dir
 		if prone:
@@ -268,6 +289,15 @@ func follow(body: Sprite2D, offset: Vector2 = Vector2.ZERO) -> void:
 		aura.position = Vector2(top.x, top.y + head_h * 0.62)
 	queue_redraw()
 
+# Pins the `base` point of a worn piece to `anchor` and scales its `span` to `width` head widths.
+func wear(sprite: Sprite2D, fit: Dictionary, anchor: Vector2, head_w: float, dir: float) -> void:
+	var s: float = head_w * float(fit.width) / maxf(1.0, float(fit.span))
+	var crop: Rect2 = fit.crop
+	var to_center: Vector2 = crop.get_center() - Vector2(fit.base)
+	sprite.scale = Vector2(s, s)
+	sprite.flip_h = flip
+	sprite.position = anchor + Vector2(to_center.x * dir * s, to_center.y * s)
+
 static func art_bounds(texture: Texture2D) -> Rect2:
 	# The opaque part of an icon (weapons are drawn on 96x96 canvases with margins).
 	var key: String = texture.resource_path
@@ -314,6 +344,11 @@ func _process(delta: float) -> void:
 		queue_redraw()
 
 func _draw() -> void:
+	# Lying down only the lens of the glasses shows: a thin arm runs back to the ear.
+	if glasses != null and view == "prone" and head_dims.x > 0.0:
+		var dir: float = -1.0 if flip else 1.0
+		var arm_color: Color = Color("1c130d")
+		draw_line(glasses.position, glasses.position + Vector2(-dir * head_dims.x * 0.36, -head_dims.y * 0.03), arm_color, maxf(1.0, roundf(head_dims.x / 26.0)))
 	# Clothes aura: sparks and soft orbs spiralling up around the character.
 	if glow_color.a <= 0.0 or body_rect.size.y <= 0:
 		return

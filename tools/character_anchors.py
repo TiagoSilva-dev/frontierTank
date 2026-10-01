@@ -40,12 +40,13 @@ def south_anchors(img):
     cols = np.nonzero(rows.any(axis=0))[0]
     # Hair can flare out; the face width is measured on the eye row instead.
     eye_y = y0 + round(head_h * 0.66)
+    eyes_y = y0 + round(head_h * 0.76)  # the big chibi eyes sit lower than the face-width row
     eye_cols = np.nonzero(img[eye_y, :, 3] > 40)[0]
     cx = (cols.min() + cols.max() + 1) / 2
     width = max(cols.max() + 1 - cols.min(), eye_cols.max() + 1 - eye_cols.min()) if len(eye_cols) else cols.max() + 1 - cols.min()
     return {
         "head": [round(cx, 1), int(y0), int(width), int(head_h)],
-        "eyes": [round(cx, 1), int(eye_y)],
+        "eyes": [round(cx, 1), int(eyes_y)],
         "back": [round(cx, 1), int(y0 + head_h + round(height * 0.12))],
         "bottom": int(y1),
     }

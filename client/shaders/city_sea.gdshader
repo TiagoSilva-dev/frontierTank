@@ -1,12 +1,13 @@
 shader_type canvas_item;
 
-// Animated sea for the city painting: water pixels (bright cyan/blue) ripple one texel
-// at a time, get drifting light bands and twinkling glints; land stays untouched.
+// Animated sea for the city painting: water pixels (turquoise shallows and the deep blue
+// beyond) ripple one texel at a time, get drifting light bands and twinkling glints; land
+// stays untouched.
 
 uniform vec2 texels = vec2(400.0, 224.0);
 
 bool is_water(vec3 c) {
-	return c.b > 0.55 && c.g > 0.5 && c.r < 0.5 && c.b > c.r + 0.25;
+	return c.b > 0.42 && c.r < 0.5 && c.b > c.r + 0.2 && c.b >= c.g - 0.06;
 }
 
 float hash(vec2 p) {
@@ -34,8 +35,8 @@ void fragment() {
 		}
 		// Slow diagonal light bands.
 		float band = fract((cell.x * 0.5 + cell.y - t * 5.0) / 23.0);
-		if (band < 0.07) {
-			color.rgb = mix(color.rgb, vec3(0.85, 1.0, 1.0), 0.28);
+		if (band < 0.05) {
+			color.rgb = mix(color.rgb, vec3(0.85, 1.0, 1.0), 0.14);
 		}
 		// Twinkling glints on a sparse grid.
 		vec2 glint_cell = floor(cell / 5.0);

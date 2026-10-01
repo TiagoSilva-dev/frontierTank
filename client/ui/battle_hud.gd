@@ -18,6 +18,7 @@ var screen: BattleScreen
 var game: LocalMatch
 var log_lines: Array[Dictionary] = []
 var log_label: RichTextLabel
+var log_panel: Panel
 var queue_box: Control
 var clock: Control
 var pass_button: Button
@@ -86,17 +87,24 @@ func build() -> void:
 	status_row.add_theme_constant_override("separation", 4)
 	status_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(status_row)
+	# The battle log sits on a dark plate: text straight over the sky and the terrain was
+	# hard to read.
+	log_panel = UiKit.panel(self, Rect2(4, 150, 376, 126), "log")
+	log_panel.name = "LogPanel"
+	log_panel.hide()
 	log_label = RichTextLabel.new()
-	log_label.position = Vector2(8, 152)
-	log_label.size = Vector2(360, 116)
+	log_label.position = Vector2(12, 154)
+	log_label.size = Vector2(362, 118)
 	log_label.bbcode_enabled = true
 	log_label.scroll_following = true
 	log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	log_label.add_theme_font_override("normal_font", UiKit.reading_font())
 	log_label.add_theme_font_override("bold_font", UiKit.reading_font(true))
-	log_label.add_theme_font_size_override("normal_font_size", UiKit.fs(14))
+	log_label.add_theme_font_size_override("normal_font_size", UiKit.fs(16))
+	log_label.add_theme_font_size_override("bold_font_size", UiKit.fs(16))
 	log_label.add_theme_color_override("font_outline_color", Color("140a04"))
-	log_label.add_theme_constant_override("outline_size", 1)
+	log_label.add_theme_constant_override("outline_size", 2)
+	log_label.add_theme_constant_override("line_separation", 2)
 	add_child(log_label)
 	# --- top-center: turn order, wind, the round timer and PASS
 	queue_box = layer(Rect2(390, 2, 500, 62), draw_queue)
@@ -236,6 +244,14 @@ func refresh_log() -> void:
 		for line: Dictionary in log_lines:
 			lines.append("[color=#%s]%s[/color]" % [line.color.to_html(false), str(line.text).replace("[", "(").replace("]", ")")])
 		log_label.text = "\n".join(lines)
+	if is_instance_valid(log_panel):
+		log_panel.visible = not log_lines.is_empty()
+		# The plate grows with the lines (the text measures itself one frame later).
+		fit_log.call_deferred()
+
+func fit_log() -> void:
+	if is_instance_valid(log_panel) and is_instance_valid(log_label):
+		log_panel.size.y = clampf(log_label.get_content_height() + 12.0, 34.0, 126.0)
 
 func flash(text: String, color: Color, sub: String = "") -> void:
 	flash_text = text

@@ -41,12 +41,12 @@ func _ready() -> void:
 	UiKit.panel(self, Rect2(rect.position + Vector2(14, 46), rect.size - Vector2(28, 60)), "paper")
 	var x: float = rect.position.x + 36
 	var y: float = rect.position.y + 60
-	UiKit.label(self, tr("Mensagem de %s:") % str(message.get("author", "")), Rect2(x, y, 600, 26), 16, Color("7a5a3a"))
+	UiKit.label(self, tr("Mensagem de %s:") % str(message.get("author", "")), Rect2(x, y, 600, 26), 16, UiKit.TEXT_MUTED)
 	var quote: Label = UiKit.label(self, "“%s”" % str(message.get("text", "")), Rect2(x + 12, y + 28, 588, 48), 17, UiKit.TEXT_DARK)
 	quote.name = "Quote"
 	UiKit.wrap(quote, Vector2(588, 48))
 	y += 84
-	UiKit.label(self, tr("Motivo"), Rect2(x, y, 600, 26), 16, Color("7a5a3a"))
+	UiKit.label(self, tr("Motivo"), Rect2(x, y, 600, 26), 16, UiKit.TEXT_MUTED)
 	y += 28
 	for i in range(REASONS.size()):
 		var id: String = REASONS[i][0]

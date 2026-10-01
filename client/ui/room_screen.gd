@@ -66,7 +66,7 @@ func build_slots(room: Dictionary) -> void:
 			empty.tooltip_text = (tr("Adicione um jogador de IA ou espere alguém entrar") if app.online else tr("Convide um jogador (IA)")) if app.is_owner() else ""
 			var ghost: TextureRect = UiKit.art(empty, PixelIcons.get_icon("team"), Rect2(55, 40, 100, 100))
 			ghost.modulate = Color(1, 1, 1, 0.3)
-			UiKit.label(empty, tr("Aguardando…"), Rect2(0, 150, 210, 30), 18, Color("fff0d0"), Color("7a5a3a"), HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(empty, tr("Aguardando…"), Rect2(0, 150, 210, 30), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 
 func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 	var member: Dictionary = room.members[index]
@@ -86,10 +86,10 @@ func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 		UiKit.label(slot, tr("Dono"), Rect2(6, 168, 70, 30), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.art(slot, PixelIcons.get_icon("crown"), Rect2(170, 40, 28, 28))
 	elif member.get("human", false) and not (bool(member.get("ready", false)) if app.online else room.get("ready", false)):
-		UiKit.label(slot, tr("Não preparado"), Rect2(6, 170, 198, 28), 15, Color("c0402f"), Color("fff0d0"), HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(slot, tr("Não preparado"), Rect2(6, 170, 198, 28), 15, UiKit.BAD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	else:
 		UiKit.art(slot, "res://assets/expansion/lobby/ready_icon.png", Rect2(8, 166, 32, 32))
-		UiKit.label(slot, tr("Pronto"), Rect2(40, 168, 80, 30), 15, Color("2f8a1f"), Color("fff0d0"))
+		UiKit.label(slot, tr("Pronto"), Rect2(40, 168, 80, 30), 15, UiKit.GOOD_ON_LIGHT)
 	if app.is_owner() and index != int(room.owner) and (app.online or not member.get("human", false)):
 		var kick: Button = UiKit.button(slot, "X", Rect2(172, 170, 30, 28), kick_member.bind(index), "button", 14)
 		kick.tooltip_text = tr("Remover da sala")
@@ -138,7 +138,7 @@ func build_center(room: Dictionary) -> void:
 			UiKit.art(map_box, map_thumb(entry), Rect2(8, 8, 96, 64)).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	if map_name == tr("Mapa Aleatório"):
 		UiKit.art(map_box, PixelIcons.get_icon("star"), Rect2(20, 12, 56, 56))
-	UiKit.label(map_box, map_name, Rect2(108, 6, 160, 44), 17, Color("c0602f"), Color("fff0d0"), HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.label(map_box, map_name, Rect2(108, 6, 160, 44), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	UiKit.label(map_box, tr("%d seg por turno") % int(room.turn_seconds), Rect2(108, 50, 130, 24), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var gear: Button = UiKit.icon_button(map_box, PixelIcons.get_icon("gear"), Rect2(240, 46, 26, 26), cycle_time, tr("Tempo por turno (10/15/20 s)"))
 	gear.name = "TimeGear"
@@ -176,7 +176,7 @@ func build_instance(art_box: Panel, room: Dictionary) -> void:
 	if item.is_empty():
 		UiKit.art(slot, PixelIcons.get_icon("search"), Rect2(10, 26, 48, 48)).modulate.a = 0.6
 		UiKit.label(slot, tr("Entrada livre (sem mapa)"), Rect2(66, 6, 276, 26), 18, UiKit.TEXT_DARK)
-		var hint: Label = UiKit.label(slot, tr("Nível 1 e recompensa baixa. Clique para colocar um mapa."), Rect2(66, 32, 276, 62), 16, Color("7a5a3a"))
+		var hint: Label = UiKit.label(slot, tr("Nível 1 e recompensa baixa. Clique para colocar um mapa."), Rect2(66, 32, 276, 62), 16, UiKit.TEXT_MUTED)
 		UiKit.wrap(hint, Vector2(276, 62))
 		slot.tooltip_text = tr("Coloque um mapa desta instância: o nível do mapa define a dificuldade e a recompensa.\nA entrada livre dá mapas de nível 1.")
 	else:
@@ -203,11 +203,11 @@ func choose_map_item() -> void:
 		button.name = "MapItem_%d" % int(item.get("uid", -1))
 		if item.is_empty():
 			UiKit.label(button, tr("Entrada livre"), Rect2(10, 8, 208, 26), 17, UiKit.TEXT_DARK)
-			UiKit.label(button, tr("Nível 1 • recompensa baixa\nDá mapas de nível 1"), Rect2(10, 36, 208, 44), 13, Color("7a5a3a"))
+			UiKit.label(button, tr("Nível 1 • recompensa baixa\nDá mapas de nível 1"), Rect2(10, 36, 208, 44), 14, UiKit.TEXT_MUTED)
 			continue
 		UiKit.art(button, InstanceRun.map_icon(item), Rect2(6, 6, 44, 44))
 		UiKit.label(button, tr("Nível %d") % int(item.level), Rect2(56, 4, 164, 26), 18, InstanceRun.quality_color(str(item.quality)).darkened(0.45))
-		UiKit.label(button, tr("%s • %d atrib.") % [InstanceRun.quality_label(str(item.quality)), item.mods.size()], Rect2(56, 30, 164, 22), 13, Color("7a5a3a"))
+		UiKit.label(button, tr("%s • %d atrib.") % [InstanceRun.quality_label(str(item.quality)), item.mods.size()], Rect2(56, 30, 164, 22), 14, UiKit.TEXT_MUTED)
 		var lines: Array[String] = InstanceRun.describe_map(item)
 		UiKit.label(button, lines[0] if not lines.is_empty() else tr("Sem atributos"), Rect2(8, 58, 214, 22), 11, Color("7a3a1a")).clip_text = true
 		button.tooltip_text = "\n".join(lines)
@@ -237,7 +237,7 @@ func choose_instance() -> void:
 			UiKit.art(cell, thumb, Rect2(8, 8, 150, 100), false).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		UiKit.wrap(UiKit.label(cell, tr(str(instance.name)), Rect2(166, 8, 206, 50), 17, UiKit.TEXT_DARK), Vector2(206, 50))
 		var owned: int = app.profile.maps_for(str(instance.id)).size()
-		UiKit.label(cell, tr("%d mapa(s) na mochila") % owned, Rect2(166, 60, 206, 22), 13, Color("7a5a3a"))
+		UiKit.label(cell, tr("%d mapa(s) na mochila") % owned, Rect2(166, 60, 206, 22), 14, UiKit.TEXT_MUTED)
 		UiKit.label(cell, " → ".join(instance.phases.map(func(p: Dictionary) -> String: return tr(str(p.name)))), Rect2(8, 112, 364, 24), 11, Color("7a3a1a")).clip_text = true
 
 func pick_instance(id: String, dialog: Control) -> void:
@@ -260,8 +260,10 @@ func draw_versus(canvas: Control) -> void:
 
 func build_tools(room: Dictionary) -> void:
 	var box: Panel = UiKit.panel(content, Rect2(856, 32, 418, 380), "wood")
-	UiKit.label(box, tr("Sala"), Rect2(14, 4, 60, 40), 26, Color("fff0d0"), UiKit.INK)
-	UiKit.label(box, str(int(room.id)), Rect2(74, 4, 90, 40), 30, Color("ffd04a"), UiKit.INK)
+	var room_word: Label = UiKit.label(box, tr("Sala"), Rect2(14, 4, 120, 40), 26, Color("fff0d0"), UiKit.INK)
+	# The number follows the word, whatever its width in the language ("Room" is wider than "Sala").
+	var word_width: float = room_word.get_theme_font("font").get_string_size(room_word.text, HORIZONTAL_ALIGNMENT_LEFT, -1, room_word.get_theme_font_size("font_size")).x
+	UiKit.label(box, str(int(room.id)), Rect2(14 + word_width + 12, 4, 90, 40), 30, Color("ffd04a"), UiKit.INK)
 	UiKit.label(box, tr("Canal 1"), Rect2(300, 8, 104, 26), 15, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	var heading: String = tr("Expedição: %s") % tr(str(InstanceRun.instance_def(str(room.instance)).name)) if room.mode == "pve" else tr(str(room.title))
 	var subtitle: Label = UiKit.label(box, heading, Rect2(14, 42, 390, 24), 14, Color("ffe24a"), UiKit.INK)
@@ -294,7 +296,7 @@ func build_tools(room: Dictionary) -> void:
 		UiKit.art(button, str(tool.icon), Rect2(15, 4, 40, 40))
 		UiKit.label(button, str(int(tool.price)), Rect2(0, 44, 70, 20), 13, Color("ffd04a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.art(box, "res://assets/items/moeda.png", Rect2(326, 78, 22, 22))
-	UiKit.label(box, str(app.profile.coins), Rect2(350, 76, 56, 26), 15, Color("7a4a20"))
+	UiKit.label(box, str(app.profile.coins), Rect2(350, 76, 56, 26), 15, UiKit.TEXT_MUTED)
 
 func build_buttons(room: Dictionary) -> void:
 	UiKit.panel(content, Rect2(856, 420, 418, 232), "wood_dark")

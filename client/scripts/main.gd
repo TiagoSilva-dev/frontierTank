@@ -30,6 +30,8 @@ var auth: AuthClient
 var steam: SteamService
 var online: bool = false
 var offline_profile: PlayerProfile
+# The friends list of the player menu (per mode: the offline channel or one online account).
+var friends: FriendBook
 # The next phase of an online instance, kept while the transition screen counts down.
 var pending_start: Dictionary = {}
 var waiting_phase: bool = false
@@ -62,6 +64,11 @@ func _ready() -> void:
 		profile.save_path = str(args.profile)
 	profile.load_profile()
 	offline_profile = profile
+	friends = FriendBook.new()
+	if args.has("profile"):
+		# A scratch profile (captures, tests) keeps its own friends too.
+		friends.path = str(args.profile).get_basename() + "_friends.json"
+	friends.use_scope("offline")
 	net = NetClient.new()
 	net.event.connect(on_net_event)
 	net.closed.connect(go_offline)
@@ -76,6 +83,8 @@ func _ready() -> void:
 	add_child(audio)
 	lobby = LobbyDirectory.new()
 	lobby.player_level = profile.level()
+	lobby.my_name = profile.player_name
+	lobby.chat_added.connect(on_chat_line)
 	add_child(lobby)
 	var layer: CanvasLayer = CanvasLayer.new()
 	add_child(layer)
@@ -231,6 +240,10 @@ func open_named(target: String) -> void:
 		"shop":
 			show_city()
 			shortcut("shop")
+		"mission", "mail", "coupon":
+			# Capture helpers: the quests, the post office and the coupon window over the city.
+			show_city()
+			shortcut(target)
 		"smith":
 			show_city()
 			shortcut("smith")
@@ -689,7 +702,9 @@ func go_online(welcome: Dictionary) -> void:
 	var channel: OnlineLobby = OnlineLobby.new()
 	channel.net = net
 	channel.my_name = profile.player_name
+	friends.use_scope("acc%d" % int(welcome.get("account", {}).get("id", 0)))
 	lobby = channel
+	lobby.chat_added.connect(on_chat_line)
 	add_child(lobby)
 	for entry: Variant in welcome.get("chat", []):
 		if entry is Dictionary:
@@ -714,6 +729,7 @@ func go_offline(reason: String = "") -> void:
 	online = false
 	net.disconnect_now()
 	profile = offline_profile
+	friends.use_scope("offline")
 	room = {}
 	run = null
 	pending_start = {}
@@ -727,6 +743,8 @@ func go_offline(reason: String = "") -> void:
 		lobby.queue_free()
 		lobby = LobbyDirectory.new()
 		lobby.player_level = profile.level()
+		lobby.my_name = profile.player_name
+		lobby.chat_added.connect(on_chat_line)
 		add_child(lobby)
 	show_title()
 	if reason != "":
@@ -807,6 +825,20 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		toast(tr("Música ligada") if audio.music_on else tr("Música desligada"))
 	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F3:
 		perf.toggle()
+
+# A private message from someone else tells itself with a toast, unless the Privado tab of a
+# chat on screen is already showing it (the battle has no chat: the toast is the only sign).
+func on_chat_line(message: Dictionary) -> void:
+	if str(message.get("channel", "")) != "Privado" or bool(message.get("mine", false)) or str(message.get("author", "")) in [profile.player_name, lobby.my_name]:
+		return
+	var stack: Array[Node] = [ui]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		if node is ChatBox and (node as ChatBox).tab == "Privado":
+			return
+		stack.append_array(node.get_children())
+	audio.play("ui_click")
+	toast(tr("Mensagem privada de %s") % str(message.get("author", "")))
 
 func toast(text: String) -> void:
 	var note: Label = UiKit.label(ui, text, Rect2(490, 96, 300, 36), 18, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)

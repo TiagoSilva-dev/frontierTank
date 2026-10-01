@@ -131,7 +131,7 @@ func section(parent: Control, y: float, heading: String, color: Color, rows: Arr
 		total += value
 		var column: int = i % 2
 		var line: int = i / 2
-		UiKit.label(parent, str(row[0]), Rect2(24 + column * 230, y + 28 + line * 24, 220, 22), 14, Color("fff0d0") if value > 0 else Color("8a7a6a"), Color("1a0804"))
+		UiKit.label(parent, str(row[0]), Rect2(24 + column * 230, y + 28 + line * 24, 220, 22), 14, Color("fff0d0") if value > 0 else Color("b4a690"), Color("1a0804"))
 	var height: float = 28 + ceili(rows.size() / 2.0) * 24
 	var value_label: Label = UiKit.label(parent, "+%d" % total, Rect2(520, y + height / 2 - 4, 110, 34), 28, color, Color("1a0804"), HORIZONTAL_ALIGNMENT_RIGHT)
 	value_label.add_theme_constant_override("outline_size", 6)
@@ -166,7 +166,7 @@ func stamp(parent: Control, center: Vector2, won: bool) -> void:
 		seal.draw_circle(Vector2(56, 56), 44, tone)
 		seal.draw_arc(Vector2(56, 56), 38, 0, TAU, 32, tone.darkened(0.4), 2))
 	parent.add_child(seal)
-	var words: Label = UiKit.label(seal, tr("excelente!") if won else tr("esforce-se\nmais"), Rect2(0, 20, 112, 72), 17, Color.WHITE, tone.darkened(0.6), HORIZONTAL_ALIGNMENT_CENTER)
+	var words: Label = UiKit.label(seal, tr("excelente!") if won else tr("esforce-se\nmais"), Rect2(0, 20, 112, 72), 18, tone.darkened(0.8), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	words.autowrap_mode = TextServer.AUTOWRAP_OFF
 
 func draw_rays(canvas: Control) -> void:

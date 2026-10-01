@@ -47,15 +47,15 @@ func _ready() -> void:
 	var x: float = rect.position.x + 40
 	var y: float = rect.position.y + 64
 	if logged_in():
-		UiKit.label(self, tr("Conta"), Rect2(x, y, 200, 28), 16, Color("7a5a3a"))
+		UiKit.label(self, tr("Conta"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
 		var who: Label = UiKit.label(self, account_name(), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
 		who.name = "AccountName"
 		y += 32
 		if app.online:
-			UiKit.label(self, tr("Servidor"), Rect2(x, y, 200, 28), 16, Color("7a5a3a"))
+			UiKit.label(self, tr("Servidor"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
 			UiKit.label(self, tr(str(app.net.welcome().get("server", {}).get("name", ""))), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
 			y += 32
-		UiKit.label(self, tr("Termos aceitos"), Rect2(x, y, 200, 28), 16, Color("7a5a3a"))
+		UiKit.label(self, tr("Termos aceitos"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
 		UiKit.label(self, tr("versão %s") % Legal.VERSION, Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
 		y += 40
 	else:

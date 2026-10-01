@@ -20,9 +20,9 @@ const BUILDINGS: Array[Dictionary] = [
 # the sprite pixels where the animated details (smoke, forge, portal...) sit.
 const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},  # i18n
-	{"id": "smith", "name": "Ferreiro", "rect": [235, 65, 192, 192], "hot": [243, 88, 175, 148], "label": [330, 92], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
-	{"id": "instance", "name": "Instância", "rect": [119, 226, 192, 192], "hot": [148, 230, 131, 180], "label": [213, 236], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
-	{"id": "pet", "name": "Casa dos Mascotes", "rect": [243, 427, 192, 192], "hot": [257, 445, 165, 151], "label": [339, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
+	{"id": "smith", "name": "Ferreiro", "rect": [266, 76, 192, 192], "hot": [274, 99, 175, 148], "label": [361, 103], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
+	{"id": "instance", "name": "Instância", "rect": [143, 238, 192, 192], "hot": [172, 242, 131, 180], "label": [237, 248], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
+	{"id": "pet", "name": "Casa dos Mascotes", "rect": [257, 427, 192, 192], "hot": [271, 445, 165, 151], "label": [353, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
 	{"id": "exchange", "name": "Casa de Câmbio", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Câmbio: troque moedas e pedras com jogadores", "fx": {"twinkle": true}},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
@@ -55,6 +55,8 @@ func _ready() -> void:
 		sea.set_shader_parameter("texels", backdrop.texture.get_size())
 		backdrop.material = sea
 		backdrop.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if custom:
+		add_vignette()
 	glow = Control.new()
 	glow.size = size
 	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -112,7 +114,8 @@ func _ready() -> void:
 	add_child(channel)
 	var chat: ChatBox = ChatBox.new()
 	chat.app = app
-	chat.position = Vector2(4, 520)
+	chat.log_height = 104.0
+	chat.position = Vector2(4, 576)
 	add_child(chat)
 	var bar: BottomBar = BottomBar.new()
 	bar.app = app
@@ -120,6 +123,28 @@ func _ready() -> void:
 	add_child(bar)
 	if not app.profile.created:
 		build_creation()
+
+# A soft dark rim, like a painted frame: it pulls the eye to the plaza and lets the HUD sit on
+# the darker edges.
+func add_vignette() -> void:
+	var gradient: Gradient = Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 0.58, 1.0])
+	gradient.colors = PackedColorArray([Color(0.02, 0.04, 0.12, 0.0), Color(0.02, 0.04, 0.12, 0.0), Color(0.02, 0.03, 0.1, 0.5)])
+	var texture: GradientTexture2D = GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = 256
+	texture.height = 144
+	var rim: TextureRect = TextureRect.new()
+	rim.name = "Vignette"
+	rim.texture = texture
+	rim.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rim.stretch_mode = TextureRect.STRETCH_SCALE
+	rim.size = Vector2(1280, 720)
+	rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(rim)
 
 func build_player_card() -> void:
 	var card: Panel = UiKit.panel(self, Rect2(1016, 36, 256, 86), "wood_dark")
