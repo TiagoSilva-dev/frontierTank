@@ -19,6 +19,7 @@ func capture() -> void:
 	root.add_child(app)
 	var screen: ExchangeScreen = ExchangeScreen.new()
 	screen.app = app
+	screen.theme = UiKit.make_theme()
 	app.add_child(screen)
 	var mode: String = OS.get_cmdline_user_args()[0] if not OS.get_cmdline_user_args().is_empty() else "market"
 	if mode == "picker":

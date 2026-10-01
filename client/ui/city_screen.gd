@@ -20,12 +20,12 @@ const BUILDINGS: Array[Dictionary] = [
 # the sprite pixels where the animated details (smoke, forge, portal...) sit.
 const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},  # i18n
-	{"id": "smith", "name": "Ferreiro", "rect": [266, 76, 192, 192], "hot": [274, 99, 175, 148], "label": [361, 103], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
-	{"id": "instance", "name": "Instância", "rect": [143, 238, 192, 192], "hot": [172, 242, 131, 180], "label": [237, 248], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
-	{"id": "pet", "name": "Casa dos Mascotes", "rect": [257, 427, 192, 192], "hot": [271, 445, 165, 151], "label": [353, 450], "tip": "Casa dos Mascotes: em breve"},  # i18n
-	{"id": "auction", "name": "Leilão", "rect": [842, 74, 192, 192], "hot": [854, 80, 164, 164], "label": [936, 86], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
-	{"id": "exchange", "name": "Casa de Câmbio", "rect": [960, 291, 192, 192], "hot": [978, 298, 155, 168], "label": [1055, 302], "tip": "Câmbio: troque moedas e pedras com jogadores", "fx": {"twinkle": true}},  # i18n
-	{"id": "mall", "name": "Centro Comercial", "rect": [546, 477, 192, 192], "hot": [554, 488, 173, 168], "label": [640, 494], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
+	{"id": "smith", "name": "Ferreiro", "rect": [261, 33, 192, 192], "hot": [269, 56, 175, 148], "label": [356, 60], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
+	{"id": "instance", "name": "Instância", "rect": [158, 200, 192, 192], "hot": [187, 204, 131, 180], "label": [252, 210], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
+	{"id": "pet", "name": "Casa dos Mascotes", "rect": [270, 382, 192, 192], "hot": [284, 400, 165, 151], "label": [366, 405], "tip": "Casa dos Mascotes: em breve"},  # i18n
+	{"id": "auction", "name": "Leilão", "rect": [836, 40, 192, 192], "hot": [848, 46, 164, 164], "label": [930, 52], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
+	{"id": "exchange", "name": "Casa de Câmbio", "rect": [948, 270, 160, 160], "hot": [967, 275, 121, 149], "label": [1027, 274], "tip": "Câmbio: troque moedas e pedras com jogadores", "fx": {"twinkle": true}},  # i18n
+	{"id": "mall", "name": "Centro Comercial", "rect": [548, 453, 192, 192], "hot": [556, 464, 173, 168], "label": [642, 470], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
 ]
 
 var app: Node
@@ -65,7 +65,7 @@ func _ready() -> void:
 	for i in range(buildings.size()):
 		var building: Dictionary = buildings[i]
 		var r: Array = building.rect
-		var sprite_path: String = "res://assets/city/buildings/%s.png" % ("auction" if building.id == "exchange" else building.id)
+		var sprite_path: String = "res://assets/city/buildings/%s.png" % (building.id)
 		if ResourceLoader.exists(sprite_path):
 			var sprite: TextureRect = UiKit.art(self, sprite_path, Rect2(r[0], r[1], r[2], r[3]))
 			sprite.name = "Sprite_" + str(building.id)
@@ -323,14 +323,14 @@ func build_creation() -> void:
 	UiKit.panel(creation, Rect2(330, 110, 620, 470), "wood")
 	UiKit.panel(creation, Rect2(346, 160, 588, 404), "paper")
 	UiKit.title(creation, tr("CRIE SEU PERSONAGEM"), Rect2(330, 116, 620, 40), 26)
-	UiKit.label(creation, tr("Uma conta, um personagem. Escolha a aparência e o nome."), Rect2(346, 168, 588, 26), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(creation, tr("Uma conta, um personagem. Escolha a aparência e o nome."), Rect2(346, 168, 588, 26), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	for i in range(2):
 		var gender: String = "m" if i == 0 else "f"
 		var frame: Button = UiKit.button(creation, "", Rect2(430 + i * 230, 204, 190, 220), func() -> void: pick_gender(gender), "card")
 		frame.name = "Gender_" + gender
 		UiKit.art(frame, UiKit.character_path({"gender": gender}), Rect2(10, 6, 170, 180))
 		UiKit.label(frame, tr("Masculino") if gender == "m" else tr("Feminino"), Rect2(0, 186, 190, 28), 17, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(creation, tr("Nome:"), Rect2(430, 440, 80, 36), 18, UiKit.TEXT_DARK)
+	UiKit.label(creation, tr("Nome:"), Rect2(430, 440, 80, 36), 18, UiKit.TEXT)
 	name_input = LineEdit.new()
 	name_input.position = Vector2(510, 440)
 	name_input.size = Vector2(340, 36)

@@ -31,7 +31,7 @@ Rotas internas autenticadas: `POST /internal/exchange/book`, `/create`, `/cancel
 
 ## Interface e arte
 
-A interface usa painéis escuros, bordas douradas e os ícones existentes das moedas e pedras, coerentes com o ferreiro. O prédio usa a arte bancária já existente do leilão no antigo lote de Namoro, com brilhos em vez de corações. A tentativa de criar um prédio exclusivo via PixelLab retornou falta de créditos; nenhum asset novo gerado foi incorporado. Capturas com dados ilustrativos: `docs/screens/exchange_market.png` e `exchange_picker.png`.
+A interface usa painéis escuros, bordas douradas e os ícones existentes das moedas e pedras, coerentes com o ferreiro. O prédio é próprio (`assets/city/buildings/exchange.png`, 0.18): banco de cúpula verde-cobre com moeda dourada, baús de gemas e pilhas de moedas, gerado no PixelLab e centrado no lote calçado da direita. Antes usava o sprite do Leilão. Capturas com dados ilustrativos: `docs/screens/exchange_market.png` e `exchange_picker.png`.
 
 ## Verificação local
 

@@ -55,7 +55,7 @@ func show_results() -> void:
 	var headers: Array[String] = [tr("Nome"), tr("EXP"), tr("mérito")]
 	for i in range(3):
 		UiKit.panel(table, Rect2(14 + i * 180, 40, 172, 30), "card")
-		UiKit.label(table, headers[i], Rect2(14 + i * 180, 40, 172, 30), 15, Color("5a2e10"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(table, headers[i], Rect2(14 + i * 180, 40, 172, 30), 15, PremiumUi.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var roster: Array = summary.get("roster", [])
 	for row in range(4):
 		for i in range(3):
@@ -64,9 +64,9 @@ func show_results() -> void:
 			var entry: Dictionary = roster[row]
 			var values: Array[String] = [str(entry.name), "+%d" % int(entry.exp), "+%d" % int(entry.merit)]
 			for i in range(3):
-				UiKit.label(table, values[i], Rect2(14 + i * 180, 76 + row * 42, 172, 38), 15, Color("3a1a06"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+				UiKit.label(table, values[i], Rect2(14 + i * 180, 76 + row * 42, 172, 38), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	# Breakdown panel
-	var panel: Panel = UiKit.panel(stage, Rect2(612, 16, 652, 684), "glass")
+	var panel: Panel = UiKit.panel(stage, Rect2(612, 16, 652, 684), "wood_dark")
 	UiKit.panel(panel, Rect2(150, 12, 340, 44), "plate")
 	UiKit.label(panel, tr("meus result."), Rect2(150, 10, 340, 46), 30, Color("ffe6a0"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 	stamp(panel, Vector2(574, 62), won)

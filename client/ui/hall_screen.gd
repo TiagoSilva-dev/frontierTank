@@ -12,10 +12,7 @@ var page_label: Label
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
-	var backdrop: ColorRect = ColorRect.new()
-	backdrop.color = Color("3a1d0c")
-	backdrop.size = size
-	add_child(backdrop)
+	PremiumUi.backdrop(self)
 	var speaker: SpeakerBar = SpeakerBar.new()
 	speaker.app = app
 	add_child(speaker)
@@ -102,16 +99,16 @@ func room_card(room: Dictionary, rect: Rect2) -> void:
 	var card: Button = UiKit.button(grid, "", rect, func() -> void: try_join(room), "card_busy" if busy else "card")
 	card.name = "Room_%d" % int(room.id)
 	card.tooltip_text = tr("Sala %d — %s") % [int(room.id), tr(str(room.title))]
-	UiKit.label(card, tr("Desafio"), Rect2(12, 2, 150, 24), 17, Color("4a1c06"))
-	UiKit.label(card, tr("das Lutas"), Rect2(12, 20, 150, 24), 17, Color("4a1c06"))
-	UiKit.label(card, "#%d" % int(room.id), Rect2(128, 6, 80, 20), 14, UiKit.TEXT_DARK)
-	var title: Label = UiKit.label(card, tr(str(room.title)), Rect2(12, 46, 212, 22), 14, UiKit.TEXT_DARK)
+	UiKit.label(card, tr("Desafio"), Rect2(12, 2, 150, 24), 17, PremiumUi.GOLD)
+	UiKit.label(card, tr("das Lutas"), Rect2(12, 20, 150, 24), 17, PremiumUi.GOLD)
+	UiKit.label(card, "#%d" % int(room.id), Rect2(128, 6, 80, 20), 14, UiKit.TEXT)
+	var title: Label = UiKit.label(card, tr(str(room.title)), Rect2(12, 46, 212, 22), 14, UiKit.TEXT)
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.size = Vector2(212, 22)
-	UiKit.label(card, "%d/%d" % [room.members.size(), int(room.capacity)], Rect2(228, 44, 60, 24), 17, Color("3a1a06"))
+	UiKit.label(card, "%d/%d" % [room.members.size(), int(room.capacity)], Rect2(228, 44, 60, 24), 17, UiKit.TEXT)
 	var status: String = tr("Em jogo") if room.playing else (tr("Cheia") if full else tr("Aberta"))
-	UiKit.label(card, status, Rect2(228, 8, 70, 22), 14, UiKit.BAD_ON_LIGHT if busy else UiKit.GOOD_ON_LIGHT)
+	UiKit.label(card, status, Rect2(228, 8, 70, 22), 14, UiKit.BAD if busy else UiKit.GOOD)
 	UiKit.panel(card, Rect2(296, 8, 118, 58), "slot")
 	UiKit.art(card, PixelIcons.get_icon("star"), Rect2(302, 12, 22, 22))
 	var map_name: String = tr("Mapa\nAleatório") if str(room.map) == "" else str(room.map)
@@ -139,10 +136,10 @@ func build_user_info() -> void:
 		FounderUi.title_label(box, Rect2(210, 40, 138, 28), 13, HORIZONTAL_ALIGNMENT_RIGHT)
 	else:
 		UiKit.label(box, app.profile.player_name, Rect2(26, 40, 316, 28), 17, Color.WHITE, UiKit.INK)
-	UiKit.label(box, tr("Ranking"), Rect2(22, 72, 70, 22), 14, UiKit.BAD_ON_LIGHT)
-	UiKit.label(box, str(app.profile.ranking()), Rect2(92, 72, 70, 22), 15, UiKit.TEXT_DARK)
-	UiKit.label(box, tr("Méritos"), Rect2(186, 72, 70, 22), 14, UiKit.INFO_ON_LIGHT)
-	UiKit.label(box, str(app.profile.merits), Rect2(256, 72, 80, 22), 15, UiKit.TEXT_DARK)
+	UiKit.label(box, tr("Ranking"), Rect2(22, 72, 70, 22), 14, UiKit.BAD)
+	UiKit.label(box, str(app.profile.ranking()), Rect2(92, 72, 70, 22), 15, UiKit.TEXT)
+	UiKit.label(box, tr("Méritos"), Rect2(186, 72, 70, 22), 14, UiKit.INFO)
+	UiKit.label(box, str(app.profile.merits), Rect2(256, 72, 80, 22), 15, UiKit.TEXT)
 	var stage: Panel = UiKit.panel(box, Rect2(60, 94, 220, 148), Color(0, 0, 0, 0))
 	stage.clip_contents = true
 	var avatar: AvatarView = AvatarView.create(stage, app.profile.look(), Rect2(0, 0, 220, 148))
@@ -151,7 +148,7 @@ func build_user_info() -> void:
 		app.founder_entered = true
 		avatar.play_entrance(app)
 	UiKit.level_badge(box, app.profile.level(), Rect2(292, 100, 44, 30))
-	UiKit.label(box, TankFighter.rank_for(app.profile.level()), Rect2(250, 132, 100, 22), 14, UiKit.GOOD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, TankFighter.rank_for(app.profile.level()), Rect2(250, 132, 100, 22), 14, UiKit.GOOD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var goals: Array[int] = [1, 5, 10, 25, 50, 100]
 	for i in range(goals.size()):
 		var slot: Panel = UiKit.panel(box, Rect2(22 + i * 54, 244, 46, 40), "slot")

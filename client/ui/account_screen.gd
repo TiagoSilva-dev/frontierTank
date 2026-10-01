@@ -48,18 +48,18 @@ func _ready() -> void:
 	var y: float = rect.position.y + 64
 	if logged_in():
 		UiKit.label(self, tr("Conta"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
-		var who: Label = UiKit.label(self, account_name(), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
+		var who: Label = UiKit.label(self, account_name(), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT)
 		who.name = "AccountName"
 		y += 32
 		if app.online:
 			UiKit.label(self, tr("Servidor"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
-			UiKit.label(self, tr(str(app.net.welcome().get("server", {}).get("name", ""))), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
+			UiKit.label(self, tr(str(app.net.welcome().get("server", {}).get("name", ""))), Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT)
 			y += 32
 		UiKit.label(self, tr("Termos aceitos"), Rect2(x, y, 200, 28), 16, UiKit.TEXT_MUTED)
-		UiKit.label(self, tr("versão %s") % Legal.VERSION, Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT_DARK)
+		UiKit.label(self, tr("versão %s") % Legal.VERSION, Rect2(x + 200, y, 340, 28), 18, UiKit.TEXT)
 		y += 40
 	else:
-		var offline: Label = UiKit.label(self, tr("Você está no modo offline: o progresso fica só neste computador e nada é enviado para os servidores. Para ter uma conta, escolha um servidor na tela de entrada."), Rect2(x, y, 540, 110), 16, UiKit.TEXT_DARK)
+		var offline: Label = UiKit.label(self, tr("Você está no modo offline: o progresso fica só neste computador e nada é enviado para os servidores. Para ter uma conta, escolha um servidor na tela de entrada."), Rect2(x, y, 540, 110), 16, UiKit.TEXT)
 		UiKit.wrap(offline, Vector2(540, 110))
 		y += 120
 	var terms: Button = UiKit.button(self, Legal.title("terms"), Rect2(x, y, 262, 40), func() -> void: LegalScreen.open(self, "terms"), "button_blue", 15)
@@ -78,7 +78,7 @@ func _ready() -> void:
 		var link: Button = UiKit.button(self, tr("Vincular à Steam"), Rect2(x + 139, y, 262, 44), link_steam, "button_blue", 16)
 		link.name = "LinkSteam"
 		y += 56
-	status = UiKit.label(self, "", Rect2(x, y, 540, 84), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	status = UiKit.label(self, "", Rect2(x, y, 540, 84), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	status.name = "Status"
 	UiKit.wrap(status, Vector2(540, 84))
 	open_folder = UiKit.button(self, tr("Abrir pasta"), Rect2(x + 190, y + 86, 160, 34), func() -> void: OS.shell_open(ProjectSettings.globalize_path("user://exports")), "button", 14)
@@ -88,7 +88,7 @@ func _ready() -> void:
 
 func say(text: String, error: bool = false) -> void:
 	status.text = text
-	status.add_theme_color_override("font_color", Color("b8321c") if error else Color("2f5a1f"))
+	status.add_theme_color_override("font_color", UiKit.BAD if error else UiKit.GOOD)
 	if app != null and app.get("audio") != null:
 		app.audio.play("ui_error" if error else "ui_confirm")
 
@@ -132,7 +132,7 @@ func ask_delete() -> void:
 	var rect: Rect2 = confirm_root.get_meta("rect")
 	var password: LineEdit = UiKit.text_field(confirm_root, Rect2(rect.position.x + 110, rect.position.y + 196, 400, 38), tr("EXCLUIR") if steam_only() else tr("sua senha"), not steam_only(), 128)
 	password.name = "DeletePassword"
-	var problem: Label = UiKit.label(confirm_root, "", Rect2(rect.position.x + 40, rect.position.y + 238, 540, 40), 15, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var problem: Label = UiKit.label(confirm_root, "", Rect2(rect.position.x + 40, rect.position.y + 238, 540, 40), 15, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	problem.name = "DeleteProblem"
 	UiKit.wrap(problem, Vector2(540, 40))
 	var go: Callable = func() -> void: confirm_delete(password.text, problem)

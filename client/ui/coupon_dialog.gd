@@ -7,7 +7,7 @@ extends RefCounted
 static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Control:
 	var root: Control = UiKit.modal(parent, Lang.t("RESGATAR CUPOM"), "", Vector2(560, 320))
 	var rect: Rect2 = root.get_meta("rect")
-	UiKit.label(root, Lang.t("Digite o código do cupom:"), Rect2(rect.position.x + 40, rect.position.y + 60, 480, 30), 17, UiKit.TEXT_DARK)
+	UiKit.label(root, Lang.t("Digite o código do cupom:"), Rect2(rect.position.x + 40, rect.position.y + 60, 480, 30), 17, UiKit.TEXT)
 	var field: LineEdit = LineEdit.new()
 	field.name = "CouponField"
 	field.position = rect.position + Vector2(40, 94)
@@ -25,7 +25,7 @@ static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Con
 		var outcome: Dictionary = await app.do_op("redeem", [field.text])
 		var ok: bool = outcome.error == ""
 		result.text = Lang.t("Cupom resgatado! ") + outcome.message if ok else outcome.error
-		result.add_theme_color_override("font_color", Color("2f7a1f") if ok else Color("b8321c"))
+		result.add_theme_color_override("font_color", UiKit.GOOD if ok else UiKit.BAD)
 		app.audio.play("ui_confirm" if ok else "ui_error")
 		if ok and on_done.is_valid():
 			on_done.call()

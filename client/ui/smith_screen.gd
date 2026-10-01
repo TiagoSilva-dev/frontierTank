@@ -36,20 +36,13 @@ func build() -> void:
 	contents.size = size
 	add_child(contents)
 	move_child(contents, 0)
-	UiKit.dim(contents, 0.94)
-	forge_panel(contents, Rect2(24, 16, 1232, 688))
-	var heading: Control = Control.new()
-	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	heading.draw.connect(func() -> void:
-		HudPaint.fancy(heading, Vector2(52, 63), tr("FORJA CELESTE"), 40, HudPaint.GOLD, Color("783814"))
-		HudPaint.outlined(heading, Vector2(54, 85), tr("FERREIRO  /  O poder toma forma"), 16, Color("afbed1")))
-	contents.add_child(heading)
+	PremiumUi.window(contents, Rect2(24, 16, 1232, 688), tr("FORJA CELESTE"), tr("FERREIRO  /  O poder toma forma"))
 	UiKit.button(contents, tr("FECHAR"), Rect2(1110, 38, 120, 40), close)
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(860, 39, 30, 30))
 	UiKit.label(contents, str(app.profile.coins), Rect2(900, 35, 190, 38), 24, HudPaint.GOLD)
 	for i in range(TABS.size()):
 		var tab_button: Button = UiKit.button(contents, tr(TABS[i]), Rect2(44 + i * 194, 98, 184, 38), select_tab.bind(TABS[i]), "tab_active" if tab == TABS[i] else "tab", 18)
-		tab_button.set_meta("forge_active", tab == TABS[i])
+		tab_button.set_meta("active", tab == TABS[i])
 	if tab == "Fortalecer":
 		build_strengthen()
 	else:
@@ -132,32 +125,10 @@ func item_card(inst: Dictionary, rect: Rect2, level_shown: int) -> void:
 	UiKit.label(box, "+%d" % level_shown, Rect2(6, 2, 60, 28), 20, Armory.aura_color(level_shown).lightened(0.3) if level_shown > 0 else Color.WHITE, UiKit.INK)
 
 func forge_panel(parent: Node, rect: Rect2) -> Control:
-	var panel: Control = Control.new()
-	panel.position = rect.position
-	panel.size = rect.size
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.draw.connect(func() -> void: HudPaint.well(panel, HudPaint.frame(panel, Rect2(Vector2.ZERO, panel.size), 0.25)))
-	parent.add_child(panel)
-	return panel
+	return PremiumUi.panel(parent, rect)
 
 func skin_buttons(parent: Node) -> void:
-	for node: Node in parent.get_children():
-		if node is Button:
-			for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
-				var style: StyleBoxFlat = StyleBoxFlat.new()
-				style.bg_color = Color("182538") if state == "normal" else Color("293d52")
-				if node.get_meta("forge_active", false):
-					style.bg_color = Color("71401d") if state == "normal" else Color("94562a")
-				if state == "disabled":
-					style.bg_color = Color("141c29")
-				style.border_color = HudPaint.GOLD if state in ["hover", "focus"] else Color("946336") if state != "disabled" else Color("434454")
-				style.set_border_width_all(2)
-				style.set_corner_radius_all(3)
-				node.add_theme_stylebox_override(state, style)
-			node.add_theme_color_override("font_color", HudPaint.CREAM)
-			node.add_theme_color_override("font_hover_color", HudPaint.GOLD_HOT)
-			node.add_theme_color_override("font_disabled_color", Color("65758b"))
-		skin_buttons(node)
+	PremiumUi.skin(parent)
 
 func forge_turn_page(step: int) -> void:
 	forge_page += step
@@ -244,7 +215,7 @@ func build_strengthen() -> void:
 	UiKit.label(contents, tr("Custo: 1 pedra + %d moedas") % int(cost.coins), Rect2(948, 454, 274, 24), 16, HudPaint.GOLD)
 	var button: Button = UiKit.button(contents, tr("FORTALECER") + "  +%d" % int(cost.level), Rect2(948, 486, 274, 42), do_strengthen, "button_green", 22)
 	button.name = "StrengthenButton"
-	button.set_meta("forge_active", true)
+	button.set_meta("active", true)
 	button.disabled = owned < 1 or app.profile.coins < int(cost.coins) or busy
 	button.tooltip_text = tr("Você precisa de uma Pedra de Fortalecimento nível %d.") % int(cost.level) if owned < 1 else tr("Uma tentativa consome a pedra e as moedas.")
 
@@ -264,7 +235,7 @@ func build_transfer() -> void:
 		item_card(target, Rect2(990, 300, 190, 190), int(target.level))
 		UiKit.clipped(contents, Armory.item_name(target), Rect2(950, 496, 270, 40), 16, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var button: Button = UiKit.button(contents, tr("TRANSFERIR"), Rect2(806, 566, 220, 54), do_transfer, "button_green", 20)
-	button.set_meta("forge_active", true)
+	button.set_meta("active", true)
 	button.disabled = source.is_empty() or target.is_empty() or selected_uid == target_uid or Armory.slot_of(str(source.get("id", ""))) != Armory.slot_of(str(target.get("id", ""))) or app.profile.coins < int(Armory.data().strengthen.transfer_coins)
 
 # ---------- Moedas (0.10) ----------
@@ -288,7 +259,7 @@ func build_craft_list() -> void:
 		var kind: String = ["item", "map"][i]
 		var toggle: Button = UiKit.button(contents, tr(["Equipamentos", "Mapas"][i]), Rect2(70 + i * 170, 158, 164, 32), select_target.bind(kind), "tab_active" if craft_target == kind else "tab", 15)  # i18n
 		toggle.name = "Target_" + kind
-		toggle.set_meta("forge_active", craft_target == kind)
+		toggle.set_meta("active", craft_target == kind)
 	var list: Array[Dictionary] = craft_items() if craft_target == "item" else craft_maps()
 	if craft_target == "item" and (list.is_empty() or not list.any(func(inst: Dictionary) -> bool: return int(inst.uid) == selected_uid)):
 		selected_uid = int(list[0].uid) if not list.is_empty() else -1

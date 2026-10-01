@@ -29,7 +29,7 @@ func _ready() -> void:
 	var summary: String = tr("Para jogar online, leia e aceite os Termos de Uso e a Política de Privacidade.\nResumo: guardamos o nome da conta, a senha protegida, o seu personagem e o que acontece no jogo (compras, partidas e chat), para o jogo funcionar e para a segurança. Não vendemos dados nem mostramos anúncios. Você pode baixar os seus dados ou excluir a conta quando quiser em Ajuda → Minha conta.")
 	if mode == "update":
 		summary = tr("Os Termos de Uso e a Política de Privacidade mudaram (versão %s). Para continuar jogando online, leia e aceite os textos novos.") % Legal.VERSION
-	var text: Label = UiKit.label(self, summary, Rect2(rect.position.x + 34, rect.position.y + 60, rect.size.x - 68, 170), 16, UiKit.TEXT_DARK)
+	var text: Label = UiKit.label(self, summary, Rect2(rect.position.x + 34, rect.position.y + 60, rect.size.x - 68, 170), 16, UiKit.TEXT)
 	UiKit.wrap(text, Vector2(rect.size.x - 68, 170))
 	var terms: Button = UiKit.button(self, tr("Ler os Termos de Uso"), Rect2(rect.position.x + 110, rect.position.y + 236, 270, 38), func() -> void: LegalScreen.open(self, "terms"), "button_blue", 15)
 	terms.name = "ReadTerms"

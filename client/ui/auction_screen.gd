@@ -66,9 +66,7 @@ func build() -> void:
 	contents.size = size
 	add_child(contents)
 	move_child(contents, 0)
-	UiKit.dim(contents, 0.75)
-	UiKit.panel(contents, Rect2(40, 24, 1200, 672), "wood")
-	UiKit.title(contents, tr("LEILÃO"), Rect2(40, 30, 1200, 44), 32)
+	PremiumUi.window(contents, Rect2(40, 24, 1200, 672), tr("LEILÃO"), "", 0.94, 36, true)
 	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	var mail_text: String = tr("CORREIO") if int(app.mail_count) <= 0 else tr("CORREIO (%d)") % int(app.mail_count)
 	var mail: Button = UiKit.button(contents, mail_text, Rect2(900, 34, 180, 42), open_mail, "button_blue" if int(app.mail_count) <= 0 else "button_green", 16)
@@ -104,7 +102,7 @@ func build_wallet() -> void:
 
 
 func caption(text: String, rect: Rect2) -> Label:
-	return UiKit.label(contents, text, rect, 15, UiKit.TEXT_DARK)
+	return UiKit.label(contents, text, rect, 15, UiKit.TEXT)
 
 func option(rect: Rect2, entries: Array, current: String, on_pick: Callable) -> OptionButton:
 	var node: OptionButton = OptionButton.new()
@@ -218,7 +216,7 @@ static func template(text: String) -> String:
 
 func build_buy() -> void:
 	UiKit.panel(contents, Rect2(56, 130, 250, 550), "paper")
-	UiKit.label(contents, tr("BUSCA"), Rect2(56, 136, 250, 28), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("BUSCA"), Rect2(56, 136, 250, 28), 20, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var y: float = 166
 	caption(tr("Tipo"), Rect2(70, y, 220, 22))
 	var types: Array = TYPES.map(func(entry: Array) -> Array: return [tr(entry[0]), entry[1]])
@@ -256,15 +254,15 @@ func build_buy() -> void:
 func build_results() -> void:
 	UiKit.panel(contents, Rect2(316, 130, 520, 506), "paper")
 	var heading: String = tr("Carregando...") if loading else (tr("%d anúncios") % total if searched else "")
-	UiKit.label(contents, heading, Rect2(330, 134, 300, 30), 17, UiKit.TEXT_DARK)
+	UiKit.label(contents, heading, Rect2(330, 134, 300, 30), 17, UiKit.TEXT)
 	for i in range(results.size()):
 		var listing: Dictionary = results[i]
 		row(listing, Rect2(326, 166 + i * 58, 500, 54), i)
 	if searched and results.is_empty() and not loading:
-		UiKit.label(contents, tr("Nenhum item à venda com estes filtros."), Rect2(330, 300, 490, 40), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Nenhum item à venda com estes filtros."), Rect2(330, 300, 490, 40), 18, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var pages: int = maxi(1, ceili(total / float(Auction.per_page())))
 	UiKit.button(contents, "<", Rect2(660, 134, 40, 28), turn_page.bind(-1), "tab", 14)
-	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(700, 134, 80, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(700, 134, 80, 28), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(780, 134, 40, 28), turn_page.bind(1), "tab", 14)
 
 func row(listing: Dictionary, rect: Rect2, index: int) -> void:
@@ -290,7 +288,7 @@ func is_mine(listing: Dictionary) -> bool:
 func build_details() -> void:
 	UiKit.panel(contents, Rect2(846, 130, 378, 506), "paper")
 	if selected.is_empty():
-		UiKit.label(contents, tr("Escolha um anúncio para ver os detalhes."), Rect2(860, 300, 350, 60), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		UiKit.label(contents, tr("Escolha um anúncio para ver os detalhes."), Rect2(860, 300, 350, 60), 17, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		return
 	var kind: String = str(selected.kind)
 	var item: Dictionary = selected.item
@@ -300,7 +298,7 @@ func build_details() -> void:
 	info.append(tr("Vendedor: %s") % str(selected.get("seller_name", "")))
 	info.append(tr("Termina em %s") % Auction.time_left(int(selected.expires_at) - server_now()))
 	for i in range(info.size()):
-		UiKit.clipped(contents, info[i], Rect2(968, 170 + i * 24, 246, 24), 14, UiKit.TEXT_DARK)
+		UiKit.clipped(contents, info[i], Rect2(968, 170 + i * 24, 246, 24), 14, UiKit.TEXT)
 	var lines: Array[String] = Auction.item_lines(kind, item)
 	var list: Panel = UiKit.panel(contents, Rect2(858, 272, 354, 132), "dark")
 	for i in range(mini(lines.size(), 4)):
@@ -311,9 +309,9 @@ func build_details() -> void:
 	if lines.is_empty():
 		UiKit.label(list, tr("Sem bônus.") if kind == "item" else tr("Sem atributos."), Rect2(10, 4, 336, 30), 14, Color("c8b8a0"), UiKit.INK)
 	# Last sales of items like this one.
-	UiKit.label(contents, tr("Vendas recentes de itens parecidos"), Rect2(858, 408, 354, 24), 14, UiKit.TEXT_DARK)
+	UiKit.label(contents, tr("Vendas recentes de itens parecidos"), Rect2(858, 408, 354, 24), 14, UiKit.TEXT)
 	if history.is_empty():
-		UiKit.label(contents, tr("Nenhuma venda ainda."), Rect2(868, 432, 344, 22), 13, Color("8a6a4a"))
+		UiKit.label(contents, tr("Nenhuma venda ainda."), Rect2(868, 432, 344, 22), 13, UiKit.TEXT_MUTED)
 	for i in range(mini(history.size(), 3)):
 		var sale: Dictionary = history[i]
 		var line: String = "%s  •  %s" % [Auction.listing_price(sale), Auction.time_ago(server_now() - int(sale.get("closed_at", server_now())))]
@@ -327,7 +325,7 @@ func build_details() -> void:
 	buy.disabled = reason != "" or loading
 	buy.tooltip_text = reason
 	if reason != "":
-		UiKit.clipped(contents, reason, Rect2(858, 614, 354, 22), 13, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.clipped(contents, reason, Rect2(858, 614, 354, 22), 13, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 
 func buy_reason(listing: Dictionary) -> String:
 	if is_mine(listing):
@@ -495,27 +493,27 @@ func build_sell() -> void:
 			picture.modulate = picture.modulate * Color(0.5, 0.48, 0.45)
 			UiKit.label(slot, "×", Rect2(54, 40, 20, 22), 16, Color("ff8a6a"), UiKit.INK)
 	if list.is_empty():
-		UiKit.label(contents, tr("Nenhum equipamento que aceite bônus.") if sell_kind == "item" else tr("Nenhum mapa na mochila."), Rect2(72, 200, 490, 40), 18, UiKit.TEXT_DARK)
+		UiKit.label(contents, tr("Nenhum equipamento que aceite bônus.") if sell_kind == "item" else tr("Nenhum mapa na mochila."), Rect2(72, 200, 490, 40), 18, UiKit.TEXT)
 	UiKit.button(contents, "<", Rect2(380, 626, 40, 32), turn_sell_page.bind(-1), "tab", 14)
-	UiKit.label(contents, "%d/%d" % [sell_page + 1, pages], Rect2(420, 626, 80, 32), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, "%d/%d" % [sell_page + 1, pages], Rect2(420, 626, 80, 32), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(500, 626, 40, 32), turn_sell_page.bind(1), "tab", 14)
-	UiKit.label(contents, tr("Só vão ao leilão itens que caíram nas instâncias e mapas, sem vínculo."), Rect2(70, 586, 490, 36), 13, Color("8a3a10")).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.label(contents, tr("Só vão ao leilão itens que caíram nas instâncias e mapas, sem vínculo."), Rect2(70, 606, 300, 52), 13, PremiumUi.GOLD).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	build_sell_form()
 
 func build_sell_form() -> void:
 	var subject: Dictionary = sell_subject()
 	if subject.is_empty():
-		UiKit.label(contents, tr("Escolha um equipamento ou um mapa."), Rect2(600, 300, 612, 40), 20, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Escolha um equipamento ou um mapa."), Rect2(600, 300, 612, 40), 20, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	UiKit.label(contents, Auction.item_name(sell_kind, subject), Rect2(600, 136, 612, 32), 21, Auction.item_color(sell_kind, subject).darkened(0.45), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	item_box(sell_kind, subject, Rect2(604, 172, 108, 108))
-	UiKit.label(contents, facts(sell_kind, subject), Rect2(724, 170, 488, 26), 15, UiKit.TEXT_DARK)
+	UiKit.label(contents, facts(sell_kind, subject), Rect2(724, 170, 488, 26), 15, UiKit.TEXT)
 	var lines: Array[String] = Auction.item_lines(sell_kind, subject)
 	for i in range(mini(lines.size(), 3)):
-		UiKit.clipped(contents, lines[i], Rect2(724, 196 + i * 26, 488, 26), 14, Color("2a6a8a"))
+		UiKit.clipped(contents, lines[i], Rect2(724, 196 + i * 26, 488, 26), 14, PremiumUi.INFO)
 	var reason: String = sell_reason_for(subject)
 	if reason != "":
-		UiKit.label(contents, reason, Rect2(600, 300, 612, 40), 18, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, reason, Rect2(600, 300, 612, 40), 18, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	# Price, duration and what the seller gets.
 	caption(tr("Preço"), Rect2(610, 292, 120, 30))
@@ -547,8 +545,8 @@ func build_sell_form() -> void:
 	list_button.disabled = problem != "" or loading
 	list_button.tooltip_text = problem
 	if problem != "":
-		UiKit.label(contents, problem, Rect2(600, 544, 612, 26), 14, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(contents, tr("Vendas recentes de itens parecidos"), Rect2(610, 570, 300, 24), 14, UiKit.TEXT_DARK)
+		UiKit.label(contents, problem, Rect2(600, 544, 612, 26), 14, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Vendas recentes de itens parecidos"), Rect2(610, 570, 300, 24), 14, UiKit.TEXT)
 	var shown: Array[String] = []
 	for sale: Dictionary in history.slice(0, 3):
 		shown.append(Auction.listing_price(sale))
@@ -643,10 +641,10 @@ func list_item() -> void:
 func build_mine() -> void:
 	UiKit.panel(contents, Rect2(56, 130, 580, 506), "paper")
 	UiKit.panel(contents, Rect2(646, 130, 578, 506), "paper")
-	UiKit.label(contents, tr("À venda (%d/%d)") % [mine_active.size(), Auction.max_listings()], Rect2(70, 136, 400, 30), 19, UiKit.TEXT_DARK)
-	UiKit.label(contents, tr("Encerrados"), Rect2(660, 136, 400, 30), 19, UiKit.TEXT_DARK)
+	UiKit.label(contents, tr("À venda (%d/%d)") % [mine_active.size(), Auction.max_listings()], Rect2(70, 136, 400, 30), 19, UiKit.TEXT)
+	UiKit.label(contents, tr("Encerrados"), Rect2(660, 136, 400, 30), 19, UiKit.TEXT)
 	if loading:
-		UiKit.label(contents, tr("Carregando..."), Rect2(70, 300, 550, 40), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Carregando..."), Rect2(70, 300, 550, 40), 18, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	for i in range(mini(mine_active.size(), 10)):
 		var listing: Dictionary = mine_active[i]
@@ -656,7 +654,7 @@ func build_mine() -> void:
 		var cancel: Button = UiKit.button(box, tr("CANCELAR"), Rect2(456, 5, 98, 32), confirm_cancel.bind(listing), "button", 13)
 		cancel.name = "Cancel_%d" % int(listing.id)
 	if mine_active.is_empty():
-		UiKit.label(contents, tr("Nada à venda. Anuncie na aba Vender."), Rect2(70, 300, 550, 40), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Nada à venda. Anuncie na aba Vender."), Rect2(70, 300, 550, 40), 17, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var status_text: Dictionary = {"sold": "Vendido", "cancelled": "Cancelado", "expired": "Vencido"}  # i18n
 	for i in range(mini(mine_closed.size(), 10)):
 		var listing: Dictionary = mine_closed[i]
@@ -665,10 +663,10 @@ func build_mine() -> void:
 		var when: String = Auction.time_ago(server_now() - int(listing.closed_at)) if listing.get("closed_at") != null else ""
 		mine_line(box, listing, "%s  %s" % [tr(str(status_text.get(str(listing.status), ""))), when], Color("fff4d6"))
 	if mine_closed.is_empty():
-		UiKit.label(contents, tr("Nenhum anúncio encerrado."), Rect2(660, 300, 550, 40), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(contents, tr("Vendas e itens que voltam chegam pelo Correio."), Rect2(66, 600, 560, 30), 14, Color("8a3a10"))
+		UiKit.label(contents, tr("Nenhum anúncio encerrado."), Rect2(660, 300, 550, 40), 17, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Vendas e itens que voltam chegam pelo Correio."), Rect2(66, 600, 560, 30), 14, PremiumUi.GOLD)
 
-func mine_line(box: Panel, listing: Dictionary, status: String, text_color: Color = UiKit.TEXT_DARK) -> void:
+func mine_line(box: Panel, listing: Dictionary, status: String, text_color: Color = UiKit.TEXT) -> void:
 	var kind: String = str(listing.kind)
 	var picture: TextureRect = UiKit.art(box, Auction.item_icon(kind, listing.item), Rect2(6, 3, 36, 36))
 	if kind == "item":

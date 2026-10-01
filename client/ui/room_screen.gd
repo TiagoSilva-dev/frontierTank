@@ -29,10 +29,7 @@ func rebuild() -> void:
 	add_child(content)
 	move_child(content, 0)
 	var room: Dictionary = app.room
-	var backdrop: ColorRect = ColorRect.new()
-	backdrop.color = Color("3a1d0c")
-	backdrop.size = size
-	content.add_child(backdrop)
+	PremiumUi.backdrop(content)
 	var speaker: SpeakerBar = SpeakerBar.new()
 	speaker.app = app
 	content.add_child(speaker)
@@ -66,7 +63,7 @@ func build_slots(room: Dictionary) -> void:
 			empty.tooltip_text = (tr("Adicione um jogador de IA ou espere alguém entrar") if app.online else tr("Convide um jogador (IA)")) if app.is_owner() else ""
 			var ghost: TextureRect = UiKit.art(empty, PixelIcons.get_icon("team"), Rect2(55, 40, 100, 100))
 			ghost.modulate = Color(1, 1, 1, 0.3)
-			UiKit.label(empty, tr("Aguardando…"), Rect2(0, 150, 210, 30), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+			UiKit.label(empty, tr("Aguardando…"), Rect2(0, 150, 210, 30), 18, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 
 func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 	var member: Dictionary = room.members[index]
@@ -86,10 +83,10 @@ func member_slot(room: Dictionary, index: int, rect: Rect2) -> void:
 		UiKit.label(slot, tr("Dono"), Rect2(6, 168, 70, 30), 16, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.art(slot, PixelIcons.get_icon("crown"), Rect2(170, 40, 28, 28))
 	elif member.get("human", false) and not (bool(member.get("ready", false)) if app.online else room.get("ready", false)):
-		UiKit.label(slot, tr("Não preparado"), Rect2(6, 170, 198, 28), 15, UiKit.BAD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(slot, tr("Não preparado"), Rect2(6, 170, 198, 28), 15, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	else:
 		UiKit.art(slot, "res://assets/expansion/lobby/ready_icon.png", Rect2(8, 166, 32, 32))
-		UiKit.label(slot, tr("Pronto"), Rect2(40, 168, 80, 30), 15, UiKit.GOOD_ON_LIGHT)
+		UiKit.label(slot, tr("Pronto"), Rect2(40, 168, 80, 30), 15, UiKit.GOOD)
 	if app.is_owner() and index != int(room.owner) and (app.online or not member.get("human", false)):
 		var kick: Button = UiKit.button(slot, "X", Rect2(172, 170, 30, 28), kick_member.bind(index), "button", 14)
 		kick.tooltip_text = tr("Remover da sala")
@@ -138,8 +135,8 @@ func build_center(room: Dictionary) -> void:
 			UiKit.art(map_box, map_thumb(entry), Rect2(8, 8, 96, 64)).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	if map_name == tr("Mapa Aleatório"):
 		UiKit.art(map_box, PixelIcons.get_icon("star"), Rect2(20, 12, 56, 56))
-	UiKit.label(map_box, map_name, Rect2(108, 6, 160, 44), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UiKit.label(map_box, tr("%d seg por turno") % int(room.turn_seconds), Rect2(108, 50, 130, 24), 14, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(map_box, map_name, Rect2(108, 6, 160, 44), 17, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.label(map_box, tr("%d seg por turno") % int(room.turn_seconds), Rect2(108, 50, 130, 24), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var gear: Button = UiKit.icon_button(map_box, PixelIcons.get_icon("gear"), Rect2(240, 46, 26, 26), cycle_time, tr("Tempo por turno (10/15/20 s)"))
 	gear.name = "TimeGear"
 
@@ -175,15 +172,15 @@ func build_instance(art_box: Panel, room: Dictionary) -> void:
 	slot.name = "MapSlot"
 	if item.is_empty():
 		UiKit.art(slot, PixelIcons.get_icon("search"), Rect2(10, 26, 48, 48)).modulate.a = 0.6
-		UiKit.label(slot, tr("Entrada livre (sem mapa)"), Rect2(66, 6, 276, 26), 18, UiKit.TEXT_DARK)
+		UiKit.label(slot, tr("Entrada livre (sem mapa)"), Rect2(66, 6, 276, 26), 18, UiKit.TEXT)
 		var hint: Label = UiKit.label(slot, tr("Nível 1 e recompensa baixa. Clique para colocar um mapa."), Rect2(66, 32, 276, 62), 16, UiKit.TEXT_MUTED)
 		UiKit.wrap(hint, Vector2(276, 62))
 		slot.tooltip_text = tr("Coloque um mapa desta instância: o nível do mapa define a dificuldade e a recompensa.\nA entrada livre dá mapas de nível 1.")
 	else:
 		UiKit.art(slot, InstanceRun.map_icon(item), Rect2(6, 22, 56, 56))
-		UiKit.label(slot, tr("Nível %d  •  %s") % [int(item.level), InstanceRun.quality_label(str(item.quality))], Rect2(66, 4, 276, 26), 18, InstanceRun.quality_color(str(item.quality)).darkened(0.5))
+		UiKit.label(slot, tr("Nível %d  •  %s") % [int(item.level), InstanceRun.quality_label(str(item.quality))], Rect2(66, 4, 276, 26), 18, InstanceRun.quality_color(str(item.quality)).lightened(0.2))
 		var lines: Array[String] = InstanceRun.describe_map(item)
-		var mods: Label = UiKit.label(slot, "\n".join(lines.slice(0, 3)) if not lines.is_empty() else tr("Sem atributos"), Rect2(66, 30, 276, 66), 16, Color("7a3a1a"))
+		var mods: Label = UiKit.label(slot, "\n".join(lines.slice(0, 3)) if not lines.is_empty() else tr("Sem atributos"), Rect2(66, 30, 276, 66), 16, PremiumUi.MUTED)
 		mods.clip_text = true
 		slot.tooltip_text = tr("%s\n%s\nO mapa é consumido ao entrar.") % [InstanceRun.map_name(item), "\n".join(lines)]
 
@@ -202,17 +199,17 @@ func choose_map_item() -> void:
 		var button: Button = UiKit.button(dialog, "", cell, pick_map_item.bind(int(item.get("uid", -1)), dialog), "card_hover" if int(item.get("uid", -1)) == int(app.room.get("map_uid", -1)) else "card")
 		button.name = "MapItem_%d" % int(item.get("uid", -1))
 		if item.is_empty():
-			UiKit.label(button, tr("Entrada livre"), Rect2(10, 8, 208, 26), 17, UiKit.TEXT_DARK)
+			UiKit.label(button, tr("Entrada livre"), Rect2(10, 8, 208, 26), 17, UiKit.TEXT)
 			UiKit.label(button, tr("Nível 1 • recompensa baixa\nDá mapas de nível 1"), Rect2(10, 36, 208, 44), 14, UiKit.TEXT_MUTED)
 			continue
 		UiKit.art(button, InstanceRun.map_icon(item), Rect2(6, 6, 44, 44))
-		UiKit.label(button, tr("Nível %d") % int(item.level), Rect2(56, 4, 164, 26), 18, InstanceRun.quality_color(str(item.quality)).darkened(0.45))
+		UiKit.label(button, tr("Nível %d") % int(item.level), Rect2(56, 4, 164, 26), 18, InstanceRun.quality_color(str(item.quality)).lightened(0.2))
 		UiKit.label(button, tr("%s • %d atrib.") % [InstanceRun.quality_label(str(item.quality)), item.mods.size()], Rect2(56, 30, 164, 22), 14, UiKit.TEXT_MUTED)
 		var lines: Array[String] = InstanceRun.describe_map(item)
-		UiKit.label(button, lines[0] if not lines.is_empty() else tr("Sem atributos"), Rect2(8, 58, 214, 22), 11, Color("7a3a1a")).clip_text = true
+		UiKit.label(button, lines[0] if not lines.is_empty() else tr("Sem atributos"), Rect2(8, 58, 214, 22), 11, PremiumUi.MUTED).clip_text = true
 		button.tooltip_text = "\n".join(lines)
 	if maps.is_empty():
-		UiKit.wrap(UiKit.label(dialog, tr("Você ainda não tem mapas desta instância. Vença as fases para encontrar mapas."), Rect2(rect.position.x + 40, rect.end.y - 110, rect.size.x - 80, 44), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER), Vector2(rect.size.x - 80, 44))
+		UiKit.wrap(UiKit.label(dialog, tr("Você ainda não tem mapas desta instância. Vença as fases para encontrar mapas."), Rect2(rect.position.x + 40, rect.end.y - 110, rect.size.x - 80, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER), Vector2(rect.size.x - 80, 44))
 	UiKit.button(dialog, tr("FECHAR"), Rect2(rect.position.x + rect.size.x / 2 - 70, rect.end.y - 56, 140, 40), dialog.queue_free)
 
 func pick_map_item(uid: int, dialog: Control = null) -> void:
@@ -235,10 +232,10 @@ func choose_instance() -> void:
 		var thumb: String = map_thumb({"id": str(instance.phases[2].map), "bg": ""})
 		if ResourceLoader.exists(thumb):
 			UiKit.art(cell, thumb, Rect2(8, 8, 150, 100), false).stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		UiKit.wrap(UiKit.label(cell, tr(str(instance.name)), Rect2(166, 8, 206, 50), 17, UiKit.TEXT_DARK), Vector2(206, 50))
+		UiKit.wrap(UiKit.label(cell, tr(str(instance.name)), Rect2(166, 8, 206, 50), 17, UiKit.TEXT), Vector2(206, 50))
 		var owned: int = app.profile.maps_for(str(instance.id)).size()
 		UiKit.label(cell, tr("%d mapa(s) na mochila") % owned, Rect2(166, 60, 206, 22), 14, UiKit.TEXT_MUTED)
-		UiKit.label(cell, " → ".join(instance.phases.map(func(p: Dictionary) -> String: return tr(str(p.name)))), Rect2(8, 112, 364, 24), 11, Color("7a3a1a")).clip_text = true
+		UiKit.label(cell, " → ".join(instance.phases.map(func(p: Dictionary) -> String: return tr(str(p.name)))), Rect2(8, 112, 364, 24), 11, PremiumUi.MUTED).clip_text = true
 
 func pick_instance(id: String, dialog: Control) -> void:
 	dialog.queue_free()

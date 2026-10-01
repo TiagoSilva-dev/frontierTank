@@ -41,7 +41,7 @@ func _ready() -> void:
 	for child in content.get_children():
 		child.queue_free()
 	if info.has("error"):
-		UiKit.label(content, tr(str(info.error)) if str(info.error) not in ["timeout", "offline"] else app.server_text(info.error), Rect2(14, 46, rect.size.x - 28, rect.size.y - 60), 20, UiKit.BAD_ON_LIGHT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(content, tr(str(info.error)) if str(info.error) not in ["timeout", "offline"] else app.server_text(info.error), Rect2(14, 46, rect.size.x - 28, rect.size.y - 60), 20, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	build()
 
@@ -66,22 +66,22 @@ func build() -> void:
 	UiKit.level_badge(content, level, Rect2(x, 62, 54, 34))
 	if bool(info.get("founder", false)):
 		FounderUi.badge(content, Rect2(x + 62, 64, 28, 28))
-		UiKit.label(content, str(info.get("name", "")), Rect2(x + 96, 60, 240, 38), 24, UiKit.TEXT_DARK).name = "Name"
+		UiKit.label(content, str(info.get("name", "")), Rect2(x + 96, 60, 240, 38), 24, UiKit.TEXT).name = "Name"
 	else:
-		UiKit.label(content, str(info.get("name", "")), Rect2(x + 62, 60, 280, 38), 24, UiKit.TEXT_DARK).name = "Name"
-	UiKit.label(content, TankFighter.rank_for(level), Rect2(x, 100, 340, 26), 17, UiKit.GOOD_ON_LIGHT)
-	var rows: Array = [[tr("Ranking"), str(int(info.get("ranking", 0))), UiKit.BAD_ON_LIGHT], [tr("Méritos"), str(int(info.get("merits", 0))), UiKit.INFO_ON_LIGHT], [tr("Vitórias"), str(int(info.get("victories", 0))), UiKit.TEXT_DARK], [tr("Partidas"), str(int(info.get("matches", 0))), UiKit.TEXT_DARK]]
+		UiKit.label(content, str(info.get("name", "")), Rect2(x + 62, 60, 280, 38), 24, UiKit.TEXT).name = "Name"
+	UiKit.label(content, TankFighter.rank_for(level), Rect2(x, 100, 340, 26), 17, UiKit.GOOD)
+	var rows: Array = [[tr("Ranking"), str(int(info.get("ranking", 0))), UiKit.BAD], [tr("Méritos"), str(int(info.get("merits", 0))), UiKit.INFO], [tr("Vitórias"), str(int(info.get("victories", 0))), UiKit.TEXT], [tr("Partidas"), str(int(info.get("matches", 0))), UiKit.TEXT]]
 	for i in range(rows.size()):
 		var row: Array = rows[i]
 		var at: Vector2 = Vector2(x + (i % 2) * 176, 134 + (i / 2) * 30)
 		UiKit.label(content, str(row[0]), Rect2(at, Vector2(90, 26)), 16, row[2])
-		UiKit.label(content, str(row[1]), Rect2(at + Vector2(88, 0), Vector2(80, 26)), 17, UiKit.TEXT_DARK)
+		UiKit.label(content, str(row[1]), Rect2(at + Vector2(88, 0), Vector2(80, 26)), 17, UiKit.TEXT)
 	# weapon
 	var weapon: Dictionary = info.get("arma", {})
 	UiKit.panel(content, Rect2(x, 204, 346, 70), "slot_light")
 	if not weapon.is_empty():
 		UiKit.art(content, Armory.weapon_icon(str(weapon.get("id", "")), int(weapon.get("level", 0))), Rect2(x + 8, 208, 62, 62))
-		var weapon_name: Label = UiKit.clipped(content, Armory.item_name(weapon), Rect2(x + 78, 212, 262, 30), 17, UiKit.TEXT_DARK)
+		var weapon_name: Label = UiKit.clipped(content, Armory.item_name(weapon), Rect2(x + 78, 212, 262, 30), 17, UiKit.TEXT)
 		weapon_name.name = "Weapon"
 		UiKit.label(content, tr("Arma equipada"), Rect2(x + 78, 242, 262, 24), 14, UiKit.TEXT_MUTED)
 	else:
@@ -92,8 +92,8 @@ func build() -> void:
 	var keys: Array = [["ataque", "Ataque"], ["defesa", "Defesa"], ["agilidade", "Agilidade"], ["sorte", "Sorte"]]  # i18n
 	for i in range(keys.size()):
 		var at: Vector2 = Vector2(x + (i % 2) * 176, 308 + (i / 2) * 30)
-		UiKit.label(content, tr(str(keys[i][1])), Rect2(at, Vector2(92, 26)), 16, UiKit.TEXT_DARK)
-		UiKit.label(content, "+%d" % int(attrs.get(keys[i][0], 0)), Rect2(at + Vector2(92, 0), Vector2(70, 26)), 17, UiKit.GOLD_ON_LIGHT)
+		UiKit.label(content, tr(str(keys[i][1])), Rect2(at, Vector2(92, 26)), 16, UiKit.TEXT)
+		UiKit.label(content, "+%d" % int(attrs.get(keys[i][0], 0)), Rect2(at + Vector2(92, 0), Vector2(70, 26)), 17, UiKit.GOLD)
 	# actions
 	if not mine:
 		var whisper: Button = UiKit.button(content, tr("MENSAGEM"), Rect2(30, 412, 160, 40), func() -> void:

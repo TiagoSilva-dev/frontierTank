@@ -42,7 +42,7 @@ func _ready() -> void:
 	var x: float = rect.position.x + 36
 	var y: float = rect.position.y + 60
 	UiKit.label(self, tr("Mensagem de %s:") % str(message.get("author", "")), Rect2(x, y, 600, 26), 16, UiKit.TEXT_MUTED)
-	var quote: Label = UiKit.label(self, "“%s”" % str(message.get("text", "")), Rect2(x + 12, y + 28, 588, 48), 17, UiKit.TEXT_DARK)
+	var quote: Label = UiKit.label(self, "“%s”" % str(message.get("text", "")), Rect2(x + 12, y + 28, 588, 48), 17, UiKit.TEXT)
 	quote.name = "Quote"
 	UiKit.wrap(quote, Vector2(588, 48))
 	y += 84
@@ -59,7 +59,7 @@ func _ready() -> void:
 	y += 44
 	hide_box = UiKit.check_box(self, tr("Ocultar as mensagens deste jogador para mim"), Rect2(x, y, 608, 32))
 	hide_box.name = "Hide"
-	status = UiKit.label(self, "", Rect2(x, y + 34, 608, 30), 15, Color("b8321c"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	status = UiKit.label(self, "", Rect2(x, y + 34, 608, 30), 15, UiKit.BAD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	status.name = "Status"
 	send_button = UiKit.button(self, tr("ENVIAR DENÚNCIA"), Rect2(rect.position.x + 110, rect.end.y - 62, 240, 44), send, "button_red", 17)
 	send_button.name = "Send"

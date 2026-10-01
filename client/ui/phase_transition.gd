@@ -46,7 +46,7 @@ func _ready() -> void:
 			goal = tr("Objetivo: destrua os cristais.")
 		"survive":
 			goal = tr("Objetivo: sobreviva %d turnos.") % int(next.get("turns", 5))
-	UiKit.label(card, goal, Rect2(20, 302, 480, 30), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(card, goal, Rect2(20, 302, 480, 30), 18, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.label(card, tr("Vida +%d%%  •  POW mantido  •  Quem caiu volta com %d%% de vida") % [roundi(float(app.balance.pve.phase_heal) * 100.0), roundi(float(app.balance.pve.revive_hp) * 100.0)], Rect2(20, 336, 480, 30), 14, Color("2f6a1f"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	# Drops of this phase
 	var loot: Panel = UiKit.panel(self, Rect2(716, 170, 400, 400), "wood_dark")

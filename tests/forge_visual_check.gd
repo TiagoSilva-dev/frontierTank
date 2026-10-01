@@ -26,6 +26,7 @@ func capture() -> void:
 	var weapon: Dictionary = app.profile.add_instance("trovao", "verdadeira", 8)
 	var smith: SmithScreen = SmithScreen.new()
 	smith.app = app
+	smith.theme = UiKit.make_theme()
 	smith.selected_uid = int(weapon.uid)
 	app.add_child(smith)
 	var mode: String = OS.get_cmdline_user_args()[0] if not OS.get_cmdline_user_args().is_empty() else "smith"

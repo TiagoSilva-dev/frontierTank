@@ -8,14 +8,13 @@ const INK: Color = Color("2a1608")
 const GOLD: Color = Color("ffd46b")
 const CREAM: Color = Color("fff4d6")
 const BROWN: Color = Color("5a2e10")
-const TEXT_DARK: Color = Color("4a2a12")
-# Colours for text on the light paper/card panels (all above 4.5:1 on them; see
-# tools/contrast_audit.gd). The bright ones of the dark panels (gold, cream) vanish there.
-const TEXT_MUTED: Color = Color("6a4424")
-const GOOD_ON_LIGHT: Color = Color("175a0c")
-const BAD_ON_LIGHT: Color = Color("8f2016")
-const INFO_ON_LIGHT: Color = Color("12448c")
-const GOLD_ON_LIGHT: Color = Color("86500a")
+# Text colours of the premium panels (dark glass wells, see PremiumUi); all above 4.5:1 on
+# them, checked with tools/contrast_audit.gd.
+const TEXT: Color = PremiumUi.TEXT
+const TEXT_MUTED: Color = PremiumUi.MUTED
+const GOOD: Color = PremiumUi.GOOD
+const BAD: Color = PremiumUi.BAD
+const INFO: Color = PremiumUi.INFO
 const BLUE_TEAM: Color = Color("5cc8ff")
 const RED_TEAM: Color = Color("ff6a5c")
 const PIXEL_SCALE: int = 2
@@ -109,28 +108,36 @@ static func make_theme() -> Theme:
 	theme.set_font("font", "Button", font(true))
 	theme.set_font("font", "OptionButton", font(true))
 	for state: String in ["normal", "hover", "pressed", "disabled"]:
-		var kind: String = "button" if state == "normal" else "button_" + state
-		theme.set_stylebox(state, "Button", frame(kind))
-		theme.set_stylebox(state, "OptionButton", frame(kind))
+		theme.set_stylebox(state, "Button", PremiumUi.button_style("button", state))
+		theme.set_stylebox(state, "OptionButton", PremiumUi.button_style("button", state))
 	theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
-	theme.set_color("font_color", "Button", Color.WHITE)
-	theme.set_color("font_hover_color", "Button", Color.WHITE)
-	theme.set_color("font_pressed_color", "Button", Color("fff0c0"))
-	theme.set_color("font_disabled_color", "Button", Color("e6ddd0"))
+	theme.set_color("font_color", "Button", PremiumUi.TEXT)
+	theme.set_color("font_hover_color", "Button", PremiumUi.GOLD_HOT)
+	theme.set_color("font_pressed_color", "Button", PremiumUi.GOLD_HOT)
+	theme.set_color("font_disabled_color", "Button", PremiumUi.DISABLED)
 	theme.set_color("font_outline_color", "Button", INK)
 	theme.set_constant("outline_size", "Button", 4)
-	theme.set_color("font_color", "OptionButton", Color.WHITE)
+	theme.set_color("font_color", "OptionButton", PremiumUi.TEXT)
 	theme.set_color("font_outline_color", "OptionButton", INK)
 	theme.set_constant("outline_size", "OptionButton", 4)
+	for box_type: String in ["CheckBox", "CheckButton"]:
+		theme.set_icon("checked", box_type, PremiumUi.check_icon(true))
+		theme.set_icon("unchecked", box_type, PremiumUi.check_icon(false))
+		theme.set_icon("checked_disabled", box_type, PremiumUi.check_icon(true))
+		theme.set_icon("unchecked_disabled", box_type, PremiumUi.check_icon(false))
+		theme.set_color("font_color", box_type, PremiumUi.TEXT)
 	theme.set_stylebox("panel", "TooltipPanel", frame("dark"))
 	theme.set_color("font_color", "TooltipLabel", CREAM)
-	theme.set_stylebox("normal", "LineEdit", frame("dark"))
-	theme.set_stylebox("focus", "LineEdit", StyleBoxEmpty.new())
+	theme.set_stylebox("normal", "LineEdit", PremiumUi.field_style())
+	theme.set_stylebox("focus", "LineEdit", PremiumUi.field_style(true))
 	theme.set_color("font_color", "LineEdit", CREAM)
 	theme.set_stylebox("panel", "PopupMenu", frame("wood_dark"))
 	return theme
 
-static func frame(kind: String) -> StyleBoxTexture:
+static func frame(kind: String) -> StyleBox:
+	# The button, tab, card and slot kinds are the premium steel boxes (PremiumUi).
+	if PremiumUi.has_button(kind):
+		return PremiumUi.button_style(kind)
 	if _styles.has(kind):
 		return _styles[kind]
 	var spec: Dictionary = FRAMES[kind]
@@ -190,14 +197,21 @@ static func _inside(x: int, y: int, n: int, k: int, radius: int) -> bool:
 # ---------- widgets ----------
 
 static func panel(parent: Node, rect: Rect2, color: Variant = "wood", border: Color = Color.TRANSPARENT) -> Panel:
-	var node: Panel = Panel.new()
+	var node: Panel
+	if color is String and PremiumUi.PANELS.has(color):
+		# The wood/paper/card kinds are the premium frames now (client/ui/premium_ui.gd).
+		var premium: PremiumPanel = PremiumPanel.new()
+		premium.kind = PremiumUi.PANELS[color]
+		node = premium
+	else:
+		node = Panel.new()
+		if color is String:
+			node.add_theme_stylebox_override("panel", frame(color))
+		else:
+			node.add_theme_stylebox_override("panel", box(color, border))
 	node.position = rect.position
 	node.size = rect.size
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if color is String:
-		node.add_theme_stylebox_override("panel", frame(color))
-	else:
-		node.add_theme_stylebox_override("panel", box(color, border))
 	parent.add_child(node)
 	return node
 
@@ -262,7 +276,11 @@ static func button(parent: Node, text: String, rect: Rect2, action: Callable = C
 	node.focus_mode = Control.FOCUS_NONE
 	node.add_theme_font_override("font", font(true))
 	node.add_theme_font_size_override("font_size", fs(font_size))
-	if kind != "button":
+	node.set_meta("ui_kind", kind)
+	if kind != "button" and PremiumUi.has_button(kind):
+		for state: String in ["normal", "hover", "pressed", "disabled"]:
+			node.add_theme_stylebox_override(state, PremiumUi.button_style(kind, state))
+	elif kind != "button":
 		node.add_theme_stylebox_override("normal", frame(kind))
 		var hover: String = kind + "_hover" if FRAMES.has(kind + "_hover") else kind
 		node.add_theme_stylebox_override("hover", frame(hover))
@@ -282,10 +300,10 @@ static func check_box(parent: Node, text: String, rect: Rect2, pressed: bool = f
 	node.add_theme_font_override("font", font(true))
 	node.add_theme_font_size_override("font_size", fs(font_size))
 	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
-		node.add_theme_color_override(state, TEXT_DARK)
+		node.add_theme_color_override(state, TEXT)
 	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
 		node.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	# Dark text on paper: no button outline.
+	# Light text on the glass well: no button outline.
 	node.add_theme_constant_override("outline_size", 0)
 	parent.add_child(node)
 	return node
@@ -429,7 +447,7 @@ static func modal(parent: Node, heading: String, body: String, size: Vector2 = V
 	panel(root, rect, "wood")
 	panel(root, Rect2(rect.position + Vector2(14, 46), rect.size - Vector2(28, 60)), "paper")
 	title(root, heading, Rect2(rect.position + Vector2(0, 8), Vector2(rect.size.x, 34)), 24)
-	var text: Label = label(root, body, Rect2(rect.position + Vector2(34, 58), rect.size - Vector2(68, 120)), 16, TEXT_DARK)
+	var text: Label = label(root, body, Rect2(rect.position + Vector2(34, 58), rect.size - Vector2(68, 120)), 16, TEXT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.set_meta("rect", rect)

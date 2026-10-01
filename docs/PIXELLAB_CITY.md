@@ -10,3 +10,9 @@ Só o fundo da cidade foi refeito (`assets/city/city_bg.png`, 640×360, mostrado
 - Duas sementes: a primeira (seed 11) saiu fosca, com lotes de terra; a segunda (seed 21, prompt pedindo cores saturadas, luz de fim de tarde, mar com degradê de profundidade e lotes de pedra clara com borda decorativa) saiu como a imagem usada. 80 gerações no total (2228 → 2148 até 2026-10-24).
 - Os prédios foram deslocados até 30 px (`CITY_LAYOUT` em `city_screen.gd`) para centrar nos lotes novos.
 - `client/shaders/city_sea.gdshader` reconhece como água qualquer pixel dominado pelo azul (turquesa e o azul fundo), não só o ciano claro.
+
+## 0.18: prédio da Casa de Câmbio e centragem dos lotes
+
+- **Lotes medidos**: máscara de "pedra" (pouca saturação, claro, R ≥ G ≥ B) no fundo de 640×360, componentes conexos, centro de cada corpo calçado (sem o caminho até a praça), em pixels de tela: Ferreiro (356,166), Leilão (930,172), Instância (252,348), Câmbio (1027,382), Casa dos Mascotes (366,515), Centro Comercial (642,584). `tests/premium_tests.gd` guarda esses números.
+- **Posição**: o meio do terço de baixo do sprite (a base) no X do lote; o fundo do sprite ~30–50 px abaixo do centro do lote (diamante: 36–38; Instância 36; Câmbio 40; Centro Comercial 48, para o telhado não entrar na escadaria do Salão).
+- **Casa de Câmbio**: `create_image_pixen` 160×160, `no_background`, "low top-down", "highly detailed", contorno preto; prompt: banco de cúpula verde-cobre com moeda dourada, colunas, vitrais acesos, porta de cofre com degraus, pilhas de moedas e baús de gemas, "building only standing on a flat floor with NO ground tile, NO grass, NO dirt slab under the foundations". A versão de 192 px trazia uma base de terra de 170 px que passava da borda do lote de 118 px; sem a base e em 160 px cabe. 6 gerações (sementes 101–103 em 192 e em 160; escolhida a 103 de 160). Saldo depois: 2142.

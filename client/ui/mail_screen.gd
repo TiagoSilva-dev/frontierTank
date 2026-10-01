@@ -35,13 +35,11 @@ func build() -> void:
 	contents.size = size
 	add_child(contents)
 	move_child(contents, 0)
-	UiKit.dim(contents, 0.7)
-	UiKit.panel(contents, Rect2(190, 56, 900, 608), "wood")
-	UiKit.title(contents, tr("CORREIO"), Rect2(190, 62, 900, 44), 30)
+	PremiumUi.window(contents, Rect2(190, 56, 900, 608), tr("CORREIO"), "", 0.94, 36, true)
 	UiKit.button(contents, tr("FECHAR"), Rect2(936, 66, 140, 40), close)
 	UiKit.panel(contents, Rect2(206, 112, 868, 482), "paper")
 	var heading: String = tr("Carregando...") if loading else (tr("%d cartas esperando") % total if total != 1 else tr("1 carta esperando"))
-	UiKit.label(contents, heading, Rect2(222, 118, 500, 30), 18, UiKit.TEXT_DARK)
+	UiKit.label(contents, heading, Rect2(222, 118, 500, 30), 18, UiKit.TEXT)
 	var pages: int = maxi(1, ceili(letters.size() / float(PER_PAGE)))
 	page = clampi(page, 0, pages - 1)
 	for i in range(PER_PAGE):
@@ -50,9 +48,9 @@ func build() -> void:
 			break
 		letter_row(letters[index], Rect2(218, 152 + i * 62, 844, 58))
 	if letters.is_empty() and not loading:
-		UiKit.label(contents, tr("Nenhuma carta. As vendas e compras do Leilão chegam aqui."), Rect2(222, 320, 836, 40), 18, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, tr("Nenhuma carta. As vendas e compras do Leilão chegam aqui."), Rect2(222, 320, 836, 40), 18, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, "<", Rect2(890, 118, 40, 28), turn_page.bind(-1), "tab", 14)
-	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(930, 118, 80, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(930, 118, 80, 28), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(1010, 118, 40, 28), turn_page.bind(1), "tab", 14)
 	var all: Button = UiKit.button(contents, tr("RECEBER TUDO"), Rect2(540, 602, 200, 50), claim_all, "button_green", 20)
 	all.name = "ClaimAll"
@@ -74,9 +72,9 @@ func letter_row(mail: Dictionary, rect: Rect2) -> void:
 		if definition.has("icon"):
 			icon = load(str(definition.icon))
 	UiKit.art(box, icon, Rect2(8, 5, 48, 48))
-	UiKit.clipped(box, Auction.mail_title(mail), Rect2(64, 2, 600, 28), 16, UiKit.TEXT_DARK)
-	UiKit.clipped(box, Auction.mail_contents(mail), Rect2(64, 28, 600, 26), 14, Color("2f6a1f"))
-	UiKit.label(box, Auction.time_ago(server_now() - int(mail.get("created_at", server_now()))), Rect2(600, 2, 120, 28), 13, Color("8a6a4a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
+	UiKit.clipped(box, Auction.mail_title(mail), Rect2(64, 2, 600, 28), 16, UiKit.TEXT)
+	UiKit.clipped(box, Auction.mail_contents(mail), Rect2(64, 28, 600, 26), 14, PremiumUi.GOOD)
+	UiKit.label(box, Auction.time_ago(server_now() - int(mail.get("created_at", server_now()))), Rect2(600, 2, 120, 28), 13, PremiumUi.MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
 	var take: Button = UiKit.button(box, tr("RECEBER"), Rect2(730, 10, 106, 38), claim.bind([int(mail.id)]), "button", 14)
 	take.name = "Claim_%d" % int(mail.id)
 	take.disabled = loading

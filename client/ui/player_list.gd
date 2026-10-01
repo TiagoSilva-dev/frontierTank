@@ -125,7 +125,7 @@ func add_row(person: Dictionary) -> void:
 	if bool(person.get("founder", false)):
 		FounderUi.badge(row, Rect2(x, 7, 20, 20))
 		x += 24.0
-	var color: Color = UiKit.GOOD_ON_LIGHT if mine else (UiKit.TEXT_MUTED if away else UiKit.TEXT_DARK)
+	var color: Color = UiKit.GOOD if mine else (UiKit.TEXT_MUTED if away else UiKit.TEXT)
 	var name_label: Label = UiKit.clipped(row, str(person.name), Rect2(x, 3, 232 - x + 52, 28), 17, color)
 	name_label.add_theme_font_override("font", UiKit.reading_font(true))
 	name_label.name = "Name"

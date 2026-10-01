@@ -38,7 +38,7 @@ func _ready() -> void:
 	text_view.add_theme_font_override("bold_font", UiKit.reading_font(true))
 	text_view.add_theme_font_size_override("normal_font_size", UiKit.fs(16))
 	text_view.add_theme_font_size_override("bold_font_size", UiKit.fs(16))
-	text_view.add_theme_color_override("default_color", UiKit.TEXT_DARK)
+	text_view.add_theme_color_override("default_color", UiKit.TEXT)
 	text_view.meta_clicked.connect(func(meta: Variant) -> void: OS.shell_open(str(meta)))
 	add_child(text_view)
 	show_kind(kind)

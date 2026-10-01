@@ -75,18 +75,18 @@ func build() -> void:
 	add_child(contents)
 	# Keep dialogs (Ferreiro, Loja, Cupom) above the rebuilt page.
 	move_child(contents, 0)
-	UiKit.dim(contents, 0.72)
+	UiKit.dim(contents, 0.94)
 	UiKit.panel(contents, Rect2(24, 12, 1232, 76), "wood_dark")
-	UiKit.label(contents, tr("MOCHILA"), Rect2(44, 18, 220, 64), 34, Color("ffd681"), UiKit.INK)
+	PremiumUi.title(contents, Vector2(46, 62), tr("MOCHILA"), 36)
 	UiKit.button(contents, tr("VOLTAR"), Rect2(290, 26, 130, 48), app.close_bag)
 	UiKit.button(contents, tr("FERREIRO"), Rect2(430, 26, 150, 48), open_smith, "button_blue")
 	UiKit.button(contents, tr("LOJA"), Rect2(590, 26, 120, 48), open_shop, "button_green")
 	UiKit.button(contents, tr("CUPOM"), Rect2(720, 26, 130, 48), open_coupon)
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(1030, 24, 40, 40))
-	UiKit.label(contents, str(app.profile.coins), Rect2(1076, 20, 170, 36), 26, Color("ffd46b"), UiKit.INK)
-	UiKit.label(contents, tr("moedas"), Rect2(1078, 56, 160, 24), 15, Color("e0c89a"), UiKit.INK)
+	UiKit.label(contents, str(app.profile.coins), Rect2(1076, 20, 170, 36), 26, PremiumUi.GOLD)
+	UiKit.label(contents, tr("moedas"), Rect2(1078, 56, 160, 24), 15, PremiumUi.MUTED)
 	UiKit.panel(contents, Rect2(24, 96, 612, 612), "wood")
-	UiKit.label(contents, tr("Informações Pessoais"), Rect2(44, 100, 360, 36), 24, Color("fff0c7"), UiKit.INK)
+	UiKit.label(contents, tr("Informações Pessoais"), Rect2(44, 100, 360, 36), 24, PremiumUi.GOLD)
 	for i in range(3):
 		var name_text: String = ["Perfil", "Atributos", "Histórico"][i]  # i18n
 		UiKit.button(contents, tr(name_text), Rect2(334 + i * 96, 102, 92, 32), select_tab.bind(name_text), "tab_active" if tab_name == name_text else "tab", 14)
@@ -146,7 +146,7 @@ func build_equipment() -> void:
 	pet.position = Vector2(546, 456)
 	pet.size = Vector2(64, 64)
 	profile_root.add_child(pet)
-	UiKit.label(profile_root, tr("Mascote"), Rect2(538, 518, 80, 18), 12, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(profile_root, tr("Mascote"), Rect2(538, 518, 80, 18), 12, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	build_stats(Rect2(48, 544, 564, 144))
 
 func equipment_slot(slot: String, rect: Rect2) -> void:
@@ -182,9 +182,9 @@ func build_stats(rect: Rect2) -> void:
 	for i in range(4):
 		var y: float = 8 + i * 33
 		UiKit.art(box, STAT_ICONS % left[i][1], Rect2(10, y, 28, 28))
-		UiKit.label(box, tr(left[i][0]), Rect2(44, y, 120, 28), 15, Color("ffe6a0"), UiKit.INK)
-		var value: Panel = UiKit.panel(box, Rect2(170, y + 1, 92, 26), Color("fff4d6"), Color("7a5230"))
-		UiKit.label(value, str(numbers[left[i][1]]), Rect2(0, -1, 92, 26), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr(left[i][0]), Rect2(44, y, 120, 28), 15, PremiumUi.GOLD, UiKit.INK)
+		var value: Panel = UiKit.panel(box, Rect2(170, y + 1, 92, 26), Color("0c141f"), Color("7a5230"))
+		UiKit.label(value, str(numbers[left[i][1]]), Rect2(0, -1, 92, 26), 16, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var right: Array = [["Dano", "dano", Color("ff9a2a")], ["Proteção", "protecao", Color("3a8bff")], ["Vida", "vida", Color("e0302a")], ["Força física", "energia", Color("5cc83a")]]  # i18n
 	for i in range(4):
 		var y: float = 8 + i * 33
@@ -196,7 +196,7 @@ func build_stats(rect: Rect2) -> void:
 func build_attributes() -> void:
 	var numbers: Dictionary = app.profile.stats(app.balance)
 	var weapon: Dictionary = numbers.weapon
-	UiKit.label(profile_root, tr("ATRIBUTOS DE COMBATE"), Rect2(60, 192, 540, 34), 22, Color("624128"))
+	UiKit.label(profile_root, tr("ATRIBUTOS DE COMBATE"), Rect2(60, 192, 540, 34), 22, PremiumUi.GOLD)
 	var extra: Dictionary = numbers.extra
 	var look: Dictionary = app.profile.look()
 	var rows: Array[String] = [
@@ -229,9 +229,9 @@ func build_attributes() -> void:
 			row.mouse_filter = Control.MOUSE_FILTER_PASS
 
 func build_history() -> void:
-	UiKit.label(profile_root, tr("SUA JORNADA"), Rect2(60, 200, 485, 41), 27, Color("67452a"))
+	UiKit.label(profile_root, tr("SUA JORNADA"), Rect2(60, 200, 485, 41), 27, PremiumUi.GOLD)
 	var ratio: float = 100.0 * app.profile.victories / maxf(1, app.profile.matches)
-	UiKit.label(profile_root, tr("%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila") % [app.profile.matches, app.profile.victories, roundi(ratio), app.profile.experience, app.profile.merits, app.profile.ranking(), app.profile.inventory.size()], Rect2(62, 250, 520, 400), 20, Color("4d382d"))
+	UiKit.label(profile_root, tr("%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila") % [app.profile.matches, app.profile.victories, roundi(ratio), app.profile.experience, app.profile.merits, app.profile.ranking(), app.profile.inventory.size()], Rect2(62, 250, 520, 400), 20, UiKit.TEXT)
 
 # ---------- right: inventory ----------
 
@@ -358,12 +358,12 @@ func build_inventory() -> void:
 		var tab: Button = UiKit.button(contents, tr(filter), Rect2(662 + i * 97, 100, 94, 36), filter_items.bind(filter), "tab_active" if category == filter else "tab", 15)
 		tab.name = "Tab_" + filter
 	grid_root = layer()
-	count_label = UiKit.label(contents, "", Rect2(684, 478, 130, 28), 15, UiKit.TEXT_DARK)
+	count_label = UiKit.label(contents, "", Rect2(684, 478, 130, 28), 15, UiKit.TEXT)
 	var sort_button: Button = UiKit.button(contents, tr("ORGANIZAR"), Rect2(820, 478, 130, 28), sort_bag, "tab", 14)
 	sort_button.name = "SortBag"
 	sort_button.tooltip_text = tr("Arruma a mochila por tipo, qualidade e fortalecimento.")
 	var back: Button = UiKit.button(contents, "<", Rect2(1080, 478, 36, 28), turn_page.bind(-1), "tab", 14)
-	page_label = UiKit.label(contents, "", Rect2(1116, 478, 70, 28), 15, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	page_label = UiKit.label(contents, "", Rect2(1116, 478, 70, 28), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var forward: Button = UiKit.button(contents, ">", Rect2(1186, 478, 36, 28), turn_page.bind(1), "tab", 14)
 	# Holding an item over an arrow turns the page (see _process); dropping there is a no-op.
 	arrow_rects = [back.get_rect(), forward.get_rect()]

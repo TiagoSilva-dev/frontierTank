@@ -14,7 +14,7 @@ const LOGO: String = "res://assets/title/logo.png"
 const LOGO_EN: String = "res://assets/title/logo_en.png"
 const LOGO_TOP: float = 44.0
 const VERSION: String = NetClient.GAME_VERSION
-const OFFLINE: Dictionary = {"name": "Modo offline", "state": "Sozinho", "color": "6a4424", "offline": true}  # i18n
+const OFFLINE: Dictionary = {"name": "Modo offline", "state": "Sozinho", "color": "b4c2d4", "offline": true}  # i18n
 
 var app: Node
 var time: float = 0.0
@@ -99,7 +99,7 @@ func build_servers() -> void:
 		var index: int = servers.find(server)
 		var row: Button = UiKit.button(server_box, "", Rect2(8, 8 + i * 40, 440, 36), pick.bind(index), "card")
 		row.name = "Server_%d" % index
-		UiKit.label(row, tr(str(server.name)), Rect2(12, 0, 280, 36), 17, UiKit.TEXT_DARK)
+		UiKit.label(row, tr(str(server.name)), Rect2(12, 0, 280, 36), 17, UiKit.TEXT)
 		UiKit.label(row, tr(str(server.state)), Rect2(250, 0, 178, 36), 15, Color(str(server.color)), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		server_buttons.append(row)
 	if searching:
@@ -114,14 +114,14 @@ func build_account() -> void:
 	UiKit.panel(account_box, Rect2(0, 0, 456, 150), "paper")
 	var server: Dictionary = servers[chosen]
 	if server.get("offline", false):
-		var text: Label = UiKit.label(account_box, tr("Jogue sozinho: as salas e os jogadores do canal são simulados por IA e o progresso fica neste computador."), Rect2(16, 10, 424, 130), 16, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var text: Label = UiKit.label(account_box, tr("Jogue sozinho: as salas e os jogadores do canal são simulados por IA e o progresso fica neste computador."), Rect2(16, 10, 424, 130), 16, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		UiKit.wrap(text, Vector2(424, 130))
 		text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		return
 	var auth: AuthClient = app.auth
 	if auth.token != "":
 		UiKit.label(account_box, tr("Conta"), Rect2(16, 16, 424, 26), 15, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(account_box, auth.username, Rect2(16, 42, 424, 34), 24, Color("5a2408"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(account_box, auth.username, Rect2(16, 42, 424, 34), 24, PremiumUi.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var other: Button = UiKit.button(account_box, tr("Trocar de conta"), Rect2(44, 92, 176, 38), switch_account, "button", 15)
 		other.name = "SwitchAccount"
 		# Download the data or delete the account without entering a server.
@@ -129,7 +129,7 @@ func build_account() -> void:
 		mine.name = "MyAccount"
 		return
 	if steam_mode():
-		var who: Label = UiKit.label(account_box, tr("Steam: %s") % app.steam.persona, Rect2(16, 12, 424, 30), 17, UiKit.TEXT_DARK, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		var who: Label = UiKit.label(account_box, tr("Steam: %s") % app.steam.persona, Rect2(16, 12, 424, 30), 17, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		who.name = "SteamPersona"
 		var steam_login: Button = UiKit.button(account_box, tr("ENTRAR COM A STEAM"), Rect2(88, 46, 280, 46), login_steam, "button_blue", 18)
 		steam_login.name = "SteamLogin"
@@ -138,11 +138,11 @@ func build_account() -> void:
 			build_account(), "tab", 14)
 		classic.name = "UsePassword"
 		return
-	UiKit.label(account_box, tr("Conta"), Rect2(14, 12, 90, 34), 16, UiKit.TEXT_DARK)
+	UiKit.label(account_box, tr("Conta"), Rect2(14, 12, 90, 34), 16, UiKit.TEXT)
 	user_field = field(Rect2(104, 12, 340, 34), tr("nome da conta"), false)
 	user_field.name = "User"
 	user_field.text = auth.username
-	UiKit.label(account_box, tr("Senha"), Rect2(14, 54, 90, 34), 16, UiKit.TEXT_DARK)
+	UiKit.label(account_box, tr("Senha"), Rect2(14, 54, 90, 34), 16, UiKit.TEXT)
 	password_field = field(Rect2(104, 54, 340, 34), tr("sua senha"), true)
 	password_field.name = "Password"
 	password_field.text_submitted.connect(func(_text: String) -> void: enter())
@@ -174,7 +174,7 @@ func refresh_servers() -> void:
 		if server is Dictionary:
 			var online: int = int(server.get("online", 0))
 			var full: bool = online >= int(server.get("capacity", 1)) * 0.9
-			list.append({"name": str(server.name), "url": str(server.url), "state": tr("Cheio") if full else tr("%d online") % online, "color": "8f2016" if full else ("175a0c" if online > 0 else "12448c")})
+			list.append({"name": str(server.name), "url": str(server.url), "state": tr("Cheio") if full else tr("%d online") % online, "color": "ff8f7e" if full else ("9aff7a" if online > 0 else "8ec8ff")})
 	list.append(OFFLINE)
 	servers = list
 	# The first online server is the default; alone, the offline mode.

@@ -28,13 +28,7 @@ func _ready() -> void:
 	refresh()
 
 func panel(parent: Node, rect: Rect2) -> Control:
-	var node: Control = Control.new()
-	node.position = rect.position
-	node.size = rect.size
-	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	node.draw.connect(func() -> void: HudPaint.well(node, HudPaint.frame(node, Rect2(Vector2.ZERO, node.size), 0.25)))
-	parent.add_child(node)
-	return node
+	return PremiumUi.panel(parent, rect)
 
 func text(value: String, rect: Rect2, fs: int = 16, tint: Color = Color("e2e9ee")) -> Label:
 	return UiKit.label(contents, value, rect, fs, tint)
@@ -51,10 +45,7 @@ func build() -> void:
 	contents = Control.new()
 	contents.size = size
 	add_child(contents)
-	UiKit.dim(contents, 0.96)
-	panel(contents, Rect2(20, 16, 1240, 688))
-	text(tr("CASA DE CÂMBIO"), Rect2(48, 32, 700, 48), 32, HudPaint.GOLD)
-	text(tr("Moedas e pedras. Um mercado entre aventureiros."), Rect2(50, 79, 900, 24), 16)
+	PremiumUi.window(contents, Rect2(20, 16, 1240, 688), tr("CASA DE CÂMBIO"), tr("Moedas e pedras. Um mercado entre aventureiros."))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(957, 42, 26, 26))
 	text(str(app.profile.coins), Rect2(991, 38, 95, 30), 20, HudPaint.GOLD)
 	button(tr("FECHAR"), Rect2(1110, 36, 120, 40), close)
@@ -117,12 +108,12 @@ func update_quote() -> void:
 
 func build_market() -> void:
 	text(tr("LIVRO DE OFERTAS"), Rect2(476, 138, 335, 30), 20, HudPaint.GOLD)
-	button(tr("Disponíveis"), Rect2(476, 181, 158, 30), market_tab.bind(false)).set_meta("exchange_active", not show_competing)
-	button(tr("Concorrentes"), Rect2(640, 181, 166, 30), market_tab.bind(true)).set_meta("exchange_active", show_competing)
+	button(tr("Disponíveis"), Rect2(476, 181, 158, 30), market_tab.bind(false)).set_meta("active", not show_competing)
+	button(tr("Concorrentes"), Rect2(640, 181, 166, 30), market_tab.bind(true)).set_meta("active", show_competing)
 	var rows: Array = book.competing if show_competing else book.offers
 	text(tr("Melhores taxas primeiro · até 50 ofertas"), Rect2(476, 221, 330, 24), 13)
 	if rows.is_empty():
-		var empty: Label = text(tr("Nenhuma oferta neste par.\nDefina sua taxa e abra o mercado."), Rect2(478, 284, 322, 110), 18, Color("acbacd"))
+		var empty: Label = text(tr("Nenhuma oferta neste par.\nDefina sua taxa e abra o mercado."), Rect2(478, 284, 322, 110), 18, UiKit.TEXT_MUTED)
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		return
 	var scroll: ScrollContainer = ScrollContainer.new()
@@ -150,7 +141,7 @@ func build_orders() -> void:
 	var orders: Array = book.orders
 	order_page = clampi(order_page, 0, maxi(0, ceili(orders.size() / 4.0) - 1))
 	if orders.is_empty():
-		text(tr("Suas ofertas aparecerão aqui."), Rect2(858, 294, 352, 70), 17, Color("acbacd"))
+		text(tr("Suas ofertas aparecerão aqui."), Rect2(858, 294, 352, 70), 17, UiKit.TEXT_MUTED)
 	for i in range(order_page * 4, mini(orders.size(), order_page * 4 + 4)):
 		var row: Dictionary = orders[i]
 		var y: float = 215 + (i % 4) * 86
@@ -327,21 +318,7 @@ func build_picker() -> void:
 	skin(picker)
 
 func skin(root: Node) -> void:
-	for node: Node in root.get_children():
-		if node is Button:
-			for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
-				var style: StyleBoxFlat = StyleBoxFlat.new()
-				style.bg_color = Color("192b3c") if state == "normal" else Color("304b60")
-				if node.get_meta("exchange_active", false):
-					style.bg_color = Color("61421f") if state == "normal" else Color("79562f")
-				if state == "disabled":
-					style.bg_color = Color("192029")
-				style.border_color = HudPaint.GOLD if state in ["hover", "focus"] else Color("886744")
-				style.set_border_width_all(2)
-				style.set_corner_radius_all(4)
-				node.add_theme_stylebox_override(state, style)
-			node.add_theme_color_override("font_color", Color("f5e5bf"))
-		skin(node)
+	PremiumUi.skin(root)
 
 func close() -> void:
 	if busy:
