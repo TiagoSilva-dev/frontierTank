@@ -22,7 +22,7 @@ const CITY_LAYOUT: Array[Dictionary] = [
 	{"id": "hall", "name": "Salão de Jogos", "rect": [510, 238, 256, 256], "hot": [520, 241, 240, 237], "label": [640, 262], "tip": "Salão de Jogos! Clique para entrar", "fx": {"embers": [128, 104]}},  # i18n
 	{"id": "smith", "name": "Ferreiro", "rect": [261, 33, 192, 192], "hot": [269, 56, 175, 148], "label": [356, 60], "tip": "Ferreiro: fortaleça suas armas", "fx": {"smoke": [124, 22], "forge": [70, 96]}},  # i18n
 	{"id": "instance", "name": "Instância", "rect": [158, 200, 192, 192], "hot": [187, 204, 131, 180], "label": [252, 210], "tip": "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16", "fx": {"portal": [89, 110]}},  # i18n
-	{"id": "pet", "name": "Casa dos Mascotes", "rect": [270, 382, 192, 192], "hot": [284, 400, 165, 151], "label": [366, 405], "tip": "Casa dos Mascotes: em breve"},  # i18n
+	{"id": "pet", "name": "Casa dos Mascotes", "rect": [270, 382, 192, 192], "hot": [284, 400, 165, 151], "label": [366, 405], "tip": "Casa dos Mascotes"},  # i18n
 	{"id": "auction", "name": "Leilão", "rect": [836, 40, 192, 192], "hot": [848, 46, 164, 164], "label": [930, 52], "tip": "Leilão: compre e venda itens", "fx": {"twinkle": true}},  # i18n
 	{"id": "exchange", "name": "Casa de Câmbio", "rect": [948, 270, 160, 160], "hot": [967, 275, 121, 149], "label": [1027, 274], "tip": "Câmbio: troque moedas e pedras com jogadores", "fx": {"twinkle": true}},  # i18n
 	{"id": "mall", "name": "Centro Comercial", "rect": [548, 453, 192, 192], "hot": [556, 464, 173, 168], "label": [642, 470], "tip": "Centro Comercial: roupas e armas", "fx": {"twinkle": true}},  # i18n
@@ -234,7 +234,7 @@ func enter(id: String) -> void:
 			if exchange != null:
 				exchange.closed.connect(app.show_city)
 		"pet":
-			UiKit.notice(self, tr("PET"), tr("A Casa dos Mascotes ainda não está disponível nesta versão offline."))
+			PetScreen.open(self, app).closed.connect(app.show_city)
 
 func _process(delta: float) -> void:
 	time += delta

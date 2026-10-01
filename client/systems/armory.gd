@@ -250,7 +250,7 @@ static func item_attrs(inst: Dictionary) -> Dictionary:
 		result.defesa += int(inst.get("level", 0)) * int(data().strengthen.defense_per_level)
 	return result
 
-static func character_stats(level: int, equipped: Array, balance: Dictionary) -> Dictionary:
+static func character_stats(level: int, equipped: Array, balance: Dictionary, pet_bonus: Dictionary = {}) -> Dictionary:
 	# Level gives the base; items add the "extra" part that battles use.
 	var extra: Dictionary = {"ataque": 0, "defesa": 0, "agilidade": 0, "sorte": 0}
 	var bonus_hp: int = 0
@@ -270,6 +270,12 @@ static func character_stats(level: int, equipped: Array, balance: Dictionary) ->
 			bonus_hp += int(inst.get("level", 0)) * int(data().strengthen.hp_per_level)
 		if slot_of(str(inst.id)) == "arma":
 			weapon_inst = inst
+	# The active pet and the album (0.19): attributes join the gear's, talents the battle bonuses.
+	for key: String in pet_bonus:
+		if extra.has(key):
+			extra[key] += int(pet_bonus[key])
+		else:
+			bonus[key] = int(bonus.get(key, 0)) + int(pet_bonus[key])
 	var weapon: Dictionary = build_weapon(weapon_inst)
 	var agility: int = int(balance.base_agility) + level * int(balance.agility_per_level) + extra.agilidade / 2
 	return {

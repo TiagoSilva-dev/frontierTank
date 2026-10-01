@@ -67,7 +67,7 @@ func code_keys() -> Dictionary:
 				var text: String = found_match.get_string(1).c_unescape()
 				if keeps(text, marked):
 					found[text] = path
-	for path in ["res://shared/balance/items.json", "res://shared/balance/combat.json", "res://shared/balance/store.json", "res://shared/balance/achievements.json", "res://shared/balance/missions.json"]:
+	for path in ["res://shared/balance/items.json", "res://shared/balance/combat.json", "res://shared/balance/store.json", "res://shared/balance/achievements.json", "res://shared/balance/missions.json", "res://shared/balance/pets.json"]:
 		walk(JSON.parse_string(FileAccess.get_file_as_string(path)), found, path)
 	return found
 

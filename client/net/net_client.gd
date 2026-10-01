@@ -10,7 +10,7 @@ signal event(message: Dictionary)
 signal closed(reason: String)
 
 const PROTOCOL: int = 1
-const GAME_VERSION: String = "0.17"
+const GAME_VERSION: String = "0.19"
 const PING_SECONDS: float = 5.0
 
 var socket: WebSocketPeer
@@ -33,7 +33,7 @@ var held: Array = []
 # files (parsed and written back sorted, so line endings and spacing do not matter).
 static func content_version() -> String:
 	var text: String = ""
-	for path: String in ["res://shared/balance/combat.json", "res://shared/balance/items.json", "res://shared/balance/store.json", "res://shared/balance/missions.json"]:
+	for path: String in ["res://shared/balance/combat.json", "res://shared/balance/items.json", "res://shared/balance/store.json", "res://shared/balance/missions.json", "res://shared/balance/pets.json"]:
 		text += JSON.stringify(JSON.parse_string(FileAccess.get_file_as_string(path)), "", true)
 	return "%s-%d-%s" % [GAME_VERSION, PROTOCOL, text.sha256_text().substr(0, 16)]
 

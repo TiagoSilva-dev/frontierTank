@@ -11,9 +11,6 @@ extends Control
 # an equipment slot to equip, and out of a slot to take them off. Double click (or
 # right click) equips too. Selecting only redraws the cells, it never rebuilds the page.
 
-const ITEM_NAMES: Dictionary = {
-	"pet_egg": ["Ovo de Mascote", "res://assets/expansion/items/pet_egg.png"],  # i18n
-}
 const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]  # i18n
 const LEFT_SLOTS: Array[String] = ["chapeu", "oculos", "cabelo", "roupa"]
 const RIGHT_SLOTS: Array[String] = ["asas", "arma", "auxiliar"]
@@ -142,10 +139,24 @@ func build_equipment() -> void:
 		equipment_slot(RIGHT_SLOTS[i], Rect2(546, 222 + i * 78, 64, 64))
 	var pet: BagSlot = BagSlot.new()
 	pet.interactive = false
-	pet.icon = load("res://assets/pets/fenix_dourada.png")
+	var companion: Dictionary = app.profile.active_pet()
+	pet.icon = PetWidgets.species_texture(str(companion.species)) if not companion.is_empty() else null
+	if not companion.is_empty():
+		pet.rarity = Pets.rarity_color(str(Pets.species_def(str(companion.species)).rarity))
+		pet.corner_text = str(int(companion.level))
+		pet.corner_color = HudPaint.CREAM
 	pet.position = Vector2(546, 456)
 	pet.size = Vector2(64, 64)
+	pet.name = "PetSlot"
 	profile_root.add_child(pet)
+	var pet_hit: Button = Button.new()
+	pet_hit.flat = true
+	pet_hit.position = pet.position
+	pet_hit.size = pet.size
+	pet_hit.name = "PetSlotButton"
+	pet_hit.tooltip_text = tr("Abrir a Casa dos Mascotes")
+	pet_hit.pressed.connect(open_pets.bind("Mascotes"))
+	profile_root.add_child(pet_hit)
 	UiKit.label(profile_root, tr("Mascote"), Rect2(538, 518, 80, 18), 12, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	build_stats(Rect2(48, 544, 564, 144))
 
@@ -251,9 +262,10 @@ func all_entries() -> Array[Dictionary]:
 		var count: int = int(app.profile.items.get(stone.id, 0))
 		if count > 0:
 			list.append({"key": "item:" + str(stone.id), "name": tr(str(stone.name)), "icon": str(stone.icon), "count": count})
-	for id: String in ITEM_NAMES:
-		if int(app.profile.items.get(id, 0)) > 0:
-			list.append({"key": "item:" + id, "name": tr(ITEM_NAMES[id][0]), "icon": ITEM_NAMES[id][1], "count": int(app.profile.items[id])})
+	for egg: Dictionary in Pets.eggs():
+		var egg_count: int = app.profile.egg_count(str(egg.id))
+		if egg_count > 0:
+			list.append({"key": "item:" + str(egg.id), "name": Pets.egg_name(str(egg.id)), "icon": str(egg.icon), "count": egg_count})
 	for i in range(app.profile.tools.size()):
 		var tool_id: String = app.profile.tools[i]
 		for tool: Dictionary in app.balance.tools:
@@ -495,7 +507,11 @@ func refresh_selection() -> void:
 		selected_label.text = "%s  x%d" % [entry.name, int(entry.get("count", 1))]
 		var id: String = selected.substr(5)
 		var stone: Dictionary = Armory.stone_def(id)
-		if Crafting.is_currency(id) and selected.begins_with("item:"):
+		if Pets.is_egg(id) and selected.begins_with("item:"):
+			selected_label.text += "\n%s" % tr("Abra na Casa dos Mascotes para revelar o mascote.")
+			equip_button.text = tr("CHOCAR")
+			equip_button.disabled = false
+		elif Crafting.is_currency(id) and selected.begins_with("item:"):
 			selected_label.text += "\n%s\n%s" % [Crafting.currency_desc(id), tr("Use no Ferreiro, aba Moedas, em equipamentos e mapas.")]
 		elif not stone.is_empty():
 			selected_label.text += tr("\nUma pedra: +%d → +%d. Encontrada nas instâncias.") % [int(stone.level) - 1, int(stone.level)]
@@ -533,7 +549,10 @@ func equip_key(key: String) -> void:
 		equip_selected()
 
 func toggle_key(key: String) -> void:
-	if key.begins_with("uid:"):
+	if key.begins_with("item:") and Pets.is_egg(key.substr(5)):
+		select_item(key)
+		equip_selected()
+	elif key.begins_with("uid:"):
 		select_item(key)
 		equip_selected()
 
@@ -633,7 +652,14 @@ func turn_page(step: int) -> void:
 	if page != before:
 		refresh_grid()
 
+func open_pets(first_tab: String = "Chocar", egg: String = "") -> void:
+	var screen: PetScreen = PetScreen.open(self, app, first_tab, egg)
+	screen.closed.connect(build)
+
 func equip_selected() -> void:
+	if selected.begins_with("item:") and Pets.is_egg(selected.substr(5)):
+		open_pets("Chocar", selected.substr(5))
+		return
 	if not selected.begins_with("uid:"):
 		return
 	var uid: int = selected.substr(4).to_int()

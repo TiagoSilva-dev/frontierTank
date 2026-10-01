@@ -326,11 +326,18 @@ func roll_mob_drop(target: TankFighter, shared: bool) -> Array[Dictionary]:
 	if rng.randf() >= minf(chance, 1.0):
 		return []
 	var roll: float = rng.randf()
-	if roll < 0.75:
+	var egg_share: float = float(Pets.data().drops.mob_share)
+	if roll < 0.75 - egg_share:
 		return [roll_stone()]
-	if roll < 0.95:
+	if roll < 0.95 - egg_share:
 		return [currency_entry(Crafting.roll_currency(level, rng))]
+	if roll < 0.95:
+		return [roll_egg()]
 	return [weapon_card()]
+
+# 0.19: the instance's own element egg (the Casa dos Mascotes hatches it).
+func roll_egg() -> Dictionary:
+	return Pets.egg_entry(Pets.egg_for_instance(str(instance.id)))
 
 func grant_mob_drop(entries: Array, shared: bool) -> Array[Dictionary]:
 	var granted: Array[Dictionary] = []
@@ -420,6 +427,11 @@ func finish(victory: bool) -> Dictionary:
 		var extra: float = quantity()
 		picks += floori(extra) + (1 if rng.randf() < extra - floorf(extra) else 0)
 		loot.picks = picks
+		if rng.randf() < Pets.boss_egg_chance(level):
+			var egg: Dictionary = roll_egg()
+			chest.append(egg)
+			if profile != null:
+				profile.add_item(str(egg.item))
 		var super_drop: Dictionary = roll_super()
 		if not super_drop.is_empty():
 			chest.append(super_drop)

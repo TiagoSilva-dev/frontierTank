@@ -198,6 +198,11 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	if rig.founder_fx != null:
 		rig.founder_fx.fighter = self
 	rig.source = shown_body
+	if str(look.get("pet", "")) != "":
+		var companion: PetCompanion = PetCompanion.new()
+		add_child(companion)
+		move_child(companion, 0)
+		companion.setup(self, str(look.pet))
 	make_overlay()
 	update_pose()
 

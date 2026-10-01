@@ -131,6 +131,13 @@ func demo_loadout(kind: String) -> void:
 				profile.equip(int(inst.uid))
 				break
 	profile.add_item("strength_stone_iv", 20)
+	# 0.19 showcase: a few pets of every rarity, the Fênix Dourada by your side.
+	if profile.pets.is_empty():
+		for entry: Array in [["fenix_dourada", 12, 2], ["leao_dourado", 9, 1], ["raposa_glacial", 6, 0], ["chacal_ambar", 4, 0], ["escaravelho_solar", 2, 0]]:
+			profile.pets.append({"uid": profile.next_uid, "species": entry[0], "level": entry[1], "xp": 0, "stars": entry[2]})
+			profile.next_uid += 1
+			profile.pet_album.append(entry[0])
+		profile.pet_active = int(profile.pets[0].uid)
 	# 0.10 showcase: currencies and the equipped gear as high level drops with bonuses.
 	profile.redeem("MOEDAS")
 	for inst: Dictionary in profile.equipped_list():
@@ -244,6 +251,10 @@ func open_named(target: String) -> void:
 			# Capture helpers: the quests, the post office and the coupon window over the city.
 			show_city()
 			shortcut(target)
+		"pet":
+			# Capture helper: the Casa dos Mascotes over the city (--tab=Mascotes|Álbum).
+			show_city()
+			PetScreen.open(ui, self, str(args.get("tab", "Chocar")), str(args.get("egg", "")))
 		"smith":
 			show_city()
 			shortcut("smith")
@@ -559,7 +570,7 @@ func shortcut(id: String) -> void:
 			missions.app = self
 			ui.add_child(missions)
 		"pet":
-			UiKit.notice(ui, tr("PET"), tr("Este sistema ainda não foi implementado nesta versão offline.\nFerramentas de batalha podem ser compradas dentro da sala."))
+			PetScreen.open(ui, self)
 
 # The controls, the legal texts and the account (launch checklist: LGPD/GDPR).
 func open_help() -> Control:

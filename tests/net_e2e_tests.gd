@@ -119,8 +119,15 @@ func account_tests(alice: Node, bob: Node) -> void:
 	check((await alice.do_op("redeem", ["PEDRAS"])).error == "", "test coupons work on a test server")
 	check(int(server_profile(alice).items.get("pedra_fortalecimento", 0)) > 0 and alice.profile.items == server_profile(alice).items, "the coupon reached the server's profile")
 	check((await alice.do_op("redeem", ["PEDRAS"])).error != "", "a coupon is used once online too")
+	# Casa dos Mascotes (0.19): the server hatches the egg and the pet reaches the client.
+	check((await alice.do_op("pet_hatch", ["egg_sol"])).error != "" and server_profile(alice).pets.is_empty(), "the server refuses to hatch an egg the player does not have")
+	check((await alice.do_op("redeem", ["OVOS"])).error == "" and int(server_profile(alice).items.get("egg_sol", 0)) == 10, "the egg coupon reached the server")
+	check((await alice.do_op("pet_hatch", ["egg_sol"])).error == "" and server_profile(alice).pets.size() == 1 and alice.profile.pets.size() == 1, "an egg hatches on the server and the pet arrives on the client")
+	check(alice.profile.pet_active == server_profile(alice).pet_active and alice.profile.pet_active > 0 and alice.profile.egg_count("egg_sol") == 9, "the active pet and the egg count match the server's")
+	check(alice.profile.pets[0] == server_profile(alice).pets[0] and (await alice.do_op("pet_evolve", [alice.profile.pet_active, alice.profile.pet_active])).error != "", "a pet cannot consume itself online either")
 	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving), 5)
 	var stored: Dictionary = server.api.memory_profiles.get(alice.my_account(), {})
+	check(stored.get("data", {}).get("pets", []).size() == 1, "the pets are saved through the API")
 	check(str(stored.get("name", "")) == "Alice" and int(stored.get("version", 0)) >= 1, "profiles are saved through the API")
 
 func chat_tests(alice: Node, bob: Node) -> void:

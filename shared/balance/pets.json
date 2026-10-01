@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "max_pets": 120,
+  "max_level": 30,
+  "base_cap": 10,
+  "cap_per_star": 4,
+  "max_stars": 5,
+  "xp": {"per_level": 50, "battle_base": 20, "battle_exp_share": 0.2, "pve_scale": 1.5, "feed_coins": 100, "feed_xp": 100},
+  "power": {"floor": 0.3, "attr_per_star": 0.15, "talent_per_star": 0.1},
+  "evolve_coins": [150, 300, 600, 1200, 2400],
+  "rarities": [
+    {"id": "comum", "label": "Comum", "color": "c4cdd8", "attr": 14, "talent": 0.0, "talents": 0, "release": 40},
+    {"id": "raro", "label": "Raro", "color": "5aa8ff", "attr": 26, "talent": 0.35, "talents": 1, "release": 120},
+    {"id": "epico", "label": "Épico", "color": "c07bff", "attr": 42, "talent": 0.65, "talents": 2, "release": 400},
+    {"id": "lendario", "label": "Lendário", "color": "ffb347", "attr": 64, "talent": 1.0, "talents": 3, "release": 1500}
+  ],
+  "talent_max": {"dano": 14, "pow": 30, "pow_inicial": 40, "critico": 40, "poupar": 12, "vida": 200, "cura": 30, "vento": 15, "energia": 25, "delay": 40},
+  "talent_text": {
+    "dano": "+%d%% de dano", "pow": "+%d%% de dano do POW", "pow_inicial": "Começa a batalha com %d de POW",
+    "critico": "+%d%% de dano crítico", "poupar": "%d%% de chance de não gastar a habilidade 1–9", "vida": "+%d de vida máxima",
+    "cura": "+%d%% de cura recebida", "vento": "-%d%% de efeito do vento", "energia": "+%d de energia por turno", "delay": "-%d de Delay por turno"
+  },
+  "elements": [
+    {"id": "sol", "name": "Sol", "color": "ffc34a", "instance": "templo_sol", "egg": "egg_sol", "attrs": [["ataque", 1.0], ["sorte", 0.5]], "talents": ["dano", "pow", "pow_inicial"], "album": {"ataque": 24}, "icon": "res://assets/pets/elements/sol.png"},
+    {"id": "mascara", "name": "Máscara", "color": "ff6a4a", "instance": "trono_mascaras", "egg": "egg_mascara", "attrs": [["sorte", 1.0], ["ataque", 0.5]], "talents": ["critico", "poupar", "dano"], "album": {"sorte": 24}, "icon": "res://assets/pets/elements/mascara.png"},
+    {"id": "gelo", "name": "Gelo", "color": "7fd8ff", "instance": "picos_gelados", "egg": "egg_gelo", "attrs": [["defesa", 1.0], ["agilidade", 0.5]], "talents": ["vida", "cura", "vento"], "album": {"defesa": 24}, "icon": "res://assets/pets/elements/gelo.png"},
+    {"id": "ceu", "name": "Céu", "color": "7ab4ff", "instance": "ilha_ruinas", "egg": "egg_ceu", "attrs": [["agilidade", 1.0], ["sorte", 0.5]], "talents": ["vento", "energia", "delay"], "album": {"agilidade": 24}, "icon": "res://assets/pets/elements/ceu.png"},
+    {"id": "viking", "name": "Runa", "color": "7fe0b5", "instance": "fiorde_viking", "egg": "egg_viking", "attrs": [["defesa", 0.9], ["ataque", 0.6]], "talents": ["vida", "pow_inicial", "critico"], "album": {"vida": 150}, "icon": "res://assets/pets/elements/viking.png"}
+  ],
+  "album_all": {"dano": 5},
+  "eggs": [
+    {"id": "egg_sol", "name": "Ovo Solar", "element": "sol", "icon": "res://assets/pets/eggs/egg_sol.png", "odds": [58, 28, 11, 3]},
+    {"id": "egg_mascara", "name": "Ovo Mascarado", "element": "mascara", "icon": "res://assets/pets/eggs/egg_mascara.png", "odds": [58, 28, 11, 3]},
+    {"id": "egg_gelo", "name": "Ovo Glacial", "element": "gelo", "icon": "res://assets/pets/eggs/egg_gelo.png", "odds": [58, 28, 11, 3]},
+    {"id": "egg_ceu", "name": "Ovo Celeste", "element": "ceu", "icon": "res://assets/pets/eggs/egg_ceu.png", "odds": [58, 28, 11, 3]},
+    {"id": "egg_viking", "name": "Ovo Rúnico", "element": "viking", "icon": "res://assets/pets/eggs/egg_viking.png", "odds": [58, 28, 11, 3]},
+    {"id": "pet_egg", "name": "Ovo de Mascote", "element": "", "icon": "res://assets/expansion/items/pet_egg.png", "odds": [40, 36, 18, 6]}
+  ],
+  "pity": {"epico": 10, "lendario": 40},
+  "drops": {"boss_base": 0.14, "boss_per_level": 0.02, "boss_max": 0.45, "free_entry": 0.1, "mob_share": 0.06},
+  "species": [
+    {"id": "escaravelho_solar", "name": "Escaravelho Solar", "element": "sol", "rarity": "comum", "art": "res://assets/pets/escaravelho_solar.png", "desc": "Rola um pequeno sol pelas areias do templo."},
+    {"id": "chacal_ambar", "name": "Chacal de Âmbar", "element": "sol", "rarity": "raro", "art": "res://assets/pets/chacal_ambar.png", "desc": "Guarda os tesouros que o sol esqueceu."},
+    {"id": "leao_dourado", "name": "Leãozinho Dourado", "element": "sol", "rarity": "epico", "art": "res://assets/pets/leao_dourado.png", "desc": "A juba arde mais forte a cada vitória."},
+    {"id": "fenix_dourada", "name": "Fênix Dourada", "element": "sol", "rarity": "lendario", "art": "res://assets/pets/fenix_dourada.png", "desc": "Renasce das próprias cinzas, sempre mais brilhante."},
+    {"id": "brasinha", "name": "Brasinha", "element": "mascara", "rarity": "comum", "art": "res://assets/pets/brasinha.png", "desc": "Um carvão vivo que adora pregar sustos."},
+    {"id": "diabrete_mascarado", "name": "Diabrete Mascarado", "element": "mascara", "rarity": "raro", "art": "res://assets/pets/diabrete_mascarado.png", "desc": "Troca de máscara mais rápido que de humor."},
+    {"id": "cao_de_lava", "name": "Cão de Lava", "element": "mascara", "rarity": "epico", "art": "res://assets/pets/cao_de_lava.png", "desc": "Late faíscas e dorme sobre brasas."},
+    {"id": "rei_mascara", "name": "Rei Máscara", "element": "mascara", "rarity": "lendario", "art": "res://assets/pets/rei_mascara.png", "desc": "Herdeiro do trono, ainda aprendendo a mandar."},
+    {"id": "pinguim_cristal", "name": "Pinguim de Cristal", "element": "gelo", "rarity": "comum", "art": "res://assets/pets/pinguim_cristal.png", "desc": "Desliza de barriga pelos picos congelados."},
+    {"id": "coelho_neve", "name": "Coelho da Neve", "element": "gelo", "rarity": "raro", "art": "res://assets/pets/coelho_neve.png", "desc": "Some na nevasca e reaparece no seu colo."},
+    {"id": "raposa_glacial", "name": "Raposa Glacial", "element": "gelo", "rarity": "epico", "art": "res://assets/pets/raposa_glacial.png", "desc": "Cada passo deixa uma flor de gelo."},
+    {"id": "lobo_boreal", "name": "Lobo Boreal", "element": "gelo", "rarity": "lendario", "art": "res://assets/pets/lobo_boreal.png", "desc": "Uiva e a aurora responde."},
+    {"id": "nuvenzinha", "name": "Nuvenzinha", "element": "ceu", "rarity": "comum", "art": "res://assets/pets/nuvenzinha.png", "desc": "Chove de emoção quando você vence."},
+    {"id": "passaro_trovao", "name": "Pássaro-Trovão", "element": "ceu", "rarity": "raro", "art": "res://assets/pets/passaro_trovao.png", "desc": "Canta e o céu ribomba junto."},
+    {"id": "grifinho", "name": "Grifinho", "element": "ceu", "rarity": "epico", "art": "res://assets/pets/grifinho.png", "desc": "Metade águia, metade leão, inteiro orgulhoso."},
+    {"id": "dragao_tempestade", "name": "Dragão Trovejante", "element": "ceu", "rarity": "lendario", "art": "res://assets/pets/dragao_tempestade.png", "desc": "Cavalga o raio e engole as nuvens."},
+    {"id": "corvo_runico", "name": "Corvo Rúnico", "element": "viking", "rarity": "comum", "art": "res://assets/pets/corvo_runico.png", "desc": "Sussurra runas que ninguém pediu."},
+    {"id": "javali_guerra", "name": "Javali de Guerra", "element": "viking", "rarity": "raro", "art": "res://assets/pets/javali_guerra.png", "desc": "Nunca recua, nem diante do jantar."},
+    {"id": "urso_berserker", "name": "Ursinho Berserker", "element": "viking", "rarity": "epico", "art": "res://assets/pets/urso_berserker.png", "desc": "Fofo até a primeira batalha."},
+    {"id": "lobo_fenrir", "name": "Filhote de Fenrir", "element": "viking", "rarity": "lendario", "art": "res://assets/pets/lobo_fenrir.png", "desc": "As correntes rúnicas mal seguram o seu apetite."}
+  ]
+}

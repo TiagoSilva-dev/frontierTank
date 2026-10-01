@@ -17,6 +17,9 @@ extends RefCounted
 # Composição (Cristal Dourado) and Fusão of stones were removed: the currencies give gear
 # its extra attributes. Old saves drop their `compose` bonus and crystal counter on load.
 # v6 stores daily mission progress and reward claims.
+# v7 (0.19, Casa dos Mascotes) adds the pets ({uid, species, level, xp, stars}), the active
+# pet and the album of species ever hatched; eggs are counters in `items` and the hatch
+# pity counters live in `pity`.
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -38,6 +41,9 @@ var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
 var missions: Dictionary = {}
+var pets: Array[Dictionary] = []
+var pet_active: int = -1
+var pet_album: Array[String] = []
 # 0.15: how the player arranged the Mochila, cell by cell ("" = empty cell). Only the
 # order is kept here; CharacterScreen fits new and vanished items into it.
 var bag: Array[String] = []
@@ -124,6 +130,7 @@ func load_data(data: Dictionary) -> bool:
 		for key: String in saved_pity:
 			pity[key] = maxi(0, int(saved_pity[key]))
 	missions = MissionsBoard.clean_state(data.get("missions", {}))
+	load_pets(data)
 	bag = clean_bag(data.get("bag", []))
 	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
 	var saved_coupons: Variant = data.get("coupons", [])
@@ -137,6 +144,28 @@ func load_data(data: Dictionary) -> bool:
 		equipped["arma"] = inst.uid
 	ensure_starter()
 	return migrated
+
+func load_pets(data: Dictionary) -> void:
+	pets.clear()
+	pet_album.clear()
+	var saved: Variant = data.get("pets", [])
+	if saved is Array:
+		for raw: Variant in saved:
+			var pet: Dictionary = Pets.clean_pet(raw)
+			if not pet.is_empty() and pets.size() < int(Pets.data().max_pets):
+				pets.append(pet)
+				next_uid = maxi(next_uid, int(pet.uid) + 1)
+	pet_active = int(data.get("pet_active", -1))
+	if find_pet(pet_active).is_empty():
+		pet_active = -1
+	var seen: Variant = data.get("pet_album", [])
+	if seen is Array:
+		for id: Variant in seen:
+			if not Pets.species_def(str(id)).is_empty() and not pet_album.has(str(id)):
+				pet_album.append(str(id))
+	for pet: Dictionary in pets:
+		if not pet_album.has(pet.species):
+			pet_album.append(pet.species)
 
 func ensure_starter() -> void:
 	# Every account starts with the basic look (t-shirt and shorts) and a Tijolaço.
@@ -153,7 +182,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 6, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
+	return {"version": 7, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -398,10 +427,12 @@ func buy_stone(id: String, amount: int = 1) -> String:
 	return ""
 
 func stats(balance: Dictionary) -> Dictionary:
-	return Armory.character_stats(level(), equipped_list(), balance)
+	return Armory.character_stats(level(), equipped_list(), balance, pet_bonus())
 
 func look() -> Dictionary:
 	var result: Dictionary = Armory.look_for(gender, equipped_list())
+	if not active_pet().is_empty():
+		result["pet"] = str(active_pet().species)
 	if is_founder():
 		result["founder"] = FounderPack.look_extras(self)
 	return result
@@ -605,6 +636,10 @@ func redeem(code: String) -> String:
 		for instance: Dictionary in InstanceRun.rules().instances:
 			for i in range(map_levels.size()):
 				add_map(InstanceRun.make_map(str(instance.id), int(map_levels[i]), random, 0.0, qualities[i % qualities.size()]))
+	var egg_count_each: int = int(coupon.get("eggs", 0))
+	if egg_count_each > 0:
+		for egg: Dictionary in Pets.eggs():
+			add_item(str(egg.id), egg_count_each)
 	var bundle: Dictionary = coupon.get("currencies", {})
 	for id: String in bundle:
 		add_item(id, int(bundle[id]))
@@ -646,12 +681,127 @@ func sell_tool(slot: int, balance: Dictionary) -> String:
 	save_profile()
 	return ""
 
+# ---------- pets (0.19) ----------
+
+func find_pet(uid: int) -> Dictionary:
+	for pet: Dictionary in pets:
+		if int(pet.uid) == uid:
+			return pet
+	return {}
+
+func active_pet() -> Dictionary:
+	return find_pet(pet_active)
+
+# What the active pet and the album add to the battle numbers (Armory.character_stats).
+func pet_bonus() -> Dictionary:
+	var result: Dictionary = Pets.bonus(active_pet())
+	var album: Dictionary = Pets.album_bonus(pet_album)
+	for key: String in album:
+		result[key] = int(result.get(key, 0)) + int(album[key])
+	return result
+
+func egg_count(egg_id: String) -> int:
+	return int(items.get(egg_id, 0))
+
+# Opens one egg. The new pet is the one with the highest uid afterwards (the client reads
+# it from the profile the server sends back). Returns the error, "" when it hatched.
+func hatch(egg_id: String, forced: RandomNumberGenerator = null) -> String:
+	if not Pets.is_egg(egg_id) or egg_count(egg_id) <= 0:
+		return tr("Você não tem este ovo.")
+	if pets.size() >= int(Pets.data().max_pets):
+		return tr("A Casa dos Mascotes está cheia. Liberte algum mascote.")
+	var random: RandomNumberGenerator = forced if forced != null else rng
+	var rarity: int = Pets.roll_rarity(egg_id, pity, random)
+	var species: Dictionary = Pets.roll_species(egg_id, rarity, random)
+	items[egg_id] = egg_count(egg_id) - 1
+	if egg_count(egg_id) <= 0:
+		items.erase(egg_id)
+	pity["egg_epico"] = 0 if rarity >= 2 else int(pity.get("egg_epico", 0)) + 1
+	pity["egg_lendario"] = 0 if rarity >= 3 else int(pity.get("egg_lendario", 0)) + 1
+	var pet: Dictionary = {"uid": next_uid, "species": str(species.id), "level": 1, "xp": 0, "stars": 0}
+	next_uid += 1
+	pets.append(pet)
+	if not pet_album.has(pet.species):
+		pet_album.append(pet.species)
+	if pet_active < 0:
+		pet_active = int(pet.uid)
+	save_profile()
+	return ""
+
+func pet_equip(uid: int) -> String:
+	if find_pet(uid).is_empty():
+		return tr("Mascote não encontrado.")
+	pet_active = -1 if pet_active == uid else uid
+	return ""
+
+func pet_feed(uid: int) -> String:
+	var pet: Dictionary = find_pet(uid)
+	if pet.is_empty():
+		return tr("Mascote não encontrado.")
+	if int(pet.level) >= Pets.cap(int(pet.stars)):
+		return tr("Nível máximo para %d estrelas. Evolua o mascote para subir mais.") % int(pet.stars)
+	var price: int = int(Pets.data().xp.feed_coins)
+	if coins < price:
+		return tr("Moedas insuficientes.")
+	coins -= price
+	Pets.add_xp(pet, int(Pets.data().xp.feed_xp))
+	save_profile()
+	return ""
+
+# One more star: consumes another pet of the same species and some coins; half of the
+# experience of the consumed pet carries over.
+func pet_evolve(uid: int, fodder_uid: int) -> String:
+	var pet: Dictionary = find_pet(uid)
+	var fodder: Dictionary = find_pet(fodder_uid)
+	if pet.is_empty() or fodder.is_empty() or uid == fodder_uid:
+		return tr("Mascote não encontrado.")
+	if pet.species != fodder.species:
+		return tr("O mascote consumido precisa ser da mesma espécie.")
+	if int(pet.stars) >= int(Pets.data().max_stars):
+		return tr("Este mascote já está com 5 estrelas.")
+	if fodder_uid == pet_active:
+		return tr("Tire o mascote ativo antes de consumi-lo.")
+	var price: int = int(Pets.data().evolve_coins[int(pet.stars)])
+	if coins < price:
+		return tr("Moedas insuficientes.")
+	coins -= price
+	var carried: int = Pets.total_xp(fodder) / 2
+	pets.erase(fodder)
+	pet.stars = int(pet.stars) + 1
+	Pets.add_xp(pet, carried)
+	save_profile()
+	return ""
+
+func pet_release(uid: int) -> String:
+	var pet: Dictionary = find_pet(uid)
+	if pet.is_empty():
+		return tr("Mascote não encontrado.")
+	if uid == pet_active:
+		return tr("Tire o mascote ativo antes de libertá-lo.")
+	coins += int(Pets.rarity_def(str(Pets.species_def(str(pet.species)).rarity)).release)
+	pets.erase(pet)
+	save_profile()
+	return ""
+
+# After a battle the active pet earns experience from what the player earned.
+func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
+	var pet: Dictionary = active_pet()
+	if pet.is_empty():
+		return {}
+	var rules: Dictionary = Pets.data().xp
+	var amount: int = int(rules.battle_base) + roundi(float(exp_gain) * float(rules.battle_exp_share))
+	if pve:
+		amount = roundi(amount * float(rules.pve_scale))
+	var before: int = int(pet.level)
+	Pets.add_xp(pet, amount)
+	return {"uid": int(pet.uid), "species": str(pet.species), "xp": amount, "level_before": before, "level_after": int(pet.level), "capped": int(pet.level) >= Pets.cap(int(pet.stars))}
+
 # ---------- operações (online) ----------
 
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -729,6 +879,16 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			else:
 				founder_fx[key] = args.size() > 1 and args[1] == true
 				save_profile()
+		"pet_hatch":
+			error = hatch(arg_str(args, 0))
+		"pet_equip":
+			error = pet_equip(arg_int(args, 0))
+		"pet_feed":
+			error = pet_feed(arg_int(args, 0))
+		"pet_evolve":
+			error = pet_evolve(arg_int(args, 0), arg_int(args, 1))
+		"pet_release":
+			error = pet_release(arg_int(args, 0))
 		"mission_claim":
 			var result: Dictionary = MissionsBoard.claim(self, arg_str(args, 0))
 			error = str(result.error)
@@ -750,6 +910,6 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				save_profile()
 		_:
 			error = tr("Operação desconhecida.")
-	if error == "" and op in ["toggle_equip", "sell", "mission_claim"]:
+	if error == "" and op in ["toggle_equip", "sell", "mission_claim", "pet_equip"]:
 		save_profile()
 	return {"error": error, "message": message}
