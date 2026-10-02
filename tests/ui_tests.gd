@@ -61,8 +61,11 @@ func run_tests() -> void:
 	var shop_in_city: ShopScreen = city.get_children().filter(func(n: Node) -> bool: return n is ShopScreen).front()
 	check(shop_in_city != null and shop_in_city.has_node("Shop_quebra_tijolos") == false, "Centro Comercial opens from the city")
 	app.profile.coins += 5000
+	shop_in_city.buy_item("vento_de_deus", "normal")
+	check(app.profile.has_item("vento_de_deus", "normal"), "shop sells Normal weapons")
 	shop_in_city.buy_item("vento_de_deus", "excelente")
-	check(app.profile.has_item("vento_de_deus", "excelente"), "shop sells weapons by quality")
+	check(not app.profile.has_item("vento_de_deus", "excelente"), "shop does not sell Excelente weapons")
+	check(shop_in_city.find_child("Tab_auxiliar", true, false) == null and shop_in_city.find_child("Tab_pedras", true, false) == null and shop_in_city.find_child("Tab_premium", true, false) != null, "shop has no Auxiliar or Pedras tab")
 	shop_in_city.buy_item("cabeca_de_boi", "super")
 	check(not app.profile.has_item("cabeca_de_boi"), "super weapons are not sold")
 	shop_in_city.close()

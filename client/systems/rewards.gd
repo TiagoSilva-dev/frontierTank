@@ -81,9 +81,9 @@ static func grant(profile: PlayerProfile, reward: Dictionary) -> void:
 	elif reward.has("currency"):
 		profile.add_item(str(reward.currency), int(reward.get("amount", 1)))
 	elif reward.has("weapon"):
-		profile.add_instance(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
+		profile.add_drop(str(reward.weapon), str(reward.get("quality", "super")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
 	elif reward.has("gear"):
-		profile.add_instance(str(reward.gear), str(reward.get("quality", "normal")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
+		profile.add_drop(str(reward.gear), str(reward.get("quality", "normal")), 0, int(reward.get("ilvl", 0)), reward.get("mods", []))
 	elif reward.has("map"):
 		profile.add_map(reward.map)
 	profile.save_profile()

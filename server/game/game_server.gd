@@ -1122,6 +1122,8 @@ func auction_buy(session: PlayerSession, message: Dictionary) -> void:
 		error = Lang.t("Este anúncio não está mais à venda.")
 	if error == "" and (session.profile.currency_count("solar") < solar or session.profile.currency_count("estrela") < estrela):
 		error = Lang.t("Você não tem Solares e Estrelas suficientes.")
+	if error == "" and session.profile.bag_full():
+		error = session.profile.bag_full_message()
 	if error != "":
 		reply(session, message, {"error": error})
 		return

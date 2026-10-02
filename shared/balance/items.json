@@ -175,7 +175,13 @@
     {"id": "roupa_paladino_sol", "slot": "roupa", "gender": "u", "name": "Paladino do Sol", "skin": "roupa_paladino_sol", "price": 0, "premium": true, "founder": true, "attrs": {}},
     {"id": "asas_aurora", "slot": "asas", "gender": "u", "name": "Asas da Aurora", "art": "asas_aurora", "price": 0, "premium": true, "founder": true, "attrs": {}, "root": [118, 100]},
     {"id": "selo_fundador", "slot": "selo", "gender": "u", "name": "Selo de Fundador", "art": "selo_fundador", "price": 0, "premium": true, "founder": true, "attrs": {}},
-    {"id": "passe_cacador", "slot": "selo", "gender": "u", "name": "Passe do Caçador", "art": "passe_cacador", "price": 0, "premium": true, "attrs": {}}
+    {"id": "passe_cacador", "slot": "selo", "gender": "u", "name": "Passe do Caçador", "art": "passe_cacador", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_1", "slot": "selo", "gender": "u", "name": "Aba de Mochila 1", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_2", "slot": "selo", "gender": "u", "name": "Aba de Mochila 2", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_3", "slot": "selo", "gender": "u", "name": "Aba de Mochila 3", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_4", "slot": "selo", "gender": "u", "name": "Aba de Mochila 4", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_5", "slot": "selo", "gender": "u", "name": "Aba de Mochila 5", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}},
+    {"id": "aba_mochila_6", "slot": "selo", "gender": "u", "name": "Aba de Mochila 6", "art": "aba_mochila", "price": 0, "premium": true, "attrs": {}}
   ],
   "coupons": [
     {"code": "TESTARTUDO", "test": true, "desc": "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas, 20 ovos de cada tipo e o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador) e o Passe do Caçador. Cupom reutilizável.", "all": true, "coins": 99999, "stones": 200, "currencies": {"brasa": 200, "coroa": 200, "estrela": 200, "tormenta": 200, "solar": 200, "eclipse": 200, "espelho": 200}, "eggs": 20, "maps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], "founder": true, "hunt_pass": true, "repeat": true},

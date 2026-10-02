@@ -35,6 +35,18 @@ func run() -> void:
 		many.append("uid:%d" % i)
 	check(PlayerProfile.clean_bag(many).size() == PlayerProfile.BAG_CELLS and PlayerProfile.clean_bag("x").is_empty(), "the arrangement is bounded and ignores junk")
 	var plain: PlayerProfile = PlayerProfile.new()
+	# --- capacity: two free pages, more sold as keepsake items (0.21)
+	check(plain.bag_pages() == 2 and plain.bag_capacity() == 80, "the bag starts with two pages")
+	var before_used: int = plain.bag_used()
+	plain.add_instance("aba_mochila_1")
+	check(plain.bag_pages() == 3 and plain.bag_used() == before_used and PlayerProfile.is_keepsake("aba_mochila_1"), "a bag tab adds a page and takes no room")
+	plain.coins = 100000
+	while not plain.bag_full():
+		plain.add_instance("chapeu_kabuto")
+	check(plain.buy("chapeu_coroa") == plain.bag_full_message() and plain.coins == 100000, "a full bag refuses shop purchases")
+	check(plain.add_drop("chapeu_kabuto") > 0 and plain.coins > 100000, "a drop that finds the bag full is sold")
+	check(plain.fit_bag(clean_cells(200)).size() == plain.bag_capacity(), "the arrangement never goes past the owned pages")
+	plain = PlayerProfile.new()
 	check("bag_layout" in PlayerProfile.OPS, "arranging the bag is an operation the server accepts")
 	var result: Dictionary = plain.apply_op("bag_layout", [["uid:1", "", "item:brasa"]], balance)
 	check(result.error == "" and plain.bag == ["uid:1", "", "item:brasa"], "the bag_layout op stores the arrangement")
@@ -51,6 +63,9 @@ func run() -> void:
 	app.profile.redeem("TESTARTUDO")
 	app.profile.redeem("MOEDAS")
 	app.profile.redeem("MAPAS")
+	# The test coupons overfill the two free pages: buy the extra ones so the layout has room.
+	for number in range(1, PlayerProfile.BAG_EXTRA_PAGES + 1):
+		app.profile.add_instance(PlayerProfile.bag_tab_id(number))
 	app.show_city()
 	app.open_bag()
 	await process_frame
@@ -81,10 +96,13 @@ func run() -> void:
 	cells = bag.layout()
 	check(cells[4] == a and cells[2] == b, "an item dropped on another swaps them")
 	# A sold item leaves its cell empty; a new item takes the first empty cell.
-	var sold: Dictionary = bag.entry_map()[cells[6]].get("inst", {})
+	var sold_cell: int = 6
+	while not bag.entry_map()[cells[sold_cell]].has("inst") or app.profile.is_equipped(int(bag.entry_map()[cells[sold_cell]].inst.uid)) or PlayerProfile.is_keepsake(str(bag.entry_map()[cells[sold_cell]].inst.id)):
+		sold_cell += 1
+	var sold: Dictionary = bag.entry_map()[cells[sold_cell]].inst
 	app.profile.sell(int(sold.uid))
 	cells = bag.layout()
-	check(cells[6] == "" and cells[1] == "", "sold items leave their cell empty")
+	check(cells[sold_cell] == "" and cells[1] == "", "sold items leave their cell empty")
 	var fresh: Dictionary = app.profile.add_instance("trovao", "excelente")
 	cells = bag.layout()
 	check(cells[1] == "uid:%d" % int(fresh.uid), "a new item goes to the first empty cell")
@@ -205,3 +223,9 @@ func card_text(card: ItemTooltip) -> String:
 		elif node is Label:
 			parts.append((node as Label).text)
 	return "\n".join(parts)
+
+func clean_cells(count: int) -> Array[String]:
+	var cells: Array[String] = []
+	for i in range(count):
+		cells.append("uid:%d" % i)
+	return cells

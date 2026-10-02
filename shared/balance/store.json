@@ -14,6 +14,18 @@
      "prices": {"USD": 299, "EUR": 299, "GBP": 259, "BRL": 1499, "CAD": 399, "AUD": 445, "MXN": 5900, "PLN": 1349}},
     {"sku": "passe_cacador", "steam_item_id": 3000, "name": "Passe do Caçador", "desc": "A Caçada dos Mascotes passa a acumular até 8 horas parado (em vez de 2). Conveniência: os mascotes não ficam mais fortes por isso.", "items": ["passe_cacador"],
      "prices": {"USD": 499, "EUR": 499, "GBP": 429, "BRL": 2490, "CAD": 649, "AUD": 749, "MXN": 9900, "PLN": 2299}},
+    {"sku": "aba_mochila_1", "steam_item_id": 3101, "name": "Aba de Mochila 1", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_1"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
+    {"sku": "aba_mochila_2", "steam_item_id": 3102, "name": "Aba de Mochila 2", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_2"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
+    {"sku": "aba_mochila_3", "steam_item_id": 3103, "name": "Aba de Mochila 3", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_3"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
+    {"sku": "aba_mochila_4", "steam_item_id": 3104, "name": "Aba de Mochila 4", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_4"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
+    {"sku": "aba_mochila_5", "steam_item_id": 3105, "name": "Aba de Mochila 5", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_5"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
+    {"sku": "aba_mochila_6", "steam_item_id": 3106, "name": "Aba de Mochila 6", "desc": "Mais 40 espaços na Mochila. Conveniência: não muda atributos.", "items": ["aba_mochila_6"],
+     "prices": {"USD": 199, "EUR": 199, "GBP": 169, "BRL": 990, "CAD": 259, "AUD": 299, "MXN": 3900, "PLN": 899}},
     {"sku": "founder_pack", "steam_item_id": 2000, "name": "Founder Pack — Paladino do Sol", "founder": true, "sale_until": "", "desc": "Edição limitada, só durante o período Founder: skin Paladino do Sol, arma Solaris, Asas da Aurora, selo, título e moldura de Fundador, e os efeitos do pacote. Só aparência: não muda atributos.", "items": ["roupa_paladino_sol", "solaris", "asas_aurora", "selo_fundador"],
      "prices": {"USD": 2999, "EUR": 2999, "GBP": 2599, "BRL": 14990, "CAD": 3999, "AUD": 4499, "MXN": 59900, "PLN": 13499}}
   ]

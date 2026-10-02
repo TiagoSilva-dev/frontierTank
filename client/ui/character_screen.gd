@@ -281,8 +281,11 @@ func all_entries() -> Array[Dictionary]:
 func gear_before(a: Dictionary, b: Dictionary) -> bool:
 	var ia: Dictionary = a.inst
 	var ib: Dictionary = b.inst
+	# Seals and passes (keepsakes of a purchase, slot "selo") go after the gear.
 	var sa: int = SLOT_ORDER.find(Armory.slot_of(str(ia.id)))
 	var sb: int = SLOT_ORDER.find(Armory.slot_of(str(ib.id)))
+	sa = SLOT_ORDER.size() if sa < 0 else sa
+	sb = SLOT_ORDER.size() if sb < 0 else sb
 	if sa != sb:
 		return sa < sb
 	var wa: bool = app.profile.is_equipped(int(ia.uid))
@@ -374,6 +377,9 @@ func build_inventory() -> void:
 	var sort_button: Button = UiKit.button(contents, tr("ORGANIZAR"), Rect2(820, 478, 130, 28), sort_bag, "tab", 14)
 	sort_button.name = "SortBag"
 	sort_button.tooltip_text = tr("Arruma a mochila por tipo, qualidade e fortalecimento.")
+	var more: Button = UiKit.button(contents, tr("+ ABAS"), Rect2(956, 478, 116, 28), open_shop.bind("premium"), "tab", 14)
+	more.name = "MoreBagTabs"
+	more.tooltip_text = tr("Compre mais abas de mochila na loja Premium.")
 	var back: Button = UiKit.button(contents, "<", Rect2(1080, 478, 36, 28), turn_page.bind(-1), "tab", 14)
 	page_label = UiKit.label(contents, "", Rect2(1116, 478, 70, 28), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var forward: Button = UiKit.button(contents, ">", Rect2(1186, 478, 36, 28), turn_page.bind(1), "tab", 14)
@@ -413,8 +419,8 @@ func refresh_grid() -> void:
 	var keys: Array[String] = shown_keys()
 	var by_key: Dictionary = entry_map()
 	var items: int = keys.filter(func(key: String) -> bool: return key != "").size()
-	# "Todos" always leaves room for one more empty cell to drop into.
-	pages = maxi(1, ceili((keys.size() + (1 if category == "Todos" else 0)) / float(PER_PAGE)))
+	# "Todos" shows exactly the pages the player owns (0.21: more are sold in the Premium tab).
+	pages = app.profile.bag_pages() if category == "Todos" else maxi(1, ceili(keys.size() / float(PER_PAGE)))
 	page = clampi(page, 0, pages - 1)
 	for i in range(PER_PAGE):
 		var index: int = page * PER_PAGE + i
@@ -437,7 +443,10 @@ func refresh_grid() -> void:
 		slot.hovered.connect(on_hover)
 		slot.dropped.connect(drop_on_cell)
 		cells_shown.append(slot)
-	count_label.text = tr("%d itens") % items
+	if category == "Todos":
+		count_label.text = tr("%d/%d itens") % [app.profile.bag_used(), app.profile.bag_capacity()]
+	else:
+		count_label.text = tr("%d itens") % items
 	page_label.text = "%d/%d" % [page + 1, pages]
 	refresh_selection()
 
@@ -696,9 +705,10 @@ func open_smith() -> void:
 	smith.closed.connect(build)
 	add_child(smith)
 
-func open_shop() -> void:
+func open_shop(first_tab: String = "arma") -> void:
 	var shop: ShopScreen = ShopScreen.new()
 	shop.app = app
+	shop.tab = first_tab
 	shop.closed.connect(build)
 	add_child(shop)
 

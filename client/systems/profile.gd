@@ -140,7 +140,7 @@ func load_data(data: Dictionary) -> bool:
 	hunt = PetHunt.clean_state(data.get("hunt", {}))
 	if remote and data.has("clock"):
 		hunt_skew = int(data.clock) - int(Time.get_unix_time_from_system())
-	bag = clean_bag(data.get("bag", []))
+	bag = fit_bag(clean_bag(data.get("bag", [])))
 	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
@@ -357,7 +357,7 @@ func remove_instance(uid: int) -> void:
 	ensure_starter()
 
 static func is_keepsake(id: String) -> bool:
-	return id == FounderPack.SEAL or id == str(PetHunt.rules().pass_item)
+	return id == FounderPack.SEAL or id == str(PetHunt.rules().pass_item) or id.begins_with(BAG_TAB_PREFIX)
 
 func sell(uid: int) -> int:
 	var inst: Dictionary = find_instance(uid)
@@ -375,6 +375,55 @@ static func sell_value(inst: Dictionary) -> int:
 # ---------- Mochila layout (0.15) ----------
 
 const BAG_CELLS: int = 480
+# 0.21: the Mochila has pages ("abas") of 40 cells. Two are free; up to six more are sold in
+# the Premium tab (each one is a keepsake item aba_mochila_N delivered by the Correio).
+const BAG_PAGE_CELLS: int = 40
+const BAG_FREE_PAGES: int = 2
+const BAG_EXTRA_PAGES: int = 6
+const BAG_TAB_PREFIX: String = "aba_mochila_"
+
+static func bag_tab_id(number: int) -> String:
+	return BAG_TAB_PREFIX + str(number)
+
+func bag_pages() -> int:
+	var pages: int = BAG_FREE_PAGES
+	for number in range(1, BAG_EXTRA_PAGES + 1):
+		if has_item(bag_tab_id(number)):
+			pages += 1
+	return pages
+
+func bag_capacity() -> int:
+	return bag_pages() * BAG_PAGE_CELLS
+
+# Cells in use: every piece of gear, stack, tool and map in the Mochila (the purchase
+# keepsakes do not take room).
+func bag_used() -> int:
+	var used: int = 0
+	for inst: Dictionary in inventory:
+		if not is_keepsake(str(inst.get("id", ""))):
+			used += 1
+	for key: Variant in items:
+		if int(items[key]) > 0:
+			used += 1
+	for tool_id: String in tools:
+		if tool_id != "":
+			used += 1
+	return used + maps.size()
+
+func bag_full() -> bool:
+	return bag_used() >= bag_capacity()
+
+func bag_full_message() -> String:
+	return tr("Mochila cheia! Venda itens ou compre mais abas na loja Premium.")
+
+# Drops that find the Mochila full are sold on the spot: returns the coins, 0 if it fit.
+func add_drop(id: String, quality: String = "normal", level: int = 0, ilvl: int = 0, mods: Array = []) -> int:
+	if bag_full():
+		var value: int = sell_value({"id": id, "quality": quality})
+		coins += value
+		return value
+	add_instance(id, quality, level, ilvl, mods)
+	return 0
 const BAG_KEY: String = "^(uid|item|tool|map):[a-z0-9_]{1,32}$"
 
 static func clean_bag(raw: Variant) -> Array[String]:
@@ -395,6 +444,14 @@ static func clean_bag(raw: Variant) -> Array[String]:
 		cells.pop_back()
 	return cells
 
+# The arrangement never reaches past the pages the player has (items left out are put in
+# the first free cells by the Mochila screen).
+func fit_bag(cells: Array[String]) -> Array[String]:
+	var fitted: Array[String] = cells.slice(0, bag_capacity())
+	while not fitted.is_empty() and fitted.back() == "":
+		fitted.pop_back()
+	return fitted
+
 static func item_price(id: String, quality: String = "normal") -> int:
 	var def: Dictionary = Armory.definition(id)
 	var price: float = float(def.get("price", 0))
@@ -410,13 +467,19 @@ func buy(id: String, quality: String = "normal") -> String:
 		return tr("Super armas só caem do chefe das instâncias.")
 	if quality == "verdadeira":
 		return tr("Armas Verdadeiras só caem nas instâncias.")
-	if not quality in ["normal", "excelente"]:
+	if quality == "excelente":
+		return tr("Armas Excelentes só caem nas instâncias ou vêm do leilão.")
+	if quality != "normal":
 		return tr("Item desconhecido.")
+	if Armory.kind_of(id) == "aux":
+		return tr("Itens auxiliares só vêm de drops ou do leilão.")
 	var price: int = item_price(id, quality)
 	if price <= 0:
 		return tr("Item desconhecido.")
 	if coins < price:
 		return tr("Moedas insuficientes.")
+	if bag_full():
+		return bag_full_message()
 	coins -= price
 	# Shop items come without bonuses and are bound (never go to the auction).
 	var bought: Dictionary = add_instance(id, quality)
@@ -938,7 +1001,7 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				message = redeem(code)
 		"bag_layout":
 			# Cosmetic only: the new arrangement of the Mochila (an empty list sorts it).
-			bag = clean_bag(args[0] if not args.is_empty() else [])
+			bag = fit_bag(clean_bag(args[0] if not args.is_empty() else []))
 			save_profile()
 		"founder_fx":
 			# Cosmetic only: turn one Founder effect on or off (Founders only).

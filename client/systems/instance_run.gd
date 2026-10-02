@@ -531,7 +531,11 @@ func gear_card() -> Dictionary:
 	# map level as item level, so their bonuses can reach the best tiers.
 	var gender: String = profile.gender if profile != null else ""
 	var pool: Array = Armory.data().cosmetics.filter(func(def: Dictionary) -> bool: return Crafting.can_have_mods(str(def.id)) and (gender == "" or str(def.gender) in ["u", gender]))
+	# 0.21: auxiliary items are no longer sold in the shop; they drop here (and go to the auction).
+	pool.append_array(Armory.data().auxiliary)
 	var id: String = str(pool[rng.randi() % pool.size()].id)
+	if Armory.kind_of(id) == "aux":
+		return {"id": "gear_" + id, "name": Armory.item_name({"id": id}), "gear": id, "quality": "normal", "ilvl": 0, "mods": [], "rarity": CARD_RARITY["normal"], "icon": Armory.icon_path({"id": id})}
 	var quality: String = roll_quality()
 	var inst: Dictionary = {"id": id, "quality": quality, "ilvl": effective_level()}
 	inst.mods = Crafting.roll_mods(inst, rng, rarity())

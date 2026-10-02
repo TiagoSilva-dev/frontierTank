@@ -226,9 +226,14 @@ func run_tests() -> void:
 	female.gender = "f"
 	var gear_run: InstanceRun = InstanceRun.new(balance, "picos_gelados", {"instance": "picos_gelados", "level": 14, "quality": "normal", "mods": []}, 1, [hero], female)
 	var gear_ok: bool = true
+	var aux_seen: bool = false
 	var weapons_ok: bool = true
 	for i in range(120):
 		var gear: Dictionary = gear_run.gear_card()
+		if Armory.kind_of(str(gear.gear)) == "aux":
+			aux_seen = true  # 0.21: auxiliary items drop in the same card, plain and without bonuses
+			gear_ok = gear_ok and gear.mods.is_empty()
+			continue
 		var def: Dictionary = Armory.cosmetic_def(str(gear.gear))
 		gear_ok = gear_ok and str(def.gender) in ["u", "f"] and int(gear.ilvl) == 14 and Crafting.can_have_mods(str(gear.gear)) and gear.mods.size() >= int(Crafting.count_range(gear.quality)[0]) and gear.mods.size() <= int(Crafting.count_range(gear.quality)[1])
 		var card: Dictionary = gear_run.weapon_card()
