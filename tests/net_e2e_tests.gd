@@ -125,6 +125,17 @@ func account_tests(alice: Node, bob: Node) -> void:
 	check((await alice.do_op("pet_hatch", ["egg_sol"])).error == "" and server_profile(alice).pets.size() == 1 and alice.profile.pets.size() == 1, "an egg hatches on the server and the pet arrives on the client")
 	check(alice.profile.pet_active == server_profile(alice).pet_active and alice.profile.pet_active > 0 and alice.profile.egg_count("egg_sol") == 9, "the active pet and the egg count match the server's")
 	check(alice.profile.pets[0] == server_profile(alice).pets[0] and (await alice.do_op("pet_evolve", [alice.profile.pet_active, alice.profile.pet_active])).error != "", "a pet cannot consume itself online either")
+	# Caçada dos Mascotes (0.20): the server settles the hunt with its own clock.
+	var pet_uid: int = int(alice.profile.pets[0].uid)
+	check((await alice.do_op("hunt_set", ["sol", 3, [pet_uid]])).error != "" and not bool(server_profile(alice).hunt.active), "the server refuses a hunt tier that is still locked")
+	check((await alice.do_op("hunt_set", ["sol", 1, [pet_uid, 99999]])).error == "" and bool(server_profile(alice).hunt.active), "a hunt starts on the server (unknown pets are ignored)")
+	check(alice.profile.hunt == server_profile(alice).hunt, "the client mirrors the server's hunt")
+	server_profile(alice).hunt.since = int(server_profile(alice).hunt.since) - 1200
+	var coins_hunt: int = server_profile(alice).coins
+	check((await alice.do_op("hunt_collect", [])).error == "" and int(server_profile(alice).hunt.report.slots) == 100, "the server settles 100 encounters for 20 minutes away")
+	check(server_profile(alice).coins == coins_hunt + int(server_profile(alice).hunt.report.coins) and alice.profile.coins == server_profile(alice).coins, "the hunt's coins reached the server and the client")
+	check(int(alice.profile.hunt.report.slots) == 100 and abs(alice.profile.hunt_now() - server_profile(alice).hunt_now()) <= 2, "the client's clock follows the server's")
+	check((await alice.do_op("hunt_stop", [])).error == "" and not bool(alice.profile.hunt.active), "the hunt can be stopped online")
 	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving), 5)
 	var stored: Dictionary = server.api.memory_profiles.get(alice.my_account(), {})
 	check(stored.get("data", {}).get("pets", []).size() == 1, "the pets are saved through the API")

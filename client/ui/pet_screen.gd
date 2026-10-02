@@ -1,7 +1,8 @@
 class_name PetScreen
 extends Control
 
-# Casa dos Mascotes (0.19), in the layout of the Forja Celeste: three tabs. "Chocar" opens
+# Casa dos Mascotes (0.19), in the layout of the Forja Celeste: four tabs (the Caçada, 0.20,
+# is HuntTab). "Chocar" opens
 # the eggs (chances, guarantees and a cinematic reveal), "Mascotes" is the collection with
 # level, stars, the active pet and its bonuses, and "Álbum" lists every species with a
 # permanent bonus for each completed element. Offline the profile applies the operations,
@@ -9,7 +10,7 @@ extends Control
 
 signal closed
 
-const TABS: Array[String] = ["Chocar", "Mascotes", "Álbum"]  # i18n
+const TABS: Array[String] = ["Chocar", "Mascotes", "Álbum", "Caçada"]  # i18n
 const PER_PAGE: int = 25
 
 var app: Node
@@ -19,6 +20,7 @@ var pet_uid: int = -1
 var page: int = 0
 var contents: Control
 var stage: PetStage
+var hunt_tab: HuntTab
 var busy: bool = false
 var message: String = ""
 
@@ -39,6 +41,10 @@ func _ready() -> void:
 		var list: Array[Dictionary] = sorted_pets()
 		chosen = app.profile.active_pet() if not app.profile.active_pet().is_empty() else (list[0] if not list.is_empty() else {})
 	pet_uid = int(chosen.get("uid", -1))
+	hunt_tab = HuntTab.new()
+	add_child(hunt_tab)
+	hunt_tab.setup(app)
+	hunt_tab.changed.connect(build.bind(false))
 	build()
 
 func first_egg_owned() -> String:
@@ -52,7 +58,7 @@ func sorted_pets() -> Array[Dictionary]:
 	list.sort_custom(PetWidgets.pet_before)
 	return list
 
-func build() -> void:
+func build(rebuild_hunt: bool = true) -> void:
 	if is_instance_valid(contents):
 		remove_child(contents)
 		contents.queue_free()
@@ -70,11 +76,16 @@ func build() -> void:
 		tab_button.name = "PetTab_" + TABS[i]
 		tab_button.set_meta("active", tab == TABS[i])
 	stage = null
+	hunt_tab.visible = tab == "Caçada"
 	match tab:
 		"Chocar":
 			build_hatch()
 		"Mascotes":
 			build_pets()
+		"Caçada":
+			if rebuild_hunt:
+				hunt_tab.adopt()
+				hunt_tab.rebuild()
 		_:
 			build_album()
 	if message != "":

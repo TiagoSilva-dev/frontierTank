@@ -12,6 +12,8 @@
      "prices": {"USD": 99, "EUR": 99, "GBP": 89, "BRL": 499, "CAD": 129, "AUD": 145, "MXN": 1900, "PLN": 449}},
     {"sku": "pacote_tinturas", "steam_item_id": 1100, "name": "Pacote de Tinturas", "desc": "As quatro tinturas exclusivas de uma vez, mais barato. Só aparência.", "items": ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"],
      "prices": {"USD": 299, "EUR": 299, "GBP": 259, "BRL": 1499, "CAD": 399, "AUD": 445, "MXN": 5900, "PLN": 1349}},
+    {"sku": "passe_cacador", "steam_item_id": 3000, "name": "Passe do Caçador", "desc": "A Caçada dos Mascotes passa a acumular até 8 horas parado (em vez de 2). Conveniência: os mascotes não ficam mais fortes por isso.", "items": ["passe_cacador"],
+     "prices": {"USD": 499, "EUR": 499, "GBP": 429, "BRL": 2490, "CAD": 649, "AUD": 749, "MXN": 9900, "PLN": 2299}},
     {"sku": "founder_pack", "steam_item_id": 2000, "name": "Founder Pack — Paladino do Sol", "founder": true, "sale_until": "", "desc": "Edição limitada, só durante o período Founder: skin Paladino do Sol, arma Solaris, Asas da Aurora, selo, título e moldura de Fundador, e os efeitos do pacote. Só aparência: não muda atributos.", "items": ["roupa_paladino_sol", "solaris", "asas_aurora", "selo_fundador"],
      "prices": {"USD": 2999, "EUR": 2999, "GBP": 2599, "BRL": 14990, "CAD": 3999, "AUD": 4499, "MXN": 59900, "PLN": 13499}}
   ]

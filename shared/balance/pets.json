@@ -60,4 +60,34 @@
     {"id": "urso_berserker", "name": "Ursinho Berserker", "element": "viking", "rarity": "epico", "art": "res://assets/pets/urso_berserker.png", "desc": "Fofo até a primeira batalha."},
     {"id": "lobo_fenrir", "name": "Filhote de Fenrir", "element": "viking", "rarity": "lendario", "art": "res://assets/pets/lobo_fenrir.png", "desc": "As correntes rúnicas mal seguram o seu apetite."}
   ]
+  ,
+  "hunt": {
+    "about": "Caçada dos Mascotes: o time luta sozinho contra selvagens do elemento da zona. Cada encontro ocupa `cycle` segundos; o jogador coleta o que acumulou, até `cap_free` segundos parado (`cap_pass` com o Passe do Caçador).",
+    "cycle": 12, "cap_free": 7200, "cap_pass": 28800, "pass_item": "passe_cacador",
+    "zones": {
+      "sol": {"name": "Ruínas do Sol", "bg": "res://assets/maps/bg/templo_sol.png"},
+      "mascara": {"name": "Portões de Brasa", "bg": "res://assets/maps/bg/portoes_brasa.png"},
+      "gelo": {"name": "Trilha Gelada", "bg": "res://assets/maps/bg/trilha_gelada.png"},
+      "ceu": {"name": "Ilhas Flutuantes", "bg": "res://assets/maps/bg/ruinas_flutuantes.png"},
+      "viking": {"name": "Praia dos Drakkar", "bg": "res://assets/maps/bg/praia_drakkar.png"}
+    },
+    "team_max": 5, "tiers": 8, "unlock_wins": 60, "rounds_max": 24,
+    "wild_level": {"base": 2, "per_tier": 4}, "wild_scale": 0.26,
+    "stats": {"hp": [48, 60, 76, 100], "atk": [9, 11, 14, 19], "def": [4, 5, 7, 9], "spd": [8, 9, 10, 11], "level_scale": 0.16, "star_scale": 0.15},
+    "element_mod": {"sol": {"atk": 1.12}, "mascara": {"spd": 1.12, "crit": 0.25}, "gelo": {"hp": 1.18}, "ceu": {"spd": 1.15}, "viking": {"def": 1.15, "hp": 1.06}},
+    "crit": {"base": 0.08, "mult": 1.6},
+    "wheel": ["sol", "gelo", "ceu", "mascara", "viking"], "wheel_bonus": 1.5, "wheel_penalty": 0.7,
+    "skill": {"every": 3, "rarity_scale": 0.12,
+      "sol": {"name": "Rajada Solar", "mult": 2.0},
+      "mascara": {"name": "Dupla Trapaça", "mult": 0.9},
+      "gelo": {"name": "Muralha Glacial", "heal": 0.12},
+      "ceu": {"name": "Tempestade", "mult": 0.8},
+      "viking": {"name": "Grito de Guerra", "buff": 0.25, "rounds": 3}},
+    "group_weights": [60, 30, 10],
+    "wild_rarity": [72, 22, 6], "wild_rarity_per_tier": [-3, 1, 2],
+    "boss": {"hp": 2.0, "atk": 1.15, "level_bonus": 2, "chance": 0.0003, "forced_after": 2000},
+    "capture": {"comum": 0.0012, "raro": 0.003, "epico": 0.009, "lendario": 1.0, "per_tier": 0.08},
+    "reward": {"xp_base": 1.2, "xp_per_level": 0.14, "xp_rarity": [1, 1.5, 2.5, 8], "coin_per_level": 0.15, "coin_rarity": [1, 1.6, 3, 12], "egg_chance": 0.0035, "egg_per_tier": 0.08},
+    "analyser_trials": 24
+  }
 }

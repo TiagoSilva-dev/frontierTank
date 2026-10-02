@@ -94,6 +94,13 @@ func _ready() -> void:
 		var tag: Label = UiKit.label(self, tr(building.name), Rect2(pos[0] - 130, pos[1] - 20, 260, 40), 26 if building.id == "hall" else 22, Color("fff6dc"), Color("5a2408"), HORIZONTAL_ALIGNMENT_CENTER)
 		tag.add_theme_constant_override("outline_size", 8)
 		labels.append(tag)
+		if building.id == "pet" and bool(app.profile.hunt.active):
+			# The hunt keeps going while the player is away: say when there is something to collect.
+			var now: int = app.profile.hunt_now()
+			var full: bool = now - int(app.profile.hunt.since) >= PetHunt.cap_seconds(app.profile)
+			if full or PetHunt.pending_slots(app.profile, now) >= 25:
+				var ready: Label = UiKit.label(self, tr("Caçada cheia! Colete") if full else tr("Caçada pronta para coletar"), Rect2(pos[0] - 130, pos[1] + 14, 260, 28), 16, Color("9aff7a"), Color("0d2a14"), HORIZONTAL_ALIGNMENT_CENTER)
+				ready.add_theme_constant_override("outline_size", 6)
 	tip_panel = UiKit.panel(self, Rect2(0, 0, 340, 40), "banner")
 	tip_label = UiKit.label(tip_panel, "", Rect2(0, 0, 340, 40), 17, Color("fff4a0"), Color("5a1004"), HORIZONTAL_ALIGNMENT_CENTER)
 	tip_panel.hide()

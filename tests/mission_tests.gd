@@ -53,7 +53,7 @@ func run() -> void:
 		if not profile.missions.claimed.has(str(mission.id)):
 			profile.apply_op("mission_claim", [str(mission.id)], {})
 	check(profile.missions.daily_bonus and profile.coins == 1250 and profile.experience == 900, "claiming every contract awards the daily completion bonus once")
-	check(profile.to_data().version == 7 and MissionsBoard.seconds_until_reset(86400) == 86400, "profile migration and UTC reset boundary are stable")
+	check(profile.to_data().version == 8 and MissionsBoard.seconds_until_reset(86400) == 86400, "profile migration and UTC reset boundary are stable")
 	profile.missions.day -= 1
 	profile.missions.progress.pvp_wins = 4
 	profile.missions.claimed.append("pvp_wins")

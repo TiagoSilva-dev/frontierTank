@@ -109,6 +109,8 @@ func _ready() -> void:
 		profile.created = true
 	if args.has("demo"):
 		demo_loadout(str(args.demo))
+	if args.has("hunt"):
+		demo_hunt(int(args.hunt))
 	open_named(str(args.get("screen", "title")))
 
 func demo_loadout(kind: String) -> void:
@@ -146,6 +148,17 @@ func demo_loadout(kind: String) -> void:
 			if inst.quality == "normal" and Armory.slot_of(str(inst.id)) != "arma":
 				inst.quality = "verdadeira" if Armory.slot_of(str(inst.id)) == "roupa" else "excelente"
 			inst.mods = Crafting.roll_mods(inst, profile.rng, 1.0)
+
+# Capture helper (--screen=pet --tab=Caçada --hunt=<seconds already hunted> --zone= --tier=
+# --boss=1): a hunt of the first pets, started that many seconds ago.
+func demo_hunt(seconds: int) -> void:
+	var team: Array = []
+	for pet: Dictionary in profile.pets.slice(0, 4):
+		team.append(int(pet.uid))
+	profile.hunt_set(str(args.get("zone", "sol")), int(args.get("tier", "1")), team)
+	profile.hunt.since = profile.hunt_now() - seconds
+	if args.has("boss"):
+		profile.hunt.legend = int(PetHunt.rules().boss.forced_after)
 
 func parse_args() -> Dictionary:
 	var result: Dictionary = {}

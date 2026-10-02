@@ -19,7 +19,7 @@ extends RefCounted
 # v6 stores daily mission progress and reward claims.
 # v7 (0.19, Casa dos Mascotes) adds the pets ({uid, species, level, xp, stars}), the active
 # pet and the album of species ever hatched; eggs are counters in `items` and the hatch
-# pity counters live in `pity`.
+# pity counters live in `pity`. v8 (0.20, Caçada dos Mascotes) adds `hunt` (PetHunt).
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -44,6 +44,12 @@ var missions: Dictionary = {}
 var pets: Array[Dictionary] = []
 var pet_active: int = -1
 var pet_album: Array[String] = []
+var hunt: Dictionary = PetHunt.clean_state({})
+# Tests set a fixed time for the hunt; 0 means the real clock.
+var hunt_clock: int = 0
+# Online mirror: how far the game server's clock is ahead of this computer's, so the
+# timer on screen agrees with the one the server settles with.
+var hunt_skew: int = 0
 # 0.15: how the player arranged the Mochila, cell by cell ("" = empty cell). Only the
 # order is kept here; CharacterScreen fits new and vanished items into it.
 var bag: Array[String] = []
@@ -131,6 +137,9 @@ func load_data(data: Dictionary) -> bool:
 			pity[key] = maxi(0, int(saved_pity[key]))
 	missions = MissionsBoard.clean_state(data.get("missions", {}))
 	load_pets(data)
+	hunt = PetHunt.clean_state(data.get("hunt", {}))
+	if remote and data.has("clock"):
+		hunt_skew = int(data.clock) - int(Time.get_unix_time_from_system())
 	bag = clean_bag(data.get("bag", []))
 	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
 	var saved_coupons: Variant = data.get("coupons", [])
@@ -182,7 +191,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 7, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
+	return {"version": 8, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -347,10 +356,13 @@ func remove_instance(uid: int) -> void:
 			equipped.erase(slot)
 	ensure_starter()
 
+static func is_keepsake(id: String) -> bool:
+	return id == FounderPack.SEAL or id == str(PetHunt.rules().pass_item)
+
 func sell(uid: int) -> int:
 	var inst: Dictionary = find_instance(uid)
-	# The Founder seal is the proof of the Founder Pack: it is never sold off.
-	if inst.is_empty() or is_equipped(uid) or str(inst.get("id", "")) == FounderPack.SEAL:
+	# The Founder seal and the Passe do Caçador are proofs of a purchase: never sold off.
+	if inst.is_empty() or is_equipped(uid) or is_keepsake(str(inst.get("id", ""))):
 		return 0
 	var value: int = sell_value(inst)
 	coins += value
@@ -617,6 +629,8 @@ func redeem(code: String) -> String:
 			# Premium cosmetics only come from the Steam shop.
 			if not has_item(def.id) and not bool(def.get("premium", false)):
 				add_instance(def.id)
+	if bool(coupon.get("hunt_pass", false)) and not has_item(str(PetHunt.rules().pass_item)):
+		add_instance(str(PetHunt.rules().pass_item))
 	if bool(coupon.get("founder", false)):
 		# The whole Founder Pack for testing; Solaris comes at +12 to show every form.
 		for id: String in FounderPack.ITEMS:
@@ -718,15 +732,23 @@ func hatch(egg_id: String, forced: RandomNumberGenerator = null) -> String:
 		items.erase(egg_id)
 	pity["egg_epico"] = 0 if rarity >= 2 else int(pity.get("egg_epico", 0)) + 1
 	pity["egg_lendario"] = 0 if rarity >= 3 else int(pity.get("egg_lendario", 0)) + 1
-	var pet: Dictionary = {"uid": next_uid, "species": str(species.id), "level": 1, "xp": 0, "stars": 0}
-	next_uid += 1
-	pets.append(pet)
-	if not pet_album.has(pet.species):
-		pet_album.append(pet.species)
-	if pet_active < 0:
-		pet_active = int(pet.uid)
+	grant_pet(str(species.id))
 	save_profile()
 	return ""
+
+# A new level 1 pet of `species` (hatched, or caught on a hunt). False when the Casa dos
+# Mascotes is full.
+func grant_pet(species: String) -> bool:
+	if pets.size() >= int(Pets.data().max_pets) or Pets.species_def(species).is_empty():
+		return false
+	var pet: Dictionary = {"uid": next_uid, "species": species, "level": 1, "xp": 0, "stars": 0}
+	next_uid += 1
+	pets.append(pet)
+	if not pet_album.has(species):
+		pet_album.append(species)
+	if pet_active < 0:
+		pet_active = int(pet.uid)
+	return true
 
 func pet_equip(uid: int) -> String:
 	if find_pet(uid).is_empty():
@@ -783,6 +805,55 @@ func pet_release(uid: int) -> String:
 	save_profile()
 	return ""
 
+# ---------- Caçada dos Mascotes (0.20) ----------
+
+func hunt_now() -> int:
+	return hunt_clock if hunt_clock > 0 else int(Time.get_unix_time_from_system()) + hunt_skew
+
+# Starts (or changes) the hunt. What the old setup earned is settled first, so changing
+# the team never loses time. `team` are pet uids (1 to PetHunt team_max).
+func hunt_set(zone: String, tier: int, team: Array) -> String:
+	if Pets.element_def(zone).is_empty():
+		return tr("Zona desconhecida.")
+	if tier < 1 or tier > PetHunt.unlocked_tier(hunt, zone):
+		return tr("Este nível de caça ainda está bloqueado.")
+	var uids: Array = []
+	for raw: Variant in team:
+		if (raw is int or raw is float) and not find_pet(int(raw)).is_empty() and not uids.has(int(raw)):
+			uids.append(int(raw))
+	if uids.is_empty():
+		return tr("Escolha pelo menos um mascote para o time.")
+	if uids.size() > int(PetHunt.rules().team_max):
+		return tr("O time tem no máximo %d mascotes.") % int(PetHunt.rules().team_max)
+	var now: int = hunt_now()
+	if bool(hunt.active):
+		PetHunt.settle(self, now)
+	var changed: bool = str(hunt.zone) != zone or int(hunt.tier) != tier
+	hunt.zone = zone
+	hunt.tier = tier
+	hunt.team = uids
+	hunt.active = true
+	hunt.since = now
+	if changed or int(hunt.seed) <= 1:
+		hunt.seed = rng.randi_range(2, 2000000000)
+	save_profile()
+	return ""
+
+func hunt_collect() -> String:
+	if not bool(hunt.active):
+		return tr("Nenhuma caçada em andamento.")
+	PetHunt.settle(self, hunt_now())
+	save_profile()
+	return ""
+
+func hunt_stop() -> String:
+	if not bool(hunt.active):
+		return ""
+	PetHunt.settle(self, hunt_now())
+	hunt.active = false
+	save_profile()
+	return ""
+
 # After a battle the active pet earns experience from what the player earned.
 func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
 	var pet: Dictionary = active_pet()
@@ -801,7 +872,7 @@ func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -835,8 +906,8 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				error = unequip(Armory.slot_of(str(inst.id))) if is_equipped(uid) else equip(uid)
 		"sell":
 			var value: int = sell(arg_int(args, 0))
-			if str(find_instance(arg_int(args, 0)).get("id", "")) == FounderPack.SEAL:
-				error = tr("O Selo de Fundador não pode ser vendido.")
+			if is_keepsake(str(find_instance(arg_int(args, 0)).get("id", ""))):
+				error = tr("Este item é a prova de uma compra e não pode ser vendido.")
 			elif value <= 0:
 				error = tr("Item não encontrado.")
 			else:
@@ -889,6 +960,12 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			error = pet_evolve(arg_int(args, 0), arg_int(args, 1))
 		"pet_release":
 			error = pet_release(arg_int(args, 0))
+		"hunt_set":
+			error = hunt_set(arg_str(args, 0), arg_int(args, 1), (args[2] as Array).slice(0, 10) if args.size() > 2 and args[2] is Array else [])
+		"hunt_collect":
+			error = hunt_collect()
+		"hunt_stop":
+			error = hunt_stop()
 		"mission_claim":
 			var result: Dictionary = MissionsBoard.claim(self, arg_str(args, 0))
 			error = str(result.error)

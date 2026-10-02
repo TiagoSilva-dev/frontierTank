@@ -13,6 +13,8 @@ const CRACK_AT: float = 1.15
 var egg_id: String = ""
 var pet: Dictionary = {}
 var is_new: bool = false
+# A pet caught on a hunt: no egg, the moment starts at the reveal.
+var capture: bool = false
 var audio: GameAudio
 
 var age: float = 0.0
@@ -55,7 +57,11 @@ func _ready() -> void:
 	for i in range(18 + rarity * 8):
 		var direction: Vector2 = Vector2.from_angle(random.randf() * TAU)
 		shards.append({"v": direction * random.randf_range(260, 620) + Vector2(0, -180), "size": random.randf_range(7, 16), "spin": random.randf_range(-9, 9), "tint": tint.lerp(Color("f4ead0"), random.randf())})
-	if audio != null:
+	if capture:
+		shards.clear()
+		age = SHAKE_TIME
+		crack_sounded = true
+	elif audio != null:
 		audio.play("pet_shake", 0.0, 1.0, 0)
 
 func _process(delta: float) -> void:
@@ -152,6 +158,8 @@ func draw_reveal(hub: Vector2, burst: float) -> void:
 	var show_text: float = clampf((burst - 0.35) / 0.4, 0.0, 1.0)
 	if show_text <= 0.0:
 		return
+	if capture:
+		HudPaint.fancy(self, Vector2(40, 96), tr("CAPTURADO NA CAÇADA!"), 34, Color(HudPaint.GOLD_HOT, 0.7 + 0.3 * sin(age * 5.0)), HudPaint.BRONZE_DARK, 1200, HORIZONTAL_ALIGNMENT_CENTER, 3, 8, show_text)
 	var banner: String = Pets.species_name(str(pet.species))
 	HudPaint.fancy(self, Vector2(40, 452), banner, 50, rarity_color, HudPaint.BRONZE_DARK, 1200, HORIZONTAL_ALIGNMENT_CENTER, 4, 10, show_text)
 	var line: String = "%s  •  %s" % [Pets.rarity_label(str(species.rarity)), Pets.element_name(str(species.element))]

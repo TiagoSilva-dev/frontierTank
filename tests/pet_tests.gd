@@ -263,7 +263,7 @@ func save_tests() -> void:
 	p.pets[0].stars = 2
 	p.pets[0].level = 9
 	var data: Dictionary = p.to_data()
-	check(int(data.version) == 7 and (data.pets as Array).size() == 2, "saves are version 7 and keep the pets")
+	check(int(data.version) == 8 and (data.pets as Array).size() == 2, "saves are version 8 and keep the pets")
 	var again: PlayerProfile = profile()
 	again.load_data(JSON.parse_string(JSON.stringify(data)))
 	check(again.pets.size() == 2 and again.pet_active == p.pet_active and again.pet_album == p.pet_album and int(again.pets[0].stars) == 2 and int(again.pets[0].level) == 9, "pets, the active pet and the album survive a save round trip")
