@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: client/components/fighter.gd:274
+#: client/components/fighter.gd:275
 msgid "Chefe"
 msgstr ""
 
-#: client/components/fighter.gd:274
+#: client/components/fighter.gd:275
 msgid "Guardião"
 msgstr ""
 
-#: client/components/fighter.gd:274
+#: client/components/fighter.gd:275
 msgid "Inimigo"
 msgstr ""
 
-#: client/components/fighter.gd:274
+#: client/components/fighter.gd:275
 msgid "Lacaio"
 msgstr ""
 
-#: client/components/fighter.gd:274
+#: client/components/fighter.gd:275
 msgid "Objetivo"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Capitão"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Coronel"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "General"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Major"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Marechal"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Recruta"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Sargento"
 msgstr ""
 
-#: client/components/fighter.gd:336
+#: client/components/fighter.gd:337
 msgid "Soldado"
 msgstr ""
 
-#: client/components/fighter.gd:336 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:337 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr ""
 
@@ -1214,7 +1214,7 @@ msgstr ""
 msgid "1 bônus"
 msgstr ""
 
-#: client/ui/auction_screen.gd:175 client/ui/character_screen.gd:472 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:323
+#: client/ui/auction_screen.gd:175 client/ui/character_screen.gd:475 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:323
 msgid "Nível do item %d"
 msgstr ""
 
@@ -1694,35 +1694,47 @@ msgstr ""
 msgid "VITÓRIA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:480
+#: client/ui/battle_screen.gd:259
+msgid "VOCÊ FOI DERROTADO!"
+msgstr ""
+
+#: client/ui/battle_screen.gd:259
+msgid "Você virou um fantasma e assiste ao resto da batalha."
+msgstr ""
+
+#: client/ui/battle_screen.gd:261
+msgid "%s caiu!"
+msgstr ""
+
+#: client/ui/battle_screen.gd:490
 msgid "CRÍTICO"
 msgstr ""
 
-#: client/ui/battle_screen.gd:505 shared/balance/combat.json:statuses[2].label
+#: client/ui/battle_screen.gd:515 shared/balance/combat.json:statuses[2].label
 msgid "CONGELADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:505
+#: client/ui/battle_screen.gd:515
 msgid "Você perde este turno."
 msgstr ""
 
-#: client/ui/battle_screen.gd:512
+#: client/ui/battle_screen.gd:522
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:526 client/ui/battle_screen.gd:681
+#: client/ui/battle_screen.gd:536 client/ui/battle_screen.gd:691
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:734
+#: client/ui/battle_screen.gd:744
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/battle_screen.gd:748 client/ui/result_screen.gd:119
+#: client/ui/battle_screen.gd:758 client/ui/result_screen.gd:119
 msgid "GOLPE FINAL"
 msgstr ""
 
-#: client/ui/battle_screen.gd:748 client/ui/result_screen.gd:119
+#: client/ui/battle_screen.gd:758 client/ui/result_screen.gd:119
 msgid "GRUPO"
 msgstr ""
 
@@ -1730,7 +1742,7 @@ msgstr ""
 msgid "MISSÃO"
 msgstr ""
 
-#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:77 client/ui/character_screen.gd:674 client/ui/city_screen.gd:175
+#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:175
 msgid "MOCHILA"
 msgstr ""
 
@@ -1842,95 +1854,95 @@ msgstr ""
 msgid "%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila"
 msgstr ""
 
-#: client/ui/character_screen.gd:374
+#: client/ui/character_screen.gd:377
 msgid "ORGANIZAR"
 msgstr ""
 
-#: client/ui/character_screen.gd:376
+#: client/ui/character_screen.gd:379
 msgid "Arruma a mochila por tipo, qualidade e fortalecimento."
 msgstr ""
 
-#: client/ui/character_screen.gd:377
+#: client/ui/character_screen.gd:380
 msgid "+ ABAS"
 msgstr ""
 
-#: client/ui/character_screen.gd:379
+#: client/ui/character_screen.gd:382
 msgid "Compre mais abas de mochila na loja Premium."
 msgstr ""
 
-#: client/ui/character_screen.gd:404 client/ui/character_screen.gd:490 client/ui/character_screen.gd:506
+#: client/ui/character_screen.gd:407 client/ui/character_screen.gd:493 client/ui/character_screen.gd:509
 msgid "EQUIPAR"
 msgstr ""
 
-#: client/ui/character_screen.gd:405
+#: client/ui/character_screen.gd:408
 msgid "VENDER"
 msgstr ""
 
-#: client/ui/character_screen.gd:406 client/ui/smith_screen.gd:216
+#: client/ui/character_screen.gd:409 client/ui/smith_screen.gd:216
 msgid "FORTALECER"
 msgstr ""
 
-#: client/ui/character_screen.gd:444
+#: client/ui/character_screen.gd:447
 msgid "%d/%d itens"
 msgstr ""
 
-#: client/ui/character_screen.gd:446 client/ui/shop_screen.gd:129 client/ui/smith_screen.gd:305
+#: client/ui/character_screen.gd:449 client/ui/shop_screen.gd:129 client/ui/smith_screen.gd:305
 msgid "%d itens"
 msgstr ""
 
-#: client/ui/character_screen.gd:462
+#: client/ui/character_screen.gd:465
 msgid "  [color=#ffd46b]%s[/color]\nDano %d • Cratera %d • Ângulo %d°–%d° • POW: %s\n%s"
 msgstr ""
 
-#: client/ui/character_screen.gd:467 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:470 client/ui/item_tooltip.gd:150
 msgid " (feminino)"
 msgstr ""
 
-#: client/ui/character_screen.gd:467 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:470 client/ui/item_tooltip.gd:150
 msgid " (masculino)"
 msgstr ""
 
-#: client/ui/character_screen.gd:474 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:325
+#: client/ui/character_screen.gd:477 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:325
 msgid "Espelhado"
 msgstr ""
 
-#: client/ui/character_screen.gd:476 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:327
+#: client/ui/character_screen.gd:479 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:327
 msgid "Vinculado"
 msgstr ""
 
-#: client/ui/character_screen.gd:486
+#: client/ui/character_screen.gd:489
 msgid "Selecione um item da mochila ou um espaço de equipamento."
 msgstr ""
 
-#: client/ui/character_screen.gd:493
+#: client/ui/character_screen.gd:496
 msgid "%s: nenhum item equipado."
 msgstr ""
 
-#: client/ui/character_screen.gd:506
+#: client/ui/character_screen.gd:509
 msgid "REMOVER"
 msgstr ""
 
-#: client/ui/character_screen.gd:511
+#: client/ui/character_screen.gd:514
 msgid "Sem atributos. Coloque no espaço de mapa da sala da instância."
 msgstr ""
 
-#: client/ui/character_screen.gd:517
+#: client/ui/character_screen.gd:520
 msgid "Abra na Casa dos Mascotes para revelar o mascote."
 msgstr ""
 
-#: client/ui/character_screen.gd:518
+#: client/ui/character_screen.gd:521
 msgid "CHOCAR"
 msgstr ""
 
-#: client/ui/character_screen.gd:521 client/ui/item_tooltip.gd:245
+#: client/ui/character_screen.gd:524 client/ui/item_tooltip.gd:245
 msgid "Use no Ferreiro, aba Moedas, em equipamentos e mapas."
 msgstr ""
 
-#: client/ui/character_screen.gd:523
+#: client/ui/character_screen.gd:526
 msgid "\nUma pedra: +%d → +%d. Encontrada nas instâncias."
 msgstr ""
 
-#: client/ui/character_screen.gd:525
+#: client/ui/character_screen.gd:528
 msgid "\nFerramenta de batalha (Z/X/C)."
 msgstr ""
 

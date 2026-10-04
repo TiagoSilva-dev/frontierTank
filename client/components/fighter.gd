@@ -93,6 +93,7 @@ var celebrating: bool = false
 var attack_time: float = 0.0
 var walk_time: float = 0.0
 var pulse: float = 0.0
+var ghost: Sprite2D
 var east_texture: Texture2D
 var west_texture: Texture2D
 var south_texture: Texture2D
@@ -548,7 +549,31 @@ func glow(color: Color) -> void:
 func hide_body() -> void:
 	if is_instance_valid(visual):
 		visual.hide()
+	spawn_ghost()
 	redraw()
+
+func spawn_ghost() -> void:
+	# A fallen fighter leaves a pale, translucent ghost that rises from the tombstone and
+	# keeps floating there. Purely visual (monsters just vanish).
+	if is_monster or is_instance_valid(ghost) or south_texture == null:
+		return
+	ghost = Sprite2D.new()
+	ghost.texture = south_texture
+	ghost.region_enabled = true
+	ghost.region_rect = Rect2(south_texture.get_image().get_used_rect())
+	ghost.scale = Vector2.ONE * pixel_scale * 0.8
+	ghost.z_index = 2
+	ghost.modulate = Color(0.75, 0.9, 1.0, 0.0)
+	var rest: float = -body_size.y - 30.0
+	ghost.position = Vector2(0, -body_size.y * 0.5)
+	add_child(ghost)
+	var rise: Tween = ghost.create_tween().set_parallel(true)
+	rise.tween_property(ghost, "position:y", rest, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	rise.tween_property(ghost, "modulate:a", 0.6, 0.8)
+	var bob: Tween = ghost.create_tween().set_loops()
+	bob.tween_interval(1.2)
+	bob.tween_property(ghost, "position:x", 6.0, 1.1).set_trans(Tween.TRANS_SINE)
+	bob.tween_property(ghost, "position:x", -6.0, 1.1).set_trans(Tween.TRANS_SINE)
 
 func portrait() -> Texture2D:
 	return south_texture

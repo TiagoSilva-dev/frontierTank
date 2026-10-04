@@ -13,3 +13,4 @@ api.env
 # Exports (tools/web_build.py export)
 build/
 /export-vm.log
+Godot.app/

@@ -11,9 +11,11 @@ const PEDESTAL: String = "res://assets/ui/profile/pedestal.png"
 # The pedestal art (200x88) is drawn 1.25x; its top face's centre is 22 px below the top.
 const PEDESTAL_SCALE: float = 1.25
 const PEDESTAL_TOP: float = 22.0
+const PET_HEIGHT: float = 104.0
 
 var look: Dictionary = {}
 var avatar: AvatarView
+var pet: PetActor
 var time: float = 0.0
 var stars: Array[Dictionary] = []
 var drop_hover: bool = false
@@ -45,6 +47,22 @@ func _ready() -> void:
 	avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(avatar)
 	avatar.show_look(look)
+	add_pet(feet)
+
+# The active pet stands on the floor beside the pedestal and plays its species' idle.
+func add_pet(feet: float) -> void:
+	var species: String = str(look.get("pet", ""))
+	if species == "":
+		return
+	pet = PetActor.new()
+	if not pet.setup(species, PET_HEIGHT):
+		pet.free()
+		pet = null
+		return
+	pet.name = "Pet"
+	pet.facing = -1
+	pet.position = Vector2(size.x - pet.width * 0.5 - 14.0, feet + 46.0)
+	add_child(pet)
 
 func pedestal_rect() -> Rect2:
 	var art: Vector2 = Vector2(200, 88) * PEDESTAL_SCALE

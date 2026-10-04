@@ -248,7 +248,17 @@ func update_sound() -> void:
 	for fighter in game.fighters:
 		if bool(alive.get(fighter.player_id, true)) and fighter.hp <= 0:
 			app.audio.play("fighter_down", -2.0, 1.0, 300)
+			announce_down(fighter)
 		alive[fighter.player_id] = fighter.hp > 0
+
+func announce_down(fighter: TankFighter) -> void:
+	# Feedback for a fallen fighter (it turns into a ghost, see TankFighter.spawn_ghost).
+	if fighter.is_monster:
+		return
+	if fighter.player_id == game.local_id:
+		hud.flash(tr("VOCÊ FOI DERROTADO!"), Color("b8d8ff"), tr("Você virou um fantasma e assiste ao resto da batalha."))
+	else:
+		show_damage(fighter.center() + Vector2(0, -40), tr("%s caiu!") % fighter.display_name, Color("c8e4ff"))
 
 func update_pow_charge() -> void:
 	# POW charge phase: the armed fighter's aura grows with the force bar (another
