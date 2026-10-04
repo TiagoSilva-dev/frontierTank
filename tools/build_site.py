@@ -250,6 +250,7 @@ def build_data():
     reward_cards = [{"id": c["id"], "name": T(c["name"]), "weight": c["weight"], "rarity": c["rarity"],
                      "icon": art(c["icon"], f"rewards/{c['id']}.png")} for c in rewards["cards"] + rewards["pvp_cards"]]
 
+    pets = build_pets()
     data = {
         "meta": {"version": game_version(), "built": datetime.date.today().isoformat()},
         "combat": {k: combat[k] for k in ("base_hp", "hp_per_level", "base_agility", "agility_per_level", "energy",
@@ -297,7 +298,9 @@ def build_data():
                           "at_least": a["at_least"],
                           "icon": art(f"store/steam/achievements/{a['id']}.png", f"achievements/{a['id']}.png")}
                          for a in achievements["achievements"]],
+        "pets": pets,
         "store": [{"sku": p["sku"], "name": T(p["name"]), "desc": T(p["desc"]), "items": p["items"],
+                   "founder": bool(p.get("founder", False)),
                    "prices": {k: p["prices"][k] for k in ("BRL", "USD", "EUR")}} for p in store["products"]],
         "icons": {
             "coin": art("res://assets/items/moeda.png", "items/moeda.png"),
@@ -321,6 +324,44 @@ def build_data():
     return data
 
 
+def build_pets():
+    """Pet House (0.19) and the Pet Hunt (0.20): species, eggs, elements and the hunt rules."""
+    raw = load("pets.json")
+    hunt = raw["hunt"]
+    elements = [{"id": e["id"], "name": T(e["name"]), "color": e["color"], "instance": e["instance"], "egg": e["egg"],
+                 "attrs": e["attrs"], "talents": e["talents"], "album": e["album"],
+                 "icon": art(e["icon"], f"pets/elements/{e['id']}.png")} for e in raw["elements"]]
+    zones = []
+    for e in raw["elements"]:
+        zone = hunt["zones"][e["id"]]
+        zones.append({"element": e["id"], "name": T(zone["name"]),
+                      "bg": webp(zone["bg"], f"img/game/pets/zone_{e['id']}.webp")})
+    skills = {k: {"name": T(v["name"]), **{a: b for a, b in v.items() if a != "name"}}
+              for k, v in hunt["skill"].items() if isinstance(v, dict)}
+    return {
+        "max_pets": raw["max_pets"], "max_level": raw["max_level"], "base_cap": raw["base_cap"],
+        "cap_per_star": raw["cap_per_star"], "max_stars": raw["max_stars"], "xp": raw["xp"], "power": raw["power"],
+        "evolve_coins": raw["evolve_coins"], "talent_max": raw["talent_max"],
+        "talent_text": {k: T(v) for k, v in raw["talent_text"].items()},
+        "rarities": [{"id": r["id"], "label": T(r["label"]), "color": r["color"], "attr": r["attr"],
+                      "talent": r["talent"], "talents": r["talents"], "release": r["release"]} for r in raw["rarities"]],
+        "elements": elements, "album_all": raw["album_all"], "pity": raw["pity"], "drops": raw["drops"],
+        "eggs": [{"id": g["id"], "name": T(g["name"]), "element": g["element"], "odds": g["odds"],
+                  "icon": art(g["icon"], f"pets/eggs/{g['id']}.png")} for g in raw["eggs"]],
+        "species": [{"id": sp["id"], "name": T(sp["name"]), "element": sp["element"], "rarity": sp["rarity"],
+                     "desc": T(sp["desc"]), "art": art(sp["art"], f"pets/{sp['id']}.png")} for sp in raw["species"]],
+        "hunt": {
+            "cycle": hunt["cycle"], "cap_free": hunt["cap_free"], "cap_pass": hunt["cap_pass"],
+            "team_max": hunt["team_max"], "tiers": hunt["tiers"], "unlock_wins": hunt["unlock_wins"],
+            "rounds_max": hunt["rounds_max"], "wild_scale": hunt["wild_scale"], "crit": hunt["crit"],
+            "wheel": hunt["wheel"], "wheel_bonus": hunt["wheel_bonus"], "wheel_penalty": hunt["wheel_penalty"],
+            "skill_every": hunt["skill"]["every"], "skills": skills,
+            "group_weights": hunt["group_weights"], "wild_rarity": hunt["wild_rarity"], "boss": hunt["boss"],
+            "capture": hunt["capture"], "reward": hunt["reward"], "zones": zones,
+        },
+    }
+
+
 def copy_extras():
     """Characters, effects and backgrounds for the landing page, screenshots and fonts."""
     extras = {
@@ -336,6 +377,14 @@ def copy_extras():
             "title_bg": webp("res://assets/title/title_bg.png", "img/game/title_bg.webp"),
             "city": webp("docs/screens/city.png", "img/shots/city.webp"),
             "pow_cutin": webp("docs/screens/pow_cutin.png", "img/shots/pow_cutin.webp"),
+            "pet_hatch": webp("docs/screens/pets_hatch.png", "img/shots/pets_hatch.webp"),
+            "pet_collection": webp("docs/screens/pets_pets.png", "img/shots/pets_pets.webp"),
+            "pet_album": webp("docs/screens/pets_album.png", "img/shots/pets_album.webp"),
+            "hunt_sol": webp("docs/screens/hunt_field_1.png", "img/shots/hunt_sol.webp"),
+            "hunt_gelo": webp("docs/screens/hunt_field_gelo_1.png", "img/shots/hunt_gelo.webp"),
+            "hunt_boss": webp("docs/screens/hunt_fieldboss_1.png", "img/shots/hunt_boss.webp"),
+            "hunt_report": webp("docs/screens/hunt_report.png", "img/shots/hunt_report.webp"),
+            "hunt_picker": webp("docs/screens/hunt_picker.png", "img/shots/hunt_picker.webp"),
         },
         "terrain": {k: art(f"res://assets/maps/terrain/celeste_{k}.png", f"terrain/celeste_{k}.png") for k in "abc"},
         "explosion": [art(f"res://assets/effects/explosion/frame_{i:02d}.png", f"effects/explosion_{i}.png") for i in range(7)],

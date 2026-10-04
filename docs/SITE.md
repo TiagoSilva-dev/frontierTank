@@ -28,6 +28,12 @@ Página única com rotas no endereço (`wiki/#/armas/quebra_tijolos`, `wiki/#/mo
 - **Guias** (`js/wiki-guides.js`): primeiros passos, controles, turnos/Delay/energia/avião, mira/força/vento (com as fórmulas e uma tabela de alcance), dano e atributos (Ataque, Defesa, Sorte, Agilidade, Vida, com as fórmulas do `armory.gd`), POW, níveis e patentes.
 - **Referência** (`js/wiki.js`): armas (lista e página de cada uma, com o especial em detalhe e o dano de +0 a +12 em cada qualidade), qualidades, fortalecimento, bônus aleatórios (faixas F1–F5), visual, habilidades 1–9, ferramentas, itens auxiliares, instâncias (fases, ondas, chefe, baú e escala por grupo), monstros (habilidades explicadas, com os efeitos que aplicam, e vida/dano por nível de mapa), efeitos de estado e elites (0.16: o que cada efeito faz, quem aplica e os afixos), mapas-item, arenas, moedas de criação, leilão, recompensas, loja e conquistas.
 
+## Mascotes e Caçada (0.19–0.20)
+
+- **Página inicial**: dois cartões novos (`#mascotes` e a Caçada) depois do POW, e as capturas de mascotes e da Caçada na galeria (`extras.hero.pet_*` e `hunt_*`, de `docs/screens/`).
+- **Wiki**: grupo **Mascotes** com *Casa dos Mascotes* (`#/mascotes`: ovos e chances, garantia, raridades, elementos, níveis e estrelas, lista de espécies com filtro por elemento; `#/mascotes/<espécie>` com o poder por nível) e *Caçada dos Mascotes* (`#/cacada`: como se joga, zonas, regras da luta, roda de elementos, recompensas e o Passe do Caçador). Tudo sai de `shared/balance/pets.json` (bloco `pets` do `gamedata.js`) e entra na busca. A loja da wiki agrupa as seis Abas de Mochila numa linha.
+- As fórmulas de poder do mascote estão repetidas em `petStats` (`website/js/wiki.js`), de `client/systems/pets.gd`: se mudarem lá, mudam aqui.
+
 ## Os números vêm do jogo
 
 `tools/build_site.py` lê `shared/balance/*.json` e os nomes em inglês de `locale/en.po`, copia a arte usada (ícones, sprites, fundos em WebP sem perdas, capturas de `store/steam/screenshots`) e escreve `website/data/gamedata.js`. Também roda o `make_logo.py` e gera as prévias de link. **Depois de mudar o balanceamento, os itens ou as traduções, rode:**

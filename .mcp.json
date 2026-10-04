@@ -4,7 +4,7 @@
             "type": "http",
             "url": "https://api.pixellab.ai/mcp",
             "headers": {
-                "Authorization": "Bearer ${PIXELLAB_API_TOKEN}"
+                "Authorization": "Bearer 8a487d6f-18cb-4476-879a-bf45f3ea6b2e"
             }
         },
         "railway": {

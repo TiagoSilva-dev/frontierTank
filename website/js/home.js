@@ -156,6 +156,9 @@
     // The POW cut-in first: it is the most striking picture.
     const pow = list.findIndex((src) => src.includes("02_pow"));
     if (pow > 0) list.unshift(list.splice(pow, 1)[0]);
+    ["pet_hatch", "pet_collection", "pet_album", "hunt_sol", "hunt_gelo", "hunt_boss", "hunt_report"].forEach((id) => {
+      if (D.extras.hero[id]) list.push(D.extras.hero[id]);
+    });
     shots = list.map((src) => ({ src, key: "shot." + src.split("/").pop().replace(".webp", "") }));
     box.innerHTML = shots.map((shot, i) => `
       <button type="button" data-i="${i}"><img src="${esc(GF.img(shot.src))}" alt="${esc(GF.t(shot.key))}" loading="lazy"><span>${esc(GF.t(shot.key))}</span></button>`).join("");
