@@ -44,6 +44,9 @@ var manual_focus: Vector2 = Vector2.ZERO
 var manual_time: float = 0.0
 var shake: float = 0.0
 var dragging: bool = false
+# Touch: a finger on the empty field pans the camera once it slides past a tap.
+var field_finger: bool = false
+var field_origin: Vector2 = Vector2.ZERO
 var end_timer: float = -1.0
 var results: ResultScreen
 var summary: Dictionary = {}
@@ -745,6 +748,19 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		game.emote_now("paladino")
 
 func _gui_input(event: InputEvent) -> void:
+	if TouchMode.active():
+		# One finger on the field drags the view (the minimap and the buttons took their own).
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			field_finger = event.pressed
+			field_origin = event.position
+			dragging = false
+		elif event is InputEventMouseMotion and field_finger:
+			if not dragging and event.position.distance_to(field_origin) > TouchMode.TAP_SLOP:
+				dragging = true
+				focus_on(camera.position, 4.0)
+			if dragging:
+				focus_on(manual_focus - event.relative, 4.0)
+		return
 	# Right or middle drag pans the camera across the map, like dragging the view.
 	if event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
 		dragging = event.pressed

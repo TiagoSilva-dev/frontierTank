@@ -154,144 +154,152 @@ msgstr ""
 msgid "Erro do servidor: %s"
 msgstr ""
 
-#: client/scripts/main.gd:1007 client/ui/exchange_screen.gd:48
-msgid "CASA DE CÂMBIO"
-msgstr ""
-
-#: client/scripts/main.gd:1007
-msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
-msgstr ""
-
-#: client/scripts/main.gd:332 client/systems/lobby.gd:20
-msgid "bora sala 4x4!!"
-msgstr ""
-
-#: client/scripts/main.gd:377 client/systems/lobby.gd:11 server/game/game_server.gd:710
-msgid "Guerra de equipes, diversão sem limite"
-msgstr ""
-
-#: client/scripts/main.gd:383 client/ui/room_screen.gd:242 client/ui/room_screen.gd:265
-msgid "Expedição: %s"
-msgstr ""
-
-#: client/scripts/main.gd:393 client/scripts/main.gd:404 client/scripts/main.gd:463 client/scripts/main.gd:914
-msgid "SALA"
-msgstr ""
-
-#: client/scripts/main.gd:588
-msgid "Deseja fechar o Gustfire?"
-msgstr ""
-
-#: client/scripts/main.gd:588 client/scripts/main.gd:590 client/ui/bottom_bar.gd:27 client/ui/challenge_result.gd:53
-msgid "SAIR"
-msgstr ""
-
-#: client/scripts/main.gd:588
-msgid "Voltar à tela de entrada?"
-msgstr ""
-
-#: client/scripts/main.gd:591 client/ui/pet_screen.gd:428
-msgid "FICAR"
-msgstr ""
-
-#: client/scripts/main.gd:664 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
-msgid "ASSISTIR"
-msgstr ""
-
-#: client/scripts/main.gd:696
-msgid "Treino concluído!"
-msgstr ""
-
-#: client/scripts/main.gd:701 client/ui/bottom_bar.gd:26
-msgid "AJUDA"
-msgstr ""
-
-#: client/scripts/main.gd:701
-msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
-msgstr ""
-
-#: client/scripts/main.gd:707 client/ui/title_screen.gd:80
-msgid "Privacidade"
-msgstr ""
-
-#: client/scripts/main.gd:709 client/ui/title_screen.gd:128
-msgid "Minha conta"
-msgstr ""
-
-#: client/scripts/main.gd:714
-msgid "TREINO"
-msgstr ""
-
-#: client/scripts/main.gd:718 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
-msgid "FECHAR"
-msgstr ""
-
-#: client/scripts/main.gd:731 client/ui/auction_screen.gd:69
-msgid "LEILÃO"
-msgstr ""
-
-#: client/scripts/main.gd:731
-msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
-msgstr ""
-
-#: client/scripts/main.gd:741 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
-msgid "CORREIO"
-msgstr ""
-
-#: client/scripts/main.gd:741
-msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
-msgstr ""
-
-#: client/scripts/main.gd:752
-msgid "O Leilão só funciona online."
-msgstr ""
-
-#: client/scripts/main.gd:806
-msgid "Conquista: %s"
-msgstr ""
-
-#: client/scripts/main.gd:815 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:136 server/game/game_server.gd:1629
-msgid "Compras só na versão Steam, com a conta ligada à Steam."
-msgstr ""
-
-#: client/scripts/main.gd:824
-msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
-msgstr ""
-
-#: client/scripts/main.gd:827
-msgid "Compra cancelada."
-msgstr ""
-
-#: client/scripts/main.gd:832
-msgid "Compra concluída! Os itens chegaram ao Correio."
-msgstr ""
-
-#: client/scripts/main.gd:855
-msgid "Bem-vindo ao servidor %s!"
-msgstr ""
-
-#: client/scripts/main.gd:891
-msgid "CONEXÃO"
-msgstr ""
-
-#: client/scripts/main.gd:901
-msgid "AVISO"
-msgstr ""
-
-#: client/scripts/main.gd:914
-msgid "Você foi removido da sala."
-msgstr ""
-
-#: client/scripts/main.gd:970
+#: client/scripts/main.gd:1014
 msgid "Música desligada"
 msgstr ""
 
-#: client/scripts/main.gd:970
+#: client/scripts/main.gd:1014
 msgid "Música ligada"
 msgstr ""
 
-#: client/scripts/main.gd:986
+#: client/scripts/main.gd:1030
 msgid "Mensagem privada de %s"
+msgstr ""
+
+#: client/scripts/main.gd:1051 client/ui/exchange_screen.gd:48
+msgid "CASA DE CÂMBIO"
+msgstr ""
+
+#: client/scripts/main.gd:1051
+msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
+msgstr ""
+
+#: client/scripts/main.gd:338 client/systems/lobby.gd:20
+msgid "bora sala 4x4!!"
+msgstr ""
+
+#: client/scripts/main.gd:383 client/systems/lobby.gd:11 server/game/game_server.gd:710
+msgid "Guerra de equipes, diversão sem limite"
+msgstr ""
+
+#: client/scripts/main.gd:389 client/ui/room_screen.gd:242 client/ui/room_screen.gd:265
+msgid "Expedição: %s"
+msgstr ""
+
+#: client/scripts/main.gd:399 client/scripts/main.gd:410 client/scripts/main.gd:469 client/scripts/main.gd:958
+msgid "SALA"
+msgstr ""
+
+#: client/scripts/main.gd:594
+msgid "Deseja fechar o Gustfire?"
+msgstr ""
+
+#: client/scripts/main.gd:594 client/scripts/main.gd:596 client/ui/bottom_bar.gd:27 client/ui/challenge_result.gd:53
+msgid "SAIR"
+msgstr ""
+
+#: client/scripts/main.gd:594
+msgid "Voltar à tela de entrada?"
+msgstr ""
+
+#: client/scripts/main.gd:597 client/ui/pet_screen.gd:428
+msgid "FICAR"
+msgstr ""
+
+#: client/scripts/main.gd:670 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
+msgid "ASSISTIR"
+msgstr ""
+
+#: client/scripts/main.gd:702
+msgid "Treino concluído!"
+msgstr ""
+
+#: client/scripts/main.gd:707 client/ui/bottom_bar.gd:26
+msgid "AJUDA"
+msgstr ""
+
+#: client/scripts/main.gd:713 client/ui/title_screen.gd:80
+msgid "Privacidade"
+msgstr ""
+
+#: client/scripts/main.gd:715 client/ui/title_screen.gd:128
+msgid "Minha conta"
+msgstr ""
+
+#: client/scripts/main.gd:720
+msgid "TREINO"
+msgstr ""
+
+#: client/scripts/main.gd:724 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
+msgid "FECHAR"
+msgstr ""
+
+#: client/scripts/main.gd:730
+msgid "◀ ▶ andar (gasta energia)   ↑ ↓ ângulo\nSegure FOGO e solte: força (a barra reinicia uma vez no máximo)\nHAB. abre as habilidades 1–9 (+2, x3, +1, POW 50%…10%, POW máx)\nPOW: com a barra cheia   Ferramentas, avião, item auxiliar e mascote: botões em fila\nPASS: passar a vez   Confiar: a IA joga por você\nSegure um botão para ver o que ele faz"
+msgstr ""
+
+#: client/scripts/main.gd:731
+msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
+msgstr ""
+
+#: client/scripts/main.gd:743 client/ui/auction_screen.gd:69
+msgid "LEILÃO"
+msgstr ""
+
+#: client/scripts/main.gd:743
+msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
+msgstr ""
+
+#: client/scripts/main.gd:753 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
+msgid "CORREIO"
+msgstr ""
+
+#: client/scripts/main.gd:753
+msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
+msgstr ""
+
+#: client/scripts/main.gd:764
+msgid "O Leilão só funciona online."
+msgstr ""
+
+#: client/scripts/main.gd:818
+msgid "Conquista: %s"
+msgstr ""
+
+#: client/scripts/main.gd:827 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:136 server/game/game_server.gd:1629
+msgid "Compras só na versão Steam, com a conta ligada à Steam."
+msgstr ""
+
+#: client/scripts/main.gd:836
+msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
+msgstr ""
+
+#: client/scripts/main.gd:839
+msgid "Compra cancelada."
+msgstr ""
+
+#: client/scripts/main.gd:844
+msgid "Compra concluída! Os itens chegaram ao Correio."
+msgstr ""
+
+#: client/scripts/main.gd:867
+msgid "Bem-vindo ao servidor %s!"
+msgstr ""
+
+#: client/scripts/main.gd:895
+msgid "Reconectando…"
+msgstr ""
+
+#: client/scripts/main.gd:935
+msgid "CONEXÃO"
+msgstr ""
+
+#: client/scripts/main.gd:945
+msgid "AVISO"
+msgstr ""
+
+#: client/scripts/main.gd:958
+msgid "Você foi removido da sala."
 msgstr ""
 
 #: client/systems/armory.gd:12 client/ui/character_screen.gd:221 client/ui/founder_screen.gd:115
@@ -654,7 +662,7 @@ msgstr ""
 msgid "%d Moedas"
 msgstr ""
 
-#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:205 client/ui/result_screen.gd:126 client/ui/room_screen.gd:202
+#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:211 client/ui/result_screen.gd:126 client/ui/room_screen.gd:202
 msgid "Entrada livre"
 msgstr ""
 
@@ -1622,216 +1630,220 @@ msgstr ""
 msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
 msgstr ""
 
-#: client/ui/battle_hud.gd:117
+#: client/ui/battle_hud.gd:121
 msgid "Vento e tempo do turno."
 msgstr ""
 
-#: client/ui/battle_hud.gd:118
+#: client/ui/battle_hud.gd:122
 msgid "PASS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:119
+#: client/ui/battle_hud.gd:123
 msgid "Passar a vez (P). Gera menos atraso."
 msgstr ""
 
-#: client/ui/battle_hud.gd:124
+#: client/ui/battle_hud.gd:128
 msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
 msgstr ""
 
-#: client/ui/battle_hud.gd:125
+#: client/ui/battle_hud.gd:129
 msgid "Pausa / opções (Esc)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:126
+#: client/ui/battle_hud.gd:130
 msgid "Sair da batalha"
 msgstr ""
 
-#: client/ui/battle_hud.gd:135
+#: client/ui/battle_hud.gd:139
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:141
+#: client/ui/battle_hud.gd:145
 msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
 msgstr ""
 
-#: client/ui/battle_hud.gd:145
+#: client/ui/battle_hud.gd:149
 msgid "%s (V)\n%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:145
+#: client/ui/battle_hud.gd:149
 msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
 msgstr ""
 
-#: client/ui/battle_hud.gd:152
+#: client/ui/battle_hud.gd:156
 msgid "%s (G)\n%s\nUm uso por batalha, a partir do seu segundo turno."
 msgstr ""
 
-#: client/ui/battle_hud.gd:154 client/ui/battle_hud.gd:409
+#: client/ui/battle_hud.gd:158 client/ui/battle_hud.gd:415
 msgid "Confiar"
 msgstr ""
 
-#: client/ui/battle_hud.gd:155
+#: client/ui/battle_hud.gd:159
 msgid "Confiar: a IA joga os seus turnos."
 msgstr ""
 
-#: client/ui/battle_hud.gd:169
+#: client/ui/battle_hud.gd:173
 msgid "Sem ferramenta. Compre na sala."
 msgstr ""
 
-#: client/ui/battle_hud.gd:181
+#: client/ui/battle_hud.gd:185
 msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
 msgstr ""
 
-#: client/ui/battle_hud.gd:185
+#: client/ui/battle_hud.gd:189
 msgid "POW (B): %s. Enche causando e recebendo dano."
 msgstr ""
 
-#: client/ui/battle_hud.gd:205 client/ui/result_screen.gd:119 client/ui/result_screen.gd:126 client/ui/room_screen.gd:206
+#: client/ui/battle_hud.gd:211 client/ui/result_screen.gd:119 client/ui/result_screen.gd:126 client/ui/room_screen.gd:206
 msgid "Nível %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:206
+#: client/ui/battle_hud.gd:212
 msgid "Fase %d/%d  •  %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:211
+#: client/ui/battle_hud.gd:217
 msgid "Sem avião de papel neste mapa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:239
+#: client/ui/battle_hud.gd:245
 msgid "Cristais: %d/%d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:241
+#: client/ui/battle_hud.gd:247
 msgid "Sobreviva: %d/%d turnos"
 msgstr ""
 
-#: client/ui/battle_hud.gd:244
+#: client/ui/battle_hud.gd:250
 msgid "  (+%d onda)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:244
+#: client/ui/battle_hud.gd:250
 msgid "Inimigos: %d%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:306
+#: client/ui/battle_hud.gd:312
 msgid "Ninguém venceu desta vez."
 msgstr ""
 
-#: client/ui/battle_hud.gd:308
+#: client/ui/battle_hud.gd:314
 msgid "Instância concluída!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:308
+#: client/ui/battle_hud.gd:314
 msgid "Sua equipe venceu a batalha!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:310
+#: client/ui/battle_hud.gd:316
 msgid "Você derrubou o Boneco de Treino!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:312
+#: client/ui/battle_hud.gd:318
 msgid "Desafio concluído!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:314
+#: client/ui/battle_hud.gd:320
 msgid "Sua equipe foi derrotada."
 msgstr ""
 
-#: client/ui/battle_hud.gd:328
+#: client/ui/battle_hud.gd:334
 msgid "DESAFIO PAUSADO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:328
+#: client/ui/battle_hud.gd:334
 msgid "Sair do desafio não conta pontos: o resultado só vale quando a partida termina."
 msgstr ""
 
-#: client/ui/battle_hud.gd:330
+#: client/ui/battle_hud.gd:336
 msgid "Sair do treino volta para a cidade. Você pode repetir o treino em AJUDA."
 msgstr ""
 
-#: client/ui/battle_hud.gd:330
+#: client/ui/battle_hud.gd:336
 msgid "TREINO PAUSADO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:332
+#: client/ui/battle_hud.gd:338
 msgid "OPÇÕES"
 msgstr ""
 
-#: client/ui/battle_hud.gd:332
+#: client/ui/battle_hud.gd:338
 msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:334
+#: client/ui/battle_hud.gd:340
 msgid "BATALHA PAUSADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:334
+#: client/ui/battle_hud.gd:340
 msgid "Partida local contra IA. Desistir conta como derrota."
 msgstr ""
 
-#: client/ui/battle_hud.gd:342
+#: client/ui/battle_hud.gd:348
 msgid "DESLIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:342
+#: client/ui/battle_hud.gd:348
 msgid "LIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:342
+#: client/ui/battle_hud.gd:348
 msgid "Música: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:343
+#: client/ui/battle_hud.gd:349
 msgid "DESLIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:343
+#: client/ui/battle_hud.gd:349
 msgid "Efeitos: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:343
+#: client/ui/battle_hud.gd:349
 msgid "LIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:351 client/ui/replay_bar.gd:49 client/ui/tutorial_coach.gd:217
+#: client/ui/battle_hud.gd:357 client/ui/replay_bar.gd:49 client/ui/tutorial_coach.gd:228
 msgid "CONTINUAR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:352
+#: client/ui/battle_hud.gd:358
 msgid "DESISTIR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:352
+#: client/ui/battle_hud.gd:358
 msgid "SAIR DO DESAFIO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:352
+#: client/ui/battle_hud.gd:358
 msgid "SAIR DO TREINO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:409
+#: client/ui/battle_hud.gd:415
 msgid "Confiar ✓"
 msgstr ""
 
-#: client/ui/battle_hud.gd:558
+#: client/ui/battle_hud.gd:564
 msgid "EU"
 msgstr ""
 
-#: client/ui/battle_hud.gd:694
+#: client/ui/battle_hud.gd:700
 msgid "Rodada %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:870
+#: client/ui/battle_hud.gd:876
 msgid "Força"
 msgstr ""
 
-#: client/ui/battle_hud.gd:928
-msgid "Aguarde a sua vez…"
+#: client/ui/battle_hud.gd:934
+msgid "Pressione Espaço com força total e realize um ataque"
 msgstr ""
 
-#: client/ui/battle_hud.gd:928
-msgid "Pressione Espaço com força total e realize um ataque"
+#: client/ui/battle_hud.gd:934
+msgid "Segure FOGO para carregar a força"
+msgstr ""
+
+#: client/ui/battle_hud.gd:935
+msgid "Aguarde a sua vez…"
 msgstr ""
 
 #: client/ui/battle_outcome.gd:50
@@ -1846,47 +1858,47 @@ msgstr ""
 msgid "VITÓRIA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:303
+#: client/ui/battle_screen.gd:306
 msgid "VOCÊ FOI DERROTADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:303
+#: client/ui/battle_screen.gd:306
 msgid "Você virou um fantasma e assiste ao resto da batalha."
 msgstr ""
 
-#: client/ui/battle_screen.gd:305
+#: client/ui/battle_screen.gd:308
 msgid "%s caiu!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:536
+#: client/ui/battle_screen.gd:539
 msgid "CRÍTICO"
 msgstr ""
 
-#: client/ui/battle_screen.gd:561 shared/balance/combat.json:statuses[2].label
+#: client/ui/battle_screen.gd:564 shared/balance/combat.json:statuses[2].label
 msgid "CONGELADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:561
+#: client/ui/battle_screen.gd:564
 msgid "Você perde este turno."
 msgstr ""
 
-#: client/ui/battle_screen.gd:568
+#: client/ui/battle_screen.gd:571
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:600 client/ui/battle_screen.gd:822
+#: client/ui/battle_screen.gd:603 client/ui/battle_screen.gd:838
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:876
+#: client/ui/battle_screen.gd:892
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/battle_screen.gd:890 client/ui/result_screen.gd:137
+#: client/ui/battle_screen.gd:906 client/ui/result_screen.gd:137
 msgid "GOLPE FINAL"
 msgstr ""
 
-#: client/ui/battle_screen.gd:890 client/ui/result_screen.gd:137
+#: client/ui/battle_screen.gd:906 client/ui/result_screen.gd:137
 msgid "GRUPO"
 msgstr ""
 
@@ -3346,7 +3358,7 @@ msgstr ""
 msgid "Subiram de nível: "
 msgstr ""
 
-#: client/ui/hunt_tab.gd:590 client/ui/ui_kit.gd:463
+#: client/ui/hunt_tab.gd:590 client/ui/ui_kit.gd:470
 msgid "OK"
 msgstr ""
 
@@ -4766,39 +4778,55 @@ msgstr ""
 msgid "Gustfire %s"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:118
+#: client/ui/touch_controls.gd:148
+msgid "SOLTE"
+msgstr ""
+
+#: client/ui/touch_controls.gd:178
+msgid "FOGO"
+msgstr ""
+
+#: client/ui/touch_controls.gd:230
+msgid "HAB."
+msgstr ""
+
+#: client/ui/tutorial_coach.gd:128
 msgid "O boneco se recompõe"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:124
+#: client/ui/tutorial_coach.gd:134
 msgid "Dica: tente ângulo %d° e força %d%%."
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:159
+#: client/ui/tutorial_coach.gd:169
 msgid "ACERTOU!"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:214
+#: client/ui/tutorial_coach.gd:225
 msgid "TREINO CONCLUÍDO!"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:215
+#: client/ui/tutorial_coach.gd:226
 msgid "Você já domina o básico. Veja o que fazer em seguida na aba PRIMEIROS PASSOS da MISSÃO."
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:216
+#: client/ui/tutorial_coach.gd:227
 msgid "Recompensa: %s"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:70
+#: client/ui/tutorial_coach.gd:71
 msgid "PULAR TREINO"
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:86
+#: client/ui/tutorial_coach.gd:76
+msgid "AVANÇAR"
+msgstr ""
+
+#: client/ui/tutorial_coach.gd:93
 msgid "Errou! A linha tracejada branca mostra o caminho do seu último tiro. Ajuste o ângulo ou a força e tente de novo."
 msgstr ""
 
-#: client/ui/tutorial_coach.gd:90
+#: client/ui/tutorial_coach.gd:98
 msgid "ENTER: continuar"
 msgstr ""
 
@@ -6998,12 +7026,20 @@ msgstr ""
 msgid "Use ← → (ou A e D) para andar. Andar gasta ENERGIA, a barra verde embaixo à direita. Dê alguns passos."
 msgstr ""
 
+#: shared/balance/tutorial.json:steps[1].text_touch
+msgid "Segure ◀ ▶ (embaixo, à esquerda) para andar. Andar gasta ENERGIA, a barra verde no alto, ao lado do retrato. Dê alguns passos."
+msgstr ""
+
 #: shared/balance/tutorial.json:steps[2].name
 msgid "MIRAR"
 msgstr ""
 
 #: shared/balance/tutorial.json:steps[2].text
 msgid "Use ↑ ↓ (ou W e S) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus."
+msgstr ""
+
+#: shared/balance/tutorial.json:steps[2].text_touch
+msgid "Segure ↑ ↓ (embaixo, à direita) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus."
 msgstr ""
 
 #: shared/balance/tutorial.json:steps[3].name
@@ -7022,6 +7058,10 @@ msgstr ""
 msgid "Segure ESPAÇO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez."
 msgstr ""
 
+#: shared/balance/tutorial.json:steps[4].text_touch
+msgid "Segure FOGO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez."
+msgstr ""
+
 #: shared/balance/tutorial.json:steps[5].name
 msgid "HABILIDADES"
 msgstr ""
@@ -7030,8 +7070,16 @@ msgstr ""
 msgid "As teclas 1 a 9 dão vantagens no turno e gastam energia. Aperte 1 (+2 ataques) e dispare: saem três tiros em sequência."
 msgstr ""
 
+#: shared/balance/tutorial.json:steps[5].text_touch
+msgid "As habilidades dão vantagens no turno e gastam energia. Toque em HAB., depois em 1 (+2 ataques) e segure FOGO: saem três tiros em sequência."
+msgstr ""
+
 #: shared/balance/tutorial.json:steps[6].text
 msgid "A barra POW enche quando você causa e recebe dano. A sua está cheia! Aperte B e dispare para soltar o especial da sua arma."
+msgstr ""
+
+#: shared/balance/tutorial.json:steps[6].text_touch
+msgid "A barra POW enche quando você causa e recebe dano. A sua está cheia! Toque no POW, no canto inferior direito, e dispare para soltar o especial da sua arma."
 msgstr ""
 
 #: shared/balance/tutorial.json:steps[7].name

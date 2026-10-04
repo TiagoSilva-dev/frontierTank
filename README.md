@@ -109,6 +109,19 @@ node tools/web_bench.cjs --seconds 30 # FPS da batalha no Chromium (Playwright);
 - No navegador não há botão SAIR na entrada; SAIR na cidade volta para a tela de entrada.
 - O navegador não tem fontes do sistema: as setas e marcas que a fonte pixel não tem (← → ↑ ↓ ▶ ◀ ► ⇄ ↵ ✓) vêm de um recorte da DejaVu Sans Bold que vai no jogo (`assets/fonts/DejaVuSans-Bold-Symbols.ttf`, 2 KB).
 
+### Celular e tablet (0.23)
+
+O jogo tem **modo toque** (controles na tela, botões maiores, toque longo no lugar do hover) e roda em Android e iPhone sem loja: no navegador, num APK e como projeto Xcode. Guia completo, o roteiro do spike e o que ficou em aberto em `docs/MOBILE.md`.
+
+```bash
+tools/local.sh                                                 # a stack local; no celular: http://<ip>:8000/jogar/ (GAME_PUBLIC_URL com o IP da rede)
+python tools/mobile_build.py android --api http://<ip>:8000    # APK em build/android/gustfire.apk
+python tools/mobile_build.py ios --bundle com.voce.gustfire    # projeto Xcode zipado, para o Mac
+python tools/mobile_build.py share                             # APK e zip em http://<ip>:8062/ (nginx em Docker)
+```
+
+No celular, **três dedos juntos** mostram o contador de FPS. No computador, `--touch=1` (`?touch=1` na web) liga o modo toque.
+
 **Medição (25/09/2026, batalha 4v4, 8 lutadores, 1280×720):**
 
 | Onde | FPS | Scripts por quadro a 60 FPS | Observação |

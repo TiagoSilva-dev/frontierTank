@@ -275,6 +275,8 @@ static func title(parent: Node, text: String, rect: Rect2, font_size: int = 24, 
 static func button(parent: Node, text: String, rect: Rect2, action: Callable = Callable(), kind: String = "button", font_size: int = 16) -> Button:
 	var node: Button = Button.new()
 	node.text = text
+	# Touch mode: a button is at least a thumb wide and 48 px tall, grown around its centre.
+	rect = TouchMode.grown(rect, TouchMode.MIN_BUTTON)
 	node.position = rect.position
 	node.size = rect.size
 	node.focus_mode = Control.FOCUS_NONE
@@ -326,6 +328,11 @@ static func text_field(parent: Node, rect: Rect2, hint: String = "", secret: boo
 
 static func icon_button(parent: Node, texture: Texture2D, rect: Rect2, action: Callable = Callable(), tooltip: String = "", caption: String = "") -> Button:
 	var node: Button = Button.new()
+	# Touch mode: the button grows to a fingertip, the picture keeps its size and place.
+	var art_origin: Vector2 = Vector2.ZERO
+	var drawn: Rect2 = rect
+	rect = TouchMode.grown(rect)
+	art_origin = drawn.position - rect.position
 	node.position = rect.position
 	node.size = rect.size
 	node.focus_mode = Control.FOCUS_NONE
@@ -335,13 +342,13 @@ static func icon_button(parent: Node, texture: Texture2D, rect: Rect2, action: C
 	node.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
 	node.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
 	node.add_theme_stylebox_override("disabled", StyleBoxEmpty.new())
-	var art_rect: Rect2 = Rect2(Vector2.ZERO, rect.size)
+	var art_rect: Rect2 = Rect2(art_origin, drawn.size)
 	if caption != "":
 		art_rect.size.y -= 14
 	var picture: TextureRect = art(node, texture, art_rect)
 	picture.name = "Icon"
 	if caption != "":
-		label(node, caption, Rect2(-10, rect.size.y - 16, rect.size.x + 20, 16), 12, Color.WHITE, INK, HORIZONTAL_ALIGNMENT_CENTER)
+		label(node, caption, Rect2(art_origin.x - 10, art_origin.y + drawn.size.y - 16, drawn.size.x + 20, 16), 12, Color.WHITE, INK, HORIZONTAL_ALIGNMENT_CENTER)
 	node.mouse_entered.connect(func() -> void: picture.modulate = Color(1.25, 1.2, 1.05))
 	node.mouse_exited.connect(func() -> void: picture.modulate = Color.WHITE)
 	if action.is_valid():

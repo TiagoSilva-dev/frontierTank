@@ -27,6 +27,7 @@ var title_label: Label
 var body_label: Label
 var footer_label: Label
 var counter_label: Label
+var next_button: Button
 var done_box: Control
 # The dummy may fall only from the start of a turn of the last lesson (never mid-shot of
 # the lesson before it).
@@ -70,6 +71,11 @@ func build_card() -> void:
 	var skip: Button = UiKit.button(card, tr("PULAR TREINO"), Rect2(228, 138, 136, 30), screen.app.leave_tutorial, "button_blue", 14)
 	skip.name = "TutorialSkip"
 	skip.mouse_filter = Control.MOUSE_FILTER_STOP
+	if TouchMode.active():
+		# There is no ENTER on a phone: the lessons that wait for a key wait for this.
+		next_button = UiKit.button(card, tr("AVANÇAR"), Rect2(14, 138, 136, 30), func() -> void: key_pressed = true, "button_green", 14)
+		next_button.name = "TutorialNext"
+		next_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 func current() -> Dictionary:
 	return Tutorial.steps()[mini(index, Tutorial.steps().size() - 1)]
@@ -81,13 +87,17 @@ func refresh() -> void:
 	var step: Dictionary = current()
 	counter_label.text = "%d/%d" % [index + 1, Tutorial.steps().size()]
 	title_label.text = tr(str(step.name))
-	var text: String = tr(str(step.text))
+	# On a phone the lessons talk about the buttons, not the keys.
+	var text: String = tr(str(step.get("text_touch", step.text)) if TouchMode.active() else str(step.text))
 	if str(step.id) == "shoot" and misses > 0:
 		text = tr("Errou! A linha tracejada branca mostra o caminho do seu último tiro. Ajuste o ângulo ou a força e tente de novo.")
 		if hint != "":
 			text += "\n" + hint
 	body_label.text = text
-	footer_label.text = tr("ENTER: continuar") if str(step.get("wait", "")) == "key" else ""
+	var waiting: bool = str(step.get("wait", "")) == "key"
+	footer_label.text = tr("ENTER: continuar") if waiting and not TouchMode.active() else ""
+	if is_instance_valid(next_button):
+		next_button.visible = waiting
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ENTER, KEY_KP_ENTER] and is_instance_valid(card):
@@ -185,7 +195,8 @@ func focus_rects() -> Array[Rect2]:
 			"force":
 				target = hud.force
 			"skill1":
-				target = hud.item_buttons[0]
+				# On a phone the skills sit in a drawer: the lesson points at its button.
+				target = hud.touch.drawer_toggle if hud.touch != null and not hud.touch.drawer_open else hud.item_buttons[0]
 			"pow":
 				target = hud.pow_button
 		if target != null:

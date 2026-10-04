@@ -89,6 +89,7 @@ func run_tests() -> void:
 	await challenge_tests(alice, bob)
 	await pve_tests(alice, bob)
 	await auction_tests(alice, bob)
+	await reconnect_tests(alice)
 	await takeover_tests(alice)
 	await privacy_tests(bob)
 	await steam_tests()
@@ -716,6 +717,25 @@ func auction_tests(alice: Node, bob: Node) -> void:
 	for app: Node in [alice, bob]:
 		check(profile_text(app.profile) == profile_text(server_profile(app)), "%s's copy matches the server's after trading" % server_profile(app).player_name + first_difference(profile_text(app.profile), profile_text(server_profile(app))))
 		check(JSON.stringify(ApiClient.copy(server.api.memory_profiles[app.my_account()].data)) == JSON.stringify(ApiClient.copy(server_profile(app).to_data())), "%s's stored profile matches" % server_profile(app).player_name)
+
+func reconnect_tests(alice: Node) -> void:
+	# A connection that dies with no word from the server. On a computer it goes to the title
+	# (as always); on a phone, where the app in the background loses its socket all the time,
+	# the game logs back in by itself.
+	check(alice.online, "online before the drop")
+	var name_before: String = alice.profile.player_name
+	alice.net.socket.close(3999, "test drop")
+	check(await wait_until(func() -> bool: return not alice.online and alice.screen_name == "title", 5), "a computer sends a lost connection to the title screen")
+	check(await login(alice, "alice") == "" and alice.online, "and the player logs in again")
+	TouchMode.forced = 1
+	alice.net.socket.close(3999, "test drop")
+	check(await wait_until(func() -> bool: return alice.reconnecting, 5), "a phone starts reconnecting at once")
+	check(alice.online and is_instance_valid(alice.ui.find_child("Reconnecting", true, false)), "it stays in the game and says so")
+	check(await wait_until(func() -> bool: return not alice.reconnecting and alice.net.is_online(), 20), "and gets back in by itself")
+	check(alice.online and alice.profile.player_name == name_before and alice.profile.remote, "as the same player, online")
+	check(not is_instance_valid(alice.ui.find_child("Reconnecting", true, false)) and alice.screen_name != "title", "the message goes away and the game is on a game screen")
+	check(server.accounts.size() == 2, "the server still counts two players")
+	TouchMode.forced = -1
 
 func takeover_tests(alice: Node) -> void:
 	# The same account logs in somewhere else: the new connection wins.

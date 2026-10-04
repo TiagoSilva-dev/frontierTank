@@ -12,6 +12,7 @@
       "id": "move",
       "name": "ANDAR",
       "text": "Use ← → (ou A e D) para andar. Andar gasta ENERGIA, a barra verde embaixo à direita. Dê alguns passos.",
+      "text_touch": "Segure ◀ ▶ (embaixo, à esquerda) para andar. Andar gasta ENERGIA, a barra verde no alto, ao lado do retrato. Dê alguns passos.",
       "need": "moved",
       "focus": [
         "gauges"
@@ -21,6 +22,7 @@
       "id": "angle",
       "name": "MIRAR",
       "text": "Use ↑ ↓ (ou W e S) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus.",
+      "text_touch": "Segure ↑ ↓ (embaixo, à direita) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus.",
       "need": "aimed",
       "focus": [
         "dial"
@@ -39,6 +41,7 @@
       "id": "shoot",
       "name": "DISPARAR",
       "text": "Segure ESPAÇO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez.",
+      "text_touch": "Segure FOGO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez.",
       "need": "hit",
       "focus": [
         "force"
@@ -48,6 +51,7 @@
       "id": "skill",
       "name": "HABILIDADES",
       "text": "As teclas 1 a 9 dão vantagens no turno e gastam energia. Aperte 1 (+2 ataques) e dispare: saem três tiros em sequência.",
+      "text_touch": "As habilidades dão vantagens no turno e gastam energia. Toque em HAB., depois em 1 (+2 ataques) e segure FOGO: saem três tiros em sequência.",
       "need": "plus2",
       "focus": [
         "skill1"
@@ -57,6 +61,7 @@
       "id": "pow",
       "name": "POW",
       "text": "A barra POW enche quando você causa e recebe dano. A sua está cheia! Aperte B e dispare para soltar o especial da sua arma.",
+      "text_touch": "A barra POW enche quando você causa e recebe dano. A sua está cheia! Toque no POW, no canto inferior direito, e dispare para soltar o especial da sua arma.",
       "need": "pow",
       "focus": [
         "pow"

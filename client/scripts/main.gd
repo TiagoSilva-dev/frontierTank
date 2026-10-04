@@ -44,6 +44,8 @@ var mail_count: int = 0
 var tutorial_offered: bool = false
 # FPS counter (F3) and the battle benchmark (--bench=30, ?bench=30 on the web).
 var perf: PerfProbe
+# Phones and tablets: touch becomes the mouse (client/systems/touch_assist.gd).
+var touch_assist: TouchAssist
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -57,6 +59,7 @@ func _ready() -> void:
 	# The game was renamed (Frontier Tank -> Gustfire): bring the old user:// folder along
 	# before anything reads it (client/systems/legacy_data.gd).
 	LegacyData.migrate()
+	TouchMode.setup(args)
 	# Language (roadmap 4.3): saved choice or the system language; --lang=en for captures.
 	Lang.setup(str(args.get("lang", "")))
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
@@ -76,7 +79,7 @@ func _ready() -> void:
 	friends.use_scope("offline")
 	net = NetClient.new()
 	net.event.connect(on_net_event)
-	net.closed.connect(go_offline)
+	net.closed.connect(on_net_closed)
 	add_child(net)
 	auth = AuthClient.new()
 	if args.has("api"):
@@ -106,6 +109,12 @@ func _ready() -> void:
 	perf.app = self
 	perf.shown = args.has("fps")
 	add_child(perf)
+	if TouchMode.active():
+		touch_assist = TouchAssist.new()
+		add_child(touch_assist)
+		if OS.has_feature("mobile"):
+			# A battle waits for the player to think: the screen must not go dark.
+			DisplayServer.screen_set_keep_on(true)
 	if args.has("bench"):
 		profile.created = true
 		perf.start_bench(float(args.bench))
@@ -698,7 +707,7 @@ func finish_tutorial() -> void:
 
 # The controls, the legal texts and the account (launch checklist: LGPD/GDPR).
 func open_help() -> Control:
-	var dialog: Control = UiKit.modal(ui, tr("AJUDA"), tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"), Vector2(760, 360))
+	var dialog: Control = UiKit.modal(ui, tr("AJUDA"), help_text(), Vector2(760, 360))
 	dialog.name = "HelpDialog"
 	var rect: Rect2 = dialog.get_meta("rect")
 	var row: float = rect.end.y - 62
@@ -717,6 +726,12 @@ func open_help() -> Control:
 		training.name = "HelpTraining"
 	UiKit.button(dialog, tr("FECHAR"), Rect2(rect.end.x - 190, row, 160, 42), dialog.queue_free)
 	return dialog
+
+# The controls: the keyboard of a computer, or the buttons of a phone.
+func help_text() -> String:
+	if TouchMode.active():
+		return tr("◀ ▶ andar (gasta energia)   ↑ ↓ ângulo\nSegure FOGO e solte: força (a barra reinicia uma vez no máximo)\nHAB. abre as habilidades 1–9 (+2, x3, +1, POW 50%…10%, POW máx)\nPOW: com a barra cheia   Ferramentas, avião, item auxiliar e mascote: botões em fila\nPASS: passar a vez   Confiar: a IA joga por você\nSegure um botão para ver o que ele faz")
+	return tr("← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música")
 
 func open_account() -> AccountScreen:
 	return AccountScreen.open(ui, self)
@@ -864,6 +879,38 @@ func go_online(welcome: Dictionary) -> void:
 		switch_to(CityScreen.new(), "city")
 	net.release_held()
 
+# A connection that dies with no word from the server (a phone in the background, a lost
+# signal) gets a few quiet tries to come back before the player is sent to the title. The
+# server hands a battle under way back with its history, so it reopens by itself.
+var reconnecting: bool = false
+const RECONNECT_TRIES: int = 8
+# Close reasons that retrying cannot fix: the server told us why.
+const NO_RECONNECT: Array[String] = ["unauthorized", "outdated", "online_elsewhere", "terms_required", "banned", "server_full"]
+
+func on_net_closed(reason: String) -> void:
+	if reason == "connection_lost" and online and TouchMode.active() and not reconnecting and net.last_url != "" and net.last_token != "":
+		reconnect()
+		return
+	go_offline(reason)
+
+func reconnect() -> void:
+	reconnecting = true
+	var banner: Label = UiKit.label(ui, tr("Reconectando…"), Rect2(440, 8, 400, 40), 22, Color("fff0c0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	banner.name = "Reconnecting"
+	var code: String = "unreachable"
+	for attempt in range(RECONNECT_TRIES):
+		code = await net.connect_to(net.last_url, net.last_token)
+		if code == "" or code in NO_RECONNECT:
+			break
+		await get_tree().create_timer(2.0).timeout
+	if is_instance_valid(banner):
+		banner.queue_free()
+	reconnecting = false
+	if code == "":
+		go_online(net.welcome())
+	else:
+		go_offline(code)
+
 func go_offline(reason: String = "") -> void:
 	var was_online: bool = online
 	online = false
@@ -961,6 +1008,47 @@ func localize(config: Dictionary) -> Dictionary:
 				if entry.get("summon") is Dictionary:
 					entry.summon.name = tr(str(entry.summon.name))
 	return copy
+
+# Android's back button (project.godot keeps quit_on_go_back off): what is on top closes, as
+# ESC does on a computer; with nothing on top the screen goes back one step, as SAIR does.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST and ui != null:
+		go_back()
+
+func go_back() -> void:
+	var overlay: Control = topmost_overlay()
+	if overlay != null:
+		if overlay == bag:
+			close_bag()
+		elif overlay.has_method("close"):
+			overlay.call("close")
+		else:
+			overlay.queue_free()
+		return
+	match screen_name:
+		"battle":
+			# The battle's own ESC: pause (or leave a replay).
+			TouchControls.send_key(KEY_ESCAPE, true)
+			TouchControls.send_key(KEY_ESCAPE, false)
+		"title":
+			if not OS.has_feature("web"):
+				quit_game()
+		_:
+			shortcut("exit")
+
+# The window or dialog drawn above everything else: over the screens (shop, bag, help...), then
+# over the current screen (a dialog it opened). Toasts and banners are Labels: they are not it.
+func topmost_overlay() -> Control:
+	for host: Node in [ui, screen]:
+		if not is_instance_valid(host):
+			continue
+		for i in range(host.get_child_count() - 1, -1, -1):
+			var node: Node = host.get_child(i)
+			if node == screen or not (node is Control) or node is Label or not (node as Control).visible:
+				continue
+			if host == ui or node.name == "Modal" or node.has_method("close"):
+				return node
+	return null
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	# M switches the music on any screen (text fields keep their own keys); F3 shows the

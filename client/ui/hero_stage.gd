@@ -71,7 +71,7 @@ func pedestal_rect() -> Rect2:
 func _process(delta: float) -> void:
 	time += delta
 	queue_redraw()
-	if drop_hover and not get_global_rect().has_point(get_global_mouse_position()):
+	if drop_hover and not get_global_rect().has_point(TouchMode.pointer(self)):
 		drop_hover = false
 
 func _can_drop_data(_at: Vector2, data: Variant) -> bool:

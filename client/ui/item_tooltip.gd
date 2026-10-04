@@ -38,7 +38,7 @@ func _process(_delta: float) -> void:
 
 func follow() -> void:
 	# Beside the mouse, flipped to the other side near the screen's edges.
-	var mouse: Vector2 = get_global_mouse_position()
+	var mouse: Vector2 = TouchMode.pointer(self)
 	var spot: Vector2 = mouse + Vector2(22, 16)
 	if spot.x + size.x > 1272.0:
 		spot.x = mouse.x - size.x - 16.0

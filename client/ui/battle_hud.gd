@@ -36,6 +36,10 @@ var aux_button: SkillSlot
 var pet_button: SkillSlot
 var pow_button: PowOrb
 var trust_button: Button
+var gear_button: Button
+var exit_button: Button
+# Touch mode (phones): the on-screen controls (client/ui/touch_controls.gd).
+var touch: TouchControls
 var used_row: HBoxContainer
 var status_row: HBoxContainer
 var seal_layer: Control
@@ -122,8 +126,8 @@ func build() -> void:
 	minimap.mouse_filter = Control.MOUSE_FILTER_STOP
 	minimap.gui_input.connect(minimap_input)
 	minimap.tooltip_text = tr("Clique para mover a câmera. Cada marca = 1/10 de tela.")
-	UiKit.icon_button(self, PixelIcons.get_icon("gear"), Rect2(1228, 7, 20, 20), screen.toggle_pause, tr("Pausa / opções (Esc)"))
-	UiKit.icon_button(self, PixelIcons.get_icon("power"), Rect2(1252, 7, 20, 20), screen.toggle_pause, tr("Sair da batalha"))
+	gear_button = UiKit.icon_button(self, PixelIcons.get_icon("gear"), Rect2(1228, 7, 20, 20), screen.toggle_pause, tr("Pausa / opções (Esc)"))
+	exit_button = UiKit.icon_button(self, PixelIcons.get_icon("power"), Rect2(1252, 7, 20, 20), screen.toggle_pause, tr("Sair da batalha"))
 	# --- right column: skills 1–9 like DDTank (+2, x3, +1, POW 50%…10%, POW máx) in a
 	# bronze rail; the plane (F) and the auxiliary item (V) sit by the angle dial
 	rail = layer(Rect2(1210, 172, 68, 444), draw_rail)
@@ -187,6 +191,8 @@ func build() -> void:
 		build_phase()
 	banner = layer(Rect2(Vector2.ZERO, size), draw_banner)
 	refresh_log()
+	if TouchMode.active() and not screen.spectating and screen.replay.is_empty():
+		touch = TouchControls.attach(self)
 
 func build_phase() -> void:
 	# Instance progress: phase x/3, its name, the map level and the phase objective.
@@ -842,7 +848,7 @@ func visible_force() -> float:
 	return game.shown_power() if game.active_id == game.local_id else 0.0
 
 func force_room() -> Rect2:
-	return Rect2(76, 26, 610, 34)
+	return Rect2(76, 26, force.size.x - 82.0, 34)
 
 func update_sparks(delta: float) -> void:
 	# Sparks thrown off the tip of the force bar while the player charges.
@@ -868,7 +874,7 @@ func draw_force() -> void:
 	HudPaint.vgradient(force, face, Color("8a4e22"), Color("4f290f"))
 	force.draw_rect(Rect2(face.position.x, face.position.y, face.size.x, 1), Color(1, 0.85, 0.5, 0.4))
 	HudPaint.fancy(force, Vector2(face.position.x, face.position.y + face.size.y / 2.0 + 6.0), tr("Força"), 16, HudPaint.GOLD, Color("3a1a08"), face.size.x, HORIZONTAL_ALIGNMENT_CENTER, 2, 4)
-	var inner: Rect2 = HudPaint.frame(force, Rect2(70, 20, 622, 46))
+	var inner: Rect2 = HudPaint.frame(force, Rect2(70, 20, force.size.x - 70.0, 46))
 	HudPaint.well(force, inner, Color("05070c"), Color("121826"))
 	var room: Rect2 = force_room()
 	var x: float = room.position.x + 4.0
@@ -925,7 +931,8 @@ func draw_force() -> void:
 		force.draw_colored_polygon(flag, Color("e0302a"))
 		force.draw_rect(Rect2(mark - 5, 17, 10, 2), Color("ff9a7a"))
 	if value <= 0.0:
-		var tip_text: String = tr("Pressione Espaço com força total e realize um ataque") if mine else tr("Aguarde a sua vez…")
+		var shoot_tip: String = tr("Segure FOGO para carregar a força") if TouchMode.active() else tr("Pressione Espaço com força total e realize um ataque")
+		var tip_text: String = shoot_tip if mine else tr("Aguarde a sua vez…")
 		var alpha: float = 0.8 + 0.2 * sin(time * 3.0) if mine and game.can_act() else 0.7
 		HudPaint.outlined(force, Vector2(room.position.x, room.position.y + 23), tip_text, 16, Color(1.0, 0.94, 0.82, alpha), HudPaint.INK, room.size.x, HORIZONTAL_ALIGNMENT_CENTER, 4)
 

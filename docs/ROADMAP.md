@@ -11,6 +11,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito**; preparação do lançamento (web, nomes, privacidade, denúncia, Steam) na 0.13 — **feito**, faltam as pendências externas do checklist |
 | 5 | **Casa dos Mascotes** (ovos, choque, mascote em batalha) e **Caçada** automática com campo visto de cima nas 5 zonas | Sim (o servidor liquida a caçada) | 0.19–0.22 — **feito**; falta playtest e afinar capturas e ovos (`docs/PETS.md`, `docs/PET_HUNT.md`) |
 | 6 | Treino de artilharia, **liga ranqueada**, replays e espectador, Desafio do Dia, contratos diários e semanais, habilidade do mascote em batalha | Sim (liga, desafio e espectador) | 0.22 — **feito** (`docs/RANKED.md`, `docs/CHALLENGE.md`, `docs/MISSIONS.md`) |
+| 7 | **Celular e tablet**: modo toque, web no celular, APK e projeto Xcode (sem loja) | Não (só o cliente) | 0.23 — **feito**; falta jogar nos aparelhos (`docs/MOBILE.md`); lojas, compras e probabilidades dos ovos ficam para depois |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -351,6 +352,7 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - Definir quem **modera** as denúncias e em quanto tempo.
 - Steamworks: taxa, App ID, chave de publicador, conquistas, microtransações e envio da página.
 - **Reimplantar o servidor e a API** com a 0.22 (`GAME_VERSION` 0.22, migração 007, rotas da liga e do desafio; os arquivos de balanceamento mudaram e entram no hash de conteúdo). A 0.22 inteira está só na máquina (sem commit) até 04/10/2026.
+- **Playtest no celular** (Android e iPhone): FPS, tamanho dos botões, teclado virtual, voltar e reconexão (`docs/MOBILE.md`, roteiro no fim).
 - **Playtest** da Caçada (taxas de captura e de ovos, sons dos golpes, as três zonas novas), da liga e do Desafio do Dia.
 
 ## Ordem sugerida

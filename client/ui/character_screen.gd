@@ -645,7 +645,7 @@ func _process(delta: float) -> void:
 	# Holding a dragged item over a page arrow turns the page.
 	var step: int = 0
 	if dragging and arrow_rects.size() == 2:
-		var mouse: Vector2 = get_global_mouse_position()
+		var mouse: Vector2 = TouchMode.pointer(self)
 		step = -1 if arrow_rects[0].has_point(mouse) else (1 if arrow_rects[1].has_point(mouse) else 0)
 	if step == 0:
 		flip_hold = 0.0

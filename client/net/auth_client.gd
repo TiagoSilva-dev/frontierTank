@@ -34,6 +34,12 @@ static func default_api() -> String:
 		var origin: String = str(JavaScriptBridge.eval("window.location.origin", true))
 		if origin.begins_with("http"):
 			return origin
+	# A phone has no page address and no command line: the test build carries its API in
+	# api_default.txt (tools/mobile_build.py android --api http://<ip>:8000), outside git.
+	if OS.has_feature("mobile") and FileAccess.file_exists("res://api_default.txt"):
+		var line: String = FileAccess.get_file_as_string("res://api_default.txt").strip_edges()
+		if line.begins_with("http"):
+			return line
 	return DEFAULT_API
 
 func save_session() -> void:

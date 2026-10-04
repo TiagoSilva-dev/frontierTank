@@ -114,7 +114,7 @@ func add_row(person: Dictionary) -> void:
 	row.tooltip_text = tr("Clique para abrir o menu do jogador")
 	row.pressed.connect(func() -> void:
 		app.audio.play("ui_click")
-		PlayerMenu.open(app.ui, app, person, get_global_mouse_position() + Vector2(6, 6)))
+		PlayerMenu.open(app.ui, app, person, TouchMode.pointer(self) + Vector2(6, 6)))
 	rows.add_child(row)
 	var badge: Panel = UiKit.level_badge(row, int(person.level), Rect2(6, 5, 38, 24))
 	badge.modulate = Color(1, 1, 1, 0.55) if away else Color.WHITE

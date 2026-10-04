@@ -10,25 +10,29 @@ Usage:
                                              (no threads, ~20 MB instead of the 1.2 GB
                                              package) into Godot's template folder
   python tools/web_build.py export [--debug] import the assets and export to build/web
-  python tools/web_build.py serve [--port 8060] [--api http://localhost:8080] [--site]
+  python tools/web_build.py serve [--port 8060] [--api http://localhost:8080] [--site] [--lan]
                                              serve build/web on http://localhost:8060;
                                              with --api, /v1/... goes to the API, so the
                                              game finds the servers on the page's own
                                              address (as behind the production proxy);
                                              with --site, the official website (website/)
                                              is at / and the game at /jogar/, as in the
-                                             Docker stack
+                                             Docker stack; with --lan, prints the addresses
+                                             a phone on the same Wi-Fi opens (docs/MOBILE.md)
 
 Then open http://localhost:8060/ to play, ?bench=30 to measure the battle FPS
 (tools/web_bench.mjs does it in Chromium and prints the numbers), ?fps=1 for the counter
-(F3 in game), ?lang=en for English and ?api=https://... for another API.
+(F3 in game), ?lang=en for English, ?touch=1 to force the touch controls on a
+computer and ?api=https://... for another API.
 """
 import argparse
 import http.server
 import io
 import os
 import platform
+import re
 import shutil
+import socket
 import socketserver
 import ssl
 import subprocess
@@ -117,6 +121,25 @@ def cmd_templates(_args):
     print(f"Templates in {target}")
 
 
+SHELL = os.path.join(ROOT, "tools", "web")
+
+
+def inject_shell():
+    """Mobile shell (tools/web/): viewport, full screen, rotate hint, manifest. The export's own
+    viewport tag goes away: two of them is a coin toss in Safari."""
+    path = os.path.join(BUILD, "index.html")
+    with open(path, encoding="utf-8") as handle:
+        html = handle.read()
+    with open(os.path.join(SHELL, "shell_head.html"), encoding="utf-8") as handle:
+        head = handle.read()
+    html = re.sub(r'\s*<meta name="viewport"[^>]*>', "", html)
+    if "gf-turn" not in html:
+        html = html.replace("</head>", head + "</head>", 1)
+    with open(path, "w", encoding="utf-8") as handle:
+        handle.write(html)
+    shutil.copy(os.path.join(SHELL, "manifest.webmanifest"), os.path.join(BUILD, "manifest.webmanifest"))
+
+
 def cmd_export(args):
     godot = godot_bin()
     if not os.path.exists(os.path.join(template_dir(), "web_nothreads_release.zip")):
@@ -129,6 +152,7 @@ def cmd_export(args):
     result = subprocess.run([godot, "--headless", "--path", ROOT, mode, "Web", os.path.join(BUILD, "index.html")])
     if result.returncode != 0 or not os.path.exists(os.path.join(BUILD, "index.pck")):
         sys.exit("Export failed.")
+    inject_shell()
     total = 0
     for name in sorted(os.listdir(BUILD)):
         size = os.path.getsize(os.path.join(BUILD, name))
@@ -137,16 +161,86 @@ def cmd_export(args):
     print(f"  {'total':32} {total / 1048576:7.2f} MB -> {BUILD}")
 
 
+def run_windows(command):
+    """Runs a PowerShell command on the Windows side of WSL (empty text when there is none)."""
+    exe = shutil.which("powershell.exe")
+    if not exe:
+        return ""
+    try:
+        done = subprocess.run([exe, "-NoProfile", "-Command", command], capture_output=True, text=True, timeout=20)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return done.stdout.strip()
+
+
+def in_wsl():
+    try:
+        with open("/proc/version", encoding="utf-8") as handle:
+            return "microsoft" in handle.read().lower()
+    except OSError:
+        return False
+
+
+def lan_addresses():
+    """The IPv4 addresses of this computer on the local network (not the virtual adapters)."""
+    found = []
+    if in_wsl():
+        text = run_windows("Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch 'vEthernet|Loopback|WSL|Bluetooth' -and $_.IPAddress -notlike '169.*' } | ForEach-Object { $_.IPAddress }")
+        found = [line.strip() for line in text.splitlines() if line.strip()]
+    else:
+        probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            probe.connect(("10.255.255.255", 1))
+            found = [probe.getsockname()[0]]
+        except OSError:
+            pass
+        finally:
+            probe.close()
+    return found
+
+
+def print_lan(port, site):
+    """What to type on the phone. Under WSL2 the game runs behind NAT: Windows has to forward the port."""
+    addresses = lan_addresses()
+    path = "/jogar/" if site else "/"
+    print("")
+    if not addresses:
+        print("Phone: no local network address found. Connect this computer to the same Wi-Fi as the phone.")
+        return
+    for address in addresses:
+        print(f"Phone (same Wi-Fi):  http://{address}:{port}{path}")
+    if in_wsl():
+        forwarded = run_windows("netsh interface portproxy show v4tov4")
+        if f"{port}" not in forwarded:
+            print("")
+            print(f"WSL2 hides port {port} from the network. Once, in Windows: double-click Celular.cmd")
+            print("(it asks for administrator rights, forwards the port and opens the firewall for private networks).")
+    print("iPhone: Safari -> Share -> Add to Home Screen (full screen). Android: Chrome goes to full screen on the first touch.")
+    if os.path.exists(os.path.join(ROOT, "build", "android", "gustfire.apk")):
+        for address in addresses:
+            print(f"Android app (APK):   http://{address}:{port}/android/gustfire.apk")
+    if os.path.exists(os.path.join(ROOT, "build", "Gustfire-xcode.zip")):
+        for address in addresses:
+            print(f"Xcode project (Mac): http://{address}:{port}/ios/Gustfire-xcode.zip")
+    print("")
+
+
 def cmd_serve(args):
     api = args.api.rstrip("/") if args.api else ""
 
     class Handler(http.server.SimpleHTTPRequestHandler):
-        extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map, ".wasm": "application/wasm", ".pck": "application/octet-stream", ".js": "text/javascript"}
+        extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map, ".apk": "application/vnd.android.package-archive", ".zip": "application/zip", ".webmanifest": "application/manifest+json", ".wasm": "application/wasm", ".pck": "application/octet-stream", ".js": "text/javascript"}
 
         def __init__(self, *handler_args, **kwargs):
             super().__init__(*handler_args, directory=SITE if args.site else BUILD, **kwargs)
 
         def translate_path(self, path):
+            # The Android test build (tools/mobile_build.py android) at /android/gustfire.apk.
+            if path.startswith("/android/"):
+                return os.path.join(ROOT, "build", "android", os.path.basename(path.split("?")[0]))
+            # The Xcode project for the Mac (tools/mobile_build.py ios).
+            if path.startswith("/ios/"):
+                return os.path.join(ROOT, "build", os.path.basename(path.split("?")[0]))
             # --site: the website at /, the game at /jogar/ (server/docker/web.nginx.conf).
             if args.site and (path == "/jogar" or path.startswith("/jogar/")):
                 return os.path.join(BUILD, super().translate_path(path[len("/jogar"):] or "/")[len(SITE):].lstrip(os.sep))
@@ -198,6 +292,8 @@ def cmd_serve(args):
         game = f"http://localhost:{args.port}/jogar/" if args.site else f"http://localhost:{args.port}/"
         site = f"site http://localhost:{args.port}/, " if args.site else ""
         print(f"Gustfire web: {site}game {game}  (benchmark: ?bench=30)" + (f", API {api}" if api else ""))
+        if args.lan:
+            print_lan(args.port, args.site)
         server.serve_forever()
 
 
@@ -211,6 +307,7 @@ def main():
     serve.add_argument("--port", type=int, default=8060)
     serve.add_argument("--api", default="")
     serve.add_argument("--site", action="store_true", help="serve website/ at / and the game at /jogar/")
+    serve.add_argument("--lan", action="store_true", help="print the addresses a phone on the same network opens")
     args = parser.parse_args()
     {"templates": cmd_templates, "export": cmd_export, "serve": cmd_serve}[args.command](args)
 

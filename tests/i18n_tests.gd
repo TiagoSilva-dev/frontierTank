@@ -7,7 +7,7 @@ extends SceneTree
 
 var failures: int = 0
 var checks: int = 0
-const JSON_KEYS: Array[String] = ["name", "desc", "description", "text", "label", "attack", "fury_name"]
+const JSON_KEYS: Array[String] = ["name", "desc", "description", "text", "text_touch", "label", "attack", "fury_name"]
 const LETTERS: Dictionary = {
 	"pt": "ÁÀÂÃÇÉÊÍÓÔÕÚÜáàâãçéêíóôõúü",
 	"es": "ÁÉÍÓÚÜÑáéíóúüñ¡¿",

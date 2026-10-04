@@ -23,6 +23,10 @@ var ping_sent: Dictionary = {}
 var rtt: float = 0.0
 var close_reason: String = ""
 var closing_on_purpose: bool = false
+# Where the last connection went, to come back to it (a phone loses its sockets whenever the
+# app is in the background).
+var last_url: String = ""
+var last_token: String = ""
 var account: Dictionary = {}
 # While logging in, messages after the welcome wait until the game has switched to
 # online mode (release_held), so none is lost (e.g. a battle to go back to).
@@ -44,6 +48,8 @@ func is_online() -> bool:
 # "unauthorized", "online_elsewhere", "server_full", "timeout"...).
 func connect_to(url: String, token: String) -> String:
 	disconnect_now()
+	last_url = url
+	last_token = token
 	socket = WebSocketPeer.new()
 	socket.inbound_buffer_size = 4 << 20
 	socket.outbound_buffer_size = 1 << 18

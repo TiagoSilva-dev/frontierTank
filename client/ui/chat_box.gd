@@ -178,7 +178,7 @@ func on_meta(meta: Variant) -> void:
 		if known.name == who:
 			person = known
 			break
-	PlayerMenu.open(app.ui, app, person, get_global_mouse_position() + Vector2(8, -120), message if reportable(message) else {})
+	PlayerMenu.open(app.ui, app, person, TouchMode.pointer(self) + Vector2(8, -120), message if reportable(message) else {})
 
 # Online lines of other players can be reported.
 func reportable(message: Dictionary) -> bool:

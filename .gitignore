@@ -14,3 +14,5 @@ api.env
 build/
 /export-vm.log
 Godot.app/
+# The API a phone test build talks to (tools/mobile_build.py --api)
+/api_default.txt
