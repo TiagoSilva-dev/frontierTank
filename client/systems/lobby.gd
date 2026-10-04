@@ -55,8 +55,14 @@ var unread_private: int = 0
 # This player's own name (the lines of others are the unread ones).
 var my_name: String = ""
 
+# Capture helper (--seed=): the same bots and rooms every run, so a video can be recorded twice.
+static var fixed_seed: int = -1
+
 func _ready() -> void:
-	rng.randomize()
+	if fixed_seed >= 0:
+		rng.seed = fixed_seed
+	else:
+		rng.randomize()
 	if bots.is_empty():
 		populate()
 

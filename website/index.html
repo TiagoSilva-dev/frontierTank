@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gustfire · Artilharia nos céus</title>
-  <meta name="description" content="Gustfire é um jogo de artilharia por turnos em pixel art: mire, sinta o vento e dispare. Batalhas online de 1v1 a 4v4, expedições contra chefes, mascotes para chocar e caçar e loot com atributos aleatórios. Grátis, sem vender poder.">
+  <meta name="description" content="Gustfire é um jogo de artilharia por turnos em pixel art: mire, sinta o vento e dispare. Batalhas online de 1v1 a 4v4, expedições contra chefes, mascotes para chocar e caçar e loot com atributos aleatórios. Direto no navegador, no PC e no celular. Grátis, sem vender poder.">
   <meta name="theme-color" content="#080a1f">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Gustfire · Artilharia nos céus">
@@ -31,6 +31,7 @@
       </a>
       <ul class="nav-links" id="nav-links">
         <li><a href="#teste" data-i18n="nav.try">Teste sua mira</a></li>
+        <li><a href="#celular" data-i18n="nav.mobile">Celular</a></li>
         <li><a href="#jogo" data-i18n="nav.game">O jogo</a></li>
         <li><a href="#arsenal" data-i18n="nav.arsenal">Arsenal</a></li>
         <li><a href="#expedicoes" data-i18n="nav.dungeons">Expedições</a></li>
@@ -71,9 +72,9 @@
         </div>
         <div class="hero-badges">
           <span data-i18n="badge.free">Grátis para jogar</span>
-          <span data-i18n="badge.browser">Direto no navegador</span>
+          <span data-i18n="badge.browser">No navegador, no PC e no celular</span>
           <span data-i18n="badge.lang">Português e inglês</span>
-          <span data-i18n="badge.steam">Steam em breve</span>
+          <span data-i18n="badge.steam">Steam e lojas de celular em breve</span>
         </div>
       </div>
       <a class="scroll-cue" href="#teste" data-i18n="hero.scroll">Role</a>
@@ -125,6 +126,46 @@
           </div>
         </div>
         <p class="play-help" data-i18n-html="try.help">Mire arrastando na tela ou com <kbd>↑</kbd> <kbd>↓</kbd> · segure <kbd>Espaço</kbd> ou o botão para carregar a força · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> trocam de arma</p>
+        <p class="play-help play-help-touch" data-i18n="try.help_touch">Mire arrastando na tela · segure o botão Disparar para carregar a força · toque nas armas para trocar</p>
+      </div>
+    </section>
+
+    <!-- MOBILE -->
+    <section class="section band-fire stars" id="celular">
+      <div class="wrap">
+        <div class="mobile reveal">
+          <div class="mobile-video">
+            <div class="phone-shell">
+              <video id="mobile-video" playsinline muted loop preload="none" controls poster="video/mobile_pt.jpg" aria-label="Vídeo do Gustfire jogado no celular">
+                <source src="video/gustfire_mobile_pt.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="mobile-text">
+            <span class="kicker" data-i18n="mob.kicker">Celular</span>
+            <h2 class="h2" data-i18n-html="mob.title">Já funciona no <span class="fire">celular</span></h2>
+            <p class="lead" data-i18n="mob.lead">Abra o Gustfire no navegador do seu Android ou iPhone: sem instalar nada e com controles feitos para o polegar. É a mesma batalha do computador.</p>
+            <ul class="ticks">
+              <li data-i18n="mob.t1">Setas, botão FOGO e uma gaveta com as habilidades 1–9, tudo na tela</li>
+              <li data-i18n="mob.t2">Segure FOGO para carregar a força e solte para atirar</li>
+              <li data-i18n="mob.t3">Segure um item ou habilidade para ler a descrição</li>
+              <li data-i18n="mob.t4">Sua conta e o seu progresso online valem em qualquer aparelho</li>
+              <li data-i18n="mob.t5">Para jogar em tela cheia, adicione à tela inicial (iPhone: Compartilhar → Adicionar à Tela de Início)</li>
+            </ul>
+            <div class="mobile-cta">
+              <a class="btn btn-fire btn-xl btn-glow" data-play href="/jogar/">
+                <img src="img/game/ui/play.png" alt="" aria-hidden="true">
+                <span data-i18n="mob.play">Jogar no celular</span>
+              </a>
+            </div>
+            <div class="stores" role="group" aria-label="Aplicativos">
+              <span class="stores-label" data-i18n="mob.stores">Nas lojas oficiais:</span>
+              <span class="store" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">Google Play</span>
+              <span class="store" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">App Store</span>
+            </div>
+            <p class="mobile-note" data-i18n="mob.note">Em fase de testes no celular: o desempenho varia conforme o aparelho. Jogue com o aparelho na horizontal.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -312,12 +353,13 @@
         </div>
         <div class="faq reveal">
           <details open><summary data-i18n="faq.q1">Quanto custa?</summary><div data-i18n="faq.a1">Nada. Gustfire é grátis para jogar. A loja vende só aparência e conveniência (como abas extras da Mochila), sem atributos: quem paga não fica mais forte.</div></details>
-          <details><summary data-i18n="faq.q2">Onde eu jogo?</summary><div data-i18n="faq.a2">Direto no navegador, sem instalar nada: é só clicar em Jogar. A versão para Windows e Linux vai chegar pela Steam.</div></details>
+          <details><summary data-i18n="faq.q2">Onde eu jogo?</summary><div data-i18n="faq.a2">Direto no navegador, sem instalar nada: é só clicar em Jogar, no computador ou no celular (Android e iPhone). A versão para Windows e Linux vai chegar pela Steam, e os aplicativos para Google Play e App Store estão a caminho.</div></details>
           <details><summary data-i18n="faq.q3">Preciso criar conta?</summary><div data-i18n="faq.a3">Para jogar online, sim: a conta é criada na própria tela de entrada, só com nome e senha. O modo offline, contra a IA, funciona sem conta.</div></details>
           <details><summary data-i18n="faq.q4">Dá para jogar com os amigos?</summary><div data-i18n="faq.a4">Sim. Montem uma sala no Salão de Jogos para duelos de até 4 contra 4, ou entrem juntos nas instâncias, com até 4 jogadores.</div></details>
           <details><summary data-i18n="faq.q5">Tem em inglês?</summary><div data-i18n="faq.a5">O jogo inteiro está em português e inglês, com nomes próprios em cada idioma. A escolha fica na tela de entrada.</div></details>
-          <details><summary data-i18n="faq.q6">Que computador eu preciso?</summary><div data-i18n="faq.a6">No navegador, qualquer computador com um navegador atualizado e WebGL 2 (quase todos dos últimos 8 anos). Na versão para computador: Windows 10 ou Linux de 64 bits, 4 GB de memória e placa de vídeo com OpenGL 3.3.</div></details>
+          <details><summary data-i18n="faq.q6">Que computador eu preciso?</summary><div data-i18n="faq.a6">No navegador, qualquer computador com um navegador atualizado e WebGL 2 (quase todos dos últimos 8 anos). No celular, um Android ou iPhone recente com navegador atualizado, com o aparelho na horizontal. Na versão para computador: Windows 10 ou Linux de 64 bits, 4 GB de memória e placa de vídeo com OpenGL 3.3.</div></details>
           <details><summary data-i18n="faq.q7">E os meus dados?</summary><div data-i18n="faq.a7">Guardamos só o necessário para jogar online: conta, personagem e o que acontece no jogo. Não há anúncios nem rastreadores, e você pode baixar os seus dados ou excluir a conta dentro do jogo, em Ajuda → Minha conta.</div></details>
+          <details><summary data-i18n="faq.q9">E o aplicativo para celular?</summary><div data-i18n="faq.a9">Estamos preparando os aplicativos para Google Play e App Store. Até lá, o jogo roda no navegador do celular, com controles por toque, e a sua conta online vale em qualquer aparelho.</div></details>
           <details><summary data-i18n="faq.q8">O jogo está pronto?</summary><div data-i18n="faq.a8">Estamos em fase de testes. O combate, as instâncias, a economia e o leilão já funcionam; o balanceamento vai sendo ajustado junto com os jogadores.</div></details>
         </div>
       </div>
@@ -352,6 +394,8 @@
             <li><a href="#galeria" data-i18n="nav.gallery">Galeria</a></li>
             <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
             <li><span class="soon" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">Steam</span></li>
+            <li><span class="soon" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">Google Play</span></li>
+            <li><span class="soon" data-soon="em breve" data-i18n-attr="data-soon:footer.soon">App Store</span></li>
           </ul>
         </div>
         <div>

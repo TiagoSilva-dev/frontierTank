@@ -52,6 +52,22 @@ No Mac: baixe o zip, descompacte, abra `Gustfire.xcodeproj`, em **Signing & Capa
 
 O identificador precisa ser um que ninguém mais registrou na Apple: se o Xcode reclamar de `com.gustfire.game`, use `--bundle`. O Godot não monta o `.ipa` fora do macOS; o projeto sai pronto para o Xcode.
 
+## Vídeo para as redes sociais
+
+`tools/make_mobile_trailer.py` faz o vídeo vertical (9:16, ~29 s, português e inglês) do jogo **jogado por toque**. Não é uma simulação: o diretor (`tools/trailer/director.gd`, `--seg=pilot`) manda ao jogo os mesmos `ScreenTouch` que um celular manda, nos botões da tela (andar, mirar, FOGO, gaveta HAB., orbe POW), com um marcador de dedo desenhado por cima; o tiro vem do solver dos bots (`EnemyAI.choose_shot`), então o piloto acerta. A montagem (ffmpeg + Pillow) tem o celular que gira de pé para deitado, o jogo dentro da moldura com um zoom embaixo (gaveta, botões, força), câmera acelerada no voo e lenta no impacto, um "tec" a cada toque, o cartão final com o endereço sendo digitado e a música da batalha.
+
+```bash
+GODOT=/caminho/godot python tools/make_mobile_trailer.py --lang pt_BR     # grava e monta
+GODOT=... python tools/make_mobile_trailer.py --lang en
+python tools/make_mobile_trailer.py --lang pt_BR --skip-record             # só remonta (ajustar texto e cortes)
+python tools/make_mobile_trailer.py --lang en --record-only --scene boss   # regrava uma cena
+```
+
+- As cenas usam `--seed=7` (opção de captura do `main.gd`): as duas línguas gravam o **mesmo** roteiro, e os cortes (`EDIT`) valem para as duas. Se mudar uma cena ou a semente, confira os tempos em `build/trailer/mobile/<lang>/<cena>_taps.json`.
+- Saída: `store/trailer/gustfire_mobile_{pt,en}_9x16.mp4` e a cópia leve com pôster em `website/video/` (a seção **Celular** do site; `--no-web` não escreve lá).
+- O vídeo diz "gustfire.online" e "Google Play e App Store: em breve". Troque o `end4` em `TEXT` quando as lojas abrirem.
+- Não ouvi o áudio (só medi: ~-15 LUFS); confira o som antes de postar.
+
 ## O que medir no spike
 
 O contador de FPS liga **tocando com três dedos ao mesmo tempo** (é o F3 do computador); na web também `?fps=1`, e `?bench=30` joga uma batalha 4 contra 4 pela IA e mostra a média e os 1% mais lentos na tela.

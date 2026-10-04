@@ -89,6 +89,8 @@ func _ready() -> void:
 	add_child(steam)
 	audio = GameAudio.new()
 	add_child(audio)
+	if args.has("seed"):
+		LobbyDirectory.fixed_seed = int(args.seed)
 	lobby = LobbyDirectory.new()
 	lobby.player_level = profile.level()
 	lobby.my_name = profile.player_name
@@ -503,6 +505,8 @@ func start_battle() -> void:
 	run = null
 	var battle: BattleScreen = BattleScreen.new()
 	battle.config = {"mode": room.mode, "map": room.map, "turn_seconds": room.turn_seconds, "teams": [team, rivals]}
+	if args.has("seed"):
+		battle.config.seed = int(args.seed)
 	switch_to(battle, "battle")
 
 func start_instance() -> void:
@@ -531,6 +535,8 @@ func start_phase() -> void:
 		return
 	var battle: BattleScreen = BattleScreen.new()
 	battle.config = run.phase_config(run.members)
+	if args.has("seed") and not battle.config.has("seed"):
+		battle.config.seed = int(args.seed)
 	switch_to(battle, "battle")
 
 func battle_finished(game: LocalMatch) -> Dictionary:

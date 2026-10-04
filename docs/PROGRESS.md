@@ -6,6 +6,7 @@
 - **Web no celular**: shell de celular injetado na exportação (viewport, tela cheia no Android, instalável no iPhone, tela de girar o aparelho, teclado virtual), `serve --lan` com os endereços e `Celular.cmd` (encaminha as portas do WSL2).
 - **Android e iOS**: presets no `export_presets.cfg` e `tools/mobile_build.py` (templates, SDK, APK de debug de 46 MB servido em `/android/gustfire.apk`, projeto Xcode zipado em `/ios/Gustfire-xcode.zip`).
 - **Testes**: `touch_tests` (61 verificações: botões e teclas sintéticas, dois polegares, toque no vão, toque longo, rolagem, Mochila por dedo, voltar e câmera), `net_e2e_tests` (256, com a reconexão) e o treino jogado só com toques num Chromium com toque emulado.
+- **Site e vídeo** (05/10/2026): seção **Celular** no site (o jogo já roda no navegador do Android e do iPhone; Google Play e App Store "em breve"), selo, FAQ, rodapé e a tabela de botões do celular no guia Controles da wiki; vídeo 9:16 em pt e en (`tools/make_mobile_trailer.py`, jogado por toque de verdade, cópia leve em `website/video/`); `--seed=` nas opções de captura (partida e bots do Salão) para gravar dois idiomas com o mesmo roteiro. APK agora universal (arm64-v8a e armeabi-v7a).
 - **Falta**: jogar nos aparelhos (desempenho, tamanho dos botões, teclado virtual do Safari), compras e probabilidades dos ovos para as lojas, ícones adaptativos; ver `docs/MOBILE.md`.
 
 ## 0.22: treino, liga, desafio, replays, contratos, habilidade do mascote e mais zonas

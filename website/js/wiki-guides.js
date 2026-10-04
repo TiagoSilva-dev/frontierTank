@@ -94,9 +94,9 @@
 
     controles: {
       title: { pt: "Controles", en: "Controls" },
-      intro: { pt: "Todas as teclas da batalha.", en: "Every battle key." },
+      intro: { pt: "Todas as teclas da batalha e os botões do celular.", en: "Every battle key and the phone's buttons." },
       icon: (D) => D.icons.power,
-      keywords: "teclas teclado atalhos keys keyboard shortcuts",
+      keywords: "teclas teclado atalhos keys keyboard shortcuts celular toque touch mobile phone android iphone botoes buttons",
       body: (D, h) => {
         const keys = [
           ["← →", "Andar (gasta energia)", "Walk (spends energy)"],
@@ -117,9 +117,31 @@
         ];
         const rows = keys.map(([k, pt, en]) => `<tr>${h.td(`<b style="font:700 18px var(--pixel)">${h.esc(k)}</b>`)}${h.td(h.esc(h.T(pt, en)))}</tr>`);
         const table = h.table([h.T("Tecla", "Key"), h.T("Ação", "Action")], rows);
+        // The phone (a browser on Android or iPhone): the battle gets its own buttons, which
+        // press the same keys, so the rules are the same as on the computer.
+        const touch = [
+          ["◀ ▶", "Andar (gasta energia); tocar no lado oposto vira o personagem", "Walk (spends energy); tapping the opposite side turns the fighter around"],
+          ["↑ ↓", "Mudar o ângulo (segure para mover)", "Change the angle (hold to keep moving)"],
+          [h.T("FOGO", "FIRE"), "Segurar para carregar a força, soltar para disparar", "Hold to charge power, release to fire"],
+          [h.T("HAB.", "SKILLS"), "Abre a gaveta com as habilidades 1–9 do turno", "Opens the drawer with skills 1–9 for this turn"],
+          ["Z X C · G · V · F", "Ferramentas, mascote, item auxiliar e avião de papel: um toque em cada botão da fileira", "Tools, pet, support item and paper plane: one tap on each button of the row"],
+          ["POW", "Toque no círculo roxo, no canto, com a barra cheia", "Tap the purple orb in the corner when the gauge is full"],
+          ["PASS", "Passar a vez", "Pass the turn"],
+          [h.T("Arrastar", "Drag"), "Com um dedo no campo de batalha, move a câmera; tocar no minimapa leva a câmera até ali", "One finger on the battlefield moves the camera; tapping the minimap takes it there"],
+          [h.T("Segurar", "Press and hold"), "Em qualquer item ou habilidade, mostra a descrição (no lugar do mouse parado em cima)", "On any item or skill, shows the description (instead of hovering with a mouse)"],
+          [h.T("3 dedos", "3 fingers"), "Contador de FPS (como o F3)", "FPS counter (like F3)"],
+        ];
+        const touchRows = touch.map(([k, pt, en]) => `<tr>${h.td(`<b style="font:700 18px var(--pixel)">${h.esc(k)}</b>`)}${h.td(h.esc(h.T(pt, en)))}</tr>`);
+        const touchTable = h.table([h.T("Botão", "Button"), h.T("Ação", "Action")], touchRows);
         return {
-          pt: `${table}<p class="note">O botão <b>Confiar</b> deixa a IA jogar os seus turnos (bom se você precisar sair um instante). No navegador, o endereço aceita <code>?lang=en</code> e <code>?fps=1</code>.</p>`,
-          en: `${table}<p class="note">The <b>Trust</b> button lets the AI play your turns (handy if you need to step away). In the browser, the address accepts <code>?lang=en</code> and <code>?fps=1</code>.</p>`,
+          pt: `${table}<p class="note">O botão <b>Confiar</b> deixa a IA jogar os seus turnos (bom se você precisar sair um instante). No navegador, o endereço aceita <code>?lang=en</code> e <code>?fps=1</code>.</p>
+            <h2>No celular</h2>
+            <p>No Android e no iPhone, abra o jogo no navegador, com o aparelho na horizontal. A batalha ganha botões na tela, feitos para o polegar, e eles apertam as mesmas teclas do computador: as regras são as mesmas. No iPhone, <b>Compartilhar → Adicionar à Tela de Início</b> abre o jogo em tela cheia.</p>
+            ${touchTable}`,
+          en: `${table}<p class="note">The <b>Trust</b> button lets the AI play your turns (handy if you need to step away). In the browser, the address accepts <code>?lang=en</code> and <code>?fps=1</code>.</p>
+            <h2>On a phone</h2>
+            <p>On Android and iPhone, open the game in the browser with the device held sideways. The battle gets on-screen buttons made for your thumb, and they press the same keys as the computer: the rules are the same. On iPhone, <b>Share → Add to Home Screen</b> opens the game full screen.</p>
+            ${touchTable}`,
         };
       },
     },

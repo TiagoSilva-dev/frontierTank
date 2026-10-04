@@ -16,6 +16,7 @@ O site fica em `website/`: uma página inicial para chamar jogadores e uma wiki 
 1. **Hero**: céu da Ilha Celeste com zoom lento, o logotipo com brilho passando, Lani e Nilo nas laterais, o Grifo da Tempestade atravessando o céu, **JOGAR GRÁTIS** e **Explorar a wiki**.
 2. **Números**: armas, instâncias, monstros, níveis de mapa, fortalecimento e 4v4, todos lidos dos dados do jogo.
 3. **Teste sua mira** (`js/playground.js`): uma mini batalha jogável no navegador com a **física do jogo** (velocidade de 190 a 900, gravidade 420, vento ×8, carga de 55%/s, dano em área com queda até 35%, ângulo preso à faixa da arma). Terreno destrutível com as peças da Ilha Celeste, tracejado dos tiros, três armas (Tijolaço, Cata-Vento, Prisma) e monstros que atiram de volta. Ao vencer, o botão chama para o jogo. Teclado (↑ ↓, Espaço, 1–3), mouse e toque.
+3b. **Celular** (`#celular`, 0.23): o anúncio de que o jogo **já roda no navegador do Android e do iPhone**, com o vídeo vertical numa moldura de celular (`website/video/gustfire_mobile_<pt|en>.mp4` + `mobile_<pt|en>.jpg`, trocados com o idioma por `swapVideo` em `js/home.js`; toca mudo enquanto está na tela e respeita `prefers-reduced-motion`), os controles por toque, a dica de adicionar à tela inicial e os selos **Google Play** e **App Store** com "em breve" (só texto: sem logotipos de loja até existirem as páginas). O selo do topo, a FAQ (onde jogar, requisitos, "E o aplicativo para celular?") e o rodapé dizem o mesmo; em tela de toque (`pointer: coarse`) a dica do "Teste sua mira" troca as teclas pelo toque. O guia **Controles** da wiki ganhou a tabela dos botões do celular.
 4. **O jogo**: PvP, instâncias e POW com capturas de verdade, mais quatro cartões (loot, Ferreiro, leilão, visual).
 5. **Arsenal**: as 12 armas com o especial, barras de dano/raio/ângulo e onde conseguir; troca sozinha até o jogador clicar.
 6. **Expedições**: as 5 instâncias com o chefe na arena, fases, mecânicas e a Super Verdadeira.
@@ -63,8 +64,13 @@ Português e inglês. Na primeira visita segue o idioma do navegador; o botão P
 
 O site não usa rastreadores, anúncios nem fontes do Google (as fontes vão junto, em `website/fonts/`): combina com a Política de Privacidade, que promete não usar rastreadores. O único dado guardado é a escolha de idioma, no `localStorage` do navegador.
 
+## Vídeo do celular (`website/video/`)
+
+`python tools/make_mobile_trailer.py --lang pt_BR` e `--lang en` (precisa de Godot, ffmpeg e Pillow; `docs/MOBILE.md`) gravam o jogo em modo toque e montam o vídeo 9:16 para Instagram, TikTok e Shorts em `store/trailer/` (cerca de 30 MB cada, fora do site) e, no fim, uma cópia leve (720×1280, ~4,6 MB) e o pôster em `website/video/`. Refaça os dois idiomas depois de mudar a interface de batalha, o POW ou os textos do vídeo, e commite os arquivos de `website/video/`.
+
 ## Pendências
 
 - Busca de marca de “Gustfire” antes de registrar domínio e página da Steam.
+- Quando as páginas do Google Play e da App Store existirem: trocar os selos "em breve" de `#celular` e do rodapé por links (e usar os selos oficiais seguindo as regras de marca de cada loja).
 - Links de **Termos de Uso** e **Política de Privacidade** no rodapé quando os textos de `legal/` tiverem os dados da empresa e a revisão jurídica.
 - Endereço absoluto no `og:image` quando houver domínio.

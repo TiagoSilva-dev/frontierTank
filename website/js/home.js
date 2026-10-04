@@ -216,6 +216,33 @@
       img.src = `img/shots/${GF.lang}/${img.dataset.shot}.webp`;
     });
     document.title = GF.lang === "pt" ? "Gustfire · Artilharia nos céus" : "Gustfire · Sky Artillery";
+    swapVideo();
+  }
+
+  // ---------- the mobile video (a vertical clip per language, played while it is on screen) ----------
+
+  function swapVideo() {
+    const video = $("mobile-video");
+    if (!video) return;
+    const src = `video/gustfire_mobile_${GF.lang}.mp4`;
+    const source = video.querySelector("source");
+    if (source.getAttribute("src") === src) return;
+    source.setAttribute("src", src);
+    video.poster = `video/mobile_${GF.lang}.jpg`;
+    video.load();
+  }
+
+  function setupVideo() {
+    const video = $("mobile-video");
+    if (!video || !("IntersectionObserver" in window)) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Muted autoplay is allowed inline; the controls bring the sound.
+    new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      });
+    }, { threshold: 0.5 }).observe(video);
   }
 
   function render() {
@@ -251,6 +278,7 @@
   document.addEventListener("gf:lang", render);
   document.addEventListener("DOMContentLoaded", () => {
     setupLightbox();
+    setupVideo();
     setupRail();
     startWeaponCycle();
   });
