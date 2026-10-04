@@ -34,6 +34,8 @@ Encarregado pelo tratamento de dados (DPO): {{ENCARREGADO}}, pelo e-mail {{EMAIL
 
 **Steam.** Quando você joga pela Steam: o seu SteamID e as compras feitas pela carteira Steam (número do pedido, item, valor, moeda e situação). Para quê: entrar com a Steam, entregar as compras, reembolsos e prevenção de fraudes. Base legal: execução do contrato e obrigação legal.
 
+**Pagamentos (web e celular).** Quando você compra por cartão ou Pix: o número do pedido, o produto, o valor, a moeda, a situação e os códigos da sessão e do pagamento no Stripe. Os dados do cartão ou do Pix ficam só com o Stripe; nós não os vemos. Para quê: entregar a compra, reembolsos e prevenção de fraudes. Base legal: execução do contrato e obrigação legal.
+
 **Não coletamos** nome verdadeiro, CPF, e-mail (a não ser que você nos escreva), telefone, endereço, dados de cartão, localização precisa, contatos nem dados sensíveis.
 
 ## 4. Dados no seu dispositivo
@@ -47,6 +49,7 @@ Não vendemos nem alugamos dados pessoais. Eles são compartilhados só:
 - **com os outros jogadores**: o nome do personagem, o nível, a aparência, as mensagens do chat público, o nome do vendedor nos anúncios do Leilão e o que acontece nas partidas;
 - **com os fornecedores que operam o jogo para nós** (hospedagem dos servidores e do banco de dados), por contrato e só para essa finalidade;
 - **com a Valve (Steam)**, quando você joga pela Steam: o login e as compras passam por ela, sob a política de privacidade da Valve;
+- **com o Stripe**, quando você compra por cartão ou Pix fora da Steam: o pagamento é processado por ele, sob a política de privacidade do Stripe;
 - **com autoridades**, quando houver ordem judicial ou obrigação legal.
 
 ## 6. Transferência internacional
@@ -63,7 +66,7 @@ Os servidores podem ficar fora do Brasil ou da União Europeia (por exemplo, nos
 | Restante do registro de atividades | 365 dias |
 | Denúncias | 180 dias depois de analisadas |
 | Registros de acesso (IP, data e hora) | 6 meses (Marco Civil da Internet, art. 15) |
-| Compras da Steam | 5 anos (obrigações fiscais e de defesa do consumidor) |
+| Compras (Steam, cartão e Pix) | 5 anos (obrigações fiscais e de defesa do consumidor) |
 
 **Quando você exclui a conta**, apagamos na hora a conta, o personagem, os itens, as sessões, o Correio, os anúncios ativos, as suas mensagens do chat e o nome do personagem nos registros. O restante do registro de atividades fica sem ligação com você até o fim do prazo. Os registros de acesso e as compras ficam pelo prazo que a lei exige e depois são apagados.
 

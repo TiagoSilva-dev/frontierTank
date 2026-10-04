@@ -34,6 +34,8 @@ Data protection officer (DPO): {{ENCARREGADO}}, at {{EMAIL}}.
 
 **Steam.** When you play through Steam: your SteamID and the purchases made with your Steam Wallet (order number, item, amount, currency and status). Why: logging in with Steam, delivering purchases, refunds and fraud prevention. Legal basis: performance of a contract and legal obligation.
 
+**Payments (web and mobile).** When you pay by card or Pix: the order number, product, amount, currency, status and the Stripe session and payment codes. Card or Pix details stay with Stripe only; we do not see them. Why: delivering the purchase, refunds and fraud prevention. Legal basis: performance of a contract and legal obligation.
+
 **We do not collect** your real name, tax number, e-mail (unless you write to us), phone number, address, card details, precise location, contacts or sensitive data.
 
 ## 4. Data on your device
@@ -47,6 +49,7 @@ We do not sell or rent personal data. It is only shared:
 - **with other players**: your character name, level, looks, public chat messages, the seller name on Auction listings and what happens in matches;
 - **with the providers that run the game for us** (server and database hosting), under contract and only for that purpose;
 - **with Valve (Steam)**, when you play through Steam: login and purchases go through Steam, under Valve's privacy policy;
+- **with Stripe**, when you pay by card or Pix outside Steam: it processes the payment, under Stripe's privacy policy;
 - **with authorities**, when there is a court order or a legal obligation.
 
 ## 6. International transfers
@@ -63,7 +66,7 @@ The servers may be outside Brazil or the European Union (for example, in the Uni
 | Rest of the activity log | 365 days |
 | Chat reports | 180 days after review |
 | Access logs (IP, date and time) | 6 months (Brazilian Internet Civil Framework, art. 15) |
-| Steam purchases | 5 years (tax and consumer protection obligations) |
+| Purchases (Steam, card and Pix) | 5 years (tax and consumer protection obligations) |
 
 **When you delete your account**, we immediately erase the account, character, items, sessions, Mail, active listings, your chat messages and your character name in the logs. The rest of the activity log is no longer linked to you and is erased at the end of its period. Access logs and purchases are kept for the period the law requires and then erased.
 

@@ -43,8 +43,8 @@ As moedas de ouro, Solares, Estrelas e as demais moedas, os itens, os mapas e os
 - O jogo é gratuito. Vendemos apenas cosméticos e conveniências, nunca poder: armas, pedras, mapas e moedas de troca não são vendidos por dinheiro.
 - Não há caixas de recompensa pagas: você sabe o que está comprando antes de pagar.
 - Na Steam, as compras são feitas pela carteira Steam e também seguem os termos da Steam. Preço, moeda e impostos são mostrados pela Steam antes do pagamento.
-- Reembolsos seguem a política de reembolso da Steam e a lei de defesa do consumidor aplicável (no Brasil, o Código de Defesa do Consumidor). Uma compra reembolsada é retirada da conta.
-- As versões de teste (como a versão web de testes fechados) não têm compras.
+- Na versão web e no celular, as compras são pagas em reais, por cartão ou Pix, numa página de pagamento do Stripe (processador de pagamentos). Nós não recebemos nem guardamos os dados do seu cartão. O preço final é mostrado antes de você pagar, e os itens chegam ao Correio do jogo assim que o pagamento é confirmado.
+- Reembolsos seguem a política de reembolso da Steam (compras na Steam) e a lei de defesa do consumidor aplicável (no Brasil, o Código de Defesa do Consumidor, inclusive o direito de arrependimento de 7 dias nas compras feitas pela internet). Para pedir reembolso de uma compra fora da Steam, escreva para o contato indicado no fim destes Termos, com o número do pedido. Uma compra reembolsada é retirada da conta.
 
 ## 8. Versões de teste
 

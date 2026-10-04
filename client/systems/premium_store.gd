@@ -1,7 +1,8 @@
 class_name PremiumStore
 extends RefCounted
 
-# The shop paid with the Steam Wallet (launch checklist: Steam microtransactions).
+# The shop paid with the Steam Wallet (launch checklist: Steam microtransactions) or, on the
+# web and mobile builds, with card or Pix on a Stripe page (docs/PAGAMENTOS.md).
 # shared/balance/store.json lists the products: what each one delivers (cosmetics with
 # `premium` in items.json: no attributes, bound, never in the gold shop or the auction),
 # the item number on the Steam order and the price per wallet currency. The game server
@@ -64,6 +65,25 @@ static func price_text(entry: Dictionary) -> String:
 	var cents: int = int((entry.get("prices", {}) as Dictionary).get("USD", 0))
 	var value: String = "%d.%02d" % [cents / 100, cents % 100]
 	return ("US$ " + value.replace(".", ",")) if not Lang.is_english() else ("US$" + value)
+
+# Outside Steam (web, mobile) the shop sells in reais, by card or Pix on a Stripe page.
+static func price_text_brl(entry: Dictionary) -> String:
+	var cents: int = int((entry.get("prices", {}) as Dictionary).get("BRL", 0))
+	return "R$ %d,%02d" % [cents / 100, cents % 100]
+
+# The price shown on a card: dollars as a reference on Steam, reais everywhere else.
+static func price_label(entry: Dictionary, via_steam: bool) -> String:
+	return price_text(entry) if via_steam else price_text_brl(entry)
+
+# Anyone online can buy: with the Steam overlay on Steam, with card or Pix elsewhere.
+static func can_buy(app: Object) -> bool:
+	return bool(app.online)
+
+static func buy_label(via_steam: bool) -> String:
+	return Lang.t("COMPRAR NA STEAM") if via_steam else Lang.t("COMPRAR")
+
+static func buy_hint(via_steam: bool) -> String:
+	return Lang.t("Abre a janela de compra da Steam. O Passe chega pelo Correio.") if via_steam else Lang.t("Abre a página de pagamento (cartão ou Pix). O Passe chega pelo Correio.")
 
 # The product name for the Steam order, in the player's language (the server runs in
 # Portuguese, the source language).

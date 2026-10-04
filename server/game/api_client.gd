@@ -168,18 +168,52 @@ var memory_banned: Dictionary = {}
 var memory_orders: Dictionary = {}
 var next_order: int = 100000
 
-func store_init(account: int, entry: Dictionary, locale: String) -> Dictionary:
-	# Prices go as whole cents (the JSON parser reads numbers as floats; the API wants ints).
+# The body both ways of buying send: the product, what it delivers and its prices (whole
+# cents; the JSON parser reads numbers as floats and the API wants ints).
+func store_body(account: int, entry: Dictionary, locale: String) -> Dictionary:
 	var prices: Dictionary = {}
 	for currency: Variant in entry.prices:
 		prices[str(currency)] = int(entry.prices[currency])
-	var body: Dictionary = {"account_id": account, "sku": str(entry.sku), "steam_item_id": int(entry.steam_item_id), "description": PremiumStore.description(entry, locale), "items": PremiumStore.mail_items(entry), "prices": prices, "language": "en" if locale.begins_with("en") else "pt"}
+	return {"account_id": account, "sku": str(entry.sku), "steam_item_id": int(entry.steam_item_id), "description": PremiumStore.description(entry, locale), "items": PremiumStore.mail_items(entry), "prices": prices, "language": "en" if locale.begins_with("en") else "pt"}
+
+func store_init(account: int, entry: Dictionary, locale: String) -> Dictionary:
+	var body: Dictionary = store_body(account, entry, locale)
 	if is_memory():
 		var order: Dictionary = {"order_id": next_order, "account": account, "sku": body.sku, "items": body.items, "amount": int(entry.prices.get("USD", 0)), "currency": "USD", "status": "init", "description": body.description}
 		next_order += 1
 		memory_orders[int(order.order_id)] = order
 		return copy({"order_id": order.order_id, "amount": order.amount, "currency": order.currency})
 	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/init", body))
+
+# Real money on the web and mobile (Stripe Checkout, card and Pix, in BRL): the API opens
+# the order and answers the page address, which the game opens in the browser. The player
+# pays there; the items reach the Correio when Stripe confirms (webhook, or store_status).
+# In memory there is no page: the order counts as paid at the first store_status.
+func store_checkout(account: int, entry: Dictionary, locale: String) -> Dictionary:
+	var body: Dictionary = store_body(account, entry, locale)
+	body.erase("steam_item_id")
+	if is_memory():
+		for order: Dictionary in memory_orders.values():
+			if int(order.account) == account and order.sku == body.sku and order.status == "init" and order.has("url"):
+				return copy({"order_id": order.order_id, "url": order.url, "amount": order.amount, "currency": order.currency})
+		var order: Dictionary = {"order_id": next_order, "account": account, "sku": body.sku, "items": body.items, "amount": int(entry.prices.get("BRL", 0)), "currency": "BRL", "status": "init", "description": body.description, "url": "memory://checkout/%d" % next_order}
+		next_order += 1
+		memory_orders[int(order.order_id)] = order
+		return copy({"order_id": order.order_id, "url": order.url, "amount": order.amount, "currency": order.currency})
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/checkout", body))
+
+# {"order": {"order_id", "sku", "status": init | paid | cancelled | failed | refunded}}
+func store_status(account: int, order_id: int) -> Dictionary:
+	if is_memory():
+		var order: Dictionary = memory_orders.get(order_id, {})
+		if order.is_empty() or int(order.account) != account:
+			return {"error": "not_found"}
+		if order.status == "init" and order.has("url"):
+			order.status = "paid"
+			for item: Dictionary in order.items:
+				memory_add_mail(account, "store", {"id": 0, "kind": "item"}, item, {}, {"sku": order.sku, "order_id": order_id, "description": order.description, "provider": "stripe"})
+		return copy({"order": {"order_id": order_id, "sku": order.sku, "status": order.status}})
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/store/status", {"server_id": server_id, "account_id": account, "order_id": order_id}))
 
 func store_finalize(account: int, order_id: int) -> Dictionary:
 	if is_memory():

@@ -354,12 +354,12 @@ func build_pass() -> void:
 	if owned:
 		UiKit.label(box, tr("VOCÊ TEM"), Rect2(470, 40, 130, 30), 20, Color("9aff7a"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
-	var ready: bool = bool(app.online) and app.steam.available
-	UiKit.label(box, PremiumStore.price_text(entry) if not entry.is_empty() else "", Rect2(470, 12, 130, 28), 20, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var buy: Button = UiKit.button(box, tr("COMPRAR NA STEAM"), Rect2(466, 46, 136, 44), do_buy_pass, "button_blue", 14)
+	var ready: bool = PremiumStore.can_buy(app)
+	UiKit.label(box, PremiumStore.price_label(entry, app.steam.available) if not entry.is_empty() else "", Rect2(470, 12, 130, 28), 20, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var buy: Button = UiKit.button(box, PremiumStore.buy_label(app.steam.available), Rect2(466, 46, 136, 44), do_buy_pass, "button_blue", 14)
 	buy.name = "BuyPass"
 	buy.disabled = busy or not ready
-	buy.tooltip_text = tr("Compras só na versão Steam, com a conta ligada à Steam.") if not ready else tr("Abre a janela de compra da Steam. O Passe chega pelo Correio.")
+	buy.tooltip_text = tr("Entre com a sua conta para comprar.") if not ready else PremiumStore.buy_hint(app.steam.available)
 
 # ---------- choices ----------
 
@@ -503,7 +503,7 @@ func do_stop() -> void:
 	await present(before, first_uid, album_before, tr("Caçada parada."))
 
 func do_buy_pass() -> void:
-	message = tr("Aprove a compra na janela da Steam…")
+	message = tr("Aprove a compra na janela da Steam…") if app.steam.available else tr("Abrindo a página de pagamento…")
 	rebuild()
 	message = await app.buy_premium(str(PetHunt.rules().pass_item))
 	if is_inside_tree():

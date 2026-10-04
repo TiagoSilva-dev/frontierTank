@@ -244,6 +244,8 @@ static func mail_title(mail: Dictionary) -> String:
 		"purchase":
 			return Lang.t("Comprado no leilão: %s") % item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 		"store":
+			if str(detail.get("provider", "steam")) != "steam":
+				return Lang.t("Loja: %s") % item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 			return Lang.t("Loja Steam: %s") % item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 		"returned":
 			var name_text: String = item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))

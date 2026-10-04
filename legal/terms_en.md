@@ -43,8 +43,8 @@ Gold coins, Solars, Stars and the other currencies, items, maps and cosmetics ar
 - The game is free to play. We only sell cosmetics and conveniences, never power: weapons, stones, maps and trade currencies are not sold for money.
 - There are no paid loot boxes: you know what you are buying before you pay.
 - On Steam, purchases are made with your Steam Wallet and also follow Steam's terms. Price, currency and taxes are shown by Steam before payment.
-- Refunds follow Steam's refund policy and the applicable consumer protection law. A refunded purchase is removed from the account.
-- Test versions (such as the closed test web version) have no purchases.
+- On the web and mobile versions, purchases are paid in Brazilian reais (BRL), by card or Pix, on a payment page run by Stripe (payment processor). We do not receive or store your card details. The final price is shown before you pay, and the items arrive in the in-game Mail as soon as the payment is confirmed.
+- Refunds follow Steam's refund policy (Steam purchases) and the applicable consumer protection law (in Brazil, the Consumer Defense Code, including the 7-day right of withdrawal for purchases made online). To ask for a refund of a purchase made outside Steam, write to the contact at the end of these Terms with the order number. A refunded purchase is removed from the account.
 
 ## 8. Test versions
 

@@ -66,7 +66,7 @@ func build_preview() -> void:
 	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
-	var hint: String = tr("Só aparência e conveniência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam.") if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")
+	var hint: String = premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")
 	UiKit.label(contents, hint, Rect2(70, 596, 332, 50), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
 
@@ -126,18 +126,32 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var count: int = (entry.items as Array).size()
-	UiKit.label(box, PremiumStore.price_text(entry) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, PremiumStore.price_label(entry, app.steam.available) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var owned: bool = PremiumStore.owns_all(app.profile, entry)
-	var ready: bool = bool(app.online) and app.steam.available
-	var buy: Button = UiKit.button(box, tr("VOCÊ TEM") if owned else tr("COMPRAR NA STEAM"), Rect2(14, 190, 160, 38), buy_premium.bind(str(entry.sku)), "button_blue", 14)
+	var ready: bool = PremiumStore.can_buy(app)
+	var pending: Variant = app.get("pending_checkout")
+	var waiting: bool = pending is Dictionary and str(pending.get("sku", "")) == str(entry.sku)
+	var label: String = tr("VOCÊ TEM") if owned else (tr("ABRIR PAGAMENTO") if waiting else PremiumStore.buy_label(app.steam.available))
+	var buy: Button = UiKit.button(box, label, Rect2(14, 190, 160, 38), (reopen_payment if waiting else buy_premium.bind(str(entry.sku))), "button_blue", 14)
 	buy.name = "Buy_" + str(entry.sku)
 	buy.disabled = owned or not ready
 	if not ready and not owned:
-		buy.tooltip_text = tr("Compras só na versão Steam, com a conta ligada à Steam.")
-		UiKit.label(box, tr("Só na versão Steam"), Rect2(4, 170, 180, 20), 12, UiKit.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		buy.tooltip_text = tr("Entre com a sua conta para comprar.")
+		UiKit.label(box, tr("Só online"), Rect2(4, 170, 180, 20), 12, UiKit.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+
+func premium_hint() -> String:
+	if app.steam.available:
+		return tr("Só aparência e conveniência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam.")
+	return tr("Só aparência e conveniência: não muda atributos e chega pelo Correio.\nPagamento por cartão ou Pix, em reais.")
+
+# The payment page again, from a click (a browser opens it only then).
+func reopen_payment() -> void:
+	app.open_checkout()
+	message = tr("Página de pagamento aberta no navegador.")
+	build()
 
 func buy_premium(sku: String) -> void:
-	message = tr("Aprove a compra na janela da Steam…")
+	message = tr("Aprove a compra na janela da Steam…") if app.steam.available else tr("Abrindo a página de pagamento…")
 	build()
 	message = await app.buy_premium(sku)
 	if is_inside_tree():

@@ -95,7 +95,7 @@ O contador de FPS liga **tocando com três dedos ao mesmo tempo** (é o F3 do co
 
 ## Fora do escopo (decisões antes das lojas)
 
-- **Compras**: o Passe da Caçada e o Pacote Fundador passam pela Steam, que não existe no celular. Bem digital nas lojas exige Google Play Billing e Apple IAP (comissão de 15–30%).
+- **Compras**: no navegador, no APK avulso e no projeto Xcode a loja vende por cartão e Pix em reais pelo Stripe (`docs/PAGAMENTOS.md`). Em loja (Google Play, App Store) bem digital exige Google Play Billing e Apple IAP (comissão de 15–30%): decidir antes de publicar.
 - **Ovos e drops aleatórios** exigem divulgar as probabilidades nas duas lojas.
 - **Conta**: sem Steam o login é e-mail/senha; a Apple cobra a exclusão da conta dentro do app (existe em AJUDA → Minha conta).
 - Exportar os dados da conta grava um arquivo em `user://exports` fora da web; no celular não há como abri-lo (funciona no navegador e no computador).

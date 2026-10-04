@@ -832,8 +832,10 @@ func sync_achievements() -> void:
 # the player, and once approved the items arrive in the Correio. Returns the message for
 # the shop.
 func buy_premium(sku: String) -> String:
-	if not online or not steam.available:
-		return tr("Compras só na versão Steam, com a conta ligada à Steam.")
+	if not online:
+		return tr("Entre com a sua conta para comprar.")
+	if not steam.available:
+		return await buy_with_card(sku)
 	var reply: Dictionary = await net.request("store_buy", {"sku": sku}, 30.0)
 	if not reply.ok:
 		return server_text(reply.get("error", ""))
@@ -851,6 +853,57 @@ func buy_premium(sku: String) -> String:
 		return server_text(done.get("error", ""))
 	audio.play("ui_coin")
 	return tr("Compra concluída! Os itens chegaram ao Correio.")
+
+# Web and mobile (no Steam): the server opens a Stripe page (card or Pix, in reais), the
+# game opens it in the browser and asks the server how the order stands until it is paid.
+# The items arrive in the Correio; if the game closes meanwhile, the next login delivers.
+var pending_checkout: Dictionary = {}
+const CHECKOUT_FAST: float = 4.0
+const CHECKOUT_SLOW: float = 10.0
+const CHECKOUT_WATCH: float = 3600.0
+
+func buy_with_card(sku: String) -> String:
+	var reply: Dictionary = await net.request("store_checkout", {"sku": sku}, 30.0)
+	if not reply.ok:
+		return server_text(reply.get("error", ""))
+	pending_checkout = {"sku": sku, "order_id": int(reply.order_id), "url": str(reply.url)}
+	open_checkout()
+	watch_checkout(int(reply.order_id))
+	return tr("Página de pagamento aberta no navegador (cartão ou Pix). Os itens chegam ao Correio quando o pagamento for confirmado.")
+
+# Only an https address from the server is opened. Called straight from a click too (the
+# shop's ABRIR PAGAMENTO), because browsers block a window opened long after the click.
+func open_checkout() -> void:
+	var url: String = str(pending_checkout.get("url", ""))
+	if url.begins_with("https://"):
+		OS.shell_open(url)
+
+func watch_checkout(order_id: int) -> void:
+	var waited: float = 0.0
+	var failures: int = 0
+	while is_inside_tree() and online and waited < CHECKOUT_WATCH and int(pending_checkout.get("order_id", 0)) == order_id:
+		var step: float = CHECKOUT_FAST if waited < 120.0 else CHECKOUT_SLOW
+		await get_tree().create_timer(step).timeout
+		waited += step
+		var answer: Dictionary = await net.request("store_status", {"order_id": order_id}, 20.0)
+		if not answer.ok:
+			failures += 1
+			if failures >= 5:
+				break
+			continue
+		failures = 0
+		match str(answer.get("status", "")):
+			"paid":
+				pending_checkout = {}
+				audio.play("ui_coin")
+				toast(tr("Compra confirmada! Os itens chegaram ao Correio."))
+				return
+			"cancelled", "failed", "refunded":
+				pending_checkout = {}
+				toast(tr("O pagamento não foi concluído."))
+				return
+	if int(pending_checkout.get("order_id", 0)) == order_id:
+		pending_checkout = {}
 
 # ---------- online (backend 0.11) ----------
 

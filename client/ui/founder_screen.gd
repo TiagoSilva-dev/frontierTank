@@ -195,7 +195,7 @@ func build_footer() -> void:
 	buy_button.name = "BuyButton"
 	buy_button.disabled = not open_sale
 	if not entry.is_empty():
-		UiKit.label(self, PremiumStore.price_text(entry), Rect2(850, 674, 200, 40), 22, GOLD, Color("3a2208"))
+		UiKit.label(self, PremiumStore.price_label(entry, app.steam.available), Rect2(850, 674, 200, 40), 22, GOLD, Color("3a2208"))
 
 func build_owner_switches() -> void:
 	UiKit.label(self, "✦ " + tr("VOCÊ É UM FUNDADOR") + " ✦", Rect2(20, 668, 340, 40), 22, GOLD, Color("3a2208"))

@@ -325,6 +325,10 @@ func handle(session: PlayerSession, text: String) -> void:
 			store_finalize(session, message)
 		"store_cancel":
 			store_cancel(session, message)
+		"store_checkout":
+			store_checkout(session, message)
+		"store_status":
+			store_status(session, message)
 
 # ---------- login ----------
 
@@ -1623,8 +1627,47 @@ func store_cancel(session: PlayerSession, message: Dictionary) -> void:
 	var result: Dictionary = await api.store_cancel(session.account_id, order_id)
 	reply(session, message, {"error": store_error(str(result.error))} if result.has("error") else {})
 
+# Real money outside Steam (web, mobile): the same product checks as store_buy, then the
+# API opens a Stripe page and the answer carries its address.
+func store_checkout(session: PlayerSession, message: Dictionary) -> void:
+	var entry: Dictionary = PremiumStore.product(str(message.get("sku", "")))
+	if not PremiumStore.valid(entry):
+		reply(session, message, {"error": Lang.t("Produto desconhecido.")})
+		return
+	if not PremiumStore.on_sale(entry):
+		reply(session, message, {"error": Lang.t("Este pacote não está mais à venda.")})
+		return
+	if not session.profile.created:
+		reply(session, message, {"error": Lang.t("Crie o seu personagem primeiro.")})
+		return
+	if PremiumStore.owns_all(session.profile, entry):
+		reply(session, message, {"error": Lang.t("Você já tem estes itens.")})
+		return
+	var result: Dictionary = await api.store_checkout(session.account_id, entry, session.locale)
+	audit(session, "store.checkout", {"sku": str(entry.sku), "order_id": result.get("order_id", 0), "error": result.get("error", "")})
+	if result.has("error"):
+		reply(session, message, {"error": store_error(str(result.error))})
+		return
+	reply(session, message, {"order_id": int(result.order_id), "url": str(result.url), "amount": int(result.amount), "currency": str(result.currency)})
+
+# The game asks while the player pays: when the order is paid the Correio has the items.
+func store_status(session: PlayerSession, message: Dictionary) -> void:
+	var order_id: int = number(message, "order_id")
+	var result: Dictionary = await api.store_status(session.account_id, order_id)
+	if result.has("error"):
+		reply(session, message, {"error": store_error(str(result.error))})
+		return
+	var order: Dictionary = result.get("order", {})
+	reply(session, message, {"status": str(order.get("status", "")), "sku": str(order.get("sku", ""))})
+	if str(order.get("status", "")) == "paid":
+		notify_mail(session)
+
 static func store_error(code: String) -> String:
 	match code:
+		"pay_unavailable", "pay_error":
+			return Lang.t("O pagamento não está disponível agora. Tente de novo em instantes.")
+		"rate_limited":
+			return Lang.t("Muitos pedidos abertos. Conclua ou aguarde alguns minutos.")
 		"steam_required":
 			return Lang.t("Compras só na versão Steam, com a conta ligada à Steam.")
 		"steam_unavailable", "steam_error", "api_unavailable":

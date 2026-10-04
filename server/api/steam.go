@@ -56,6 +56,9 @@ type Order struct {
 	Amount      int             `json:"amount"`
 	Currency    string          `json:"currency"`
 	Status      string          `json:"status"`
+	Provider    string          `json:"provider"`
+	ProviderRef string          `json:"-"`
+	CheckoutURL string          `json:"-"`
 	CreatedAt   time.Time       `json:"created_at"`
 }
 
@@ -302,6 +305,10 @@ func (a *API) orderReply(w http.ResponseWriter, order Order, err error) {
 // is safe: a paid order just answers again.
 func (a *API) finalizeOrder(ctx context.Context, serverID string, accountID, orderID int64) (Order, error) {
 	return a.store.PayOrder(ctx, serverID, accountID, orderID, func(order Order) error {
+		if order.Provider != "steam" {
+			// Stripe orders are paid by the webhook (or by stripeSync), never by the game.
+			return ErrOrderState
+		}
 		err := a.steam.FinalizeTxn(ctx, order.OrderID)
 		if err == nil {
 			return nil
@@ -358,6 +365,7 @@ func (a *API) storeReconcile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	delivered = append(delivered, a.stripeReconcile(r.Context(), body.AccountID)...)
 	writeJSON(w, http.StatusOK, map[string]any{"delivered": delivered})
 }
 
@@ -430,12 +438,12 @@ func (s *Store) SetOrderStatus(ctx context.Context, orderID int64, status, steam
 	return err
 }
 
-const orderColumns = `order_id, account_id, steam_id, sku, steam_item_id, description, items, amount, currency, status, created_at`
+const orderColumns = `order_id, account_id, COALESCE(steam_id, ''), sku, COALESCE(steam_item_id, 0), description, items, amount, currency, status, provider, COALESCE(provider_ref, ''), COALESCE(checkout_url, ''), created_at`
 
 func scanOrder(row pgx.Row) (Order, error) {
 	var order Order
 	var account *int64
-	err := row.Scan(&order.OrderID, &account, &order.SteamID, &order.SKU, &order.SteamItemID, &order.Description, &order.Items, &order.Amount, &order.Currency, &order.Status, &order.CreatedAt)
+	err := row.Scan(&order.OrderID, &account, &order.SteamID, &order.SKU, &order.SteamItemID, &order.Description, &order.Items, &order.Amount, &order.Currency, &order.Status, &order.Provider, &order.ProviderRef, &order.CheckoutURL, &order.CreatedAt)
 	if account != nil {
 		order.AccountID = *account
 	}
@@ -474,14 +482,14 @@ func (s *Store) PayOrder(ctx context.Context, serverID string, accountID, orderI
 		if err := json.Unmarshal(order.Items, &items); err != nil {
 			return err
 		}
-		detail, _ := json.Marshal(map[string]any{"sku": order.SKU, "order_id": order.OrderID, "description": order.Description})
+		detail, _ := json.Marshal(map[string]any{"sku": order.SKU, "order_id": order.OrderID, "description": order.Description, "provider": order.Provider})
 		for _, item := range items {
 			if _, err := tx.Exec(ctx, `INSERT INTO mail (account_id, kind, item_kind, item, detail) VALUES ($1, 'store', 'item', $2, $3)`, accountID, item, detail); err != nil {
 				return err
 			}
 		}
 		order.Status = "paid"
-		return auditTx(ctx, tx, &accountID, serverID, "store.paid", map[string]any{"order_id": order.OrderID, "sku": order.SKU, "amount": order.Amount, "currency": order.Currency})
+		return auditTx(ctx, tx, &accountID, serverID, "store.paid", map[string]any{"order_id": order.OrderID, "sku": order.SKU, "amount": order.Amount, "currency": order.Currency, "provider": order.Provider})
 	})
 	return order, err
 }
@@ -499,7 +507,7 @@ func (s *Store) CancelOrder(ctx context.Context, accountID, orderID int64) (Orde
 }
 
 func (s *Store) OpenOrders(ctx context.Context, accountID int64, olderThan time.Duration) ([]Order, error) {
-	rows, err := s.pool.Query(ctx, `SELECT `+orderColumns+` FROM store_orders WHERE account_id = $1 AND status = 'init' AND created_at < now() - make_interval(secs => $2) ORDER BY created_at LIMIT 20`, accountID, olderThan.Seconds())
+	rows, err := s.pool.Query(ctx, `SELECT `+orderColumns+` FROM store_orders WHERE account_id = $1 AND status = 'init' AND provider = 'steam' AND created_at < now() - make_interval(secs => $2) ORDER BY created_at LIMIT 20`, accountID, olderThan.Seconds())
 	if err != nil {
 		return nil, err
 	}

@@ -93,6 +93,7 @@ func run_tests() -> void:
 	await takeover_tests(alice)
 	await privacy_tests(bob)
 	await steam_tests()
+	await card_tests()
 	print("NET E2E RESULT: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -824,3 +825,32 @@ func steam_tests() -> void:
 	await process_frame
 	SteamService.override = null
 	fake.free()
+
+# Real money outside Steam (web, mobile): Stripe Checkout in BRL. In memory the API has no
+# page and counts the order as paid at the first status poll; the API side (webhook,
+# signature, refund) is in server/api/stripe_test.go.
+func card_tests() -> void:
+	var dora: Node = await make_app()
+	check(not dora.steam.available, "without Steam the game sells by card and Pix")
+	check(await login(dora, "dora") == "" and (await dora.do_op("create", ["Dora", "f"])).error == "", "a web player logs in and creates the character")
+	var shop: ShopScreen = ShopScreen.new()
+	shop.app = dora
+	dora.ui.add_child(shop)
+	shop.select_tab("premium")
+	await process_frame
+	var card: Button = shop.find_child("Buy_tintura_chama", true, false)
+	check(card != null and not card.disabled and card.text == "COMPRAR", "online without Steam, the Premium tab sells (COMPRAR)")
+	var box: Node = shop.find_child("Premium_tintura_chama", true, false)
+	check(box != null and box.get_children().any(func(node: Node) -> bool: return node is Label and (node as Label).text.contains("R$ 4,99")), "the price is in reais")
+	check(not (await dora.net.request("store_checkout", {"sku": "roupa_samurai"})).ok, "only catalog products can be ordered")
+	var answer: String = await dora.buy_premium("tintura_chama")
+	check(answer.contains("Correio") and int(dora.pending_checkout.get("order_id", 0)) > 0, "the checkout page is opened and the order is pending: %s" % answer)
+	check(await wait_until(func() -> bool: return dora.mail_count == 1, 15), "the dye arrives in the Correio once the order is paid")
+	check(await wait_until(func() -> bool: return dora.pending_checkout.is_empty(), 5), "the pending checkout is cleared when paid")
+	var listed: Dictionary = await dora.trade("mail_list")
+	check((listed.get("mail", []) as Array).all(func(letter: Dictionary) -> bool: return Auction.mail_title(letter).begins_with("Loja:")), "the letters say Loja, not Loja Steam")
+	var again: Dictionary = await dora.net.request("store_status", {"order_id": int(server.api.memory_orders.keys().back())})
+	check(again.ok and again.status == "paid" and dora.mail_count == 1, "asking again does not deliver twice")
+	dora.net.disconnect_now()
+	dora.queue_free()
+	await process_frame

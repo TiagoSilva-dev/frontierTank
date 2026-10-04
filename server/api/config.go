@@ -31,6 +31,10 @@ type Config struct {
 	// Steam Web API (publisher key, partner.steam-api.com): login by ticket and the Steam
 	// Wallet purchases. Without STEAM_APP_ID and STEAM_WEB_API_KEY, Steam is off.
 	Steam SteamClient
+	// Stripe (sk_... key): real-money purchases on the web and mobile builds, card and Pix.
+	// Without STRIPE_API_KEY, Stripe is off; without STRIPE_WEBHOOK_SECRET the webhook
+	// refuses everything and only the polling (store/status, reconcile) delivers.
+	Stripe StripeClient
 }
 
 func env(key, fallback string) string {
@@ -69,6 +73,12 @@ func loadConfig() (Config, error) {
 		AppID:    uint32(appID),
 		Identity: env("STEAM_IDENTITY", "frontiertank"),
 		Sandbox:  env("STEAM_MICROTXN_SANDBOX", "") == "1",
+	}
+	cfg.Stripe = StripeClient{
+		Base:          env("STRIPE_API_BASE", ""),
+		Key:           env("STRIPE_API_KEY", ""),
+		WebhookSecret: env("STRIPE_WEBHOOK_SECRET", ""),
+		ReturnURL:     env("STORE_RETURN_URL", ""),
 	}
 	if len(cfg.InternalKey) < 16 {
 		return cfg, errors.New("INTERNAL_KEY must have at least 16 characters")

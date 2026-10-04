@@ -41,6 +41,7 @@ Variáveis do `.env`:
 | `BOT_FILL_SECONDS` | Quanto tempo uma sala procura outra sala antes de completar com rivais de IA. |
 | `ALLOW_ORIGIN` | Origem liberada no CORS para a versão web. |
 | `LEGAL_VERSION` | Versão dos Termos de Uso e da Política de Privacidade (`legal/*.md`, igual a `Legal.VERSION` no jogo). Mudar faz todos aceitarem de novo antes de jogar online. |
+| `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `STORE_RETURN_URL` | Stripe: compras em reais (cartão e Pix) na versão web e no celular, sem Steam. Sem a chave, a loja só vende pela Steam. Detalhes em `docs/PAGAMENTOS.md`. |
 | `STEAM_APP_ID`, `STEAM_WEB_API_KEY`, `STEAM_IDENTITY`, `STEAM_MICROTXN_SANDBOX`, `ORDER_RETENTION_DAYS` | Steam: login por ticket e loja paga pela carteira Steam (sandbox enquanto a loja não for aprovada; pedidos guardados 5 anos). Sem App ID e chave, a Steam fica desligada. Detalhes em `docs/STEAM.md`. |
 | `REPORT_MUTE` | Quantos jogadores diferentes denunciando alguém em 10 minutos o silenciam no chat por 10 minutos (3). |
 | `REPORT_RETENTION_DAYS` | Por quanto tempo uma denúncia analisada fica guardada (180). |

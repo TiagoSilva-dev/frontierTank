@@ -48,6 +48,11 @@ services:
       ACCESS_LOG_DAYS: ${ACCESS_LOG_DAYS:-183}
       REPORT_RETENTION_DAYS: ${REPORT_RETENTION_DAYS:-180}
       # Steam (docs/STEAM.md): without the app id and the publisher key, Steam is off.
+      # Stripe (docs/PAGAMENTOS.md): card and Pix on the web and mobile builds. Without the
+      # key, the shop does not sell outside Steam.
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STORE_RETURN_URL: ${STORE_RETURN_URL:-http://localhost:8000/jogar/}
       STEAM_APP_ID: ${STEAM_APP_ID:-0}
       STEAM_WEB_API_KEY: ${STEAM_WEB_API_KEY:-}
       STEAM_IDENTITY: ${STEAM_IDENTITY:-frontiertank}
