@@ -33,6 +33,12 @@ func _ready() -> void:
 		page = 0
 		build_rooms())
 	add_child(modes)
+	var ranked: Button = UiKit.button(self, tr("RANQUEADA"), Rect2(408, 76, 146, 34), open_ranked, "button_green", 15)
+	ranked.name = "RankedButton"
+	if app.online:
+		RankBadge.create(ranked, Rect2(2, 1, 32, 32), int(app.profile.rating.mmr), Ranked.placed(app.profile.rating))
+	var daily: Button = UiKit.button(self, tr("DESAFIO DIÁRIO"), Rect2(558, 76, 150, 34), open_challenge, "button_blue", 15)
+	daily.name = "ChallengeButton"
 	UiKit.label(self, tr("Canal atual"), Rect2(690, 70, 190, 18), 13, Color("ffe6a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.panel(self, Rect2(716, 88, 140, 24), "slot")
 	UiKit.label(self, tr("Canal 1"), Rect2(716, 88, 140, 24), 14, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
@@ -117,7 +123,15 @@ func room_card(room: Dictionary, rect: Rect2) -> void:
 		UiKit.art(card, PixelIcons.get_icon("lock"), Rect2(386, 40, 22, 22))
 
 func try_join(room: Dictionary) -> void:
-	if room.playing:
+	if room.playing and room.has("match") and app.online:
+		# A battle of other players can be watched (0.22).
+		var dialog: Control = UiKit.modal(self, tr("SALA EM JOGO"), tr("A sala %d está em batalha. Você pode assistir (a transmissão tem alguns segundos de atraso).") % int(room.id))
+		var rect: Rect2 = dialog.get_meta("rect")
+		UiKit.button(dialog, tr("ASSISTIR"), Rect2(rect.position.x + 90, rect.end.y - 60, 150, 42), func() -> void:
+			dialog.queue_free()
+			app.watch(int(room.match), self), "button_green").name = "WatchRoom"
+		UiKit.button(dialog, tr("FECHAR"), Rect2(rect.end.x - 240, rect.end.y - 60, 150, 42), dialog.queue_free)
+	elif room.playing:
 		UiKit.notice(self, tr("SALA EM JOGO"), tr("A sala %d está em batalha. Escolha outra sala ou aguarde.") % int(room.id))
 	elif room.members.size() >= int(room.capacity):
 		UiKit.notice(self, tr("SALA CHEIA"), tr("A sala %d está cheia.") % int(room.id))
@@ -170,6 +184,17 @@ func build_actions() -> void:
 		UiKit.label(button, tr(action[1]), Rect2(-6, 72, 116, 32), 22, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 		var icon: TextureRect = button.get_node("Icon")
 		icon.size = Vector2(104, 74)
+
+func open_challenge() -> void:
+	app.audio.play("ui_click")
+	ChallengeScreen.open(self, app)
+
+func open_ranked() -> void:
+	app.audio.play("ui_click")
+	if not app.online:
+		UiKit.notice(self, tr("LIGA RANQUEADA"), tr("A liga ranqueada só funciona online: as partidas são entre jogadores reais.\nEscolha um servidor na tela de entrada."))
+		return
+	RankedScreen.open(self, app)
 
 func create_team() -> void:
 	app.audio.play("ui_click")

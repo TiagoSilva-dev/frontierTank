@@ -1,8 +1,43 @@
-# Gustfire — 0.15 (POW em cut-in, Mochila nova e arma presa nas costas)
+# Gustfire — 0.22
 
 Abra **Jogar.cmd** para iniciar com o Godot instalado neste computador, ou importe **project.godot** no Godot 4.7 e pressione F5. Em outro computador, configure `GODOT_BIN` com o caminho do executável Godot.
 
 Jogo de artilharia por turnos em pixel art, com cidade, salas, instâncias e economia de itens. Joga **online** (conta, servidor de jogo, salas, chat e batalhas com outros jogadores) ou no **modo offline** contra bots.
+
+## Liga ranqueada (0.22)
+
+- Botão **RANQUEADA** no Salão (online): partidas **1 contra 1 entre jogadores reais**, nunca com bots. Fila por rating (a janela de pontos abre com a espera), uma dupla só se enfrenta 3 vezes por hora. **Abandonar perde na hora** (3 turnos seguidos estourados pelo relógio também). Elo (K 48 nas 10 primeiras partidas, 32 depois), 5 partidas de avaliação por temporada e **seis divisões** (Bronze, Prata, Ouro, Platina, Diamante e Mestre, com três degraus cada) com um emblema desenhado por código.
+- **Temporadas de 28 dias** (a primeira a partir de 05/10/2026): o rating volta à metade do caminho até 1000 e a divisão em que o jogador terminou vira um **título cosmético** ("Ouro · Temporada 1"), que aparece no perfil, na lista da liga e **no lugar da patente** sob o nome do lutador na batalha. Só aparência.
+- A tela da liga mostra a divisão, o progresso até o próximo degrau, a fila, os 50 melhores da temporada, **AO VIVO** (as partidas ranqueadas em andamento, para assistir) e os títulos. Detalhes e números em [docs/RANKED.md](docs/RANKED.md).
+
+## Desafio do Dia, replays e espectador (0.22)
+
+- **Desafio diário** (botão no Salão): o mesmo duelo para todos todo dia, com a mesma arma, os mesmos atributos e o mesmo mapa e semente (o equipamento de ninguém conta): **Tiro ao Alvo**, **Duelo Relâmpago** ou **Alvo Distante**, com três medalhas. O primeiro resultado do dia paga uma recompensa. Online o servidor **refaz a sua partida a partir da gravação e confere a pontuação** antes de ela entrar no ranking do dia, e dá para assistir às partidas dos melhores.
+- **Replays**: as últimas batalhas PvP online e os desafios ficam gravados no computador (aba REPLAYS do Desafio) e podem ser assistidos com pausa e 1x/2x/4x. Como a batalha é a configuração mais as intenções por tick, o replay chega exatamente ao mesmo estado.
+- **Espectador ao vivo**: salas em jogo e partidas ranqueadas podem ser assistidas, com alguns segundos de atraso. Tudo em [docs/CHALLENGE.md](docs/CHALLENGE.md).
+
+## Contratos, sequência de dias e habilidade do mascote (0.22)
+
+- **Contratos diários e semanais sorteados**: 5 diários tirados de um conjunto de 16 (no máximo 2 do mesmo tipo) e 3 semanais de 9, iguais para todos, que mudam a cada dia e a cada semana (segunda a domingo, UTC), com bônus ao completar todos. Cobrem PvP, instâncias, mascotes, Ferreiro, Loja, o Desafio do Dia e a Liga. A aba **SEQUÊNCIA** é a escada de login de 7 dias: resgate uma vez por dia, dias seguidos sobem (o 7º dá um ovo), faltou um dia, volta ao começo. A bolinha do botão MISSÃO conta o que está pronto.
+- **Habilidade do mascote em batalha** (tecla **G**, um uso por batalha, a partir do seu segundo turno): o mascote ativo empresta ao dono uma habilidade pelo elemento, mais forte com a raridade e as estrelas. **Sol**: Rajada Solar (o próximo tiro causa mais dano); **Máscara**: Truque da Máscara (crítico garantido); **Gelo**: Muralha Glacial (cura e corta o próximo golpe à metade); **Céu**: Corrente de Ar (zera o vento e devolve energia); **Runa**: Selo de Runa (enche parte da barra de POW). É uma intenção como outra qualquer, então vale no online e nos replays (`docs/PETS.md`).
+
+## Treino e Primeiros passos (0.22)
+
+- **Treino de artilharia** (`Tutorial`, `TutorialCoach`, `shared/balance/tutorial.json`): quem cria um personagem novo recebe na cidade o convite "Quer fazer um treino rápido?". O treino é uma batalha local (também online: só o fim chega ao servidor) contra um **Boneco de Treino** que não revida, com um cartão sob o retrato e uma moldura pulsando na parte da interface da lição: **andar**, **mirar**, **vento**, **disparar** (depois de dois erros o cartão sugere ângulo e força, calculados pelo mesmo solucionador da IA; o boneco se recompõe entre os turnos), **habilidades** (tecla 1, +2 ataques), **POW** (a barra já vem cheia) e **derrubar o boneco**. O relógio do turno não corre durante as lições, o terreno não se destrói e **PULAR TREINO** sai a qualquer hora. Recompensa uma vez só (200 moedas, 150 EXP, 3 pedras e 1 ovo de mascote). "Agora não" fica salvo; o botão **TREINO** em AJUDA repete a lição. Contas antigas que já jogaram não recebem o convite.
+- **Primeiros passos** (aba da MISSÃO, `MissionsBoard`): um roteiro de seis passos que leva o novato pelo jogo (primeira batalha e vitória no PvP, tentar o Ferreiro, uma instância na entrada livre, chocar um ovo, iniciar uma Caçada), cada um com recompensa e um bônus ao completar todos (500 moedas, 300 EXP). Contas antigas ganham o que já fizeram. O botão MISSÃO mostra uma bolinha verde com quantos contratos podem ser resgatados.
+- Testes: `tests/tutorial_tests.gd` (78) joga a lição inteira por script: passos, erros e dica, boneco que se recompõe, habilidade, POW, vitória, recompensa e o convite da cidade. Captura: `--screen=tutorial --step=<0..7>`.
+
+## Mascotes e Caçada (0.19–0.21)
+
+- **Casa dos Mascotes** (prédio da cidade, botão PET, espaço "Mascote" da Mochila; `docs/PETS.md`): cada instância solta o ovo do seu elemento (Sol, Máscara, Gelo, Céu, Runa), o jogador **choca** na cena do ovo que treme, racha e estoura na cor da raridade (58/28/11/3% com garantia de Épico no 10º ovo e de Lendário no 40º), e o mascote que nasce acompanha o lutador na batalha com bônus de verdade (atributos e talentos pelo elemento, nível e estrelas). 20 espécies (5 elementos × 4 raridades), álbum com bônus permanente ao completar um elemento. Na batalha o mascote anda ao lado do lutador com animação própria por espécie (`PetMotion`, `PetActor`) e, quando o dono cai, ele vira um **fantasma** flutuante enquanto os outros veem "X caiu!".
+- **Caçada** (quarta aba da Casa dos Mascotes; `docs/PET_HUNT.md`): modo automático tipo idle. Escolha a zona (uma por elemento), o nível de caça (1–8) e um time de até 5 mascotes; a cada 12 s o time enfrenta selvagens do elemento, mesmo com o jogo fechado, e você **coleta** moedas, XP, ovos e mascotes capturados (o **Lendário** da zona é garantido depois de 2.000 encontros). O acúmulo vai até 2 h, ou 8 h com o **Passe do Caçador** (Steam). Simulação determinística (`PetHunt`), a mesma na tela e na coleta; online o servidor liquida com o relógio dele. **Campo visto de cima** (Ruínas do Sol e Trilha Gelada): o treinador anda, os selvagens vagam e cada espécie ataca com o golpe do seu elemento; as outras zonas ainda usam a arena lateral.
+- Testes: `pet_tests` (65), `hunt_tests` (152), `pet_motion_tests`, `ghost_tests`; `tests/hunt_balance.gd` imprime renda e vitórias por time.
+
+## Social, visual premium e Founder Pack (0.17–0.20)
+
+- **Social**: a lista de jogadores do Salão tem abas Todos/Amigos e busca; clicar num nome abre **Ver perfil**, **Mensagem privada**, **Adicionar/Remover amigo** e, online, **Denunciar mensagem** (`PlayerList`, `PlayerMenu`, `FriendBook`).
+- **Visual premium** (`PremiumUi`, `HudPaint`): molduras de bronze com vidro escuro em todas as telas, texto com contraste auditado (`tools/contrast_audit.gd`) e cosméticos encaixados na cabeça e nos olhos (`assets/cosmetics/fit.json`).
+- **Founder Pack** (`docs/FOUNDER_PACK.md`): conjunto cosmético limitado "Paladino do Sol" (roupa, asas, a arma Solaris com POW próprio e efeitos), vendido pela loja Steam; só aparência. **Abas de Mochila** extras também são produtos premium (`store.json`), nunca poder.
 
 ## Casa de Câmbio (0.17)
 
@@ -36,7 +71,7 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | Tela | O que tem |
 |---|---|
 | **Entrada** (`docs/screens/title.png`, `title_en.png`) | Arte com os heróis e dirigíveis, logotipo **GUSTFIRE · ARTILHARIA NOS CÉUS** (em inglês, *SKY ARTILLERY*) com brilho passando, lista dos servidores online e o **Modo offline**, conta e senha (**CRIAR CONTA** / **ENTRAR**, ou Enter) e o idioma do jogo (**Português** ou **English**) no canto. |
-| **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Namoro, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, corações da capela, brilhos nas lojas e gaivotas. Prédios clicáveis: **Ferreiro**, **Centro Comercial** e, online, **Leilão** abrem de verdade. Botões **CUPOM** e **MOCHILA**, alto-falante, canal, chat e barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR. |
+| **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Casa de Câmbio, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, brilhos nas lojas e gaivotas. Todos os prédios abrem (**Leilão** e **Casa de Câmbio** só online). Botões **CUPOM**, **MOCHILA** e **FOUNDER PACK**, alto-falante, canal, chat e a barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR (CORREIO e MISSÃO com bolinha de contagem). A cidade avisa "Caçada pronta para coletar" no prédio dos mascotes. |
 | **Mochila** (`bag.png`, `bag_card.png`) | Informações Pessoais: o personagem num pedestal com holofote, vestindo tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros, e os espaços Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta (vazios mostram a silhueta do que vai ali). Ataque, Defesa, Agilidade, Sorte, Dano, Proteção, Vida e Força física com ícones. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**: a qualidade é um brilho atrás do item; passar o mouse mostra o cartão do item (atributos, comparação com o equipado, bônus, nível, venda); arrastar organiza a mochila do seu jeito (**ORGANIZAR** volta à ordem padrão) e equipa soltando no personagem; clique duplo equipa; equipar, remover e vender. |
 | **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
 | **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); roupas, chapéus, óculos, asas, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
@@ -194,12 +229,14 @@ O jogo inteiro está em **português e inglês** (`title_en.png`, `city_en.png`,
 Como funciona: o português é o idioma-fonte e cada texto é a própria chave (estilo gettext). O código usa `tr("...")` nas telas e `Lang.t("...")` nas regras; os nomes dos JSON de balanceamento também são chaves. `python tools/i18n.py` junta tudo em `locale/messages.pot` e atualiza `locale/en.po` (as chaves novas aparecem vazias para traduzir; `--missing` lista as que faltam, `--check` falha se algo ficou sem inglês). Para um terceiro idioma (espanhol, por exemplo), basta um `locale/es.po` com as mesmas chaves e o código em `Lang.LOCALES`; a fonte Pixel Operator já cobre os acentos de português, espanhol e francês.
 
 ## Cupons para teste
-Na cidade (botão **CUPOM**), na Mochila ou na Loja:
+Na cidade (botão **CUPOM**), na Mochila ou na Loja (offline, ou num servidor com `TEST_COUPONS=1`):
 - `TESTARTUDO`: todas as armas em todas as qualidades, as três super armas, auxiliares, todas as roupas, chapéus, óculos, asas e cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.
 - `AURAS`: quatro Tijolaços Verdadeiros em +3, +7, +10 e +12, para ver as quatro auras.
 - `PEDRAS`: 50 pedras de cada nível.
 - `MAPAS`: mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas (pode ser usado de novo).
 - `MOEDAS`: 30 Brasas, 20 Coroas, 10 Estrelas, 10 Tormentas, 5 Solares, 10 Eclipses e 1 Espelho Celeste (pode ser usado de novo).
+- `OVOS`: 10 ovos de cada elemento e 10 Ovos de Mascote para testar a Casa dos Mascotes (pode ser usado de novo).
+- `CACADA`: o Passe do Caçador (acúmulo de 8 h) para testar a Caçada (pode ser usado de novo).
 
 Os outros cupons valem uma vez por conta.
 
@@ -221,4 +258,4 @@ Toda a arte é do PixelLab: a entrada e o logotipo, a cidade e os prédios, os f
 Todo o áudio é original e gerado por código (`tools/synth.py`, um pequeno sintetizador em numpy): os efeitos por `tools/make_sfx.py` e as três músicas por `tools/make_music.py` (orquestra sintetizada: metais, cordas, coro, harpa, tímpanos e taikos, com reverb de sala). Arquivos em `assets/audio/sfx` e `assets/audio/music` (Ogg Vorbis, cerca de 6 MB no total). Para trocar por outra música, basta substituir `lobby.ogg`, `battle.ogg` ou `instance.ogg`. Detalhes em [docs/AUDIO_0_7.md](docs/AUDIO_0_7.md).
 
 ## Limites
-No modo offline, salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat; moedas e itens ficam em `user://profile.json` e não valem como economia online; Leilão e Correio só funcionam online. Namoro, PET (e a Casa dos Mascotes) e Missão mostram aviso de "ainda não disponível". O leilão ainda não tem lances nem troca direta de moedas (Estrela ↔ Solar). Rosto e olhos ainda não são slots separados. A Steam precisa do App ID, da extensão GodotSteam e da configuração na Steamworks; estornos da Steam ainda não retiram o item (docs/STEAM.md, pendências).
+No modo offline, salas, jogadores e chat do canal são simulados por IA e isso é avisado no chat; moedas e itens ficam em `user://profile.json` e não valem como economia online; Leilão, Casa de Câmbio e Correio só funcionam online. O leilão ainda não tem lances nem troca direta de moedas (Estrela ↔ Solar; o Câmbio cobre essa troca). Rosto e olhos ainda não são slots separados. A Steam precisa do App ID, da extensão GodotSteam e da configuração na Steamworks; estornos da Steam ainda não retiram o item (docs/STEAM.md, pendências). Pendências do lançamento fora do código: `docs/ROADMAP.md`, "Pendências externas".

@@ -130,6 +130,21 @@ func _ready() -> void:
 	add_child(bar)
 	if not app.profile.created:
 		build_creation()
+	elif Tutorial.should_offer(app.profile) and not app.tutorial_offered and app.capture_frames < 0:
+		offer_tutorial.call_deferred()
+
+# A brand-new character is offered the training once; "not now" is remembered.
+func offer_tutorial() -> void:
+	app.tutorial_offered = true
+	var dialog: Control = UiKit.modal(self, tr("BEM-VINDO AO GUSTFIRE!"), tr("Quer fazer um treino rápido de artilharia? Em poucos minutos você aprende a andar, mirar, usar o vento e soltar o POW num Boneco de Treino, e ganha uma recompensa: %s.") % Tutorial.reward_text(app.balance), Vector2(640, 340))
+	dialog.name = "TutorialOffer"
+	var rect: Rect2 = dialog.get_meta("rect")
+	UiKit.button(dialog, tr("COMEÇAR O TREINO"), Rect2(rect.position.x + 50, rect.end.y - 64, 250, 46), func() -> void:
+		dialog.queue_free()
+		app.start_tutorial(), "button_green", 18).name = "TutorialStart"
+	UiKit.button(dialog, tr("AGORA NÃO"), Rect2(rect.end.x - 250, rect.end.y - 64, 200, 46), func() -> void:
+		dialog.queue_free()
+		app.do_op("tutorial", ["skip"]), "button", 18).name = "TutorialLater"
 
 # A soft dark rim, like a painted frame: it pulls the eye to the plaza and lets the HUD sit on
 # the darker edges.

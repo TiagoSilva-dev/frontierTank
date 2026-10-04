@@ -63,6 +63,16 @@ var aim_input: float = 0.0
 var status_message: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var mode: String = "pvp"
+# Ranked 1v1 (0.22): leaving, or three timeouts in a row, loses the match on the spot.
+var ranked: bool = false
+# A copy that only watches (a replay or a live spectator): it never takes the controls.
+var spectator: bool = false
+# Daily challenge (0.22): the match ends when the first fighter has played `max_turns`
+# turns, and with `totem_goal` only when every totem (target) is down.
+var max_turns: int = 0
+var totem_goal: bool = false
+# The challenge day of the battle (from its config), for scoring.
+var config_day: int = 0
 var pve: bool = false
 var map: Dictionary = {}
 # PvE phase (0.9, built by InstanceRun): name, objective ("defeat", "totems", "survive"),
@@ -78,6 +88,10 @@ var auto_play: bool = false
 var turn_items: Array[String] = []
 var turn_fly: bool = false
 var turn_pow: bool = false
+# The pet's skill (0.22): used this turn, a damage multiplier for the shot, a sure critical.
+var turn_pet: bool = false
+var turn_pet_damage: float = 1.0
+var turn_pet_crit: bool = false
 var pow_uses: Dictionary = {}
 var tools_used: int = 0
 var moved_distance: float = 0.0
@@ -138,6 +152,10 @@ func start(config: Dictionary) -> void:
 		terrain.queue_free()
 	mode = str(config.get("mode", "pvp"))
 	pve = mode == "pve"
+	ranked = bool(config.get("ranked", false))
+	max_turns = int(config.get("max_turns", 0))
+	totem_goal = bool(config.get("totem_goal", false))
+	config_day = int(config.get("day", 0))
 	# The seed comes first: the random map is part of the seeded battle (online every
 	# copy must draw the same map).
 	if config.has("seed"):
@@ -153,8 +171,9 @@ func start(config: Dictionary) -> void:
 	survived = 0
 	hitstop = 0.0
 	terrain = DestructibleTerrain.new()
-	# Instances keep their ground intact for every shot and monster ability.
-	terrain.destructible = not pve
+	# Instances keep their ground intact for every shot and monster ability; so does the
+	# training (the dummy must not fall into the void).
+	terrain.destructible = not pve and mode != "tutorial"
 	add_child(terrain)
 	terrain.generate(map, rng.randi() % 100000)
 	var teams: Array = config.get("teams", [[], []])
@@ -294,7 +313,7 @@ func is_ai_controlled(fighter: TankFighter) -> bool:
 	return not fighter.human or fighter.auto_play
 
 func can_act() -> bool:
-	return running and not paused and state in ACTING and active_id == local_id and not is_ai_controlled(active())
+	return not spectator and running and not paused and state in ACTING and active_id == local_id and not is_ai_controlled(active())
 
 func send_intent(action: String, data: Dictionary = {}) -> bool:
 	# Online: the intent goes to the server, which sends it back to everyone with a tick.
@@ -312,6 +331,7 @@ func begin_turn() -> void:
 		return
 	active_id = fighter.player_id
 	round_number += 1
+	fighter.turns_started += 1
 	state = State.TURN_STARTED
 	remaining = turn_seconds
 	energy = fighter.max_energy
@@ -322,6 +342,9 @@ func begin_turn() -> void:
 	turn_items.clear()
 	turn_fly = false
 	turn_pow = false
+	turn_pet = false
+	turn_pet_damage = 1.0
+	turn_pet_crit = false
 	tools_used = 0
 	moved_distance = 0
 	passed = false
@@ -378,6 +401,10 @@ func finish_turn() -> void:
 		# Swift elites (0.16) come back sooner.
 		added *= float(fighter.elite.get("delay_scale", 1.0))
 	fighter.delay += added
+	if max_turns > 0 and fighter.player_id == anchor_id and fighter.turns_started >= max_turns and fighter.hp > 0:
+		# The last turn of a challenge is over: whatever is left standing wins.
+		limit_reached()
+		return
 	expire_statuses(fighter)
 	fighter.fly_cooldown = maxi(0, fighter.fly_cooldown - 1)
 	fighter.active = false
@@ -421,6 +448,7 @@ func release_shot(from_ai: bool = false) -> void:
 	if is_ai_controlled(active()) and not from_ai:
 		return
 	var fighter: TankFighter = active()
+	fighter.timeouts = 0
 	shot_angle = fighter.angle
 	shot_effective = fighter.effective_angle()
 	shot_power = power
@@ -456,6 +484,7 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		if item.has("balls"):
 			balls = int(item.balls)
 			spread = 4.0
+	scale *= turn_pet_damage
 	if turn_pow and weapon.has("pow"):
 		var pow_rules: Dictionary = weapon.pow
 		pow_plan = pow_rules
@@ -600,6 +629,48 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 	changed.emit()
 	return true
 
+# ---------- the pet's skill (0.22) ----------
+
+func use_pet() -> bool:
+	if not can_act() or send_intent("pet"):
+		return false
+	return apply_pet(local())
+
+# One use per battle (pets.json -> battle), from the owner's second turn, not while sealed.
+# The effect depends on the pet's element; its strength on the pet's rarity and stars.
+func apply_pet(fighter: TankFighter) -> bool:
+	var rules: Dictionary = Pets.battle_rules()
+	if fighter.is_monster or fighter.pet_skill.is_empty() or fighter.pet_uses <= 0 or turn_pet or turn_fly or fighter.hp <= 0:
+		return false
+	if fighter.turns_started < int(rules.from_round) or fighter.has_status("selado"):
+		return false
+	var def: Dictionary = Pets.skill_def(str(fighter.pet_skill.element))
+	var value: float = Pets.skill_value(fighter.pet_skill)
+	match str(def.kind):
+		"damage":
+			turn_pet_damage = 1.0 + value
+		"crit":
+			turn_pet_crit = true
+			turn_pet_damage = 1.0 + value
+		"shield":
+			var recovered: int = mini(healing(fighter, roundi(float(fighter.max_hp) * value)), fighter.max_hp - fighter.hp)
+			fighter.hp += recovered
+			fighter.shield = minf(fighter.shield, 0.5)
+			if recovered > 0:
+				damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
+		"wind":
+			wind = 0.0
+			energy = minf(float(fighter.max_energy), energy + float(fighter.max_energy) * value)
+		"pow":
+			fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(balance.pow_max) * value)
+	fighter.pet_uses -= 1
+	turn_pet = true
+	var species: Dictionary = Pets.species_def(str(fighter.pet_skill.species))
+	skill_used.emit(fighter, {"id": str(def.id), "name": tr(str(def.name)), "icon": str(species.get("art", "")), "kind": "pet", "color": str(def.color)})
+	announce.emit(tr("%s usou %s!") % [fighter.display_name, tr(str(def.name))], Color(str(def.color)))
+	changed.emit()
+	return true
+
 func use_tool(slot: int) -> bool:
 	if not can_act():
 		return false
@@ -734,12 +805,32 @@ func arm_pow(fighter: TankFighter) -> void:
 	fighter.set_pow_armed(true)
 	skill_used.emit(fighter, {"id": "pow", "name": tr(str(fighter.weapon.get("pow", {}).get("name", "POW"))), "icon": "pow", "kind": "pow"})
 
+# The turn limit of a challenge: the match ends, the challenger did not finish the job.
+func limit_reached() -> void:
+	winner_team = 1
+	state = State.MATCH_FINISHED
+	running = false
+	for fighter in fighters:
+		fighter.active = false
+		fighter.queue_redraw()
+	announce.emit(tr("Fim dos turnos!"), Color("ffb06a"))
+	finished.emit(winner_team)
+	changed.emit()
+
+# Ranked: the fighter gives the match up (left it, or timed out three turns in a row).
+func forfeit_fighter(fighter: TankFighter) -> void:
+	fighter.hp = 0
+	fighter.hide_body()
+	announce.emit(tr("%s abandonou a partida!") % fighter.display_name, Color("ff8a6a"))
+	evaluate_winner()
+
 func pass_turn() -> void:
 	if not can_act() or send_intent("pass"):
 		return
 	apply_pass()
 
 func apply_pass() -> void:
+	active().timeouts = 0
 	passed = true
 	status_message = tr("%s passou a vez") % active().display_name
 	state = State.RESOLVING_DAMAGE
@@ -782,8 +873,12 @@ func apply_input(id: int, action: String, data: Dictionary) -> void:
 				apply_auto(id, bool(data.get("on", false)))
 			return
 		"leave":
-			# The player left or dropped: the AI plays for them until the end.
+			# The player left or dropped: the AI plays for them until the end (in a ranked
+			# match leaving forfeits at once).
 			fighter.left = true
+			if ranked and fighter.hp > 0:
+				forfeit_fighter(fighter)
+				return
 			apply_auto(id, true)
 			return
 		"emote":
@@ -821,6 +916,8 @@ func apply_input(id: int, action: String, data: Dictionary) -> void:
 			apply_fly(fighter)
 		"aux":
 			apply_aux(fighter)
+		"pet":
+			apply_pet(fighter)
 		"pass":
 			apply_pass()
 		"flip":
@@ -961,7 +1058,7 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 		# Marked prey (0.16) takes more damage from every enemy.
 		damage = roundi(damage * float(StatusRules.def("marcado").get("damage_taken", 1.3)))
 	var critical: bool = false
-	if target.team != shooter.team and float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs):
+	if target.team != shooter.team and ((turn_pet_crit and shooter.player_id == active_id) or (float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs))):
 		# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
 		damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
 		critical = true
@@ -1055,6 +1152,11 @@ func evaluate_winner() -> bool:
 			record_monster_defeat(fighter, int(last_hit_by.get(fighter.player_id, -1)))
 		if fighter.hp > 0 and fighter.rank != "totem":
 			alive_teams[fighter.team] = true
+	if (mode == "tutorial" or totem_goal) and alive_teams.has(0):
+		# The training (and a target challenge) ends when every dummy is down (they do not play).
+		if fighters.any(func(f: TankFighter) -> bool: return f.rank == "totem" and f.hp > 0):
+			return false
+		alive_teams = {0: true}
 	if pve and alive_teams.has(0):
 		var objective: String = str(phase.get("objective", "defeat"))
 		var totems: Array[TankFighter] = fighters.filter(func(f: TankFighter) -> bool: return f.rank == "totem")
@@ -1196,6 +1298,10 @@ func human_step(delta: float) -> void:
 	fighter.update_pose()
 	if remaining <= 0:
 		status_message = tr("Tempo esgotado")
+		fighter.timeouts += 1
+		if ranked and fighter.timeouts >= 3:
+			forfeit_fighter(fighter)
+			return
 		passed = true
 		state = State.RESOLVING_DAMAGE
 		resolve_time = 0.5

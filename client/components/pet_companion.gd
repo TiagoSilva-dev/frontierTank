@@ -28,6 +28,10 @@ func setup(fighter: TankFighter, species: String) -> void:
 	offset_now = target_offset()
 	position = offset_now
 
+# The pet shows off when its skill is used: a long hop.
+func perk() -> void:
+	hop = 0.45
+
 func target_offset() -> Vector2:
 	# Beside the owner, a hair behind so it never covers the barrel.
 	var reach: float = owner_fighter.body_size.x * 0.5 + actor.width * 0.5 + 2.0

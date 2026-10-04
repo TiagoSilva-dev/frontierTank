@@ -19,6 +19,8 @@ var confirmed: int = 0
 var inputs: Dictionary = {}
 var sums: Dictionary = {}
 var drift_reported: bool = false
+# Every intent received, stamped: with the configuration it is the battle's replay.
+var history: Array = []
 
 func receive(message: Dictionary) -> void:
 	for entry: Variant in message.get("i", []):
@@ -27,6 +29,7 @@ func receive(message: Dictionary) -> void:
 			if not inputs.has(at):
 				inputs[at] = []
 			inputs[at].append(entry)
+			history.append(entry)
 	for entry: Variant in message.get("s", []):
 		if entry is Array and (entry as Array).size() >= 2:
 			sums[int(entry[0])] = int(entry[1])

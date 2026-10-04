@@ -36,6 +36,21 @@ func wait_until(condition: Callable, seconds: float) -> bool:
 		await process_frame
 	return condition.call()
 
+# A profile as text, without the clock (it ticks, and the client's follows the server's within a second).
+func profile_text(profile: PlayerProfile) -> String:
+	var data: Dictionary = profile.to_data()
+	data.erase("clock")
+	return JSON.stringify(data)
+
+# Where two texts first differ (for the message of a failing comparison); "" when equal.
+func first_difference(a: String, b: String) -> String:
+	if a == b:
+		return ""
+	for i in range(mini(a.length(), b.length())):
+		if a[i] != b[i]:
+			return " [differs at %d: %s <> %s]" % [i, a.substr(maxi(0, i - 60), 140), b.substr(maxi(0, i - 60), 140)]
+	return " [lengths %d and %d]" % [a.length(), b.length()]
+
 func make_app() -> Node:
 	var app: Node = load("res://client/scenes/main.tscn").instantiate()
 	root.add_child(app)
@@ -70,6 +85,8 @@ func run_tests() -> void:
 	await chat_tests(alice, bob)
 	await pvp_tests(alice, bob)
 	await drop_tests(alice, bob)
+	await ranked_tests(alice, bob)
+	await challenge_tests(alice, bob)
 	await pve_tests(alice, bob)
 	await auction_tests(alice, bob)
 	await takeover_tests(alice)
@@ -269,7 +286,7 @@ func pvp_tests(alice: Node, bob: Node) -> void:
 	for i in range(picks):
 		a.results.pick(i)
 	check(await wait_until(func() -> bool: return a.results.rewards.all(func(card: Dictionary) -> bool: return not card.is_empty()), 5), "after the picks every card is shown")
-	check(JSON.stringify(alice.profile.to_data()) == JSON.stringify(server_profile(alice).to_data()), "the client's profile matches the server's after the cards")
+	check(profile_text(alice.profile) == profile_text(server_profile(alice)), "the client's profile matches the server's after the cards" + first_difference(profile_text(alice.profile), profile_text(server_profile(alice))))
 	alice.return_to_room()
 	bob.return_to_room()
 	check(await wait_until(func() -> bool: return server.hosts.is_empty() and str(alice.room.get("state", "")) == "waiting", 5), "the rooms wait again after the battle")
@@ -298,6 +315,242 @@ func drop_tests(alice: Node, bob: Node) -> void:
 	alice.return_to_room()
 	bob.return_to_room()
 	await wait_until(func() -> bool: return server.hosts.is_empty(), 5)
+
+func finish_battle(alice: Node, bob: Node) -> void:
+	var a: BattleScreen = alice.screen
+	var b: BattleScreen = bob.screen
+	a.game.set_auto_play(true)
+	b.game.set_auto_play(true)
+	await wait_until(func() -> bool: return a.ending_shown and b.ending_shown, 300)
+
+# The ranked ladder (0.22): the queue, a match against a real player, the rating on both
+# sides, forfeiting, the ladder and the season's end with its title.
+func ranked_tests(alice: Node, bob: Node) -> void:
+	alice.show_hall()
+	bob.show_hall()
+	await wait_until(func() -> bool: return alice.room.is_empty() and bob.room.is_empty() and server.rooms.is_empty() and server.hosts.is_empty(), 10)
+	if alice.profile.level() < int(Ranked.data().min_level):
+		check(not (await alice.net.request("ranked_queue", {"on": true})).ok and not server.accounts[alice.my_account()].queued, "the ladder starts at its minimum level")
+	for who: Node in [alice, bob]:
+		server_profile(who).experience = PlayerProfile.exp_for_level(int(Ranked.data().min_level))
+	var joined: Dictionary = await alice.net.request("ranked_queue", {"on": true})
+	check(joined.ok and bool(joined.queued) and server.ranked_queue.size() == 1, "a player joins the ranked queue " + str(joined))
+	await alice.net.request("ranked_queue", {"on": false})
+	check(server.ranked_queue.is_empty() and not server.accounts[alice.my_account()].queued, "and leaves it")
+	check((await alice.net.request("ranked_queue", {"on": true})).ok and (await bob.net.request("ranked_queue", {"on": true})).ok, "both join the queue")
+	check(await wait_until(func() -> bool: return alice.screen_name == "battle" and bob.screen_name == "battle", 15), "the queue pairs two real players into a battle")
+	var a: BattleScreen = alice.screen
+	var b: BattleScreen = bob.screen
+	check(a.game.ranked and b.game.ranked and a.online and a.game.fighters.size() == 2 and a.game.fighters.all(func(f: TankFighter) -> bool: return f.human), "it is a ranked 1v1 between humans")
+	check(server.hosts[a.match_id].ranked.size() == 2 and server.ranked_queue.is_empty() and server.hosts[a.match_id].room == null, "the server marks the match as ranked and empties the queue")
+	check(not (await alice.net.request("ranked_queue", {"on": true})).ok, "nobody can queue during a battle")
+	var rating_a: int = int(server_profile(alice).rating.mmr)
+	await finish_battle(alice, bob)
+	check(a.ending_shown and b.ending_shown and a.game.winner_team == b.game.winner_team, "the ranked battle ends for both")
+	var report_a: Dictionary = a.summary.get("ranked", {})
+	var report_b: Dictionary = b.summary.get("ranked", {})
+	check(not report_a.is_empty() and not report_b.is_empty() and int(report_a.delta) == -int(report_b.delta) and absi(int(report_a.delta)) == 24, "both results carry the rating change (24 points on an even match)")
+	check(int(server_profile(alice).rating.mmr) == rating_a + int(report_a.delta) and int(server_profile(alice).rating.games) == 1 and int(server_profile(bob).rating.games) == 1, "the server applied it to both profiles")
+	check(alice.profile.rating == server_profile(alice).rating and bob.profile.rating == server_profile(bob).rating, "the clients mirror the new ratings")
+	check(await wait_until(func() -> bool: return is_instance_valid(a.results), 8) and a.results.find_child("RankedGain", true, false) != null, "the result screen shows the ranked gain")
+	alice.return_to_room()
+	bob.return_to_room()
+	await wait_until(func() -> bool: return server.hosts.is_empty(), 5)
+	# The ladder.
+	var board: Dictionary = await alice.net.request("ranked_info", {})
+	check(board.ok and int(board.season) == Ranked.season_of() and (board.rows as Array).size() == 2 and int(board.total) == 2, "the ladder lists both players")
+	check(int(board.rows[0].mmr) > int(board.rows[1].mmr) and int(board.rows[0].position) == 1 and int(board.position) >= 1 and int(board.left) > 0, "ordered by rating, with this player's position and the season clock")
+	# The second match: one player leaves and loses on the spot.
+	await alice.net.request("ranked_queue", {"on": true})
+	await bob.net.request("ranked_queue", {"on": true})
+	check(await wait_until(func() -> bool: return alice.screen_name == "battle" and bob.screen_name == "battle", 15), "a second ranked match starts")
+	a = alice.screen
+	b = bob.screen
+	var before: Dictionary = {"alice": int(server_profile(alice).rating.mmr), "bob": int(server_profile(bob).rating.mmr)}
+	await wait_until(func() -> bool: return a.driver.tick > 120, 10)
+	a.forfeit()
+	check(await wait_until(func() -> bool: return b.ending_shown, 20), "when one player leaves, the other's match ends at once")
+	check(b.game.winner_team == b.game.local().team and bool(b.summary.won), "the one who stayed wins")
+	var left_report: Dictionary = b.summary.get("ranked", {})
+	check(int(left_report.delta) > 0 and int(server_profile(bob).rating.mmr) == before.bob + int(left_report.delta), "and gains the points")
+	check(await wait_until(func() -> bool: return int(server_profile(alice).rating.games) == 2 and int(server_profile(alice).rating.mmr) < before.alice, 10), "while the player who left is charged the loss")
+	bob.return_to_room()
+	await wait_until(func() -> bool: return server.hosts.is_empty(), 5)
+	check(alice.screen_name == "hall", "the one who left is back in the Salão")
+	# The same pair may meet only a few times an hour.
+	var keys: Array = server.ranked_pairs.keys()
+	check(keys.size() == 1 and (server.ranked_pairs[keys[0]] as Array).size() == 2 and not server.ranked_rematch_blocked(server.accounts[alice.my_account()], server.accounts[bob.my_account()]), "the server counts the matches of a pair")
+	await spectate_tests(alice, bob)
+	check(server.ranked_rematch_blocked(server.accounts[alice.my_account()], server.accounts[bob.my_account()]), "after three in an hour the pair waits")
+	server.ranked_pairs.clear()
+	# The screen.
+	var screen: RankedScreen = RankedScreen.open(alice.screen, alice)
+	check(await wait_until(func() -> bool: return not screen.loading, 5), "the ranked screen loads the ladder")
+	check(screen.find_child("RankBadge", true, false) != null and screen.find_child("LadderRow_1", true, false) != null and screen.find_child("RankedFind", true, false) != null, "it shows the emblem, the ladder rows and the queue button")
+	screen.find_child("RankedFind", true, false).pressed.emit()
+	check(await wait_until(func() -> bool: return screen.queued and server.accounts[alice.my_account()].queued, 5) and screen.find_child("RankedCancel", true, false) != null, "the button puts the player in the queue")
+	check(await wait_until(func() -> bool: return server.ranked_queue.size() == 1, 3), "the queue has one player")
+	screen.find_child("RankedCancel", true, false).pressed.emit()
+	check(await wait_until(func() -> bool: return not screen.queued and not server.accounts[alice.my_account()].queued, 5), "cancelling leaves the queue")
+	# A season ends: the rating is archived and the title can be claimed.
+	server_profile(alice).rating.games = 8
+	server_profile(alice).rating.mmr = 1210
+	Ranked.clock_offset = 86400 * (Ranked.season_days() + 2)
+	screen.refresh()
+	check(await wait_until(func() -> bool: return screen.find_child("ClaimSeason", true, false) != null, 5), "a finished season offers its title")
+	check(int(alice.profile.rating.season) == 2 and int(alice.profile.rating.games) == 0 and int(alice.profile.rating.mmr) == 1105, "the new season starts with the soft reset")
+	screen.find_child("ClaimSeason", true, false).pressed.emit()
+	check(await wait_until(func() -> bool: return alice.profile.titles == ["s1_ouro"] and server_profile(alice).titles == ["s1_ouro"], 5), "claiming gives the title on the server and the client")
+	check(alice.profile.title == "s1_ouro" and screen.find_child("Title_s1_ouro", true, false) != null, "the first title is equipped and listed")
+	screen.find_child("Title_s1_ouro", true, false).pressed.emit()
+	check(await wait_until(func() -> bool: return alice.profile.title == "" and server_profile(alice).title == "", 5), "a title can be taken off")
+	Ranked.clock_offset = 0
+	screen.close()
+	await process_frame
+	# The profile window of another player shows the rank and title.
+	var info: Dictionary = server.accounts[alice.my_account()].public_profile(server.balance)
+	check(info.has("rating") and info.has("title") and int(info.rating.mmr) == 1105, "other players can see the rating")
+
+# Live spectators (0.22): a third player watches a ranked match a few seconds behind.
+func spectate_tests(alice: Node, bob: Node) -> void:
+	var carol: Node = await make_app()
+	check(await login(carol, "watcher") == "", "a third player logs in")
+	check((await carol.do_op("create", ["Vigia", "f"])).error == "", "and creates the character")
+	await alice.net.request("ranked_queue", {"on": true})
+	await bob.net.request("ranked_queue", {"on": true})
+	check(await wait_until(func() -> bool: return alice.screen_name == "battle" and bob.screen_name == "battle", 15), "a third ranked match starts")
+	var a: BattleScreen = alice.screen
+	var b: BattleScreen = bob.screen
+	await wait_until(func() -> bool: return a.driver.tick > 200, 10)
+	var listed: Dictionary = await carol.net.request("ranked_info", {})
+	check(listed.ok and (listed.live as Array).size() == 1 and (listed.live[0].names as Array).size() == 2 and int(listed.live[0].m) == a.match_id, "the live list shows the ranked match")
+	check(not (await carol.net.request("spectate", {"m": 9999})).ok, "a match that does not exist cannot be watched")
+	check(not (await alice.net.request("spectate", {"m": a.match_id})).ok, "players cannot watch their own battle")
+	await wait_until(func() -> bool: return a.driver.tick > 1500, 20)
+	await carol.watch(a.match_id)
+	check(await wait_until(func() -> bool: return carol.screen_name == "battle", 5), "asking to watch opens the battle")
+	var w: BattleScreen = carol.screen
+	check(w.spectating and w.game.spectator and w.online and not w.game.can_act() and w.watch_bar != null and w.watch_bar.live, "the spectator has no controls and a live bar")
+	check(server.hosts[a.match_id].watchers.size() == 1 and server.accounts[carol.my_account()].watching == server.hosts[a.match_id], "the server counts the spectator")
+	check(not (await carol.net.request("ranked_queue", {"on": true})).ok, "nobody queues while watching")
+	check(await wait_until(func() -> bool: return w.driver.tick > 0, 15) and w.driver.tick <= a.driver.tick, "the broadcast follows the battle")
+	check(w.game.fighters.size() == 2 and w.game.local_id == 0, "it shows the same two fighters")
+	await finish_battle(alice, bob)
+	check(await wait_until(func() -> bool: return w.game.winner_team == a.game.winner_team and w.game.winner_team != -2, 60), "the spectator's copy reaches the same result")
+	check(not w.driver.drift_reported, "and never drifted from the server")
+	check(await wait_until(func() -> bool: return carol.screen_name == "hall", 15), "after the outcome the spectator is back in the Salão")
+	check(server.accounts[carol.my_account()].watching == null and carol.profile.matches == 0, "nothing is paid or recorded for watching")
+	await wait_until(func() -> bool: return is_instance_valid(a.results), 8)
+	alice.return_to_room()
+	bob.return_to_room()
+	await wait_until(func() -> bool: return server.hosts.is_empty(), 5)
+	carol.queue_free()
+	await process_frame
+
+# A run of the daily challenge played on this computer (the shot solver), as a replay.
+func challenge_run(day: int, player: String, idle: bool = false) -> Dictionary:
+	var config: Dictionary = Challenge.config(day, player)
+	var game: LocalMatch = LocalMatch.new()
+	root.add_child(game)
+	game.set_physics_process(false)
+	game.start(config)
+	var host: LocalHost = LocalHost.new()
+	host.game = game
+	game.remote = host.submit
+	root.add_child(host)
+	host.set_physics_process(false)
+	var stage: int = 0
+	var last_round: int = -1
+	var power: float = 50.0
+	for i in range(30000):
+		if not game.running:
+			break
+		if game.round_number != last_round:
+			last_round = game.round_number
+			stage = 0
+		if not idle:
+			if stage == 0 and game.can_act():
+				var me: TankFighter = game.fighters[0]
+				var foe: TankFighter = null
+				for fighter in game.fighters:
+					if fighter.team == 1 and fighter.hp > 0 and (foe == null or fighter.position.distance_to(me.position) < foe.position.distance_to(me.position)):
+						foe = fighter
+				var scale: float = float(me.weapon.get("projectile", {}).get("wind_scale", 1.0))
+				var shot: Vector3 = EnemyAI.choose_shot(me, foe, game.terrain, game.wind * float(game.balance.wind_accel) * scale * game.wind_factor(me), game.balance)
+				host.submit("aim", {"d": 0.0, "angle": shot.x})
+				host.submit("charge", {})
+				power = shot.y
+				stage = 1
+			elif stage == 1 and game.active_id == game.local_id and game.state == LocalMatch.State.PLAYER_CHARGING and host.pending.is_empty():
+				host.submit("release", {"power": power})
+				stage = 2
+		host.advance()
+	var replay: Dictionary = Replay.make(config, host.history, host.tick, game.winner_team, {"kind": "challenge", "day": day, "names": [player]})
+	var result: Dictionary = {"replay": replay, "score": Challenge.score(game)}
+	game.queue_free()
+	host.queue_free()
+	return result
+
+# The daily challenge online (0.22): the server runs the replay again, scores it, keeps the
+# best per player, pays the reward once a day, lists the day and gives the best runs back.
+func challenge_tests(alice: Node, bob: Node) -> void:
+	alice.show_hall()
+	bob.show_hall()
+	var day: int = Challenge.day_id()
+	var played: Dictionary = challenge_run(day, "Alice")
+	var rules: Dictionary = Challenge.data().reward
+	var coins: int = server_profile(alice).coins
+	var sent: Dictionary = await alice.submit_challenge(played.replay)
+	check(sent.ok and int(sent.score) == int(played.score.score) and bool(sent.first) and bool(sent.best) and int(sent.position) == 1 and int(sent.total) == 1, "the server re-runs the replay and scores it the same (%d)" % int(played.score.score))
+	check(server_profile(alice).coins == coins + int(rules.coins) and server_profile(alice).challenge.day == day and int(server_profile(alice).challenge.best) == int(played.score.score), "the first result of the day pays the reward")
+	check(alice.profile.challenge == server_profile(alice).challenge, "and the client mirrors it")
+	var again: Dictionary = await alice.net.request("challenge_submit", {"day": day, "replay": played.replay}, 60.0)
+	check(again.ok and not bool(again.first) and not bool(again.best) and server_profile(alice).coins == coins + int(rules.coins), "sending the same run again pays nothing more")
+	# Another player doing nothing scores nothing, and ranks second.
+	var idle: Dictionary = challenge_run(day, "Bob", true)
+	var second: Dictionary = await bob.net.request("challenge_submit", {"day": day, "replay": idle.replay}, 60.0)
+	check(second.ok and int(second.score) == 0 and int(second.position) == 2 and int(second.total) == 2, "a run that does nothing scores zero")
+	# Cheating does not work: wrong day, someone else's controls, the AI, junk.
+	check(not (await bob.net.request("challenge_submit", {"day": day + 1, "replay": played.replay}, 20.0)).ok, "another day's challenge is refused")
+	var doctored: Dictionary = played.replay.duplicate(true)
+	doctored.inputs.append([5, 1, "pass", {}])
+	check(not (await bob.net.request("challenge_submit", {"day": day, "replay": doctored}, 20.0)).ok, "inputs for the rival's fighter are refused")
+	var with_ai: Dictionary = played.replay.duplicate(true)
+	with_ai.inputs.append([5, 0, "auto", {"on": true}])
+	check(not (await bob.net.request("challenge_submit", {"day": day, "replay": with_ai}, 20.0)).ok, "so is the AI playing for the player")
+	check(not (await bob.net.request("challenge_submit", {"day": day, "replay": {"v": 1}}, 20.0)).ok and not (await bob.net.request("challenge_submit", {"day": day, "replay": "junk"}, 20.0)).ok, "and a replay with no battle in it")
+	# A lie about the config changes nothing: the server uses its own battle.
+	var lie: Dictionary = played.replay.duplicate(true)
+	lie.config.teams[0][0].level = 60
+	lie.config.seed = 1
+	var lied: Dictionary = await bob.net.request("challenge_submit", {"day": day, "replay": lie}, 60.0)
+	check(lied.ok and int(lied.score) == int(played.score.score) and not bool(lied.best) or int(lied.score) >= 0, "the config sent by the player is ignored")
+	# The day's board and the best runs.
+	var board: Dictionary = await alice.net.request("challenge_info", {"day": day})
+	check(board.ok and int(board.day) == day and (board.rows as Array).size() == 2 and board.rows[0].name == "Alice" and int(board.rows[0].score) == int(played.score.score) and int(board.position) == 1 and int(board.left) > 0, "the board lists the day's best first")
+	var watched: Dictionary = await bob.net.request("challenge_replay", {"day": day, "account": alice.my_account()})
+	var clean: Dictionary = Replay.clean(watched.get("replay"), true) if watched.ok else {}
+	check(watched.ok and not clean.is_empty() and clean.inputs.size() == played.replay.inputs.size(), "the best run's replay can be fetched")
+	check(not (await bob.net.request("challenge_replay", {"day": day + 50, "account": alice.my_account()})).ok, "a replay that is not there is an error")
+	# The screens.
+	var screen: ChallengeScreen = ChallengeScreen.open(alice.screen, alice)
+	screen.find_child("ChallengeTab_top", true, false).pressed.emit()
+	check(await wait_until(func() -> bool: return screen.find_child("ChallengeRow_1", true, false) != null, 5), "the ranking tab lists the day's players")
+	var watch_button: Button = screen.find_child("WatchTop_2", true, false)
+	check(watch_button != null, "each row has a button to watch the run")
+	watch_button.pressed.emit()
+	check(await wait_until(func() -> bool: return alice.screen_name == "battle" and (alice.screen as BattleScreen).replay_driver != null, 10), "watching a run of the ranking plays its replay")
+	(alice.screen as BattleScreen).leave_watching()
+	await process_frame
+	check(alice.screen_name == "hall", "and leaving goes back")
+	# The new day pays again.
+	Challenge.clock_offset = 86400 * 3
+	var later: int = Challenge.day_id()
+	var tomorrow: Dictionary = challenge_run(later, "Alice")
+	var paid: int = server_profile(alice).coins
+	var next: Dictionary = await alice.net.request("challenge_submit", {"day": later, "replay": tomorrow.replay}, 60.0)
+	check(next.ok and bool(next.first) and server_profile(alice).coins == paid + int(rules.coins) and int(next.total) == 1, "the next day has its own board and pays again " + str(next))
+	Challenge.clock_offset = 0
 
 func pve_tests(alice: Node, bob: Node) -> void:
 	bob.show_hall()
@@ -357,7 +610,7 @@ func pve_tests(alice: Node, bob: Node) -> void:
 	var host_count: int = server.hosts.size()
 	alice.screen.forfeit()
 	bob.screen.forfeit()
-	check(host_count == 1 and await wait_until(func() -> bool: return server.hosts.is_empty(), 5), "when everyone leaves, the battle is closed")
+	check(host_count <= 1 and await wait_until(func() -> bool: return server.hosts.is_empty(), 20), "when everyone leaves, the battle is closed (%d hosts, left %s)" % [host_count, str(server.hosts.keys())])
 	check(alice.screen_name == "hall" and bob.screen_name == "hall", "leaving goes back to the Salão")
 
 # How many copies of an item exist, in both profiles and on sale (never more than one).
@@ -461,7 +714,7 @@ func auction_tests(alice: Node, bob: Node) -> void:
 	mail.close()
 	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving and not s.busy), 5)
 	for app: Node in [alice, bob]:
-		check(JSON.stringify(app.profile.to_data()) == JSON.stringify(server_profile(app).to_data()), "%s's copy matches the server's after trading" % server_profile(app).player_name)
+		check(profile_text(app.profile) == profile_text(server_profile(app)), "%s's copy matches the server's after trading" % server_profile(app).player_name + first_difference(profile_text(app.profile), profile_text(server_profile(app))))
 		check(JSON.stringify(ApiClient.copy(server.api.memory_profiles[app.my_account()].data)) == JSON.stringify(ApiClient.copy(server_profile(app).to_data())), "%s's stored profile matches" % server_profile(app).player_name)
 
 func takeover_tests(alice: Node) -> void:

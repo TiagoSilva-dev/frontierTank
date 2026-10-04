@@ -85,11 +85,29 @@ func show_results() -> void:
 	var pet_gain: Dictionary = summary.get("pet", {})
 	if not pet_gain.is_empty():
 		pet_row(panel, Rect2(20, 570, 610, 56), pet_gain)
+	if summary.has("ranked"):
+		ranked_row(panel, Rect2(20, 628, 610, 50), summary.ranked)
 	if int(summary.get("level_after", 1)) > int(summary.get("level_before", 1)):
 		var up: Label = UiKit.label(stage, tr("SUBIU PARA O NÍVEL %d!") % int(summary.level_after), Rect2(40, 390, 520, 50), 30, Color("9aff7a"), Color("0a2a04"), HORIZONTAL_ALIGNMENT_CENTER)
 		up.add_theme_constant_override("outline_size", 10)
 	continue_button = UiKit.button(stage, tr("Continuar ▶"), Rect2(1080, 652, 170, 40), show_cards, "button_green", 17)
 	continue_button.name = "Continue"
+
+# The ranked result (0.22): the new emblem, the points gained or lost and the division.
+func ranked_row(parent: Control, rect: Rect2, report: Dictionary) -> void:
+	var box: Panel = UiKit.panel(parent, rect, "dark")
+	box.name = "RankedGain"
+	var placed: bool = bool(report.get("placed", true))
+	RankBadge.create(box, Rect2(6, 2, 46, 46), int(report.after), placed)
+	var change: int = int(report.delta)
+	UiKit.label(box, tr("RANQUEADA"), Rect2(62, 2, 150, 24), 15, PremiumUi.GOLD, UiKit.INK)
+	UiKit.label(box, ("+%d" if change >= 0 else "%d") % change, Rect2(62, 22, 80, 26), 20, UiKit.GOOD if change >= 0 else UiKit.BAD, UiKit.INK)
+	var detail: String = tr("%d pontos  ·  %s") % [int(report.after), Ranked.label(int(report.after))] if placed else tr("Em avaliação (%d/%d)") % [int(report.games), int(Ranked.data().placement_games)]
+	UiKit.label(box, detail, Rect2(150, 22, 330, 26), 16, UiKit.TEXT)
+	if bool(report.get("up", false)) and placed:
+		UiKit.label(box, tr("SUBIU!"), Rect2(480, 12, 120, 26), 18, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	elif placed and Ranked.label(int(report.before)) != Ranked.label(int(report.after)):
+		UiKit.label(box, tr("DESCEU"), Rect2(480, 12, 120, 26), 16, UiKit.BAD, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 
 # The active pet's share: its picture, the experience it earned and a level-up note.
 func pet_row(parent: Control, rect: Rect2, gain: Dictionary) -> void:

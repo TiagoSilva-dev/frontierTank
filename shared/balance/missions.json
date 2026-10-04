@@ -1,65 +1,454 @@
 {
-    "version": 1,
-    "daily": [
-        {
-            "id": "pvp_wins",
-            "name": "Vitórias no PvP",
-            "description": "Vença 5 partidas PvP.",
-            "type": "pvp_wins",
-            "target": 5,
-            "reward": {
-                "coins": 120,
-                "exp": 120
-            }
-        },
-        {
-            "id": "damage",
-            "name": "Dano de Artilharia",
-            "description": "Cause 10.000 de dano em batalhas.",
-            "type": "damage",
-            "target": 10000,
-            "reward": {
-                "coins": 100,
-                "exp": 100
-            }
-        },
-        {
-            "id": "expedition",
-            "name": "Além da Fronteira",
-            "description": "Conclua uma expedição derrotando o chefe final.",
-            "type": "expedition",
-            "target": 1,
-            "reward": {
-                "coins": 180,
-                "exp": 180
-            }
-        },
-        {
-            "id": "boss_helio",
-            "name": "Queda do Rei Hélio",
-            "description": "Derrote o Rei Hélio no Templo do Sol.",
-            "type": "boss",
-            "boss": "rei_helio",
-            "target": 1,
-            "reward": {
-                "coins": 150,
-                "exp": 150
-            }
-        },
-        {
-            "id": "pow_uses",
-            "name": "Poder de Fogo",
-            "description": "Use POW 10 vezes.",
-            "type": "pow_uses",
-            "target": 10,
-            "reward": {
-                "coins": 100,
-                "exp": 100
-            }
+  "version": 3,
+  "starter": [
+    {
+      "id": "s_pvp",
+      "name": "Primeira Batalha",
+      "description": "Jogue uma partida PvP no Salão de Jogos.",
+      "event": "pvp_played",
+      "target": 1,
+      "reward": {
+        "coins": 100,
+        "exp": 80
+      }
+    },
+    {
+      "id": "s_win",
+      "name": "Primeira Vitória",
+      "description": "Vença uma partida PvP.",
+      "event": "pvp_win",
+      "target": 1,
+      "reward": {
+        "coins": 150,
+        "exp": 120,
+        "items": {
+          "pedra_fortalecimento": 2
         }
-    ],
-    "daily_bonus": {
-        "coins": 300,
-        "exp": 250
+      }
+    },
+    {
+      "id": "s_strengthen",
+      "name": "Mãos na Forja",
+      "description": "Tente fortalecer uma arma no Ferreiro.",
+      "event": "strengthen",
+      "target": 1,
+      "reward": {
+        "coins": 120,
+        "exp": 100
+      }
+    },
+    {
+      "id": "s_instance",
+      "name": "Além da Ilha",
+      "description": "Complete uma Instância na entrada livre, vencendo ou não.",
+      "event": "pve_played",
+      "target": 1,
+      "reward": {
+        "coins": 200,
+        "exp": 150,
+        "items": {
+          "egg_sol": 1
+        }
+      }
+    },
+    {
+      "id": "s_hatch",
+      "name": "Vida Nova",
+      "description": "Choque um ovo na Casa dos Mascotes.",
+      "event": "hatch",
+      "target": 1,
+      "reward": {
+        "coins": 150,
+        "exp": 100
+      }
+    },
+    {
+      "id": "s_hunt",
+      "name": "Treinador",
+      "description": "Inicie uma Caçada com o seu mascote.",
+      "event": "hunt",
+      "target": 1,
+      "reward": {
+        "coins": 200,
+        "exp": 120
+      }
     }
+  ],
+  "starter_bonus": {
+    "coins": 500,
+    "exp": 300
+  },
+  "daily_count": 5,
+  "daily_pool": [
+    {
+      "id": "pvp_wins",
+      "name": "Vitórias no PvP",
+      "description": "Vença 5 partidas PvP.",
+      "event": "pvp_win",
+      "target": 5,
+      "category": "pvp",
+      "reward": {
+        "coins": 120,
+        "exp": 120
+      }
+    },
+    {
+      "id": "pvp_played",
+      "name": "Combate Livre",
+      "description": "Jogue 4 partidas PvP.",
+      "event": "pvp_played",
+      "target": 4,
+      "category": "pvp",
+      "reward": {
+        "coins": 90,
+        "exp": 90
+      }
+    },
+    {
+      "id": "damage",
+      "name": "Dano de Artilharia",
+      "description": "Cause 10.000 de dano em batalhas.",
+      "event": "damage",
+      "target": 10000,
+      "category": "general",
+      "reward": {
+        "coins": 100,
+        "exp": 100
+      }
+    },
+    {
+      "id": "kills",
+      "name": "Caçador de Lacaios",
+      "description": "Derrube 8 inimigos em batalhas.",
+      "event": "kills",
+      "target": 8,
+      "category": "general",
+      "reward": {
+        "coins": 90,
+        "exp": 90
+      }
+    },
+    {
+      "id": "pow_uses",
+      "name": "Poder de Fogo",
+      "description": "Use POW 10 vezes.",
+      "event": "pow_uses",
+      "target": 10,
+      "category": "general",
+      "reward": {
+        "coins": 100,
+        "exp": 100
+      }
+    },
+    {
+      "id": "expedition",
+      "name": "Além da Fronteira",
+      "description": "Conclua uma expedição derrotando o chefe final.",
+      "event": "expedition_win",
+      "target": 1,
+      "category": "pve",
+      "reward": {
+        "coins": 180,
+        "exp": 180
+      }
+    },
+    {
+      "id": "boss_helio",
+      "name": "Queda do Rei Hélio",
+      "description": "Derrote o Rei Hélio no Templo do Sol.",
+      "event": "boss:rei_helio",
+      "target": 1,
+      "category": "pve",
+      "reward": {
+        "coins": 150,
+        "exp": 150
+      }
+    },
+    {
+      "id": "boss_any",
+      "name": "Matador de Chefes",
+      "description": "Derrote um chefe de qualquer instância.",
+      "event": "boss_any",
+      "target": 1,
+      "category": "pve",
+      "reward": {
+        "coins": 160,
+        "exp": 160
+      }
+    },
+    {
+      "id": "hatch",
+      "name": "Berço de Mascotes",
+      "description": "Choque um ovo na Casa dos Mascotes.",
+      "event": "hatch",
+      "target": 1,
+      "category": "pets",
+      "reward": {
+        "coins": 110,
+        "exp": 100
+      }
+    },
+    {
+      "id": "hunt_collect",
+      "name": "Colheita da Caçada",
+      "description": "Colete o que a sua Caçada rendeu.",
+      "event": "hunt_collect",
+      "target": 1,
+      "category": "pets",
+      "reward": {
+        "coins": 100,
+        "exp": 90
+      }
+    },
+    {
+      "id": "pet_feed",
+      "name": "Mascote Bem Alimentado",
+      "description": "Alimente um mascote.",
+      "event": "pet_feed",
+      "target": 1,
+      "category": "pets",
+      "reward": {
+        "coins": 80,
+        "exp": 70
+      }
+    },
+    {
+      "id": "strengthen",
+      "name": "Mãos na Forja",
+      "description": "Tente fortalecer um item 2 vezes no Ferreiro.",
+      "event": "strengthen",
+      "target": 2,
+      "category": "forge",
+      "reward": {
+        "coins": 110,
+        "exp": 100
+      }
+    },
+    {
+      "id": "craft",
+      "name": "Alquimia",
+      "description": "Use uma moeda de criação no Ferreiro.",
+      "event": "craft",
+      "target": 1,
+      "category": "forge",
+      "reward": {
+        "coins": 120,
+        "exp": 110
+      }
+    },
+    {
+      "id": "buy",
+      "name": "Dia de Compras",
+      "description": "Faça uma compra: item, pedra ou ferramenta.",
+      "event": "buy",
+      "target": 1,
+      "category": "economy",
+      "reward": {
+        "coins": 80,
+        "exp": 70
+      }
+    },
+    {
+      "id": "challenge",
+      "name": "Desafio do Dia",
+      "description": "Complete o Desafio do Dia.",
+      "event": "challenge",
+      "target": 1,
+      "category": "challenge",
+      "reward": {
+        "coins": 140,
+        "exp": 130
+      }
+    },
+    {
+      "id": "ranked_played",
+      "name": "Liga Ranqueada",
+      "description": "Jogue 2 partidas ranqueadas.",
+      "event": "ranked_played",
+      "target": 2,
+      "category": "ranked",
+      "reward": {
+        "coins": 160,
+        "exp": 150
+      },
+      "online": true
+    }
+  ],
+  "daily_bonus": {
+    "coins": 300,
+    "exp": 250
+  },
+  "weekly_count": 3,
+  "weekly_pool": [
+    {
+      "id": "w_pvp_wins",
+      "name": "Campeão da Semana",
+      "description": "Vença 15 partidas PvP.",
+      "event": "pvp_win",
+      "target": 15,
+      "category": "pvp",
+      "reward": {
+        "coins": 500,
+        "exp": 450,
+        "items": {
+          "pedra_fortalecimento": 3
+        }
+      }
+    },
+    {
+      "id": "w_expedition",
+      "name": "Exploradores",
+      "description": "Conclua 5 expedições.",
+      "event": "expedition_win",
+      "target": 5,
+      "category": "pve",
+      "reward": {
+        "coins": 600,
+        "exp": 500,
+        "items": {
+          "egg_sol": 1
+        }
+      }
+    },
+    {
+      "id": "w_bosses",
+      "name": "Matador de Chefes",
+      "description": "Derrote 4 chefes.",
+      "event": "boss_any",
+      "target": 4,
+      "category": "pve",
+      "reward": {
+        "coins": 550,
+        "exp": 480
+      }
+    },
+    {
+      "id": "w_damage",
+      "name": "Chuva de Aço",
+      "description": "Cause 80.000 de dano em batalhas.",
+      "event": "damage",
+      "target": 80000,
+      "category": "general",
+      "reward": {
+        "coins": 450,
+        "exp": 400
+      }
+    },
+    {
+      "id": "w_hatch",
+      "name": "Criador de Mascotes",
+      "description": "Choque 3 ovos.",
+      "event": "hatch",
+      "target": 3,
+      "category": "pets",
+      "reward": {
+        "coins": 450,
+        "exp": 400,
+        "items": {
+          "pet_egg": 1
+        }
+      }
+    },
+    {
+      "id": "w_hunt",
+      "name": "Treinador Dedicado",
+      "description": "Colete a Caçada 5 vezes.",
+      "event": "hunt_collect",
+      "target": 5,
+      "category": "pets",
+      "reward": {
+        "coins": 450,
+        "exp": 400
+      }
+    },
+    {
+      "id": "w_forge",
+      "name": "Ferreiro da Semana",
+      "description": "Tente fortalecer itens 8 vezes.",
+      "event": "strengthen",
+      "target": 8,
+      "category": "forge",
+      "reward": {
+        "coins": 450,
+        "exp": 400,
+        "items": {
+          "pedra_fortalecimento": 2
+        }
+      }
+    },
+    {
+      "id": "w_challenge",
+      "name": "Constância",
+      "description": "Complete o Desafio do Dia em 5 dias diferentes.",
+      "event": "challenge",
+      "target": 5,
+      "category": "challenge",
+      "reward": {
+        "coins": 600,
+        "exp": 500
+      }
+    },
+    {
+      "id": "w_ranked",
+      "name": "Escalada",
+      "description": "Jogue 6 partidas ranqueadas.",
+      "event": "ranked_played",
+      "target": 6,
+      "category": "ranked",
+      "reward": {
+        "coins": 600,
+        "exp": 520
+      },
+      "online": true
+    }
+  ],
+  "weekly_bonus": {
+    "coins": 900,
+    "exp": 700,
+    "items": {
+      "strength_stone_ii": 1
+    }
+  },
+  "per_category": 2,
+  "streak": {
+    "rewards": [
+      {
+        "coins": 50,
+        "exp": 40
+      },
+      {
+        "coins": 80,
+        "exp": 60
+      },
+      {
+        "coins": 100,
+        "exp": 80,
+        "items": {
+          "pedra_fortalecimento": 1
+        }
+      },
+      {
+        "coins": 120,
+        "exp": 100
+      },
+      {
+        "coins": 150,
+        "exp": 120,
+        "items": {
+          "pedra_fortalecimento": 2
+        }
+      },
+      {
+        "coins": 200,
+        "exp": 150
+      },
+      {
+        "coins": 400,
+        "exp": 300,
+        "items": {
+          "pet_egg": 1
+        }
+      }
+    ]
+  }
 }

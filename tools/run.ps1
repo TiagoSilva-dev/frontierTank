@@ -4,31 +4,18 @@ $godotCommand = Get-Command godot -ErrorAction SilentlyContinue
 $godotBinary = if ($env:GODOT_BIN) { $env:GODOT_BIN } elseif ($godotCommand) { $godotCommand.Source } else { Join-Path $env:USERPROFILE 'Downloads\Godot_v4.7.2-stable_win64.exe\Godot_v4.7.2-stable_win64_console.exe' }
 if (-not (Test-Path -LiteralPath $godotBinary)) { throw 'Godot não encontrado. Configure GODOT_BIN com o caminho do executável Godot 4.7.' }
 if ($Test) {
+    # Every suite in tests/*_tests.gd runs, one after the other, the lobby and online ones
+    # (net, net_e2e) last. exchange_online_tests needs a PostgreSQL API running and stays out.
     & $godotBinary --headless --path $projectRoot --editor --import --quit
-    & $godotBinary --headless --path $projectRoot --script tests/combat_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/ui_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/pve_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/armory_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/pow_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/craft_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/i18n_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/exchange_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/auction_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/launch_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/net_tests.gd
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    & $godotBinary --headless --path $projectRoot --script tests/net_e2e_tests.gd
-    exit $LASTEXITCODE
+    $skip = @('exchange_online_tests.gd', 'net_tests.gd', 'net_e2e_tests.gd')
+    $suites = @(Get-ChildItem -LiteralPath (Join-Path $projectRoot 'tests') -Filter '*_tests.gd' | Where-Object { $skip -notcontains $_.Name } | Sort-Object Name | ForEach-Object { $_.Name })
+    $suites += @('net_tests.gd', 'net_e2e_tests.gd')
+    foreach ($suite in $suites) {
+        Write-Host "== $suite"
+        & $godotBinary --headless --path $projectRoot --script "tests/$suite"
+        if ($LASTEXITCODE -ne 0) { Write-Host "FALHOU: $suite"; exit $LASTEXITCODE }
+    }
+    exit 0
 } elseif ($Editor) {
     & $godotBinary --path $projectRoot --editor
 } else {

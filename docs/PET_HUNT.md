@@ -23,7 +23,7 @@ Modo automático da Casa dos Mascotes, no estilo de um jogo idle de monstros: o 
 
 ## Campo (0.21): a Caçada vista de cima
 
-Pedido: algo entre Tibia e Pokémon, com o mascote andando num campo e atacando com animações do elemento (o Charmander cospe fogo). As zonas **Ruínas do Sol** e **Trilha Gelada** já usam o campo; as outras três (Brasa, Céu, Drakkar) continuam com a arena lateral (`HuntArena`) até virem as artes. Uma zona usa o campo quando existe `assets/field/<zona>/tiles.json` (`HuntField.available`).
+Pedido: algo entre Tibia e Pokémon, com o mascote andando num campo e atacando com animações do elemento (o Charmander cospe fogo). As cinco zonas usam o campo (as três últimas vieram na 0.22, ver o fim deste arquivo); a arena lateral (`HuntArena`) fica só como reserva. Uma zona usa o campo quando existe `assets/field/<zona>/tiles.json` (`HuntField.available`).
 
 - `client/ui/hunt_field.gd` (`HuntField`, herda de `HuntArena` e tem a mesma API) reproduz o log da simulação, sem decidir nada. A economia, o servidor e o offline não mudam.
 - **Linha do tempo de 12 s:** 4,2 s de aproximação (o grupo selvagem entra pela borda e o time vai ao encontro, com a câmera acompanhando), a luta e 2,3 s de resultado.
@@ -54,6 +54,17 @@ Item premium `passe_cacador` (slot "selo", sem atributos, vinculado, não vende)
 ## Em aberto
 
 - Cadastrar o produto 3000 na Steam; ícone do Passe só em 64×64 (serve para a loja e a tela).
-- Os mascotes ainda não lutam nas batalhas de tanque com habilidade, só os bônus passivos (sem relação com este modo).
+- Na batalha de tanque o mascote ativo tem uma habilidade por partida (0.22, ver `docs/PETS.md`); a Caçada em si continua automática.
 - Ovos e mascotes não vão ao Leilão. Notificação fora do jogo (um e-mail ou Steam) quando a caçada enche não existe.
 - Sons não foram ouvidos por uma pessoa; a taxa de captura e a de ovos precisam de playtest.
+
+## Campo visto de cima nas cinco zonas (0.22)
+
+Sol, Gelo, Brasa (Portões de Brasa), Céu (Ilhas Flutuantes) e Drakkar (Praia dos Drakkar) usam `HuntField`; uma zona entra assim que existe `assets/field/<zona>/tiles.json`. Brasa tem cinzas vulcânicas, lagos de lava e lajes de obsidiana; Céu, chão de nuvem, lagos de céu e mármore flutuante; Drakkar, costa rochosa, mar frio e lajes com runas. Os 12 mascotes novos andam nas quatro direções (8 quadros). Tudo é reconstruído por `tools/field_assets.py units|decor|tiles <id|zona>` (ids de personagens, tilesets e objetos estão no arquivo). Capturas: `tests/hunt_visual_check.gd -- field mascara|ceu|viking`. Ainda não foi jogado por ninguém.
+
+**Acabamento das três zonas novas (04/10/2026).** A primeira versão tinha lajes que pareciam retângulos chapados, o chão de Brasa quase preto, tufos de Drakkar que pareciam cristais azuis e uma coluna de Céu branca sobre chão claro. O que mudou, tudo reproduzível pelo `tools/field_assets.py`:
+- **Plataformas em ruínas** (`"ruined": true` no `tiles.json`, só Brasa, Céu e Drakkar; Sol e Gelo continuam com as lajes simples): `FieldMap._break_up` dá a cada laje uma ala em cima ou embaixo, cantos chanfrados ou mordidos e, nas grandes, um buraco; os tiles de canto do tileset Wang desenham as bordas novas. `_wear` clareia ou escurece cada laje e risca rachaduras, para o tile repetido não virar quadriculado. Itens com `"on_stone": true` (colunas e entulho) ficam só sobre as lajes, um por laje, e contam como cenário que respeita o centro livre.
+- **Recolor das folhas** (`RECOLOR`, comando `field_assets.py recolor [zona]`, parte de `tools/field_src/` e é idempotente): em Brasa o chão violeta quase preto virou terra queimada e as lajes verde-acinzentadas viraram pedra clara de cinza; a folha da lava recebe a mesma regra, senão cada lago ganha um halo preto. O `shade` de Brasa saiu.
+- **Cenário derivado** (`DERIVED`): o tufo de Drakkar é o capim do Sol em verde-mar (grátis, no lugar do cristal); a coluna de Céu foi gerada de novo (arenito claro com ouro e hera, 1 geração).
+- `field_tests` ganhou 10 checagens (lajes, cenário sobre elas, centro livre, Sol e Gelo inalterados): `hunt_tests` com 162.
+

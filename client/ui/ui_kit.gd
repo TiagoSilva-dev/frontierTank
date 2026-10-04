@@ -248,6 +248,10 @@ static func label(parent: Node, text: String, rect: Rect2, font_size: int = 16, 
 static func outline_for(font_size: int) -> int:
 	return clampi(font_size / 6, 2, 4)
 
+# A label whose text wraps inside `rect` (see wrap).
+static func wrapped(parent: Node, text: String, rect: Rect2, font_size: int = 16, color: Color = CREAM, outline: Color = Color.TRANSPARENT, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	return UiKit.wrap(label(parent, text, rect, font_size, color, outline, align), rect.size)
+
 # A label that cuts a long text with "…" instead of growing past its box.
 static func clipped(parent: Node, text: String, rect: Rect2, font_size: int = 16, color: Color = CREAM, outline: Color = Color.TRANSPARENT, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
 	var node: Label = label(parent, text, rect, font_size, color, outline, align)

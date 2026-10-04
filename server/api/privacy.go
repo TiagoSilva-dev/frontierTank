@@ -159,6 +159,7 @@ var exportQueries = []struct {
 	{"sessions", `SELECT COALESCE(json_agg(json_build_object('created_at', created_at, 'expires_at', expires_at) ORDER BY created_at DESC), '[]'::json) FROM sessions WHERE account_id = $1`},
 	{"presence", `SELECT COALESCE((SELECT json_build_object('server_id', server_id, 'expires_at', expires_at) FROM presence WHERE account_id = $1), 'null'::json)`},
 	{"exchange_orders", `SELECT COALESCE(json_agg(to_jsonb(e) - 'account_id' ORDER BY id DESC), '[]'::json) FROM exchange_orders e WHERE account_id = $1`},
+	{"challenge_scores", `SELECT COALESCE(json_agg(json_build_object('day', day, 'score', score, 'ticks', ticks, 'created_at', created_at) ORDER BY day DESC), '[]'::json) FROM challenge_scores WHERE account_id = $1`},
 	{"auction_listings", `SELECT COALESCE(json_agg(json_build_object('id', id, 'kind', kind, 'item', item, 'price_solar', price_solar, 'price_estrela', price_estrela, 'fee_solar', fee_solar, 'fee_estrela', fee_estrela, 'status', status, 'created_at', created_at, 'expires_at', expires_at, 'closed_at', closed_at) ORDER BY id DESC), '[]'::json) FROM auction_listings WHERE seller_id = $1`},
 	{"auction_purchases", `SELECT COALESCE(json_agg(json_build_object('id', id, 'kind', kind, 'item', item, 'price_solar', price_solar, 'price_estrela', price_estrela, 'closed_at', closed_at) ORDER BY id DESC), '[]'::json) FROM auction_listings WHERE buyer_id = $1`},
 	{"mail", `SELECT COALESCE(json_agg(json_build_object('id', id, 'kind', kind, 'item_kind', item_kind, 'item', item, 'currencies', currencies, 'coins', coins, 'detail', detail, 'created_at', created_at, 'claimed_at', claimed_at) ORDER BY id DESC), '[]'::json) FROM mail WHERE account_id = $1`},
@@ -204,6 +205,8 @@ type Retention struct {
 	ReportDays int
 	// Steam purchases (tax and consumer records: 5 years).
 	OrderDays int
+	// Daily challenge scores and their replays, counted back from the newest day.
+	ChallengeDays int
 }
 
 func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
@@ -221,6 +224,9 @@ func (s *Store) PurgeAudit(ctx context.Context, keep Retention) error {
 		return err
 	}
 	if err := s.PurgeOrders(ctx, keep.OrderDays); err != nil {
+		return err
+	}
+	if err := s.PurgeChallenge(ctx, keep.ChallengeDays); err != nil {
 		return err
 	}
 	if keep.AccessDays > 0 {

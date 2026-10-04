@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "epoch": "2026-10-05",
+  "turn_seconds": 15,
+  "max_ticks": 20000,
+  "level": 10,
+  "reward": {"coins": 150, "exp": 100},
+  "weapons": ["quebra_tijolos", "fogo_intenso", "canhao_arco_iris", "vento_de_deus", "cesto_newton", "kit_medico", "eletrodomestico", "trovao", "desentupidor"],
+  "kinds": [
+    {"id": "alvos", "name": "Tiro ao Alvo", "description": "Derrube os 3 alvos em 6 turnos. Cada turno que sobra vale pontos.", "turns": 6, "target_hp": [320, 460, 620], "medals": [1900, 2800, 3500]},
+    {"id": "duelo", "name": "Duelo Relâmpago", "description": "Vença o Rival do Dia em 10 turnos. Vida que sobra e turnos poupados valem pontos.", "turns": 10, "medals": [2300, 2900, 3400]},
+    {"id": "alvo_distante", "name": "Alvo Distante", "description": "Um alvo resistente do outro lado do mapa e só 5 turnos: o vento decide.", "turns": 5, "target_hp": [1100], "medals": [1200, 1700, 2100]}
+  ]
+}

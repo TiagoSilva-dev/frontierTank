@@ -32,6 +32,8 @@ var item_buttons: Array[SkillSlot] = []
 var tool_buttons: Array[SkillSlot] = []
 var fly_button: SkillSlot
 var aux_button: SkillSlot
+# The active pet's skill (0.22), key G.
+var pet_button: SkillSlot
 var pow_button: PowOrb
 var trust_button: Button
 var used_row: HBoxContainer
@@ -45,6 +47,8 @@ var portraits: Dictionary = {}
 var phase_label: Label
 var goal_label: Label
 var time: float = 0.0
+# Training (0.21): the coach's card takes the log's place.
+var quiet: bool = false
 # Animation state: the timer's beat and slam, the gauges' trailing values, the force
 # bar's sparks, the projectiles' trails on the minimap and the "SUA VEZ!" banner.
 var seen_round: int = -1
@@ -139,6 +143,13 @@ func build() -> void:
 	var aux: Dictionary = Armory.aux_def(me.aux_id)
 	aux_button = SkillSlot.create(self, Rect2(142, 540, 50, 46), load(str(aux.icon)) if not aux.is_empty() else null, "V", game.use_aux)
 	aux_button.tooltip_text = tr("%s (V)\n%s") % [tr(str(aux.name)), tr(str(aux.desc))] if not aux.is_empty() else tr("Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo).")
+	if not me.pet_skill.is_empty():
+		var species: Dictionary = Pets.species_def(str(me.pet_skill.species))
+		pet_button = SkillSlot.create(self, Rect2(142, 490, 50, 46), load(str(species.get("art", ""))), "G", game.use_pet)
+		pet_button.accent = Color(str(Pets.skill_def(str(me.pet_skill.element)).color))
+		pet_button.name = "PetSkill"
+		var def: Dictionary = Pets.skill_def(str(me.pet_skill.element))
+		pet_button.tooltip_text = tr("%s (G)\n%s\nUm uso por batalha, a partir do seu segundo turno.") % [tr(str(def.name)), Pets.skill_text(me.pet_skill)]
 	# --- bottom-left: trust, angle dial
 	trust_button = UiKit.button(self, tr("Confiar"), Rect2(8, 546, 112, 34), toggle_trust, "button", 15)
 	trust_button.tooltip_text = tr("Confiar: a IA joga os seus turnos.")
@@ -239,6 +250,8 @@ func log_line(text: String, color: Color) -> void:
 	refresh_log()
 
 func refresh_log() -> void:
+	if quiet:
+		log_lines.clear()
 	if is_instance_valid(log_label):
 		var lines: PackedStringArray = PackedStringArray()
 		for line: Dictionary in log_lines:
@@ -293,6 +306,10 @@ func show_outcome(won: bool, draw: bool) -> void:
 	var text: String = tr("Ninguém venceu desta vez.")
 	if kind == "victory":
 		text = tr("Instância concluída!") if game.pve else tr("Sua equipe venceu a batalha!")
+		if game.mode == "tutorial":
+			text = tr("Você derrubou o Boneco de Treino!")
+		elif game.mode == "challenge":
+			text = tr("Desafio concluído!")
 	elif kind == "defeat":
 		text = tr("Sua equipe foi derrotada.")
 	# The turn's widgets have nothing more to say: they fade under the moment.
@@ -307,7 +324,11 @@ func set_paused(value: bool) -> void:
 		pause_box.queue_free()
 	if not value:
 		return
-	if screen.online:
+	if game.mode == "challenge":
+		pause_box = UiKit.modal(self, tr("DESAFIO PAUSADO"), tr("Sair do desafio não conta pontos: o resultado só vale quando a partida termina."), Vector2(520, 300))
+	elif game.mode == "tutorial":
+		pause_box = UiKit.modal(self, tr("TREINO PAUSADO"), tr("Sair do treino volta para a cidade. Você pode repetir o treino em AJUDA."), Vector2(520, 300))
+	elif screen.online:
 		pause_box = UiKit.modal(self, tr("OPÇÕES"), tr("Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."), Vector2(520, 300))
 	else:
 		pause_box = UiKit.modal(self, tr("BATALHA PAUSADA"), tr("Partida local contra IA. Desistir conta como derrota."), Vector2(520, 300))
@@ -328,7 +349,7 @@ func set_paused(value: bool) -> void:
 		audio.set_sfx_on(not audio.enabled)
 		label_audio.call())
 	UiKit.button(pause_box, tr("CONTINUAR"), Rect2(rect.position.x + 60, rect.end.y - 64, 180, 44), screen.toggle_pause, "button_green")
-	UiKit.button(pause_box, tr("DESISTIR"), Rect2(rect.end.x - 240, rect.end.y - 64, 180, 44), screen.forfeit)
+	UiKit.button(pause_box, tr("SAIR DO TREINO") if game.mode == "tutorial" else (tr("SAIR DO DESAFIO") if game.mode == "challenge" else tr("DESISTIR")), Rect2(rect.end.x - 240, rect.end.y - 64, 180, 44), screen.forfeit)
 
 # ---------- state ----------
 
@@ -348,7 +369,7 @@ func _process(delta: float) -> void:
 		turn_age = 0.0
 		last_second = -1
 	if acting and not was_mine:
-		var slots: Array = item_buttons + tool_buttons + [fly_button, aux_button]
+		var slots: Array = item_buttons + tool_buttons + [fly_button, aux_button] + ([pet_button] if is_instance_valid(pet_button) else [])
 		for i in range(slots.size()):
 			slots[i].play_shine(i * 0.03)
 	was_mine = acting
@@ -374,6 +395,10 @@ func _process(delta: float) -> void:
 	fly_button.count_text = str(me.fly_cooldown) if me.fly_cooldown > 0 else ""
 	if is_instance_valid(goal_label):
 		goal_label.text = phase_goal()
+	if is_instance_valid(pet_button):
+		pet_button.disabled = not acting or me.pet_uses <= 0 or me.turns_started < int(Pets.battle_rules().from_round) or game.turn_pet or game.turn_fly or sealed
+		pet_button.count_text = str(me.pet_uses)
+		pet_button.used = 1 if game.turn_pet and mine else 0
 	aux_button.disabled = not acting or me.aux_uses <= 0
 	aux_button.count_text = str(me.aux_uses) if me.aux_id != "" else ""
 	for i in range(tool_buttons.size()):

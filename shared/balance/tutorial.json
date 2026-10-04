@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "steps": [
+    {
+      "id": "welcome",
+      "name": "BEM-VINDO AO TREINO",
+      "text": "Em poucos minutos você aprende o essencial da artilharia. Seu alvo é o Boneco de Treino, na ilha da frente: ele não revida.",
+      "wait": "key",
+      "focus": []
+    },
+    {
+      "id": "move",
+      "name": "ANDAR",
+      "text": "Use ← → (ou A e D) para andar. Andar gasta ENERGIA, a barra verde embaixo à direita. Dê alguns passos.",
+      "need": "moved",
+      "focus": [
+        "gauges"
+      ]
+    },
+    {
+      "id": "angle",
+      "name": "MIRAR",
+      "text": "Use ↑ ↓ (ou W e S) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus.",
+      "need": "aimed",
+      "focus": [
+        "dial"
+      ]
+    },
+    {
+      "id": "wind",
+      "name": "VENTO",
+      "text": "O vento empurra o tiro para o lado. As setas no alto mostram a direção e a força: com vento a favor o tiro vai mais longe, contra ele fica mais curto.",
+      "wait": "key",
+      "focus": [
+        "clock"
+      ]
+    },
+    {
+      "id": "shoot",
+      "name": "DISPARAR",
+      "text": "Segure ESPAÇO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez.",
+      "need": "hit",
+      "focus": [
+        "force"
+      ]
+    },
+    {
+      "id": "skill",
+      "name": "HABILIDADES",
+      "text": "As teclas 1 a 9 dão vantagens no turno e gastam energia. Aperte 1 (+2 ataques) e dispare: saem três tiros em sequência.",
+      "need": "plus2",
+      "focus": [
+        "skill1"
+      ]
+    },
+    {
+      "id": "pow",
+      "name": "POW",
+      "text": "A barra POW enche quando você causa e recebe dano. A sua está cheia! Aperte B e dispare para soltar o especial da sua arma.",
+      "need": "pow",
+      "focus": [
+        "pow"
+      ]
+    },
+    {
+      "id": "finish",
+      "name": "DERRUBE O BONECO",
+      "text": "Use tudo o que aprendeu e derrube o Boneco de Treino. Agora ele não se recompõe!",
+      "need": "done",
+      "focus": []
+    }
+  ]
+}

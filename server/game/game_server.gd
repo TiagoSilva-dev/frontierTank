@@ -20,7 +20,7 @@ const SAVE_SECONDS: float = 2.0
 const HEARTBEAT_SECONDS: float = 10.0
 const AUDIT_SECONDS: float = 5.0
 const LOBBY_SECONDS: float = 0.5
-const MAX_MESSAGE: int = 16384
+const MAX_MESSAGE: int = 131072
 const CHAT_KEEP: int = 50
 # Chat reports (launch checklist): the lines kept to find a reported message and its
 # context, how many reports a player may make, and the automatic mute after reports from
@@ -52,6 +52,11 @@ var rooms: Dictionary = {}
 var hosts: Dictionary = {}
 var next_peer: int = 1
 var next_match: int = 1
+# Ranked queue (0.22) and how often each pair met lately (account pair -> unix times).
+var ranked_queue: Array[PlayerSession] = []
+var ranked_pairs: Dictionary = {}
+# Daily challenge replays being checked (0.22): one at a time so the others keep playing.
+var verifying: bool = false
 var chat_history: Array = []
 # Players' lines with who wrote them ({id, account, author, text, at, reported_by}).
 var chat_log: Array = []
@@ -172,7 +177,7 @@ func _process(delta: float) -> void:
 
 func accept(connection: StreamPeerTCP) -> void:
 	var peer: WebSocketPeer = WebSocketPeer.new()
-	peer.inbound_buffer_size = 65536
+	peer.inbound_buffer_size = 262144
 	peer.outbound_buffer_size = 1 << 20
 	peer.max_queued_packets = 4096
 	if peer.accept_stream(connection) != OK:
@@ -266,6 +271,22 @@ func handle(session: PlayerSession, text: String) -> void:
 			room_start(session, message)
 		"room_cancel":
 			room_cancel(session, message)
+		"challenge_info":
+			challenge_info(session, message)
+		"challenge_submit":
+			challenge_submit(session, message)
+		"challenge_replay":
+			challenge_replay(session, message)
+		"spectate":
+			spectate(session, message)
+		"spectate_leave":
+			if session.watching != null:
+				session.watching.remove_watcher(session)
+			reply(session, message)
+		"ranked_info":
+			ranked_info(session, message)
+		"ranked_queue":
+			ranked_queue_request(session, message)
 		"in":
 			if session.host != null:
 				session.host.receive(session, message)
@@ -362,6 +383,9 @@ func hello(session: PlayerSession, message: Dictionary) -> void:
 	if stored.has("data") and stored.data is Dictionary:
 		migrated = profile.load_data(stored.data)
 		session.version = int(stored.version)
+	if profile.sync_rating():
+		# A new ranked season began while the player was away.
+		migrated = true
 	session.account_id = int(account.id)
 	session.username = str(account.username)
 	session.profile = profile
@@ -385,6 +409,9 @@ func welcome(session: PlayerSession) -> void:
 
 func closed(session: PlayerSession) -> void:
 	sessions.erase(session.peer_id)
+	unqueue(session)
+	if session.watching != null:
+		session.watching.remove_watcher(session)
 	if session.account_id == 0 or accounts.get(session.account_id) != session:
 		return
 	if session.host != null and not session.host.over:
@@ -673,6 +700,8 @@ func room_create(session: PlayerSession, message: Dictionary) -> void:
 	if session.host != null:
 		reply(session, message, {"error": Lang.t("Você está numa batalha.")})
 		return
+	unqueue(session)
+	stop_watching(session)
 	if session.room != null:
 		leave_room(session)
 	var room: ServerRoom = ServerRoom.new()
@@ -704,6 +733,8 @@ func room_join(session: PlayerSession, message: Dictionary) -> void:
 	if error != "":
 		reply(session, message, {"error": error})
 		return
+	unqueue(session)
+	stop_watching(session)
 	if session.room != null and session.room != room:
 		leave_room(session)
 	if room.index_of(session) < 0:
@@ -868,6 +899,7 @@ func entries(room: ServerRoom) -> Array:
 # Pairs rooms that are searching: same team size and close levels (the margin grows with
 # the wait); after `bot_fill_seconds` alone, AI rivals fill in, as offline.
 func matchmaking() -> void:
+	ranked_matchmaking()
 	var searching: Array = rooms.values().filter(func(room: ServerRoom) -> bool: return room.state == "searching")
 	for room: ServerRoom in searching:
 		if room.state != "searching":
@@ -917,6 +949,252 @@ func start_expedition(room: ServerRoom) -> void:
 	var expedition: Expedition = Expedition.new(balance, room.instance, item, team, profiles)
 	launch([room], expedition.phase_config(), expedition)
 
+# ---------- daily challenge (0.22) ----------
+
+# The day's board, the player's best and the clock.
+func challenge_info(session: PlayerSession, message: Dictionary) -> void:
+	var day: int = Challenge.day_id()
+	var board: Dictionary = await api.challenge_top(day, 50, session.account_id)
+	if accounts.get(session.account_id) != session:
+		return
+	var data: Dictionary = {"day": day, "left": Challenge.seconds_left(), "rows": [], "position": 0, "total": 0}
+	if not board.has("error"):
+		data.rows = board.get("rows", [])
+		data.position = int(board.get("position", 0))
+		data.total = int(board.get("total", 0))
+	reply(session, message, data)
+
+# The replay of a player's best run of a day (to watch the best runs).
+func challenge_replay(session: PlayerSession, message: Dictionary) -> void:
+	var day: int = int(message.get("day", -1)) if message.get("day") is float or message.get("day") is int else -1
+	var account: int = int(message.get("account", -1)) if message.get("account") is float or message.get("account") is int else -1
+	var found: Dictionary = await api.challenge_replay(day, account)
+	if found.has("error"):
+		reply(session, message, {"error": Lang.t("Gravação não encontrada.")})
+		return
+	reply(session, message, {"replay": found.replay})
+
+# A run of today's challenge: the server runs the replay again on its own copy of the
+# battle (built from the day, never from what the player sent) and scores that.
+func challenge_submit(session: PlayerSession, message: Dictionary) -> void:
+	var day: int = Challenge.day_id()
+	var error: String = ""
+	if not (message.get("day") is float or message.get("day") is int) or int(message.day) != day:
+		error = Lang.t("O desafio daquele dia já terminou.")
+	elif session.host != null or session.busy:
+		error = Lang.t("Aguarde a operação anterior terminar.")
+	elif not session.profile.created:
+		error = Lang.t("Crie o seu personagem primeiro.")
+	var sent: Dictionary = Replay.clean(message.get("replay"))
+	if error == "" and sent.is_empty():
+		error = Lang.t("A gravação não é válida.")
+	if error == "":
+		for entry: Array in sent.inputs:
+			# Only the challenger's own controls, and never the AI or an emote.
+			if int(entry[0]) > int(Challenge.data().max_ticks) or int(entry[1]) != 0 or str(entry[2]) in ["auto", "emote"]:
+				error = Lang.t("A gravação não é válida.")
+				break
+	if error != "":
+		reply(session, message, {"error": error})
+		return
+	session.busy = true
+	var checked: Dictionary = await verify_challenge(day, session, sent)
+	session.busy = false
+	if accounts.get(session.account_id) != session:
+		return
+	if checked.has("error"):
+		reply(session, message, {"error": checked.error})
+		return
+	var posted: Dictionary = await api.challenge_submit(day, session.account_id, session.profile.player_name, int(checked.score), int(checked.ticks), sent)
+	if accounts.get(session.account_id) != session:
+		return
+	if posted.has("error"):
+		reply(session, message, {"error": Lang.t("O ranking está indisponível agora. Tente de novo.")})
+		return
+	var done: Dictionary = session.profile.challenge_done(day, int(checked.score), int(checked.medal))
+	audit(session, "challenge", {"day": day, "score": checked.score, "ticks": checked.ticks, "first": done.first})
+	reply(session, message, {"day": day, "score": int(posted.score), "medal": int(done.medal), "first": bool(done.first), "best": bool(posted.best), "position": int(posted.position), "total": int(posted.total), "profile": session.profile.to_data()})
+
+# Runs the replay on a fresh copy of the day's battle, a slice of ticks per frame. Returns
+# {score, medal, ticks} or {error}.
+func verify_challenge(day: int, session: PlayerSession, sent: Dictionary) -> Dictionary:
+	var waited: float = 0.0
+	while verifying and waited < 90.0:
+		await get_tree().process_frame
+		waited += get_process_delta_time()
+	if verifying:
+		return {"error": Lang.t("O servidor está ocupado conferindo outras gravações. Tente de novo.")}
+	verifying = true
+	var built: Dictionary = Challenge.config(day, session.profile.player_name, session.profile.gender)
+	var replay: Dictionary = {"v": Replay.VERSION, "config": JSON.parse_string(JSON.stringify(built)), "inputs": sent.inputs, "ticks": sent.ticks, "winner": -2, "meta": {}}
+	var runner: ReplayRunner = ReplayRunner.new()
+	add_child(runner)
+	runner.begin(replay, int(Challenge.data().max_ticks))
+	while not runner.run_slice(250):
+		await get_tree().process_frame
+	var finished: bool = not runner.game.running
+	var result: Dictionary = Challenge.score(runner.game) if finished else {}
+	var ticks: int = runner.tick
+	runner.queue_free()
+	verifying = false
+	if not finished:
+		return {"error": Lang.t("A gravação não termina o desafio.")}
+	return {"score": int(result.score), "medal": int(result.medal), "ticks": ticks}
+
+# ---------- ranked ladder (0.22) ----------
+
+# Whoever starts another activity stops watching.
+func stop_watching(session: PlayerSession) -> void:
+	if session.watching != null:
+		session.watching.remove_watcher(session)
+
+func unqueue(session: PlayerSession) -> void:
+	if session.queued:
+		session.queued = false
+		ranked_queue.erase(session)
+		ranked_broadcast()
+
+# Everyone waiting hears how many are in the queue.
+func ranked_broadcast() -> void:
+	for other: PlayerSession in ranked_queue:
+		other.send({"t": "ranked_state", "queued": true, "waiting": ranked_queue.size(), "since": other.queued_since})
+
+# The ranked screen: season clock, the top of the ladder, this player's position and the queue.
+func ranked_info(session: PlayerSession, message: Dictionary) -> void:
+	if session.profile.sync_rating():
+		session.profile.save_profile()
+	var season: int = Ranked.season_of()
+	var board: Dictionary = await api.ladder(season, 50, session.account_id)
+	if not accounts.has(session.account_id) or accounts.get(session.account_id) != session:
+		return
+	var data: Dictionary = {"season": season, "left": Ranked.seconds_left(), "queued": session.queued, "waiting": ranked_queue.size(), "profile": session.profile.to_data(), "live": live_matches()}
+	if board.has("error"):
+		data.rows = []
+		data.position = 0
+		data.total = 0
+	else:
+		data.rows = board.get("rows", [])
+		data.position = int(board.get("position", 0))
+		data.total = int(board.get("total", 0))
+	reply(session, message, data)
+
+# The ranked matches going on now (the ones without a room in the Salão), to be watched.
+func live_matches() -> Array:
+	var list: Array = []
+	for host: MatchHost in hosts.values():
+		if host.mode == "pvp" and not host.ranked.is_empty() and not host.over:
+			list.append({"m": host.match_id, "names": host.fighter_names(), "ticks": host.tick, "watchers": host.watchers.size()})
+	return list
+
+# A player asks to watch a battle that is going on (a room in play, or a live ranked match).
+func spectate(session: PlayerSession, message: Dictionary) -> void:
+	var host: MatchHost = hosts.get(int(message.get("m", -1)))
+	var error: String = ""
+	if session.host != null:
+		error = Lang.t("Você está numa batalha.")
+	elif session.queued:
+		error = Lang.t("Saia da fila ranqueada antes de assistir.")
+	elif host == null or host.over or host.mode != "pvp":
+		error = Lang.t("Esta partida não está mais disponível.")
+	elif session.watching == host:
+		error = Lang.t("Você já está assistindo.")
+	if error != "":
+		reply(session, message, {"error": error})
+		return
+	if session.watching != null:
+		session.watching.remove_watcher(session)
+	if session.room != null:
+		leave_room(session)
+	if not host.add_watcher(session):
+		reply(session, message, {"error": Lang.t("A partida está cheia de espectadores.")})
+		return
+	reply(session, message)
+
+func ranked_queue_request(session: PlayerSession, message: Dictionary) -> void:
+	if not bool(message.get("on", true)):
+		unqueue(session)
+		reply(session, message, {"queued": false})
+		return
+	var error: String = ""
+	if session.host != null:
+		error = Lang.t("Você está numa batalha.")
+	elif session.watching != null:
+		error = Lang.t("Saia da transmissão antes de procurar uma partida ranqueada.")
+	elif session.room != null:
+		error = Lang.t("Saia da sala antes de procurar uma partida ranqueada.")
+	elif not session.profile.created:
+		error = Lang.t("Crie o seu personagem primeiro.")
+	elif session.profile.level() < int(Ranked.data().min_level):
+		error = Lang.t("A liga ranqueada começa no nível %d.") % int(Ranked.data().min_level)
+	if error != "":
+		reply(session, message, {"error": error})
+		return
+	if session.profile.sync_rating():
+		session.profile.save_profile()
+	if not session.queued:
+		session.queued = true
+		session.queued_since = now()
+		ranked_queue.append(session)
+	reply(session, message, {"queued": true, "waiting": ranked_queue.size()})
+	ranked_broadcast()
+
+# Pairs the players in the queue: close ratings (the window widens with the wait) who have
+# not met too often lately. Never fills with AI.
+func ranked_matchmaking() -> void:
+	if ranked_queue.size() < 2:
+		return
+	var rules: Dictionary = Ranked.data().queue
+	for session: PlayerSession in ranked_queue.duplicate():
+		if not session.is_open() or session.lingering or session.host != null:
+			unqueue(session)
+	for a: PlayerSession in ranked_queue.duplicate():
+		if not a.queued:
+			continue
+		for b: PlayerSession in ranked_queue:
+			if b == a or not b.queued:
+				continue
+			var waited: float = maxf(now() - a.queued_since, now() - b.queued_since)
+			var window: int = mini(int(rules.limit), int(rules.window) + int(waited / float(rules.growth_every)) * int(rules.growth))
+			if absi(int(a.profile.rating.mmr) - int(b.profile.rating.mmr)) > window or ranked_rematch_blocked(a, b):
+				continue
+			start_ranked(a, b)
+			break
+
+func ranked_pair_key(a: PlayerSession, b: PlayerSession) -> String:
+	return "%d_%d" % [mini(a.account_id, b.account_id), maxi(a.account_id, b.account_id)]
+
+# The same two accounts may play each other only a few times an hour (win trading).
+func ranked_rematch_blocked(a: PlayerSession, b: PlayerSession) -> bool:
+	var rules: Dictionary = Ranked.data().queue
+	var recent: Array = (ranked_pairs.get(ranked_pair_key(a, b), []) as Array).filter(func(at: float) -> bool: return now() - at < float(rules.rematch_window))
+	ranked_pairs[ranked_pair_key(a, b)] = recent
+	return recent.size() >= int(rules.rematch_limit)
+
+func start_ranked(a: PlayerSession, b: PlayerSession) -> void:
+	for session: PlayerSession in [a, b]:
+		session.queued = false
+		ranked_queue.erase(session)
+		session.profile.sync_rating()
+	var key: String = ranked_pair_key(a, b)
+	(ranked_pairs[key] as Array).append(now())
+	var first: Dictionary = a.profile.entry(balance)
+	first.account = a.account_id
+	var second: Dictionary = b.profile.entry(balance)
+	second.account = b.account_id
+	var config: Dictionary = {"mode": "pvp", "ranked": true, "map": "", "turn_seconds": int(Ranked.data().turn_seconds), "teams": [[first], [second]]}
+	var host: MatchHost = MatchHost.new()
+	host.match_id = next_match
+	next_match += 1
+	host.name = "Match_%d" % host.match_id
+	add_child(host)
+	hosts[host.match_id] = host
+	host.set_meta("rooms", [])
+	host.ranked = {a.account_id: int(a.profile.rating.mmr), b.account_id: int(b.profile.rating.mmr)}
+	host.begin(self, null, {a.account_id: a, b.account_id: b}, config, null)
+	ranked_broadcast()
+	lobby_dirty = true
+	log_line("ranked match %d started: %s vs %s" % [host.match_id, a.display_name(), b.display_name()])
+
 func launch(joined: Array[ServerRoom], config: Dictionary, expedition: Expedition) -> void:
 	var host: MatchHost = MatchHost.new()
 	host.match_id = next_match
@@ -960,6 +1238,12 @@ func match_over(host: MatchHost) -> void:
 			session.host = null
 		if session.lingering:
 			finalize(session)
+	# The spectators get what they have not seen yet, all at once, and are free again.
+	host.deliver_watch(true)
+	for session: PlayerSession in host.watchers.values():
+		if session.watching == host:
+			session.watching = null
+	host.watchers.clear()
 	hosts.erase(host.match_id)
 	get_tree().create_timer(CARD_SECONDS).timeout.connect(auto_pick_match.bind(host.match_id))
 	host.queue_free()

@@ -30,6 +30,22 @@ Tudo sai de `shared/balance/pets.json` e de `client/systems/pets.gd`; o perfil s
 
 O bônus entra por `Armory.character_stats(..., pet_bonus)`: atributos somam aos do equipamento e os talentos aos "bônus de batalha", então servidor, bots e a tela de atributos usam o mesmo número.
 
+## Habilidade em batalha (0.22)
+
+O mascote **ativo** dá ao dono uma habilidade por partida, escolhida pelo **elemento**. Botão ao lado das habilidades (ícone do mascote) ou tecla **G**, **uma vez por batalha**, **a partir do segundo turno do dono** (`battle.from_round`), nunca selado, voando de avião ou com o personagem caído; só um uso por turno. Contra monstros de instância ela não existe (eles não têm mascote).
+
+| Elemento | Habilidade | Efeito (comum, sem estrelas) |
+|---|---|---|
+| Sol | Rajada Solar | O próximo tiro causa +25% de dano |
+| Máscara | Truque da Máscara | O tiro do turno é crítico garantido e causa +10% |
+| Gelo | Muralha Glacial | Cura 18% da vida e corta à metade o próximo golpe recebido |
+| Céu | Corrente de Ar | Zera o vento no turno e devolve 40% da energia |
+| Runa | Selo de Runa | Enche 35% da barra de POW |
+
+A força é `value × escala da raridade (1,0 / 1,15 / 1,3 / 1,5) × (1 + 0,04 por estrela)`; tudo em `shared/balance/pets.json → battle`. O perfil só leva `{species, element, rarity, stars}` para a partida (`PlayerProfile.entry → pet_skill`); a conta é feita por `Pets.skill_value`, então todas as cópias da partida concordam.
+
+**Lockstep**: usar a habilidade é uma **intenção** (`"pet"`, em `Replay.ACTIONS` e `MatchHost.ACTIONS`), como mover ou disparar. Ela entra no mesmo fluxo de comandos do servidor, por isso vale também nos replays e para espectadores. Não há `randf()` nela (o crítico garantido não sorteia nada). `tests/pet_skill_tests.gd` (38 verificações) cobre as regras de uso, cada um dos cinco efeitos, o teto de cura/energia/POW, a gravação como intenção e que um replay sem a intenção termina diferente.
+
 ## Arquivos
 
 `shared/balance/pets.json` (catálogo e números) · `client/systems/pets.gd` · `client/systems/profile.gd` (campos, operações, `pet_bonus`, cupom `OVOS`) · `client/systems/instance_run.gd` (drops) · `client/systems/rewards.gd` (XP de batalha) · `client/ui/pet_screen.gd`, `pet_stage.gd`, `pet_widgets.gd`, `hatch_outcome.gd` · `client/components/pet_companion.gd` · `tools/make_pet_audio.py` · `tests/pet_tests.gd` (65) e `tests/pet_visual_check.gd`.
@@ -49,5 +65,5 @@ Capturas: `docs/screens/pets_hatch.png`, `pets_pets.png`, `pets_album.png`, `pet
 ## Em aberto
 
 - Os números (chances, bônus, custos) são pontos de partida: falta jogar e ver se o ovo cai com a frequência certa e se um Lendário não desequilibra.
-- Mascotes ainda não têm habilidade própria na batalha (só bônus passivos). Uma habilidade por elemento é o passo seguinte natural, mas entra na simulação em lockstep e precisa de teste de sincronia.
+- A habilidade do mascote em batalha (0.22) usa uma vez por partida e ainda não foi sentida por ninguém: falta ver, com jogadores, se o +25% de dano ou a cura da Muralha Glacial desequilibram o PvP, e se a tecla G é descoberta sem tutorial.
 - Troca e venda de ovos no Leilão, e uma página de mascotes na wiki do site (`tools/build_site.py`).

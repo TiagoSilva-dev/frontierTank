@@ -61,6 +61,19 @@
     {"id": "lobo_fenrir", "name": "Filhote de Fenrir", "element": "viking", "rarity": "lendario", "art": "res://assets/pets/lobo_fenrir.png", "desc": "As correntes rúnicas mal seguram o seu apetite."}
   ]
   ,
+  "battle": {
+    "uses": 1,
+    "from_round": 2,
+    "scale": {"comum": 1.0, "raro": 1.15, "epico": 1.3, "lendario": 1.5},
+    "star_scale": 0.04,
+    "abilities": {
+      "sol": {"id": "rajada_solar", "name": "Rajada Solar", "desc": "O seu próximo tiro causa +%d%% de dano.", "kind": "damage", "value": 0.25, "color": "ffc34a"},
+      "mascara": {"id": "truque_mascara", "name": "Truque da Máscara", "desc": "O seu tiro deste turno é crítico garantido e causa +%d%% de dano.", "kind": "crit", "value": 0.10, "color": "c07bff"},
+      "gelo": {"id": "muralha_glacial", "name": "Muralha Glacial", "desc": "Cura %d%% da sua vida e corta à metade o próximo golpe que você receber.", "kind": "shield", "value": 0.18, "color": "8ad8ff"},
+      "ceu": {"id": "corrente_de_ar", "name": "Corrente de Ar", "desc": "Zera o vento neste turno e devolve %d%% da energia.", "kind": "wind", "value": 0.40, "color": "ffe86a"},
+      "viking": {"id": "selo_de_runa", "name": "Selo de Runa", "desc": "Enche %d%% da barra de POW.", "kind": "pow", "value": 0.35, "color": "7aff9a"}
+    }
+  },
   "hunt": {
     "about": "Caçada dos Mascotes: o time luta sozinho contra selvagens do elemento da zona. Cada encontro ocupa `cycle` segundos; o jogador coleta o que acumulou, até `cap_free` segundos parado (`cap_pass` com o Passe do Caçador).",
     "cycle": 12, "cap_free": 7200, "cap_pass": 28800, "pass_item": "passe_cacador",

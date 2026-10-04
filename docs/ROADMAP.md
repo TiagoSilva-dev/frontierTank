@@ -9,6 +9,8 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 3 | Atributos aleatórios, moedas estilo PoE 2 e Leilão | Moedas e craft não; o leilão sim | 0.10 (moedas e craft) — **feito**; 0.12 (leilão) — **feito** |
 | — | **Backend**: contas, servidor de jogo, partidas online | É o servidor | 0.11 — **feito** |
 | 4 | Distribuição e monetização | Sim | Decidido: Steam no lançamento, web para testes; português e inglês — **feito**; preparação do lançamento (web, nomes, privacidade, denúncia, Steam) na 0.13 — **feito**, faltam as pendências externas do checklist |
+| 5 | **Casa dos Mascotes** (ovos, choque, mascote em batalha) e **Caçada** automática com campo visto de cima nas 5 zonas | Sim (o servidor liquida a caçada) | 0.19–0.22 — **feito**; falta playtest e afinar capturas e ovos (`docs/PETS.md`, `docs/PET_HUNT.md`) |
+| 6 | Treino de artilharia, **liga ranqueada**, replays e espectador, Desafio do Dia, contratos diários e semanais, habilidade do mascote em batalha | Sim (liga, desafio e espectador) | 0.22 — **feito** (`docs/RANKED.md`, `docs/CHALLENGE.md`, `docs/MISSIONS.md`) |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
@@ -348,6 +350,8 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 - **Medir o FPS da web numa máquina com placa de vídeo** (`node tools/web_bench.cjs --headed` ou `?bench=30`).
 - Definir quem **modera** as denúncias e em quanto tempo.
 - Steamworks: taxa, App ID, chave de publicador, conquistas, microtransações e envio da página.
+- **Reimplantar o servidor e a API** com a 0.22 (`GAME_VERSION` 0.22, migração 007, rotas da liga e do desafio; os arquivos de balanceamento mudaram e entram no hash de conteúdo). A 0.22 inteira está só na máquina (sem commit) até 04/10/2026.
+- **Playtest** da Caçada (taxas de captura e de ovos, sons dos golpes, as três zonas novas), da liga e do Desafio do Dia.
 
 ## Ordem sugerida
 
@@ -356,4 +360,5 @@ Preços no leilão ficam curtos de ler: "3 Solares", "12 Estrelas".
 3. **0.10 — Atributos e moedas** (item 3.1 e 3.2, **feito**): bônus aleatórios nos itens, moedas no loot, craft de itens e mapas no Ferreiro. Offline.
 4. **0.11 — Backend** (**feito**): contas, grupos reais, partida com autoridade do servidor (lockstep), e drops, rolagens e moedas no servidor. Docker com PostgreSQL, API e servidor de jogo.
 5. **0.12 — Leilão** (item 3.3, **feito**): anúncios em custódia no PostgreSQL, compra imediata, Correio, taxa e comissão, histórico de preços. Falta a troca de moedas.
-6. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam. Decidido em 25/09/2026: a web vem primeiro, tudo no computador (**feito**: `SubirLocal.cmd` / `tools/local.sh`, serviço `web` com nginx no Docker) e depois numa VM (passo a passo em `server/README.md`, seção "Numa VM"); a Steam fica para depois.
+6. **0.19 a 0.22 — Mascotes, Caçada e vida em torno da partida** (itens 5 e 6, **feito**): ovos e mascotes (0.19), Caçada automática (0.20), campo visto de cima (0.21, e nas cinco zonas na 0.22), treino, liga, replays, desafio, contratos e a habilidade do mascote (0.22). Nada disso foi jogado por pessoas ainda: o primeiro passo do lançamento é um playtest fechado.
+7. **Lançamento** (item 4): testes fechados na web → página da Steam → acesso antecipado gratuito na Steam. Decidido em 25/09/2026: a web vem primeiro, tudo no computador (**feito**: `SubirLocal.cmd` / `tools/local.sh`, serviço `web` com nginx no Docker) e depois numa VM (passo a passo em `server/README.md`, seção "Numa VM"); a Steam fica para depois.

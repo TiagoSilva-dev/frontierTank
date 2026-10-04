@@ -192,6 +192,41 @@ static func describe(pet: Dictionary) -> Array[String]:
 		lines.append(talent_text(str(entry.key), int(entry.value)))
 	return lines
 
+# ---------- battle skill (0.22) ----------
+# The active pet gives its owner one skill per battle, by its element (pets.json -> battle).
+# The pet only carries {element, rarity, stars, species} into the battle; the numbers are
+# worked out here so every copy of the match agrees.
+
+static func battle_rules() -> Dictionary:
+	return data().battle
+
+# What the entry of a fighter carries for the skill ({} without an active pet).
+static func skill_entry(pet: Dictionary) -> Dictionary:
+	if pet.is_empty():
+		return {}
+	var def: Dictionary = species_def(str(pet.species))
+	if def.is_empty():
+		return {}
+	return {"species": str(pet.species), "element": str(def.element), "rarity": str(def.rarity), "stars": int(pet.get("stars", 0))}
+
+static func skill_def(element: String) -> Dictionary:
+	return battle_rules().abilities.get(element, {})
+
+# How strong the skill is: the pet's rarity and its stars.
+static func skill_power(skill: Dictionary) -> float:
+	var rules: Dictionary = battle_rules()
+	return float(rules.scale.get(str(skill.get("rarity", "comum")), 1.0)) * (1.0 + float(rules.star_scale) * float(skill.get("stars", 0)))
+
+# The skill's value after scaling (0.25 for the Rajada Solar of a common pet = +25%).
+static func skill_value(skill: Dictionary) -> float:
+	return float(skill_def(str(skill.get("element", ""))).get("value", 0.0)) * skill_power(skill)
+
+static func skill_text(skill: Dictionary) -> String:
+	var def: Dictionary = skill_def(str(skill.get("element", "")))
+	if def.is_empty():
+		return ""
+	return Lang.t(str(def.desc)) % roundi(skill_value(skill) * 100.0)
+
 # ---------- album ----------
 
 static func element_complete(album: Array, element: String) -> bool:

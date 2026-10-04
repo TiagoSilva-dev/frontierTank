@@ -346,7 +346,12 @@ func build_detail(pet: Dictionary) -> void:
 		var is_attr: bool = i < Pets.attrs(pet).size()
 		UiKit.label(contents, lines[i], Rect2(906, 338 + i * 20, 306, 22), 15, HudPaint.CREAM if is_attr else Color("9ae8ff"))
 	note(tr(str(def.desc)), Rect2(606, 468, 280, 60), 16, Color("c8d4e4"))
-	note(tr("Os bônus do mascote ativo valem em todas as batalhas."), Rect2(606, 548, 280, 60), 14, Color("7d8ca1"))
+	# 0.22: the skill it lends its owner in battle (one use per battle, key G).
+	var battle_skill: Dictionary = Pets.skill_entry(pet)
+	if not battle_skill.is_empty():
+		UiKit.label(contents, tr("HABILIDADE EM BATALHA (G)"), Rect2(606, 528, 280, 22), 15, HudPaint.GOLD)
+		var skill_def: Dictionary = Pets.skill_def(str(battle_skill.element))
+		note("%s: %s" % [tr(str(skill_def.name)), Pets.skill_text(battle_skill)], Rect2(606, 552, 280, 70), 14, Color(str(skill_def.color)).lightened(0.3))
 	UiKit.label(contents, tr("COMO EVOLUIR"), Rect2(906, 462, 306, 24), 17, HudPaint.GOLD)
 	note(tr("Alimentar: +%d XP por %d moedas.") % [int(Pets.data().xp.feed_xp), int(Pets.data().xp.feed_coins)], Rect2(906, 488, 306, 40), 15, HudPaint.CREAM)
 	if stars < int(Pets.data().max_stars):

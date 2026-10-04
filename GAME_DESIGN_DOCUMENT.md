@@ -1,5 +1,13 @@
 # Gustfire (antes Frontier Tank: Nova Era)
 
+> **Este documento é o histórico das decisões de design por entrega** (as seções mais antigas descrevem o duelo da 0.1 e ficam como registro). O estado atual do jogo está em `README.md` (o que o jogador vê), `ARCHITECTURE.md` (como é feito), `docs/PROGRESS.md` (o que mudou em cada versão) e `docs/ROADMAP.md` (decisões e o que falta).
+
+## Entrega 0.22 — treino e primeiros passos
+Quem cria um personagem faz um **treino de artilharia** guiado (andar, mirar, vento, força, habilidades e POW contra um Boneco de Treino) e segue um roteiro de seis **Primeiros passos** com recompensas, na aba nova da MISSÃO. A ideia é que ninguém precise ler a wiki para jogar a primeira partida. Regras e números em `shared/balance/tutorial.json`, `missions.json` e `combat.json` (`tutorial`, `boneco_treino`).
+
+## Entregas 0.19 a 0.21 — mascotes e Caçada
+Ovos caem das instâncias, a **Casa dos Mascotes** os choca e o mascote acompanha o lutador com bônus (20 espécies, 5 elementos). A **Caçada** é um modo automático, tipo idle, em que um time de até 5 mascotes luta sozinho (até 2 h acumuladas, 8 h com o Passe do Caçador) e o jogador coleta moedas, XP, ovos e capturas. Regras em `docs/PETS.md` e `docs/PET_HUNT.md`.
+
 ## Idiomas (roadmap 4.3)
 Português e inglês desde já, com versão própria dos nomes em cada idioma. O português é o idioma-fonte; o inglês fica em `locale/en.po`. Detalhes no `README.md` (seção Idiomas).
 

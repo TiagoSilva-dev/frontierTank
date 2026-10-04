@@ -28,6 +28,8 @@ var base_damage: int = 0
 var fury_damage: int = 0
 var summon_entry: Dictionary = {}
 var turns_taken: int = 0
+# Turns begun by this fighter (the challenge's turn limit counts them).
+var turns_started: int = 0
 # Monster abilities (0.14): turns left before each ability can be used again, the leap in
 # progress (no gravity while it flies) and a war cry's bonus to the next attack.
 var cooldowns: Dictionary = {}
@@ -45,6 +47,13 @@ var is_boss: bool:
 		return rank == "boss"
 var hp: int = 1000
 var max_hp: int = 1000
+# Training dummy (0.21): it cannot drop below this life until the coach lets it fall.
+var hp_floor: int = 0
+# The active pet's skill for this battle (0.22): {species, element, rarity, stars} and how
+# many uses are left.
+var pet_skill: Dictionary = {}
+var pet_uses: int = 0
+var companion: PetCompanion
 var agility: int = 120
 var max_energy: int = 240
 var delay: float = 0.0
@@ -66,6 +75,8 @@ var frozen: int:
 			statuses.erase("congelado")
 var fly_cooldown: int = 0
 var last_power: float = -1.0
+# Turns in a row that ended by the clock (a ranked match is forfeited after three).
+var timeouts: int = 0
 var tools: Array[String] = []
 var weapon: Dictionary = {}
 var look: Dictionary = {}
@@ -112,6 +123,9 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	gender = str(entry.get("gender", "m"))
 	human = bool(entry.get("human", false))
 	rank_title = rank_for(level)
+	if str(entry.get("title", "")) != "":
+		# A season title (cosmetic) takes the place of the military rank.
+		rank_title = Ranked.title_text(str(entry.title)) if Ranked.valid_title(str(entry.title)) else rank_title
 	agility = int(entry.get("agility", int(balance.base_agility) + level * int(balance.agility_per_level)))
 	max_hp = int(entry.get("hp", int(balance.base_hp) + level * int(balance.hp_per_level)))
 	hp = max_hp
@@ -125,6 +139,10 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	facing = 1 if team == 0 else -1
 	attrs = entry.get("attrs", {})
 	aux_id = str(entry.get("aux", ""))
+	var skill: Variant = entry.get("pet_skill", {})
+	if skill is Dictionary and not (skill as Dictionary).is_empty() and not Pets.skill_def(str(skill.get("element", ""))).is_empty():
+		pet_skill = (skill as Dictionary).duplicate()
+		pet_uses = int(Pets.battle_rules().uses)
 	aux_uses = int(Armory.aux_def(aux_id).get("uses", 0)) if aux_id != "" else 0
 	look = entry.get("look", {}).duplicate()
 	if look.is_empty():
@@ -200,7 +218,7 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 		rig.founder_fx.fighter = self
 	rig.source = shown_body
 	if str(look.get("pet", "")) != "":
-		var companion: PetCompanion = PetCompanion.new()
+		companion = PetCompanion.new()
 		add_child(companion)
 		move_child(companion, 0)
 		companion.setup(self, str(look.pet))
@@ -273,6 +291,8 @@ func setup_monster(id: int, entry: Dictionary, def: Dictionary, balance: Diction
 	rank = str(def.get("rank", "minion"))
 	display_name = str(entry.get("name", def.get("name", "Inimigo")))
 	rank_title = tr({"minion": "Lacaio", "guardian": "Guardião", "boss": "Chefe", "totem": "Objetivo"}.get(rank, "Inimigo"))  # i18n
+	if entry.has("title"):
+		rank_title = str(entry.title)
 	level = int(entry.get("level", 1))
 	max_hp = int(entry.get("hp", def.get("hp", 500)))
 	hp = max_hp
@@ -527,7 +547,7 @@ func move_ground(amount: float, terrain: DestructibleTerrain) -> bool:
 	return true
 
 func take_damage(amount: int) -> void:
-	hp = maxi(0, hp - amount)
+	hp = maxi(hp_floor, maxi(0, hp - amount))
 	stats.taken += amount
 	if amount > 0 and is_instance_valid(rig):
 		rig.fx_event("hit")

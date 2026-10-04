@@ -20,6 +20,11 @@ var decor: Array = []
 # Multiplies the baked ground when it is drawn (tiles.json "shade"): snow would otherwise
 # be as bright as the white fighters standing on it.
 var shade: Color = Color.WHITE
+# tiles.json "ruined": the stone platforms are broken halls (a wing, chipped corners, pits,
+# worn slabs, rubble and columns lying on them) instead of plain rectangles.
+var ruined: bool = false
+# Cells (tile coordinates) fully inside a platform, where on_stone scenery stands.
+var slabs: Array[Vector2i] = []
 
 # Open ground in the middle of the field, in tiles (the fight happens here): trees and
 # bushes stay out of it, ground cover (tufts, pebbles) does not.
@@ -47,6 +52,7 @@ func build() -> void:
 	var data: Dictionary = JSON.parse_string(file.get_as_text())
 	var tone: Array = data.get("shade", [1.0, 1.0, 1.0])
 	shade = Color(float(tone[0]), float(tone[1]), float(tone[2]))
+	ruined = bool(data.get("ruined", false))
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = hash("field:" + zone)
 	var image: Image = Image.create(COLS * TILE, ROWS * TILE, false, Image.FORMAT_RGBA8)
@@ -76,6 +82,9 @@ func build() -> void:
 					continue
 				var source: Rect2i = lookup.get(_key(nw, ne, sw, se), lookup[_key(0, 0, 0, 0)])
 				image.blend_rect(sheet, source, Vector2i(cx * TILE, cy * TILE))
+				if ruined and kind == "stone" and nw + ne + sw + se == 4:
+					slabs.append(Vector2i(cx, cy))
+					_wear(image, Vector2i(cx * TILE, cy * TILE), rng)
 		first = false
 	texture = ImageTexture.create_from_image(image)
 	_scatter(data, masks, rng)
@@ -92,6 +101,8 @@ func _shapes(masks: Dictionary, data: Dictionary, rng: RandomNumberGenerator) ->
 			for y in range(y0, y0 + int(block[3]) + 1):
 				for x in range(x0, x0 + int(block[2]) + 1):
 					_mark(masks.stone, x, y)
+			if ruined:
+				_break_up(masks.stone, Rect2i(x0, y0, int(block[2]), int(block[3])), rng)
 	if masks.has("water"):
 		for pond: Array in data.get("ponds", []):
 			var center: Vector2 = Vector2(float(pond[0]), float(pond[1]))
@@ -102,9 +113,51 @@ func _shapes(masks: Dictionary, data: Dictionary, rng: RandomNumberGenerator) ->
 					if d.length() + rng.randf_range(-0.12, 0.12) < 1.0:
 						_mark(masks.water, x, y)
 
-func _mark(mask: PackedByteArray, x: int, y: int) -> void:
+func _mark(mask: PackedByteArray, x: int, y: int, value: int = 1) -> void:
 	if x >= 0 and y >= 0 and x <= COLS and y <= ROWS:
-		mask[y * (COLS + 1) + x] = 1
+		mask[y * (COLS + 1) + x] = value
+
+# Turns a marked rectangle (in tiles) into a ruin: a wing on the top or the bottom, a chamfer or a
+# two-step bite out of each corner, and a pit in the middle of the big ones. The corner tiles of
+# the Wang set draw the new edges, so nothing is painted by hand.
+func _break_up(mask: PackedByteArray, block: Rect2i, rng: RandomNumberGenerator) -> void:
+	var wing_w: int = mini(rng.randi_range(2, 4), block.size.x - 2)
+	var wing_h: int = rng.randi_range(1, 2)
+	var wing_x: int = block.position.x + rng.randi_range(1, maxi(1, block.size.x - wing_w - 1))
+	var above: bool = rng.randf() < 0.5
+	var wing_y: int = block.position.y - wing_h if above else block.position.y + block.size.y
+	for y in range(wing_y, wing_y + wing_h + 1):
+		for x in range(wing_x, wing_x + wing_w + 1):
+			_mark(mask, x, y)
+	var right: int = block.position.x + block.size.x
+	var bottom: int = block.position.y + block.size.y
+	for corner: Vector2i in [Vector2i(block.position.x, block.position.y), Vector2i(right, block.position.y), Vector2i(block.position.x, bottom), Vector2i(right, bottom)]:
+		if rng.randf() < 0.75:
+			var bite: int = rng.randi_range(1, 2)
+			var step: Vector2i = Vector2i(1 if corner.x == block.position.x else -1, 1 if corner.y == block.position.y else -1)
+			for dy in range(bite):
+				for dx in range(bite):
+					_mark(mask, corner.x + dx * step.x, corner.y + dy * step.y, 0)
+	if block.size.x >= 5 and block.size.y >= 4 and rng.randf() < 0.7:
+		_mark(mask, block.position.x + rng.randi_range(2, block.size.x - 2), block.position.y + 2, 0)
+
+# Worn slab: a lighter or darker cell, and now and then a crack, so the repeating tile stops
+# reading as a grid.
+func _wear(image: Image, corner: Vector2i, rng: RandomNumberGenerator) -> void:
+	var tone: float = rng.randf_range(-0.09, 0.07)
+	if absf(tone) > 0.02:
+		for y in range(TILE):
+			for x in range(TILE):
+				var color: Color = image.get_pixel(corner.x + x, corner.y + y)
+				image.set_pixel(corner.x + x, corner.y + y, Color(clampf(color.r + tone, 0.0, 1.0), clampf(color.g + tone, 0.0, 1.0), clampf(color.b + tone, 0.0, 1.0), color.a))
+	if rng.randf() < 0.3:
+		var at: Vector2i = corner + Vector2i(rng.randi_range(6, 24), rng.randi_range(4, 12))
+		var dir: int = 1 if rng.randf() < 0.5 else -1
+		for step in range(rng.randi_range(8, 14)):
+			var spot: Vector2i = Vector2i(at.x + int(step * dir * 0.5) + int(step % 3 == 0), at.y + step)
+			if spot.y < corner.y + TILE - 1 and spot.x > corner.x and spot.x < corner.x + TILE - 1:
+				var color: Color = image.get_pixel(spot.x, spot.y)
+				image.set_pixel(spot.x, spot.y, Color(color.r * 0.45, color.g * 0.45, color.b * 0.5, color.a))
 
 func _covered(masks: Dictionary, x: int, y: int) -> bool:
 	for kind: String in masks:
@@ -126,6 +179,15 @@ func _scatter(data: Dictionary, masks: Dictionary, rng: RandomNumberGenerator) -
 			continue
 		var placed: int = 0
 		var tries: int = 0
+		if bool(item.get("on_stone", false)):
+			# Lying on the platforms: one per slab, drawn in the order of their feet.
+			var free: Array[Vector2i] = slabs.duplicate()
+			while placed < int(item.count) and not free.is_empty():
+				var cell: Vector2i = free.pop_at(rng.randi_range(0, free.size() - 1))
+				var foot_: Vector2 = Vector2(cell.x * TILE + rng.randf_range(8, 24), cell.y * TILE + rng.randf_range(20, 30))
+				decor.append({"foot": foot_, "texture": texture_, "scale": float(item.get("scale", 1.0)), "cover": bool(item.get("cover", false)), "on_stone": true})
+				placed += 1
+			continue
 		while placed < int(item.count) and tries < 400:
 			tries += 1
 			var tx: int = rng.randi_range(1, COLS - 2)

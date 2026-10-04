@@ -1,5 +1,20 @@
 # Progresso
 
+## Atual — 0.22: treino, liga, desafio, replays, contratos, habilidade do mascote e mais zonas
+- **Treino de artilharia** (`Tutorial`, `TutorialCoach`, `tutorial.json`): batalha local roteirizada contra um Boneco de Treino (arte nova do PixelLab, 1 geração) com lições de andar, mirar, vento, força, habilidade 1, POW e o golpe final; dica de ângulo e força calculada pelo solucionador da IA depois de dois erros. Oferecido uma vez a quem cria o personagem, repetível em AJUDA → TREINO. Recompensa única (200 moedas, 150 EXP, 3 pedras, 1 ovo). Só a operação `tutorial` passa pelo servidor.
+- **Liga ranqueada** (`docs/RANKED.md`): fila 1v1 só entre jogadores, Elo, 6 divisões com emblema desenhado por código, temporadas de 28 dias com reset suave e **títulos cosméticos** (aparecem no perfil e no lugar da patente na batalha), abandono perde na hora, tela da liga com os 50 melhores e a aba AO VIVO. API: `GET /internal/ladder` (consulta sobre o JSON dos perfis).
+- **Replays, espectador e Desafio do Dia** (`docs/CHALLENGE.md`): a batalha é configuração + intenções por tick, então há gravação (as 12 últimas partidas online e os desafios), reprodução com pausa e 1x/2x/4x, **espectador ao vivo** com atraso (salas em jogo e partidas ranqueadas) e o **Desafio do Dia** (o mesmo duelo para todos, três tipos, medalhas) que o servidor **confere refazendo o replay**; a API guarda o melhor do dia (migração 007, tabela `challenge_scores`).
+- **Contratos** (`MissionsBoard`): 5 diários sorteados de 16 e 3 semanais sorteados de 9 (iguais para todos, no máximo 2 do mesmo tipo), bônus por trilha, aba **SEMANAIS** e a **SEQUÊNCIA** de login de 7 dias; a lista Primeiros passos ganhou a aba própria. Eventos novos: caça coletada, mascote alimentado, moeda usada, compra, Desafio, ranqueada.
+- **Habilidade do mascote em batalha** (`pets.json` → `battle`, tecla G): uma por batalha, pelo elemento, mais forte com raridade e estrelas; é uma intenção do lockstep (vale nos replays).
+- **Caçada**: campo visto de cima nas três zonas que faltavam (Portões de Brasa, Ilhas Flutuantes e Praia dos Drakkar), com plataformas em ruínas, chão de Brasa refeito (recolor) e cenário corrigido — ver `docs/PET_HUNT.md`.
+- **Primeiros passos** (aba da MISSÃO): seis passos e um bônus, contas antigas recebem o que já fizeram.
+- Salvamento **versão 10** (`tutorial`, o roteiro e as trilhas dentro de `missions`, `rating`, `titles`, `title`, `challenge`); `GAME_VERSION` 0.22 e **o servidor precisa ser reimplantado** (a API também: migração 007 e as rotas novas).
+- **Testes**: `tutorial_tests` (78), `ranked_tests` (60), `replay_tests` (35), `challenge_tests` (41), `mission_tests` (88, reescrito), `pet_skill_tests` (38), `net_e2e_tests` (cerca de 247: fila ranqueada, espectador, desafio, tudo com jogadores de verdade), `server/api/ladder_test.go` e `challenge_test.go`. `tools/test.sh` (Linux/WSL, `-j` em paralelo) e `tools/run.ps1 -Test` rodam **todas** as suítes `tests/*_tests.gd` (antes só 12). Consertados o teste da fúria do Jarl (o terreno das instâncias é indestrutível desde 28/09/2026: a magia só fere) e a espera de uma verificação intermitente do `net_e2e` que estourava com a máquina cheia; o `net_e2e` agora ignora o relógio do perfil ao comparar o espelho com o servidor.
+- **Docs atualizados**: `CLAUDE.md` (save v10, caminhos, arquivos de balanceamento e o hash de conteúdo), `README.md`, `ARCHITECTURE.md`, `docs/RANKED.md`, `docs/CHALLENGE.md`, `docs/PETS.md`, `docs/PET_HUNT.md`, `docs/ROADMAP.md` e este arquivo.
+
+## 0.21: campo da Caçada visto de cima
+- A Caçada ganhou um campo visto de cima (Ruínas do Sol e Trilha Gelada): treinador que anda, selvagens que vagam, golpes por espécie com o efeito do elemento, sons e câmera adaptativa. Detalhes e a receita das próximas zonas em `docs/PET_HUNT.md`. Mascote animado ao lado do lutador e fantasma ao morrer (`PetMotion`, `PetActor`, `ghost_tests`).
+
 ## Atual — 0.20: Caçada dos Mascotes (modo automático, tipo idle)
 - **Módulo novo** (regras e números em `docs/PET_HUNT.md`): quarta aba da Casa dos Mascotes. O jogador escolhe uma **zona** (uma por elemento, com o cenário do mapa correspondente), um **nível de caça** (1–8) e um **time de até 5 mascotes**; o time luta sozinho contra selvagens do elemento da zona, um encontro a cada 12 s, e o jogador **coleta** moedas, XP, ovos e **mascotes capturados**. Derrotar o **Lendário** da zona o coloca no inventário (nível 1, conta no álbum). Capturas menores (Comum, Raro e Épico) também acontecem, com chances baixas.
 - **Limite de acúmulo**: 2 h parado no modo grátis; **8 h com o Passe do Caçador** (produto da loja Steam `passe_cacador`, US$ 4,99, item premium sem atributos que chega pelo Correio, não vende no Leilão nem na loja de moedas). O que passa do limite se perde; a sobra de um encontro é guardada.
@@ -161,8 +176,7 @@ Fundação Godot e combate local: física, vento, destruição, queda, turnos, v
 Uma conta corresponde a um personagem. Sem lista de personagens nem troca. No futuro banco, `characters.account_id` terá restrição UNIQUE; criação de conta e personagem será transacional.
 
 ## Próxima entrega
-Lista completa e decisões em aberto em `ROADMAP.md`. Backend (0.11) e Leilão (0.12) prontos; o próximo passo é o lançamento (item 4): testes fechados na web, página da Steam e acesso antecipado.
+Lista completa e decisões em aberto em `ROADMAP.md`. Backend (0.11), Leilão (0.12), Câmbio (0.17), mascotes e Caçada (0.19–0.21) e o treino (0.22) estão prontos; o próximo passo é o lançamento (item 4): reimplantar o servidor, testes fechados na web, página da Steam e acesso antecipado.
 
-1. Troca de moedas (Estrela ↔ Solar) e lances no leilão.
+1. Lances no leilão e as pendências externas do `ROADMAP.md` (marca, revisão jurídica, moderação, Steamworks).
 2. Slots de rosto e olhos e mais roupas no PixelLab; mais mapas seguindo a receita de `PIXELLAB_0_6.md`.
-3. PET e missões.

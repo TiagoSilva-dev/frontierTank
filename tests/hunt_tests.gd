@@ -301,7 +301,7 @@ func save_tests() -> void:
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.on_save = func() -> void: pass
 	copy.load_data(data)
-	check(int(data.version) == 8 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
+	check(int(data.version) == 10 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
 	check(int(copy.hunt.n) == int(p.hunt.n) and int(copy.hunt.seed) == int(p.hunt.seed) and int(copy.hunt.report.slots) == int(p.hunt.report.slots), "its counters and report survive too")
 	var old: Dictionary = data.duplicate(true)
 	old.erase("hunt")
@@ -317,7 +317,7 @@ func save_tests() -> void:
 # The top-down field (0.21 pilot): the ground, the sprite sheets and a whole encounter
 # replayed in it.
 func field_tests() -> void:
-	check(FieldMap.available("sol") and FieldMap.available("gelo") and not FieldMap.available("ceu"), "the Sol and Gelo zones have a field so far")
+	check(PetHunt.zones().all(func(zone: Dictionary) -> bool: return FieldMap.available(str(zone.id))) and not FieldMap.available("nowhere"), "every hunting zone has a top-down field")
 	var map: FieldMap = FieldMap.for_zone("sol")
 	check(map.texture != null and map.texture.get_width() == FieldMap.COLS * FieldMap.TILE and map.texture.get_height() == FieldMap.ROWS * FieldMap.TILE, "the field ground is baked at the world size")
 	check(map.decor.size() > 40, "the field is dressed with trees, bushes and rocks (%d)" % map.decor.size())
@@ -338,6 +338,14 @@ func field_tests() -> void:
 	var snow: FieldMap = FieldMap.for_zone("gelo")
 	check(snow.texture != null and snow.decor.size() > 40, "the snow field is baked and dressed (%d)" % snow.decor.size())
 	check(snow.decor.all(func(item: Dictionary) -> bool: return bool(item.cover) or not open.has_point((item.foot as Vector2) / FieldMap.TILE)), "no pine grows on the snow fighting ground")
+	# Brasa, Céu and Drakkar: ruined platforms with scenery lying on them.
+	for zone_id in ["mascara", "ceu", "viking"]:
+		var ruin: FieldMap = FieldMap.for_zone(zone_id)
+		check(ruin.ruined and ruin.texture != null and ruin.decor.size() > 40 and ruin.slabs.size() > 20, "the %s field has ruined platforms (%d slabs)" % [zone_id, ruin.slabs.size()])
+		var standing: Array = ruin.decor.filter(func(item: Dictionary) -> bool: return item.has("on_stone"))
+		check(standing.size() >= 8 and standing.all(func(item: Dictionary) -> bool: return ruin.slabs.has(Vector2i(((item.foot as Vector2) / FieldMap.TILE).floor()))), "%s: its columns and rubble stand on the slabs (%d)" % [zone_id, standing.size()])
+		check(ruin.decor.all(func(item: Dictionary) -> bool: return bool(item.cover) or item.has("on_stone") or not open.has_point((item.foot as Vector2) / FieldMap.TILE)), "%s: nothing grows on the fighting ground" % zone_id)
+	check(not FieldMap.for_zone("sol").ruined and not snow.ruined, "the sun and snow zones keep their plain platforms")
 	var field: HuntField = HuntField.new()
 	field.size = Vector2(580, 394)
 	var host: Control = Control.new()

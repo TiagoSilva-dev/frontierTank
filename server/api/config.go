@@ -60,7 +60,7 @@ func loadConfig() (Config, error) {
 		TrustProxy:       env("TRUST_PROXY", "") == "1",
 		AuthPerMinute:    envInt("AUTH_PER_MINUTE", 20),
 		LegalVersion:     env("LEGAL_VERSION", "2026-09-25"),
-		Retention:        Retention{AuditDays: envInt("AUDIT_RETENTION_DAYS", 365), ChatDays: envInt("CHAT_RETENTION_DAYS", 90), AccessDays: envInt("ACCESS_LOG_DAYS", 183), ReportDays: envInt("REPORT_RETENTION_DAYS", 180), OrderDays: envInt("ORDER_RETENTION_DAYS", 1826)},
+		Retention:        Retention{AuditDays: envInt("AUDIT_RETENTION_DAYS", 365), ChatDays: envInt("CHAT_RETENTION_DAYS", 90), AccessDays: envInt("ACCESS_LOG_DAYS", 183), ReportDays: envInt("REPORT_RETENTION_DAYS", 180), OrderDays: envInt("ORDER_RETENTION_DAYS", 1826), ChallengeDays: envInt("CHALLENGE_RETENTION_DAYS", 30)},
 	}
 	appID, _ := strconv.ParseUint(env("STEAM_APP_ID", "0"), 10, 32)
 	cfg.Steam = SteamClient{

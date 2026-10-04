@@ -43,6 +43,7 @@
     {"id": "cleanse", "name": "Elixir Purificador", "icon": "res://assets/expansion/combat/tool_cleanse.png", "price": 60, "cleanse": true, "desc": "Remove todos os efeitos negativos: queimação, veneno, selo, raízes, exaustão, marca e ofuscamento."}
   ],
   "pve": {"think_seconds": 1.6, "power_error": 3.0, "minion_power_error": 7.0, "turn_seconds": 20, "phase_heal": 0.35, "ability_damage": 1.08, "revive_hp": 0.2, "phase_gold": [20, 30, 60], "exp": 60},
+  "tutorial": {"map": "ilha_celeste", "dummy": "boneco_treino", "turn_seconds": 60, "dummy_hp": 900, "player_x": 330, "dummy_x": 980, "reward": {"coins": 200, "exp": 150, "items": {"pedra_fortalecimento": 3, "pet_egg": 1}}},
   "statuses": [
     {"id": "queimacao", "name": "Queimação", "label": "QUEIMANDO!", "desc": "Perde vida no início de cada turno.", "color": "ff8a3a", "turns": 2, "power": 0.12, "icon": "res://assets/ui/status/queimacao.png"},
     {"id": "veneno", "name": "Envenenamento", "label": "ENVENENADO!", "desc": "Perde 2% da vida máxima por dose no início de cada turno (até 3 doses) e recebe só metade da cura.", "color": "8aff4a", "turns": 3, "per_stack": 0.02, "max_stacks": 3, "heal_scale": 0.5, "icon": "res://assets/ui/status/veneno.png"},
@@ -117,6 +118,8 @@
        {"id": "mordida_gelida", "name": "Mordida Gélida", "kind": "leap", "damage": 1.0, "radius": 30, "knockback": 25, "reach": 700, "fx": "bite", "status": [{"id": "exaustao", "chance": 0.5}], "weight": 3},
        {"id": "uivo_gelado", "name": "Uivo Gelado", "kind": "sky", "damage": 0.85, "radius": 32, "fx": "ice", "status": [{"id": "marcado", "chance": 0.25}], "weight": 2}
      ]},
+    {"id": "boneco_treino", "name": "Boneco de Treino", "rank": "totem", "hp": 900, "damage": 0, "radius": 0, "agility": 0, "hit_radius": 34, "height": 104, "attack": "", "color": "e8c070",
+     "sprite": "res://assets/enemies/boneco_treino/sprite.png", "idle": "", "attack_clip": ""},
     {"id": "cristal_glacial", "name": "Cristal Glacial", "rank": "totem", "hp": 500, "damage": 0, "radius": 0, "agility": 0, "hit_radius": 26, "height": 72, "attack": "", "color": "8ad8ff",
      "sprite": "res://assets/expansion/objects/protection_crystal.png", "idle": "", "attack_clip": ""},
     {"id": "golem_gelo", "name": "Golem de Gelo", "rank": "guardian", "hp": 1200, "damage": 115, "fury_damage": 150, "radius": 42, "agility": 45, "hit_radius": 34, "height": 120, "angle": [30, 75], "attack": "Bloco de Gelo", "fury_name": "Avalanche", "color": "c8f0ff", "mechanics": ["fury"],

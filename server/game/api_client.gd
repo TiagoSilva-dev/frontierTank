@@ -14,6 +14,8 @@ var memory_profiles: Dictionary = {}
 var memory_presence: Dictionary = {}
 # Ids are never reused, even after an account is deleted.
 var memory_next_id: int = 1
+# Daily challenge scores in memory: day -> account -> {name, score, ticks, replay, at}.
+var memory_challenge: Dictionary = {}
 
 func is_memory() -> bool:
 	return base_url == "memory"
@@ -463,3 +465,76 @@ func exchange_call(action: String, data: Dictionary) -> Dictionary:
 	if is_memory():
 		return {"error": "exchange_unavailable"}
 	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/exchange/" + action, data))
+
+# Ranked ladder (0.22): the top `limit` of the season, the position of `account` (0 = not
+# listed) and how many are listed. The rating is inside each profile, so the memory mode
+# reads the stored profiles the same way the SQL query does.
+func ladder(season: int, limit: int, account: int) -> Dictionary:
+	if is_memory():
+		var listed: Array = []
+		for id: int in memory_profiles:
+			var stored: Dictionary = memory_profiles[id]
+			var rating: Variant = stored.data.get("rating", {})
+			if rating is Dictionary and int(rating.get("season", 0)) == season and int(rating.get("games", 0)) > 0:
+				listed.append({"account": id, "name": str(stored.get("name", "")), "mmr": int(rating.get("mmr", 0)), "games": int(rating.games), "wins": int(rating.get("wins", 0)), "losses": int(rating.get("losses", 0))})
+		listed.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			if a.mmr != b.mmr:
+				return a.mmr > b.mmr
+			if a.wins != b.wins:
+				return a.wins > b.wins
+			return a.account < b.account)
+		var position: int = 0
+		for i in range(listed.size()):
+			listed[i].position = i + 1
+			if int(listed[i].account) == account:
+				position = i + 1
+		return copy({"season": season, "rows": listed.slice(0, limit), "position": position, "total": listed.size()})
+	return answer(await request_json(HTTPClient.METHOD_GET, "/internal/ladder?season=%d&limit=%d&account=%d" % [season, limit, account]))
+
+# ---------- daily challenge (0.22) ----------
+
+# {"best": bool, "score", "position", "total"} or {"error"}. The best run of a player for a
+# day is kept with its replay.
+func challenge_submit(day: int, account: int, player_name: String, score: int, ticks: int, replay: Dictionary) -> Dictionary:
+	if is_memory():
+		var board: Dictionary = memory_challenge.get(day, {})
+		var stored: Dictionary = board.get(account, {})
+		var improved: bool = stored.is_empty() or score > int(stored.score)
+		if improved:
+			board[account] = {"name": player_name, "score": score, "ticks": ticks, "replay": copy(replay), "at": Time.get_ticks_usec()}
+		memory_challenge[day] = board
+		var top: Dictionary = memory_challenge_top(day, 1, account)
+		return {"best": improved, "score": int(board[account].score), "position": int(top.position), "total": int(top.total)}
+	return answer(await request_json(HTTPClient.METHOD_POST, "/internal/challenge/submit", {"day": day, "account_id": account, "name": player_name, "score": score, "ticks": ticks, "replay": replay}))
+
+func memory_challenge_top(day: int, limit: int, account: int) -> Dictionary:
+	var listed: Array = []
+	for id: int in memory_challenge.get(day, {}):
+		var entry: Dictionary = memory_challenge[day][id]
+		listed.append({"account": id, "name": str(entry.name), "score": int(entry.score), "ticks": int(entry.ticks), "at": int(entry.at)})
+	listed.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if a.score != b.score:
+			return a.score > b.score
+		if a.at != b.at:
+			return a.at < b.at
+		return a.account < b.account)
+	var position: int = 0
+	for i in range(listed.size()):
+		listed[i].position = i + 1
+		listed[i].erase("at")
+		if int(listed[i].account) == account:
+			position = i + 1
+	return {"day": day, "rows": listed.slice(0, limit), "position": position, "total": listed.size()}
+
+# {"day", "rows": [{account, name, position, score, ticks}], "position", "total"} or {"error"}.
+func challenge_top(day: int, limit: int, account: int) -> Dictionary:
+	if is_memory():
+		return copy(memory_challenge_top(day, limit, account))
+	return answer(await request_json(HTTPClient.METHOD_GET, "/internal/challenge/top?day=%d&limit=%d&account=%d" % [day, limit, account]))
+
+# {"replay"} of the best run of an account on a day, or {"error": "not_found"}.
+func challenge_replay(day: int, account: int) -> Dictionary:
+	if is_memory():
+		var entry: Dictionary = memory_challenge.get(day, {}).get(account, {})
+		return {"replay": copy(entry.replay)} if not entry.is_empty() else {"error": "not_found"}
+	return answer(await request_json(HTTPClient.METHOD_GET, "/internal/challenge/replay?day=%d&account=%d" % [day, account]))

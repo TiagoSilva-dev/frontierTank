@@ -20,6 +20,11 @@ extends RefCounted
 # v7 (0.19, Casa dos Mascotes) adds the pets ({uid, species, level, xp, stars}), the active
 # pet and the album of species ever hatched; eggs are counters in `items` and the hatch
 # pity counters live in `pity`. v8 (0.20, Caçada dos Mascotes) adds `hunt` (PetHunt).
+# v9 (0.22) adds `tutorial` ("", "skipped" or "done"; saves that already played count as
+# done) and the starter checklist inside `missions`.
+# v10 (0.22, ranked ladder) adds `rating` (Ranked: season, rating, record and the log of
+# the seasons that ended) and the cosmetic titles (`titles`, `title`), and `challenge` (the
+# day of the daily challenge last finished and the best score of that day).
 const SAVE_PATH: String = "user://profile.json"
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
@@ -41,6 +46,11 @@ var coupons: Array[String] = []
 var maps: Array[Dictionary] = []
 var pity: Dictionary = {}
 var missions: Dictionary = {}
+var tutorial: String = ""
+var rating: Dictionary = Ranked.empty_rating()
+var titles: Array[String] = []
+var title: String = ""
+var challenge: Dictionary = {"day": -1, "best": 0, "medal": 0}
 var pets: Array[Dictionary] = []
 var pet_active: int = -1
 var pet_album: Array[String] = []
@@ -135,7 +145,25 @@ func load_data(data: Dictionary) -> bool:
 	if saved_pity is Dictionary:
 		for key: String in saved_pity:
 			pity[key] = maxi(0, int(saved_pity[key]))
-	missions = MissionsBoard.clean_state(data.get("missions", {}))
+	var saved_missions: Variant = data.get("missions", {})
+	var had_starter: bool = saved_missions is Dictionary and saved_missions.has("starter")
+	missions = MissionsBoard.clean_state(saved_missions)
+	if data.has("tutorial"):
+		tutorial = str(data.tutorial) if str(data.tutorial) in ["", "skipped", "done"] else ""
+	else:
+		tutorial = "done" if matches > 0 or experience > 0 else ""
+	rating = Ranked.clean_rating(data.get("rating", {}))
+	titles.clear()
+	var saved_titles: Variant = data.get("titles", [])
+	if saved_titles is Array:
+		for id: Variant in saved_titles:
+			if Ranked.valid_title(str(id)) and not titles.has(str(id)):
+				titles.append(str(id))
+	title = str(data.get("title", "")) if titles.has(str(data.get("title", ""))) else ""
+	var saved_challenge: Variant = data.get("challenge", {})
+	challenge = {"day": -1, "best": 0, "medal": 0}
+	if saved_challenge is Dictionary:
+		challenge = {"day": int(saved_challenge.get("day", -1)), "best": maxi(0, int(saved_challenge.get("best", 0))), "medal": clampi(int(saved_challenge.get("medal", 0)), 0, 3)}
 	load_pets(data)
 	hunt = PetHunt.clean_state(data.get("hunt", {}))
 	if remote and data.has("clock"):
@@ -151,6 +179,10 @@ func load_data(data: Dictionary) -> bool:
 		# v2 save: keep the chosen slot of the old arsenal as the starting weapon.
 		var inst: Dictionary = add_instance(Armory.legacy_instance(int(data.weapon)).id)
 		equipped["arma"] = inst.uid
+	if not had_starter and int(data.get("version", 9)) < 9:
+		# A save from before the starter checklist: what the character did counts.
+		MissionsBoard.credit_history(self)
+		migrated = true
 	ensure_starter()
 	return migrated
 
@@ -191,7 +223,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 8, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
+	return {"version": 10, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -224,6 +256,59 @@ func level_progress() -> float:
 
 func ranking() -> int:
 	return victories * 3 + merits / 10
+
+# ---------- daily challenge (0.22) ----------
+
+# A finished daily challenge: the first one of a day pays its reward, the next ones only
+# raise the best score. Not an operation: the offline game calls it for its own score and the
+# online server after it checked the replay. Returns {"first": bool, "best": bool, "medal"}.
+func challenge_done(day: int, score: int, medal: int) -> Dictionary:
+	var first: bool = int(challenge.day) != day
+	var better: bool = first or score > int(challenge.best)
+	if first:
+		var reward: Dictionary = Challenge.data().reward
+		coins += int(reward.coins)
+		experience += int(reward.exp)
+		challenge.day = day
+		challenge.best = 0
+		MissionsBoard.note(self, "challenge")
+	if better:
+		challenge.best = score
+		challenge.medal = medal
+	save_profile()
+	return {"first": first, "best": better, "medal": int(challenge.medal), "score": int(challenge.best)}
+
+# ---------- ranked ladder and titles (0.22) ----------
+
+# Brings the rating to the current season (the server calls it before every use). Returns
+# whether it changed, so the caller saves.
+func sync_rating(timestamp: int = -1) -> bool:
+	return Ranked.sync(rating, timestamp)
+
+# Equips a title the character owns ("" takes it off).
+func title_set(id: String) -> String:
+	if id != "" and not titles.has(id):
+		return tr("Você ainda não tem este título.")
+	title = id
+	save_profile()
+	return ""
+
+# Claims the title of a season that ended. Returns the title id, or an error text.
+func season_claim(season: int) -> String:
+	sync_rating()
+	for entry: Dictionary in rating.log:
+		if int(entry.season) == season:
+			if bool(entry.claimed):
+				return tr("Esta recompensa já foi resgatada.")
+			var id: String = Ranked.title_id(season, str(entry.division))
+			entry.claimed = true
+			if not titles.has(id):
+				titles.append(id)
+			if title == "":
+				title = id
+			save_profile()
+			return id
+	return tr("Não há recompensa para esta temporada.")
 
 func add_item(id: String, amount: int = 1) -> void:
 	items[id] = int(items.get(id, 0)) + amount
@@ -519,7 +604,7 @@ func entry(balance: Dictionary) -> Dictionary:
 	# Battle roster entry for this character.
 	var numbers: Dictionary = stats(balance)
 	var aux: Dictionary = equipped_instance("auxiliar")
-	return {"name": player_name, "level": level(), "gender": gender, "human": true, "tools": tools.duplicate(), "agility": int(numbers.agilidade), "hp": int(numbers.vida), "arma": equipped_instance("arma").duplicate(true), "look": look(), "attrs": numbers.extra.duplicate(), "bonus": numbers.bonus.duplicate(), "aux": str(aux.get("id", ""))}
+	return {"name": player_name, "level": level(), "gender": gender, "human": true, "tools": tools.duplicate(), "agility": int(numbers.agilidade), "hp": int(numbers.vida), "arma": equipped_instance("arma").duplicate(true), "look": look(), "attrs": numbers.extra.duplicate(), "bonus": numbers.bonus.duplicate(), "aux": str(aux.get("id", "")), "title": title, "pet_skill": Pets.skill_entry(active_pet())}
 
 # ---------- instance maps ----------
 
@@ -935,7 +1020,7 @@ func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "streak_claim", "tutorial", "title_set", "season_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -1033,6 +1118,22 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			var result: Dictionary = MissionsBoard.claim(self, arg_str(args, 0))
 			error = str(result.error)
 			message = str(result.message)
+		"streak_claim":
+			var streak_result: Dictionary = MissionsBoard.streak_claim(self)
+			error = str(streak_result.error)
+			message = str(streak_result.message)
+		"tutorial":
+			error = Tutorial.apply(self, arg_str(args, 0), balance)
+			if error == "":
+				save_profile()
+		"title_set":
+			error = title_set(arg_str(args, 0))
+		"season_claim":
+			var claimed_title: String = season_claim(arg_int(args, 0))
+			if Ranked.valid_title(claimed_title):
+				message = tr("Título conquistado: %s") % Ranked.title_text(claimed_title)
+			else:
+				error = claimed_title
 		"buy_tool":
 			error = buy_tool(arg_str(args, 0), balance)
 		"sell_tool":
@@ -1050,6 +1151,6 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 				save_profile()
 		_:
 			error = tr("Operação desconhecida.")
-	if error == "" and op in ["toggle_equip", "sell", "mission_claim", "pet_equip"]:
+	if error == "" and (MissionsBoard.note_op(self, op) or op in ["toggle_equip", "sell", "mission_claim", "streak_claim", "pet_equip"]):
 		save_profile()
 	return {"error": error, "message": message}

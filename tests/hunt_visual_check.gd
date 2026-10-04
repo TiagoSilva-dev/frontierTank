@@ -55,8 +55,10 @@ func capture() -> void:
 	tab.team = [int(pets[0].uid), int(pets[1].uid), int(pets[2].uid), int(pets[3].uid), int(pets[4].uid)]
 	if mode in ["field", "fieldboss"]:
 		tab.team = [int(pets[0].uid), int(pets[1].uid), int(pets[6].uid), int(pets[11].uid), int(pets[5].uid)]
-		if field_zone == "gelo":
-			tab.team = [int(pets[2].uid), int(pets[3].uid), int(pets[7].uid), int(pets[6].uid), int(pets[5].uid)]
+		# Indices into `roster` above, so each zone shows its own look next to other elements.
+		var teams: Dictionary = {"gelo": [2, 3, 7, 6, 5], "mascara": [4, 5, 2, 7, 9], "ceu": [8, 9, 0, 10, 4], "viking": [10, 7, 1, 8, 6]}
+		if teams.has(field_zone):
+			tab.team = (teams[field_zone] as Array).map(func(index: int) -> int: return int(pets[index].uid))
 	if mode != "idle":
 		app.profile.hunt_set(tab.zone, 1, tab.team)
 		app.profile.hunt.since = app.profile.hunt_now() - 12 * 40 - (3 if mode == "boss" else (0 if mode in ["field", "fieldboss"] else 5))

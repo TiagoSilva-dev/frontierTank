@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 
-#: client/components/fighter.gd:275
+#: client/components/fighter.gd:293
 msgid "Chefe"
 msgstr "Boss"
 
-#: client/components/fighter.gd:275
+#: client/components/fighter.gd:293
 msgid "Guardião"
 msgstr "Guardian"
 
-#: client/components/fighter.gd:275
+#: client/components/fighter.gd:293
 msgid "Inimigo"
 msgstr "Enemy"
 
-#: client/components/fighter.gd:275
+#: client/components/fighter.gd:293
 msgid "Lacaio"
 msgstr "Minion"
 
-#: client/components/fighter.gd:275
+#: client/components/fighter.gd:293
 msgid "Objetivo"
 msgstr "Objective"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Capitão"
 msgstr "Captain"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Coronel"
 msgstr "Colonel"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "General"
 msgstr "General"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Major"
 msgstr "Major"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Marechal"
 msgstr "Marshal"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Recruta"
 msgstr "Recruit"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Sargento"
 msgstr "Sergeant"
 
-#: client/components/fighter.gd:337
+#: client/components/fighter.gd:357
 msgid "Soldado"
 msgstr "Soldier"
 
-#: client/components/fighter.gd:337 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:357 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr "Veteran"
 
@@ -154,133 +154,145 @@ msgstr "This Steam account is already linked to another game account."
 msgid "Erro do servidor: %s"
 msgstr "Server error: %s"
 
-#: client/scripts/main.gd:304 client/systems/lobby.gd:20
-msgid "bora sala 4x4!!"
-msgstr "4v4 room, let's go!!"
-
-#: client/scripts/main.gd:349 client/systems/lobby.gd:11 server/game/game_server.gd:681
-msgid "Guerra de equipes, diversão sem limite"
-msgstr "Team war, endless fun"
-
-#: client/scripts/main.gd:355 client/ui/room_screen.gd:242 client/ui/room_screen.gd:265
-msgid "Expedição: %s"
-msgstr "Expedition: %s"
-
-#: client/scripts/main.gd:365 client/scripts/main.gd:376 client/scripts/main.gd:435 client/scripts/main.gd:798
-msgid "SALA"
-msgstr "ROOM"
-
-#: client/scripts/main.gd:560
-msgid "Deseja fechar o Gustfire?"
-msgstr "Close Gustfire?"
-
-#: client/scripts/main.gd:560 client/scripts/main.gd:562 client/ui/bottom_bar.gd:23 client/ui/title_screen.gd:75
-msgid "SAIR"
-msgstr "EXIT"
-
-#: client/scripts/main.gd:560
-msgid "Voltar à tela de entrada?"
-msgstr "Go back to the title screen?"
-
-#: client/scripts/main.gd:563 client/ui/pet_screen.gd:423
-msgid "FICAR"
-msgstr "STAY"
-
-#: client/scripts/main.gd:590 client/ui/bottom_bar.gd:22
-msgid "AJUDA"
-msgstr "HELP"
-
-#: client/scripts/main.gd:590
-msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
-msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
-
-#: client/scripts/main.gd:596 client/ui/title_screen.gd:80
-msgid "Privacidade"
-msgstr "Privacy"
-
-#: client/scripts/main.gd:598 client/ui/title_screen.gd:128
-msgid "Minha conta"
-msgstr "My account"
-
-#: client/scripts/main.gd:602 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/coupon_dialog.gd:34
-msgid "FECHAR"
-msgstr "CLOSE"
-
-#: client/scripts/main.gd:615 client/ui/auction_screen.gd:69
-msgid "LEILÃO"
-msgstr "AUCTION HOUSE"
-
-#: client/scripts/main.gd:615
-msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
-msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
-
-#: client/scripts/main.gd:625 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:17 client/ui/exchange_screen.gd:73
-msgid "CORREIO"
-msgstr "MAIL"
-
-#: client/scripts/main.gd:625
-msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
-msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
-
-#: client/scripts/main.gd:636
-msgid "O Leilão só funciona online."
-msgstr "The Auction House only works online."
-
-#: client/scripts/main.gd:690
-msgid "Conquista: %s"
-msgstr "Achievement: %s"
-
-#: client/scripts/main.gd:699 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:136 server/game/game_server.gd:1345
-msgid "Compras só na versão Steam, com a conta ligada à Steam."
-msgstr "Purchases only in the Steam version, with the account linked to Steam."
-
-#: client/scripts/main.gd:708
-msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
-msgstr "Steam has not confirmed the purchase yet. If you approve it, the items arrive in your Mail."
-
-#: client/scripts/main.gd:711
-msgid "Compra cancelada."
-msgstr "Purchase cancelled."
-
-#: client/scripts/main.gd:716
-msgid "Compra concluída! Os itens chegaram ao Correio."
-msgstr "Purchase complete! The items arrived in your Mail."
-
-#: client/scripts/main.gd:739
-msgid "Bem-vindo ao servidor %s!"
-msgstr "Welcome to server %s!"
-
-#: client/scripts/main.gd:775
-msgid "CONEXÃO"
-msgstr "CONNECTION"
-
-#: client/scripts/main.gd:785
-msgid "AVISO"
-msgstr "NOTICE"
-
-#: client/scripts/main.gd:798
-msgid "Você foi removido da sala."
-msgstr "You were removed from the room."
-
-#: client/scripts/main.gd:849
-msgid "Música desligada"
-msgstr "Music off"
-
-#: client/scripts/main.gd:849
-msgid "Música ligada"
-msgstr "Music on"
-
-#: client/scripts/main.gd:865
-msgid "Mensagem privada de %s"
-msgstr "Private message from %s"
-
-#: client/scripts/main.gd:886 client/ui/exchange_screen.gd:48
+#: client/scripts/main.gd:1007 client/ui/exchange_screen.gd:48
 msgid "CASA DE CÂMBIO"
 msgstr "CURRENCY EXCHANGE"
 
-#: client/scripts/main.gd:886
+#: client/scripts/main.gd:1007
 msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
 msgstr "Join an online server to exchange currencies and stones with other players."
+
+#: client/scripts/main.gd:332 client/systems/lobby.gd:20
+msgid "bora sala 4x4!!"
+msgstr "4v4 room, let's go!!"
+
+#: client/scripts/main.gd:377 client/systems/lobby.gd:11 server/game/game_server.gd:710
+msgid "Guerra de equipes, diversão sem limite"
+msgstr "Team war, endless fun"
+
+#: client/scripts/main.gd:383 client/ui/room_screen.gd:242 client/ui/room_screen.gd:265
+msgid "Expedição: %s"
+msgstr "Expedition: %s"
+
+#: client/scripts/main.gd:393 client/scripts/main.gd:404 client/scripts/main.gd:463 client/scripts/main.gd:914
+msgid "SALA"
+msgstr "ROOM"
+
+#: client/scripts/main.gd:588
+msgid "Deseja fechar o Gustfire?"
+msgstr "Close Gustfire?"
+
+#: client/scripts/main.gd:588 client/scripts/main.gd:590 client/ui/bottom_bar.gd:27 client/ui/challenge_result.gd:53
+msgid "SAIR"
+msgstr "EXIT"
+
+#: client/scripts/main.gd:588
+msgid "Voltar à tela de entrada?"
+msgstr "Go back to the title screen?"
+
+#: client/scripts/main.gd:591 client/ui/pet_screen.gd:428
+msgid "FICAR"
+msgstr "STAY"
+
+#: client/scripts/main.gd:664 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
+msgid "ASSISTIR"
+msgstr "WATCH"
+
+#: client/scripts/main.gd:696
+msgid "Treino concluído!"
+msgstr "Training complete!"
+
+#: client/scripts/main.gd:701 client/ui/bottom_bar.gd:26
+msgid "AJUDA"
+msgstr "HELP"
+
+#: client/scripts/main.gd:701
+msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
+msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
+
+#: client/scripts/main.gd:707 client/ui/title_screen.gd:80
+msgid "Privacidade"
+msgstr "Privacy"
+
+#: client/scripts/main.gd:709 client/ui/title_screen.gd:128
+msgid "Minha conta"
+msgstr "My account"
+
+#: client/scripts/main.gd:714
+msgid "TREINO"
+msgstr "TRAINING"
+
+#: client/scripts/main.gd:718 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
+msgid "FECHAR"
+msgstr "CLOSE"
+
+#: client/scripts/main.gd:731 client/ui/auction_screen.gd:69
+msgid "LEILÃO"
+msgstr "AUCTION HOUSE"
+
+#: client/scripts/main.gd:731
+msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
+msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
+
+#: client/scripts/main.gd:741 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
+msgid "CORREIO"
+msgstr "MAIL"
+
+#: client/scripts/main.gd:741
+msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
+msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
+
+#: client/scripts/main.gd:752
+msgid "O Leilão só funciona online."
+msgstr "The Auction House only works online."
+
+#: client/scripts/main.gd:806
+msgid "Conquista: %s"
+msgstr "Achievement: %s"
+
+#: client/scripts/main.gd:815 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:136 server/game/game_server.gd:1629
+msgid "Compras só na versão Steam, com a conta ligada à Steam."
+msgstr "Purchases only in the Steam version, with the account linked to Steam."
+
+#: client/scripts/main.gd:824
+msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
+msgstr "Steam has not confirmed the purchase yet. If you approve it, the items arrive in your Mail."
+
+#: client/scripts/main.gd:827
+msgid "Compra cancelada."
+msgstr "Purchase cancelled."
+
+#: client/scripts/main.gd:832
+msgid "Compra concluída! Os itens chegaram ao Correio."
+msgstr "Purchase complete! The items arrived in your Mail."
+
+#: client/scripts/main.gd:855
+msgid "Bem-vindo ao servidor %s!"
+msgstr "Welcome to server %s!"
+
+#: client/scripts/main.gd:891
+msgid "CONEXÃO"
+msgstr "CONNECTION"
+
+#: client/scripts/main.gd:901
+msgid "AVISO"
+msgstr "NOTICE"
+
+#: client/scripts/main.gd:914
+msgid "Você foi removido da sala."
+msgstr "You were removed from the room."
+
+#: client/scripts/main.gd:970
+msgid "Música desligada"
+msgstr "Music off"
+
+#: client/scripts/main.gd:970
+msgid "Música ligada"
+msgstr "Music on"
+
+#: client/scripts/main.gd:986
+msgid "Mensagem privada de %s"
+msgstr "Private message from %s"
 
 #: client/systems/armory.gd:12 client/ui/character_screen.gd:221 client/ui/founder_screen.gd:115
 msgid "Arma"
@@ -318,19 +330,19 @@ msgstr "Excellent %s"
 msgid "Verdadeiro %s"
 msgstr "True %s"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:92
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
 msgid "Agilidade"
 msgstr "Agility"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:92
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
 msgid "Ataque"
 msgstr "Attack"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:92
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
 msgid "Defesa"
 msgstr "Defense"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:92
+#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
 msgid "Sorte"
 msgstr "Luck"
 
@@ -410,7 +422,7 @@ msgstr "Listing expired: %s"
 msgid "Correio"
 msgstr "Mail"
 
-#: client/systems/auction.gd:263 client/ui/shop_screen.gd:112
+#: client/systems/auction.gd:263 client/systems/challenge.gd:130 client/systems/missions.gd:379 client/systems/tutorial.gd:45
 msgid "%d moedas"
 msgstr "%d gold"
 
@@ -418,7 +430,7 @@ msgstr "%d gold"
 msgid "comissão %s"
 msgstr "commission %s"
 
-#: client/systems/auction.gd:273 server/game/game_server.gd:1122
+#: client/systems/auction.gd:273 server/game/game_server.gd:1406
 msgid "Este anúncio não está mais à venda."
 msgstr "This listing is no longer for sale."
 
@@ -442,7 +454,7 @@ msgstr "You have reached the limit of listings at the same time."
 msgid "Esta carta já foi recebida."
 msgstr "This letter was already received."
 
-#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:329 client/systems/profile.gd:753
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:414 client/systems/profile.gd:838
 msgid "Item não encontrado."
 msgstr "Item not found."
 
@@ -482,6 +494,38 @@ msgstr "Choose how long the listing lasts."
 msgid "A taxa do anúncio é de %d moedas."
 msgstr "The listing fee is %d gold."
 
+#: client/systems/challenge.gd:121 shared/balance/ranked.json:divisions[0].name
+msgid "Bronze"
+msgstr "Bronze"
+
+#: client/systems/challenge.gd:121 shared/balance/ranked.json:divisions[2].name
+msgid "Ouro"
+msgstr "Gold"
+
+#: client/systems/challenge.gd:121 shared/balance/ranked.json:divisions[1].name
+msgid "Prata"
+msgstr "Silver"
+
+#: client/systems/challenge.gd:121
+msgid "Sem medalha"
+msgstr "No medal"
+
+#: client/systems/challenge.gd:130 client/systems/missions.gd:381 client/systems/tutorial.gd:47 client/ui/mission_screen.gd:177
+msgid "%d EXP"
+msgstr "%d EXP"
+
+#: client/systems/challenge.gd:69
+msgid "Rival do Dia"
+msgstr "Rival of the Day"
+
+#: client/systems/challenge.gd:75 client/systems/tutorial.gd:37
+msgid "Alvo"
+msgstr "Target"
+
+#: client/systems/challenge.gd:75
+msgid "Alvo %d"
+msgstr "Target %d"
+
 #: client/systems/crafting.gd:152
 msgid "Escolha um item."
 msgstr "Choose an item."
@@ -518,7 +562,7 @@ msgstr "Storms need an Excellent or better item."
 msgid "Este item não tem bônus."
 msgstr "This item has no bonuses."
 
-#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:609 client/systems/profile.gd:633
+#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:694 client/systems/profile.gd:718
 msgid "Moeda desconhecida."
 msgstr "Unknown currency."
 
@@ -566,7 +610,7 @@ msgstr "T%d"
 msgid "Escolha duas moedas ou pedras diferentes."
 msgstr "Choose two different currencies or stones."
 
-#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1417
+#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1701
 msgid "Use quantidades inteiras entre 1 e 1.000.000."
 msgstr "Use whole amounts between 1 and 1,000,000."
 
@@ -610,7 +654,7 @@ msgstr "Your friends list is full."
 msgid "%d Moedas"
 msgstr "%d Gold"
 
-#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:194 client/ui/result_screen.gd:108 client/ui/room_screen.gd:202
+#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:205 client/ui/result_screen.gd:126 client/ui/room_screen.gd:202
 msgid "Entrada livre"
 msgstr "Free entry"
 
@@ -734,149 +778,181 @@ msgstr "Event: double merit in the Game Hall this weekend!"
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr "Offline mode: rooms, players and messages on this channel are simulated by AI."
 
-#: client/systems/match.gd:1048
-msgid "%s voou para fora do mapa!"
-msgstr "%s flew off the map!"
-
-#: client/systems/match.gd:1198
-msgid "Tempo esgotado"
-msgstr "Time's up"
-
-#: client/systems/match.gd:1219
-msgid "%s prepara %s"
-msgstr "%s readies %s"
-
-#: client/systems/match.gd:1269
-msgid "Uma nova onda de inimigos chegou!"
-msgstr "A new wave of enemies has arrived!"
-
-#: client/systems/match.gd:1291
-msgid "%s prepara %s!"
-msgstr "%s prepares %s!"
-
-#: client/systems/match.gd:1291
-msgid "Fúria"
-msgstr "Fury"
-
-#: client/systems/match.gd:1294
-msgid "%s está calculando seu ataque…"
-msgstr "%s is lining up an attack…"
-
-#: client/systems/match.gd:1305
-msgid "%s invoca %s!"
-msgstr "%s summons %s!"
-
-#: client/systems/match.gd:1328
-msgid "%s voa para outra posição!"
-msgstr "%s flies to another spot!"
-
-#: client/systems/match.gd:1383 client/systems/match.gd:1387
-msgid "%s usa %s!"
-msgstr "%s uses %s!"
-
-#: client/systems/match.gd:1629
-msgid "IMUNE!"
-msgstr "IMMUNE!"
-
-#: client/systems/match.gd:1657
-msgid "%s: %s!"
-msgstr "%s: %s!"
-
-#: client/systems/match.gd:1673
-msgid "%s não resistiu ao veneno!"
-msgstr "%s succumbed to the poison!"
-
-#: client/systems/match.gd:1673
-msgid "%s não resistiu às chamas!"
-msgstr "%s burned down!"
-
-#: client/systems/match.gd:1700
-msgid "PURIFICADO!"
-msgstr "PURIFIED!"
-
-#: client/systems/match.gd:1720
-msgid "%s explodiu!"
-msgstr "%s exploded!"
-
-#: client/systems/match.gd:186
-msgid "Fase %d: %s"
-msgstr "Stage %d: %s"
-
-#: client/systems/match.gd:188
-msgid "Processo de busca sucedido! A sua equipe começará o combate!"
-msgstr "Match found! Your team starts the battle!"
-
-#: client/systems/match.gd:190
-msgid "Processo de busca sucedido! A equipe adversária começa."
-msgstr "Match found! The enemy team starts."
-
-#: client/systems/match.gd:344
-msgid "%s está congelado e perde a vez!"
-msgstr "%s is frozen and loses the turn!"
-
-#: client/systems/match.gd:353 client/systems/match.gd:764
-msgid "Sua vez! Segure ESPAÇO para definir a força"
-msgstr "Your turn! Hold SPACE to set the power"
-
-#: client/systems/match.gd:355
-msgid "Vez de %s"
-msgstr "%s's turn"
-
-#: client/systems/match.gd:407
-msgid "Solte ESPAÇO para disparar"
-msgstr "Release SPACE to fire"
-
-#: client/systems/match.gd:483
-msgid "%s usou POW: %s!"
-msgstr "%s used POW: %s!"
-
-#: client/systems/match.gd:519
-msgid "Projétil em voo"
-msgstr "Shot in flight"
-
-#: client/systems/match.gd:592
-msgid "GRÁTIS!"
-msgstr "FREE!"
-
-#: client/systems/match.gd:650 client/systems/match.gd:679
-msgid "%s usou %s"
-msgstr "%s used %s"
-
-#: client/systems/match.gd:711
-msgid "Avião de Papel"
-msgstr "Paper Plane"
-
-#: client/systems/match.gd:744
-msgid "%s passou a vez"
-msgstr "%s passed"
-
-#: client/systems/match.gd:978
+#: client/systems/match.gd:1075
 msgid "CRÍTICO -%d"
 msgstr "CRITICAL -%d"
 
-#: client/systems/match.gd:999
+#: client/systems/match.gd:1096
 msgid "%s derrotou %s!"
 msgstr "%s defeated %s!"
 
-#: client/systems/missions.gd:108
-msgid "Recompensa resgatada: %d moedas e %d EXP."
-msgstr "Reward claimed: %d coins and %d EXP."
+#: client/systems/match.gd:1145
+msgid "%s voou para fora do mapa!"
+msgstr "%s flew off the map!"
 
-#: client/systems/missions.gd:110
-msgid "Bônus diário completo: %d moedas e %d EXP."
-msgstr "Daily bonus complete: %d coins and %d EXP."
+#: client/systems/match.gd:1300
+msgid "Tempo esgotado"
+msgstr "Time's up"
 
-#: client/systems/missions.gd:92
+#: client/systems/match.gd:1325
+msgid "%s prepara %s"
+msgstr "%s readies %s"
+
+#: client/systems/match.gd:1375
+msgid "Uma nova onda de inimigos chegou!"
+msgstr "A new wave of enemies has arrived!"
+
+#: client/systems/match.gd:1397
+msgid "%s prepara %s!"
+msgstr "%s prepares %s!"
+
+#: client/systems/match.gd:1397
+msgid "Fúria"
+msgstr "Fury"
+
+#: client/systems/match.gd:1400
+msgid "%s está calculando seu ataque…"
+msgstr "%s is lining up an attack…"
+
+#: client/systems/match.gd:1411
+msgid "%s invoca %s!"
+msgstr "%s summons %s!"
+
+#: client/systems/match.gd:1434
+msgid "%s voa para outra posição!"
+msgstr "%s flies to another spot!"
+
+#: client/systems/match.gd:1489 client/systems/match.gd:1493
+msgid "%s usa %s!"
+msgstr "%s uses %s!"
+
+#: client/systems/match.gd:1735
+msgid "IMUNE!"
+msgstr "IMMUNE!"
+
+#: client/systems/match.gd:1763
+msgid "%s: %s!"
+msgstr "%s: %s!"
+
+#: client/systems/match.gd:1779
+msgid "%s não resistiu ao veneno!"
+msgstr "%s succumbed to the poison!"
+
+#: client/systems/match.gd:1779
+msgid "%s não resistiu às chamas!"
+msgstr "%s burned down!"
+
+#: client/systems/match.gd:1806
+msgid "PURIFICADO!"
+msgstr "PURIFIED!"
+
+#: client/systems/match.gd:1826
+msgid "%s explodiu!"
+msgstr "%s exploded!"
+
+#: client/systems/match.gd:205
+msgid "Fase %d: %s"
+msgstr "Stage %d: %s"
+
+#: client/systems/match.gd:207
+msgid "Processo de busca sucedido! A sua equipe começará o combate!"
+msgstr "Match found! Your team starts the battle!"
+
+#: client/systems/match.gd:209
+msgid "Processo de busca sucedido! A equipe adversária começa."
+msgstr "Match found! The enemy team starts."
+
+#: client/systems/match.gd:367
+msgid "%s está congelado e perde a vez!"
+msgstr "%s is frozen and loses the turn!"
+
+#: client/systems/match.gd:376 client/systems/match.gd:855
+msgid "Sua vez! Segure ESPAÇO para definir a força"
+msgstr "Your turn! Hold SPACE to set the power"
+
+#: client/systems/match.gd:378
+msgid "Vez de %s"
+msgstr "%s's turn"
+
+#: client/systems/match.gd:434
+msgid "Solte ESPAÇO para disparar"
+msgstr "Release SPACE to fire"
+
+#: client/systems/match.gd:512
+msgid "%s usou POW: %s!"
+msgstr "%s used POW: %s!"
+
+#: client/systems/match.gd:548
+msgid "Projétil em voo"
+msgstr "Shot in flight"
+
+#: client/systems/match.gd:621
+msgid "GRÁTIS!"
+msgstr "FREE!"
+
+#: client/systems/match.gd:670
+msgid "%s usou %s!"
+msgstr "%s used %s!"
+
+#: client/systems/match.gd:721 client/systems/match.gd:750
+msgid "%s usou %s"
+msgstr "%s used %s"
+
+#: client/systems/match.gd:782
+msgid "Avião de Papel"
+msgstr "Paper Plane"
+
+#: client/systems/match.gd:816
+msgid "Fim dos turnos!"
+msgstr "Out of turns!"
+
+#: client/systems/match.gd:824
+msgid "%s abandonou a partida!"
+msgstr "%s left the match!"
+
+#: client/systems/match.gd:835
+msgid "%s passou a vez"
+msgstr "%s passed"
+
+#: client/systems/missions.gd:346
+msgid "A recompensa de hoje já foi resgatada."
+msgstr "Today's reward was already claimed."
+
+#: client/systems/missions.gd:354
+msgid "Dia %d da sequência: %s."
+msgstr "Streak day %d: %s."
+
+#: client/systems/missions.gd:399
 msgid "Missão inválida."
 msgstr "Invalid mission."
 
-#: client/systems/missions.gd:94
+#: client/systems/missions.gd:401
+msgid "Esta missão não está valendo agora."
+msgstr "This mission is not in play right now."
+
+#: client/systems/missions.gd:404
 msgid "Esta missão já foi resgatada."
 msgstr "This mission has already been claimed."
 
-#: client/systems/missions.gd:96
+#: client/systems/missions.gd:406
 msgid "Conclua a missão antes de resgatar."
 msgstr "Complete the mission before claiming it."
+
+#: client/systems/missions.gd:410
+msgid "Recompensa resgatada: %s."
+msgstr "Reward claimed: %s."
+
+#: client/systems/missions.gd:418
+msgid "Primeiros passos completos: %s."
+msgstr "First steps complete: %s."
+
+#: client/systems/missions.gd:422
+msgid "Bônus semanal completo: %s."
+msgstr "Weekly bonus complete: %s."
+
+#: client/systems/missions.gd:426
+msgid "Bônus diário completo: %d moedas e %d EXP."
+msgstr "Daily bonus complete: %d coins and %d EXP."
 
 #: client/systems/perf_probe.gd:201
 msgid "Teste de desempenho: %s FPS de média, 1%% mais lentos: %s FPS\nQuadro: %s ms (95%%: %s ms)   Scripts a 60 FPS: %s ms   Desenhos: %s\n%s"
@@ -898,169 +974,205 @@ msgstr "Benchmark: warming up…"
 msgid "Teste de desempenho: medindo… %d s"
 msgstr "Benchmark: measuring… %d s"
 
-#: client/systems/profile.gd:1010
-msgid "Só Fundadores têm efeitos do Founder Pack."
-msgstr "Only Founders have Founder Pack effects."
-
-#: client/systems/profile.gd:1012
-msgid "Efeito desconhecido."
-msgstr "Unknown effect."
-
-#: client/systems/profile.gd:1043
-msgid "O personagem já foi criado."
-msgstr "The character was already created."
-
-#: client/systems/profile.gd:1045
-msgid "Nome inválido: use de 2 a 14 letras ou números."
-msgstr "Invalid name: use 2 to 14 letters or digits."
-
-#: client/systems/profile.gd:1052 server/game/game_server.gd:457
-msgid "Operação desconhecida."
-msgstr "Unknown operation."
-
-#: client/systems/profile.gd:332
-msgid "Este item não se equipa."
-msgstr "This item cannot be equipped."
-
-#: client/systems/profile.gd:336
-msgid "Esta roupa é do outro gênero."
-msgstr "This outfit is for the other gender."
-
-#: client/systems/profile.gd:345
-msgid "Você precisa ter uma arma equipada."
-msgstr "You must keep a weapon equipped."
-
-#: client/systems/profile.gd:417
-msgid "Mochila cheia! Venda itens ou compre mais abas na loja Premium."
-msgstr "Bag full! Sell items or buy more tabs in the Premium shop."
-
-#: client/systems/profile.gd:465 client/systems/profile.gd:473 client/systems/profile.gd:478 client/systems/profile.gd:493
-msgid "Item desconhecido."
-msgstr "Unknown item."
-
-#: client/systems/profile.gd:467
-msgid "Super armas só caem do chefe das instâncias."
-msgstr "Super weapons only drop from dungeon bosses."
-
-#: client/systems/profile.gd:469
-msgid "Armas Verdadeiras só caem nas instâncias."
-msgstr "True weapons only drop in dungeons."
-
-#: client/systems/profile.gd:471
-msgid "Armas Excelentes só caem nas instâncias ou vêm do leilão."
-msgstr "Excellent weapons only drop in instances or come from the auction."
-
-#: client/systems/profile.gd:475
-msgid "Itens auxiliares só vêm de drops ou do leilão."
-msgstr "Auxiliary items only come from drops or the auction."
-
-#: client/systems/profile.gd:480 client/systems/profile.gd:498 client/systems/profile.gd:574 client/systems/profile.gd:592
-msgid "Moedas insuficientes."
-msgstr "Not enough gold."
-
-#: client/systems/profile.gd:495
-msgid "Pedras de fortalecimento são encontradas nas instâncias."
-msgstr "Strengthening stones are found in instances."
-
-#: client/systems/profile.gd:567
-msgid "Só armas, roupas e chapéus podem ser fortalecidos."
-msgstr "Only weapons, outfits and hats can be strengthened."
-
-#: client/systems/profile.gd:570
-msgid "Este item já está no +12."
-msgstr "This item is already +12."
-
-#: client/systems/profile.gd:572 client/ui/smith_screen.gd:220
-msgid "Você precisa de uma Pedra de Fortalecimento nível %d."
-msgstr "You need a level %d Strengthening Stone."
-
-#: client/systems/profile.gd:587
-msgid "Escolha dois itens diferentes."
-msgstr "Choose two different items."
-
-#: client/systems/profile.gd:589
-msgid "A transferência só funciona entre itens do mesmo tipo."
-msgstr "Transfer only works between items of the same kind."
-
-#: client/systems/profile.gd:614 client/systems/profile.gd:638 client/ui/smith_screen.gd:372
-msgid "Você não tem %s."
-msgstr "You have no %s."
-
-#: client/systems/profile.gd:672 client/systems/profile.gd:997
-msgid "Cupom inválido."
-msgstr "Invalid coupon."
-
-#: client/systems/profile.gd:674 client/systems/profile.gd:999
-msgid "Este cupom já foi usado nesta conta."
-msgstr "This coupon was already used on this account."
-
-#: client/systems/profile.gd:744 client/ui/room_screen.gd:326
-msgid "%s custa %d moedas."
-msgstr "%s costs %d gold."
-
-#: client/systems/profile.gd:746
-msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
-msgstr "Your 3 slots (Z, X, C) are full. Click a tool to return it."
-
-#: client/systems/profile.gd:787
-msgid "Você não tem este ovo."
-msgstr "You don't have this egg."
-
-#: client/systems/profile.gd:789
-msgid "A Casa dos Mascotes está cheia. Liberte algum mascote."
-msgstr "The Pet House is full. Release a pet first."
-
-#: client/systems/profile.gd:818 client/systems/profile.gd:825 client/systems/profile.gd:842 client/systems/profile.gd:863
-msgid "Mascote não encontrado."
-msgstr "Pet not found."
-
-#: client/systems/profile.gd:827 client/ui/pet_screen.gd:361
-msgid "Nível máximo para %d estrelas. Evolua o mascote para subir mais."
-msgstr "Maximum level for %d stars. Gain a star to level up further."
-
-#: client/systems/profile.gd:844
-msgid "O mascote consumido precisa ser da mesma espécie."
-msgstr "The pet you consume must be of the same species."
-
-#: client/systems/profile.gd:846
-msgid "Este mascote já está com 5 estrelas."
-msgstr "This pet already has 5 stars."
-
-#: client/systems/profile.gd:848
-msgid "Tire o mascote ativo antes de consumi-lo."
-msgstr "Deactivate the active pet before consuming it."
-
-#: client/systems/profile.gd:865 client/ui/pet_screen.gd:371
-msgid "Tire o mascote ativo antes de libertá-lo."
-msgstr "Deactivate the active pet before releasing it."
-
-#: client/systems/profile.gd:880
-msgid "Zona desconhecida."
-msgstr "Unknown zone."
-
-#: client/systems/profile.gd:882
-msgid "Este nível de caça ainda está bloqueado."
-msgstr "This hunting tier is still locked."
-
-#: client/systems/profile.gd:888
-msgid "Escolha pelo menos um mascote para o time."
-msgstr "Pick at least one pet for the team."
-
-#: client/systems/profile.gd:890
-msgid "O time tem no máximo %d mascotes."
-msgstr "The team holds at most %d pets."
-
-#: client/systems/profile.gd:907
-msgid "Nenhuma caçada em andamento."
-msgstr "No hunt is running."
-
-#: client/systems/profile.gd:973
+#: client/systems/profile.gd:1058
 msgid "Este item é a prova de uma compra e não pode ser vendido."
 msgstr "This item is the proof of a purchase and cannot be sold."
 
-#: client/systems/profile.gd:977 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:110
+#: client/systems/profile.gd:1062 client/ui/mission_screen.gd:145 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:128
 msgid "+%d moedas"
 msgstr "+%d gold"
+
+#: client/systems/profile.gd:1095
+msgid "Só Fundadores têm efeitos do Founder Pack."
+msgstr "Only Founders have Founder Pack effects."
+
+#: client/systems/profile.gd:1097
+msgid "Efeito desconhecido."
+msgstr "Unknown effect."
+
+#: client/systems/profile.gd:1134
+msgid "Título conquistado: %s"
+msgstr "Title earned: %s"
+
+#: client/systems/profile.gd:1144
+msgid "O personagem já foi criado."
+msgstr "The character was already created."
+
+#: client/systems/profile.gd:1146
+msgid "Nome inválido: use de 2 a 14 letras ou números."
+msgstr "Invalid name: use 2 to 14 letters or digits."
+
+#: client/systems/profile.gd:1153 client/systems/tutorial.gd:70 server/game/game_server.gd:484
+msgid "Operação desconhecida."
+msgstr "Unknown operation."
+
+#: client/systems/profile.gd:291
+msgid "Você ainda não tem este título."
+msgstr "You do not have this title yet."
+
+#: client/systems/profile.gd:302
+msgid "Esta recompensa já foi resgatada."
+msgstr "This reward was already claimed."
+
+#: client/systems/profile.gd:311
+msgid "Não há recompensa para esta temporada."
+msgstr "There is no reward for this season."
+
+#: client/systems/profile.gd:417
+msgid "Este item não se equipa."
+msgstr "This item cannot be equipped."
+
+#: client/systems/profile.gd:421
+msgid "Esta roupa é do outro gênero."
+msgstr "This outfit is for the other gender."
+
+#: client/systems/profile.gd:430
+msgid "Você precisa ter uma arma equipada."
+msgstr "You must keep a weapon equipped."
+
+#: client/systems/profile.gd:502
+msgid "Mochila cheia! Venda itens ou compre mais abas na loja Premium."
+msgstr "Bag full! Sell items or buy more tabs in the Premium shop."
+
+#: client/systems/profile.gd:550 client/systems/profile.gd:558 client/systems/profile.gd:563 client/systems/profile.gd:578
+msgid "Item desconhecido."
+msgstr "Unknown item."
+
+#: client/systems/profile.gd:552
+msgid "Super armas só caem do chefe das instâncias."
+msgstr "Super weapons only drop from dungeon bosses."
+
+#: client/systems/profile.gd:554
+msgid "Armas Verdadeiras só caem nas instâncias."
+msgstr "True weapons only drop in dungeons."
+
+#: client/systems/profile.gd:556
+msgid "Armas Excelentes só caem nas instâncias ou vêm do leilão."
+msgstr "Excellent weapons only drop in instances or come from the auction."
+
+#: client/systems/profile.gd:560
+msgid "Itens auxiliares só vêm de drops ou do leilão."
+msgstr "Auxiliary items only come from drops or the auction."
+
+#: client/systems/profile.gd:565 client/systems/profile.gd:583 client/systems/profile.gd:659 client/systems/profile.gd:677
+msgid "Moedas insuficientes."
+msgstr "Not enough gold."
+
+#: client/systems/profile.gd:580
+msgid "Pedras de fortalecimento são encontradas nas instâncias."
+msgstr "Strengthening stones are found in instances."
+
+#: client/systems/profile.gd:652
+msgid "Só armas, roupas e chapéus podem ser fortalecidos."
+msgstr "Only weapons, outfits and hats can be strengthened."
+
+#: client/systems/profile.gd:655
+msgid "Este item já está no +12."
+msgstr "This item is already +12."
+
+#: client/systems/profile.gd:657 client/ui/smith_screen.gd:220
+msgid "Você precisa de uma Pedra de Fortalecimento nível %d."
+msgstr "You need a level %d Strengthening Stone."
+
+#: client/systems/profile.gd:672
+msgid "Escolha dois itens diferentes."
+msgstr "Choose two different items."
+
+#: client/systems/profile.gd:674
+msgid "A transferência só funciona entre itens do mesmo tipo."
+msgstr "Transfer only works between items of the same kind."
+
+#: client/systems/profile.gd:699 client/systems/profile.gd:723 client/ui/smith_screen.gd:372
+msgid "Você não tem %s."
+msgstr "You have no %s."
+
+#: client/systems/profile.gd:757 client/systems/profile.gd:1082
+msgid "Cupom inválido."
+msgstr "Invalid coupon."
+
+#: client/systems/profile.gd:759 client/systems/profile.gd:1084
+msgid "Este cupom já foi usado nesta conta."
+msgstr "This coupon was already used on this account."
+
+#: client/systems/profile.gd:829 client/ui/room_screen.gd:326
+msgid "%s custa %d moedas."
+msgstr "%s costs %d gold."
+
+#: client/systems/profile.gd:831
+msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
+msgstr "Your 3 slots (Z, X, C) are full. Click a tool to return it."
+
+#: client/systems/profile.gd:872
+msgid "Você não tem este ovo."
+msgstr "You don't have this egg."
+
+#: client/systems/profile.gd:874
+msgid "A Casa dos Mascotes está cheia. Liberte algum mascote."
+msgstr "The Pet House is full. Release a pet first."
+
+#: client/systems/profile.gd:903 client/systems/profile.gd:910 client/systems/profile.gd:927 client/systems/profile.gd:948
+msgid "Mascote não encontrado."
+msgstr "Pet not found."
+
+#: client/systems/profile.gd:912 client/ui/pet_screen.gd:366
+msgid "Nível máximo para %d estrelas. Evolua o mascote para subir mais."
+msgstr "Maximum level for %d stars. Gain a star to level up further."
+
+#: client/systems/profile.gd:929
+msgid "O mascote consumido precisa ser da mesma espécie."
+msgstr "The pet you consume must be of the same species."
+
+#: client/systems/profile.gd:931
+msgid "Este mascote já está com 5 estrelas."
+msgstr "This pet already has 5 stars."
+
+#: client/systems/profile.gd:933
+msgid "Tire o mascote ativo antes de consumi-lo."
+msgstr "Deactivate the active pet before consuming it."
+
+#: client/systems/profile.gd:950 client/ui/pet_screen.gd:376
+msgid "Tire o mascote ativo antes de libertá-lo."
+msgstr "Deactivate the active pet before releasing it."
+
+#: client/systems/profile.gd:965
+msgid "Zona desconhecida."
+msgstr "Unknown zone."
+
+#: client/systems/profile.gd:967
+msgid "Este nível de caça ainda está bloqueado."
+msgstr "This hunting tier is still locked."
+
+#: client/systems/profile.gd:973
+msgid "Escolha pelo menos um mascote para o time."
+msgstr "Pick at least one pet for the team."
+
+#: client/systems/profile.gd:975
+msgid "O time tem no máximo %d mascotes."
+msgstr "The team holds at most %d pets."
+
+#: client/systems/profile.gd:992
+msgid "Nenhuma caçada em andamento."
+msgstr "No hunt is running."
+
+#: client/systems/ranked.gd:189
+msgid "%s · Temporada %d"
+msgstr "%s · Season %d"
+
+#: client/systems/ranked.gd:87 client/ui/result_screen.gd:105
+msgid "Em avaliação (%d/%d)"
+msgstr "Placement (%d/%d)"
+
+#: client/systems/replay.gd:148
+msgid "Ranqueada"
+msgstr "Ranked"
+
+#: client/systems/replay.gd:150 client/ui/hall_screen.gd:24 client/ui/room_screen.gd:112 shared/balance/missions.json:daily_pool[1].name
+msgid "Combate Livre"
+msgstr "Free Battle"
+
+#: client/systems/replay.gd:152 shared/balance/missions.json:daily_pool[14].name
+msgid "Desafio do Dia"
+msgstr "Daily Challenge"
 
 #: client/systems/status_rules.gd:59
 msgid "%d turnos"
@@ -1069,6 +1181,10 @@ msgstr "%d turns"
 #: client/systems/status_rules.gd:59
 msgid "1 turno"
 msgstr "1 turn"
+
+#: client/systems/tutorial.gd:37 shared/balance/combat.json:enemies[7].name
+msgid "Boneco de Treino"
+msgstr "Training Dummy"
 
 #: client/ui/account_screen.gd:101
 msgid "Preparando os seus dados…"
@@ -1126,7 +1242,7 @@ msgstr "Type DELETE to confirm."
 msgid "Excluindo…"
 msgstr "Deleting…"
 
-#: client/ui/account_screen.gd:162 server/game/game_server.gd:1271
+#: client/ui/account_screen.gd:162 server/game/game_server.gd:1555
 msgid "Digite a sua senha."
 msgstr "Type your password."
 
@@ -1206,7 +1322,7 @@ msgstr "%d modifiers"
 msgid "1 atributo"
 msgstr "1 modifier"
 
-#: client/ui/auction_screen.gd:174 client/ui/result_screen.gd:338
+#: client/ui/auction_screen.gd:174 client/ui/result_screen.gd:356
 msgid "%d bônus"
 msgstr "%d bonuses"
 
@@ -1374,7 +1490,7 @@ msgstr "BUY"
 msgid "Este anúncio é seu."
 msgstr "This listing is yours."
 
-#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1124
+#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1408
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr "You do not have enough Solars and Stars."
 
@@ -1486,7 +1602,7 @@ msgstr "Sales and returned items arrive by Mail."
 msgid "Tirar %s do leilão?\nO item volta para a Mochila; a taxa do anúncio não volta."
 msgstr "Take %s off the Auction House?\nThe item goes back to your Bag; the listing fee is not refunded."
 
-#: client/ui/auction_screen.gd:697
+#: client/ui/auction_screen.gd:697 client/ui/ranked_screen.gd:177
 msgid "TIRAR"
 msgstr "REMOVE"
 
@@ -1506,179 +1622,215 @@ msgstr "MAIL (%d)"
 msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
 msgstr "Prices in Solars and Stars  •  %d%% commission on sales"
 
-#: client/ui/battle_hud.gd:113
+#: client/ui/battle_hud.gd:117
 msgid "Vento e tempo do turno."
 msgstr "Wind and turn time."
 
-#: client/ui/battle_hud.gd:114
+#: client/ui/battle_hud.gd:118
 msgid "PASS"
 msgstr "PASS"
 
-#: client/ui/battle_hud.gd:115
+#: client/ui/battle_hud.gd:119
 msgid "Passar a vez (P). Gera menos atraso."
 msgstr "Pass the turn (P). Adds less delay."
 
-#: client/ui/battle_hud.gd:120
+#: client/ui/battle_hud.gd:124
 msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
 msgstr "Click to move the camera. Each mark = 1/10 of a screen."
 
-#: client/ui/battle_hud.gd:121
+#: client/ui/battle_hud.gd:125
 msgid "Pausa / opções (Esc)"
 msgstr "Pause / options (Esc)"
 
-#: client/ui/battle_hud.gd:122
+#: client/ui/battle_hud.gd:126
 msgid "Sair da batalha"
 msgstr "Leave the battle"
 
-#: client/ui/battle_hud.gd:131
+#: client/ui/battle_hud.gd:135
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
 msgstr "%s  (key %s)\n%s\nEnergy: %d"
 
-#: client/ui/battle_hud.gd:137
+#: client/ui/battle_hud.gd:141
 msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
 msgstr "Paper plane (F): fly to where the shot lands. %d energy."
 
-#: client/ui/battle_hud.gd:141
+#: client/ui/battle_hud.gd:145
 msgid "%s (V)\n%s"
 msgstr "%s (V)\n%s"
 
-#: client/ui/battle_hud.gd:141
+#: client/ui/battle_hud.gd:145
 msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
 msgstr "No support item. Equip one in the Bag (Balm or shield)."
 
-#: client/ui/battle_hud.gd:143 client/ui/battle_hud.gd:384
+#: client/ui/battle_hud.gd:152
+msgid "%s (G)\n%s\nUm uso por batalha, a partir do seu segundo turno."
+msgstr "%s (G)\n%s\nOne use per battle, from your second turn."
+
+#: client/ui/battle_hud.gd:154 client/ui/battle_hud.gd:409
 msgid "Confiar"
 msgstr "Auto"
 
-#: client/ui/battle_hud.gd:144
+#: client/ui/battle_hud.gd:155
 msgid "Confiar: a IA joga os seus turnos."
 msgstr "Auto: the AI plays your turns."
 
-#: client/ui/battle_hud.gd:158
+#: client/ui/battle_hud.gd:169
 msgid "Sem ferramenta. Compre na sala."
 msgstr "No tool. Buy some in the room."
 
-#: client/ui/battle_hud.gd:170
+#: client/ui/battle_hud.gd:181
 msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
 msgstr "Energy: spent on skills, the plane and walking.\nHP: at zero you are out of the battle."
 
-#: client/ui/battle_hud.gd:174
+#: client/ui/battle_hud.gd:185
 msgid "POW (B): %s. Enche causando e recebendo dano."
 msgstr "POW (B): %s. Fills up by dealing and taking damage."
 
-#: client/ui/battle_hud.gd:194 client/ui/result_screen.gd:101 client/ui/result_screen.gd:108 client/ui/room_screen.gd:206
+#: client/ui/battle_hud.gd:205 client/ui/result_screen.gd:119 client/ui/result_screen.gd:126 client/ui/room_screen.gd:206
 msgid "Nível %d"
 msgstr "Level %d"
 
-#: client/ui/battle_hud.gd:195
+#: client/ui/battle_hud.gd:206
 msgid "Fase %d/%d  •  %s"
 msgstr "Stage %d/%d  •  %s"
 
-#: client/ui/battle_hud.gd:200
+#: client/ui/battle_hud.gd:211
 msgid "Sem avião de papel neste mapa."
 msgstr "No paper plane on this map."
 
-#: client/ui/battle_hud.gd:228
+#: client/ui/battle_hud.gd:239
 msgid "Cristais: %d/%d"
 msgstr "Crystals: %d/%d"
 
-#: client/ui/battle_hud.gd:230
+#: client/ui/battle_hud.gd:241
 msgid "Sobreviva: %d/%d turnos"
 msgstr "Survive: %d/%d turns"
 
-#: client/ui/battle_hud.gd:233
+#: client/ui/battle_hud.gd:244
 msgid "  (+%d onda)"
 msgstr "  (+%d wave)"
 
-#: client/ui/battle_hud.gd:233
+#: client/ui/battle_hud.gd:244
 msgid "Inimigos: %d%s"
 msgstr "Enemies: %d%s"
 
-#: client/ui/battle_hud.gd:293
+#: client/ui/battle_hud.gd:306
 msgid "Ninguém venceu desta vez."
 msgstr "Nobody won this time."
 
-#: client/ui/battle_hud.gd:295
+#: client/ui/battle_hud.gd:308
 msgid "Instância concluída!"
 msgstr "Instance cleared!"
 
-#: client/ui/battle_hud.gd:295
+#: client/ui/battle_hud.gd:308
 msgid "Sua equipe venceu a batalha!"
 msgstr "Your team won the battle!"
 
-#: client/ui/battle_hud.gd:297
+#: client/ui/battle_hud.gd:310
+msgid "Você derrubou o Boneco de Treino!"
+msgstr "You knocked down the Training Dummy!"
+
+#: client/ui/battle_hud.gd:312
+msgid "Desafio concluído!"
+msgstr "Challenge complete!"
+
+#: client/ui/battle_hud.gd:314
 msgid "Sua equipe foi derrotada."
 msgstr "Your team was defeated."
 
-#: client/ui/battle_hud.gd:311
+#: client/ui/battle_hud.gd:328
+msgid "DESAFIO PAUSADO"
+msgstr "CHALLENGE PAUSED"
+
+#: client/ui/battle_hud.gd:328
+msgid "Sair do desafio não conta pontos: o resultado só vale quando a partida termina."
+msgstr "Leaving the challenge scores nothing: the result only counts when the match ends."
+
+#: client/ui/battle_hud.gd:330
+msgid "Sair do treino volta para a cidade. Você pode repetir o treino em AJUDA."
+msgstr "Leaving the training takes you back to the city. You can repeat it under HELP."
+
+#: client/ui/battle_hud.gd:330
+msgid "TREINO PAUSADO"
+msgstr "TRAINING PAUSED"
+
+#: client/ui/battle_hud.gd:332
 msgid "OPÇÕES"
 msgstr "OPTIONS"
 
-#: client/ui/battle_hud.gd:311
+#: client/ui/battle_hud.gd:332
 msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
 msgstr "Online battle: it keeps going. Giving up hands your character to the AI and you get no reward."
 
-#: client/ui/battle_hud.gd:313
+#: client/ui/battle_hud.gd:334
 msgid "BATALHA PAUSADA"
 msgstr "BATTLE PAUSED"
 
-#: client/ui/battle_hud.gd:313
+#: client/ui/battle_hud.gd:334
 msgid "Partida local contra IA. Desistir conta como derrota."
 msgstr "Local match against the AI. Giving up counts as a defeat."
 
-#: client/ui/battle_hud.gd:321
+#: client/ui/battle_hud.gd:342
 msgid "DESLIGADA"
 msgstr "OFF"
 
-#: client/ui/battle_hud.gd:321
+#: client/ui/battle_hud.gd:342
 msgid "LIGADA"
 msgstr "ON"
 
-#: client/ui/battle_hud.gd:321
+#: client/ui/battle_hud.gd:342
 msgid "Música: %s"
 msgstr "Music: %s"
 
-#: client/ui/battle_hud.gd:322
+#: client/ui/battle_hud.gd:343
 msgid "DESLIGADOS"
 msgstr "OFF"
 
-#: client/ui/battle_hud.gd:322
+#: client/ui/battle_hud.gd:343
 msgid "Efeitos: %s"
 msgstr "Effects: %s"
 
-#: client/ui/battle_hud.gd:322
+#: client/ui/battle_hud.gd:343
 msgid "LIGADOS"
 msgstr "ON"
 
-#: client/ui/battle_hud.gd:330
+#: client/ui/battle_hud.gd:351 client/ui/replay_bar.gd:49 client/ui/tutorial_coach.gd:217
 msgid "CONTINUAR"
 msgstr "RESUME"
 
-#: client/ui/battle_hud.gd:331
+#: client/ui/battle_hud.gd:352
 msgid "DESISTIR"
 msgstr "GIVE UP"
 
-#: client/ui/battle_hud.gd:384
+#: client/ui/battle_hud.gd:352
+msgid "SAIR DO DESAFIO"
+msgstr "LEAVE CHALLENGE"
+
+#: client/ui/battle_hud.gd:352
+msgid "SAIR DO TREINO"
+msgstr "LEAVE TRAINING"
+
+#: client/ui/battle_hud.gd:409
 msgid "Confiar ✓"
 msgstr "Auto ✓"
 
-#: client/ui/battle_hud.gd:533
+#: client/ui/battle_hud.gd:558
 msgid "EU"
 msgstr "ME"
 
-#: client/ui/battle_hud.gd:669
+#: client/ui/battle_hud.gd:694
 msgid "Rodada %d"
 msgstr "Round %d"
 
-#: client/ui/battle_hud.gd:845
+#: client/ui/battle_hud.gd:870
 msgid "Força"
 msgstr "Power"
 
-#: client/ui/battle_hud.gd:903
+#: client/ui/battle_hud.gd:928
 msgid "Aguarde a sua vez…"
 msgstr "Wait for your turn…"
 
-#: client/ui/battle_hud.gd:903
+#: client/ui/battle_hud.gd:928
 msgid "Pressione Espaço com força total e realize um ataque"
 msgstr "Press Space at full power to attack"
 
@@ -1694,73 +1846,233 @@ msgstr "DRAW"
 msgid "VITÓRIA!"
 msgstr "VICTORY!"
 
-#: client/ui/battle_screen.gd:259
+#: client/ui/battle_screen.gd:303
 msgid "VOCÊ FOI DERROTADO!"
 msgstr "YOU WERE DEFEATED!"
 
-#: client/ui/battle_screen.gd:259
+#: client/ui/battle_screen.gd:303
 msgid "Você virou um fantasma e assiste ao resto da batalha."
 msgstr "You became a ghost and watch the rest of the battle."
 
-#: client/ui/battle_screen.gd:261
+#: client/ui/battle_screen.gd:305
 msgid "%s caiu!"
 msgstr "%s went down!"
 
-#: client/ui/battle_screen.gd:490
+#: client/ui/battle_screen.gd:536
 msgid "CRÍTICO"
 msgstr "CRITICAL"
 
-#: client/ui/battle_screen.gd:515 shared/balance/combat.json:statuses[2].label
+#: client/ui/battle_screen.gd:561 shared/balance/combat.json:statuses[2].label
 msgid "CONGELADO!"
 msgstr "FROZEN!"
 
-#: client/ui/battle_screen.gd:515
+#: client/ui/battle_screen.gd:561
 msgid "Você perde este turno."
 msgstr "You lose this turn."
 
-#: client/ui/battle_screen.gd:522
+#: client/ui/battle_screen.gd:568
 msgid "SUA VEZ!"
 msgstr "YOUR TURN!"
 
-#: client/ui/battle_screen.gd:536 client/ui/battle_screen.gd:691
+#: client/ui/battle_screen.gd:600 client/ui/battle_screen.gd:822
 msgid "FASE CONCLUÍDA!"
 msgstr "STAGE CLEARED!"
 
-#: client/ui/battle_screen.gd:744
+#: client/ui/battle_screen.gd:876
 msgid "Sincronizando a batalha…"
 msgstr "Syncing the battle…"
 
-#: client/ui/battle_screen.gd:758 client/ui/result_screen.gd:119
+#: client/ui/battle_screen.gd:890 client/ui/result_screen.gd:137
 msgid "GOLPE FINAL"
 msgstr "LAST HIT"
 
-#: client/ui/battle_screen.gd:758 client/ui/result_screen.gd:119
+#: client/ui/battle_screen.gd:890 client/ui/result_screen.gd:137
 msgid "GRUPO"
 msgstr "PARTY"
 
-#: client/ui/bottom_bar.gd:17
+#: client/ui/bottom_bar.gd:21
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/ui/bottom_bar.gd:17 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:175
+#: client/ui/bottom_bar.gd:21 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:190
 msgid "MOCHILA"
 msgstr "BAG"
 
-#: client/ui/bottom_bar.gd:17
+#: client/ui/bottom_bar.gd:21
 msgid "PET"
 msgstr "PET"
 
-#: client/ui/bottom_bar.gd:17
+#: client/ui/bottom_bar.gd:21
 msgid "SHOP"
 msgstr "SHOP"
 
-#: client/ui/bottom_bar.gd:22
+#: client/ui/bottom_bar.gd:26
 msgid "Ajuda"
 msgstr "Help"
 
-#: client/ui/bottom_bar.gd:23
+#: client/ui/bottom_bar.gd:27
 msgid "Sair"
 msgstr "Exit"
+
+#: client/ui/challenge_result.gd:23 client/ui/challenge_screen.gd:34
+msgid "DESAFIO DO DIA"
+msgstr "DAILY CHALLENGE"
+
+#: client/ui/challenge_result.gd:43
+msgid "O rival resistiu até o fim dos turnos"
+msgstr "The rival held out until the turns ran out"
+
+#: client/ui/challenge_result.gd:43
+msgid "Vitória em %d turnos"
+msgstr "Victory in %d turns"
+
+#: client/ui/challenge_result.gd:45
+msgid "Alvos derrubados: %d/%d  ·  Turnos: %d/%d"
+msgstr "Targets down: %d/%d  ·  Turns: %d/%d"
+
+#: client/ui/challenge_result.gd:47
+msgid "Registrando o resultado…"
+msgstr "Registering the result…"
+
+#: client/ui/challenge_result.gd:49
+msgid "TENTAR DE NOVO"
+msgstr "TRY AGAIN"
+
+#: client/ui/challenge_result.gd:74
+msgid "Pontuação confirmada pelo servidor: %d.  Posição %d de %d."
+msgstr "Score confirmed by the server: %d.  Rank %d of %d."
+
+#: client/ui/challenge_result.gd:77 client/ui/challenge_result.gd:84
+msgid "Recompensa do dia: %s"
+msgstr "Reward of the day: %s"
+
+#: client/ui/challenge_result.gd:79
+msgid "O seu melhor do dia continua valendo."
+msgstr "Your best of the day still stands."
+
+#: client/ui/challenge_result.gd:82
+msgid "Resultado salvo neste computador. Entre num servidor para ir ao ranking."
+msgstr "Result saved on this computer. Join a server to get on the ranking."
+
+#: client/ui/challenge_result.gd:86
+msgid "O seu melhor do dia é %d."
+msgstr "Your best of the day is %d."
+
+#: client/ui/challenge_screen.gd:100
+msgid "Recompensa do primeiro resultado do dia: %s"
+msgstr "Reward for the first result of the day: %s"
+
+#: client/ui/challenge_screen.gd:101
+msgid "JOGAR"
+msgstr "PLAY"
+
+#: client/ui/challenge_screen.gd:103
+msgid "Como funciona"
+msgstr "How it works"
+
+#: client/ui/challenge_screen.gd:104
+msgid "Todos jogam o mesmo mapa, com a mesma arma e os mesmos atributos: o equipamento de ninguém conta.\n\nSe quiser, tente quantas vezes quiser; vale o melhor resultado do dia.\n\nOnline, o servidor refaz a sua partida a partir da gravação e confere a pontuação antes de ela entrar no ranking.\n\nA gravação fica no seu computador: veja em REPLAYS."
+msgstr "Everyone plays the same map with the same weapon and the same attributes: nobody's gear counts.\n\nTry as many times as you like; the best result of the day counts.\n\nOnline, the server runs your match again from the recording and checks the score before it gets on the ranking.\n\nThe recording stays on your computer: see it under REPLAYS."
+
+#: client/ui/challenge_screen.gd:123
+msgid "O ranking do dia só existe online. Escolha um servidor na tela de entrada."
+msgstr "The day's ranking only exists online. Pick a server on the title screen."
+
+#: client/ui/challenge_screen.gd:127 client/ui/player_profile.gd:37 client/ui/ranked_screen.gd:194
+msgid "Carregando…"
+msgstr "Loading…"
+
+#: client/ui/challenge_screen.gd:127
+msgid "Ninguém terminou o desafio de hoje ainda. Seja o primeiro!"
+msgstr "Nobody has finished today's challenge yet. Be the first!"
+
+#: client/ui/challenge_screen.gd:130 client/ui/player_list.gd:34 client/ui/ranked_screen.gd:190
+msgid "Jogador"
+msgstr "Player"
+
+#: client/ui/challenge_screen.gd:130
+msgid "Medalha"
+msgstr "Medal"
+
+#: client/ui/challenge_screen.gd:130 client/ui/ranked_screen.gd:190
+msgid "Pontos"
+msgstr "Points"
+
+#: client/ui/challenge_screen.gd:157
+msgid "Termine o desafio de hoje para entrar na lista (%d jogadores)."
+msgstr "Finish today's challenge to get on the list (%d players)."
+
+#: client/ui/challenge_screen.gd:157 client/ui/ranked_screen.gd:209
+msgid "Você está na posição %d de %d jogadores."
+msgstr "You are ranked %d of %d players."
+
+#: client/ui/challenge_screen.gd:170
+msgid "A gravação não pôde ser lida."
+msgstr "The recording could not be read."
+
+#: client/ui/challenge_screen.gd:179
+msgid "Nenhuma gravação ainda. As partidas online e os desafios que você joga ficam aqui (as %d últimas)."
+msgstr "No recordings yet. The online matches and challenges you play are kept here (the last %d)."
+
+#: client/ui/challenge_screen.gd:187
+msgid "Gravação ilegível"
+msgstr "Unreadable recording"
+
+#: client/ui/challenge_screen.gd:188 client/ui/challenge_screen.gd:201
+msgid "APAGAR"
+msgstr "DELETE"
+
+#: client/ui/challenge_screen.gd:195 client/ui/ranked_screen.gd:120
+msgid "%d pontos"
+msgstr "%d points"
+
+#: client/ui/challenge_screen.gd:197
+msgid "Derrota"
+msgstr "Defeat"
+
+#: client/ui/challenge_screen.gd:197
+msgid "Vitória"
+msgstr "Victory"
+
+#: client/ui/challenge_screen.gd:34
+msgid "O mesmo duelo para todos, todo dia. Renova em %s."
+msgstr "The same battle for everyone, every day. Renews in %s."
+
+#: client/ui/challenge_screen.gd:36 client/ui/mission_screen.gd:181
+msgid "HOJE"
+msgstr "TODAY"
+
+#: client/ui/challenge_screen.gd:36
+msgid "RANKING DO DIA"
+msgstr "DAY'S RANKING"
+
+#: client/ui/challenge_screen.gd:36
+msgid "REPLAYS"
+msgstr "REPLAYS"
+
+#: client/ui/challenge_screen.gd:76
+msgid "Arma do dia (igual para todos)"
+msgstr "Weapon of the day (the same for everyone)"
+
+#: client/ui/challenge_screen.gd:78
+msgid "Mapa: %s  ·  %d turnos"
+msgstr "Map: %s  ·  %d turns"
+
+#: client/ui/challenge_screen.gd:79
+msgid "Medalhas"
+msgstr "Medals"
+
+#: client/ui/challenge_screen.gd:94
+msgid "Seu melhor hoje"
+msgstr "Your best today"
+
+#: client/ui/challenge_screen.gd:97
+msgid "A recompensa do dia já foi recebida."
+msgstr "The day's reward was already received."
+
+#: client/ui/challenge_screen.gd:99
+msgid "Ainda não jogou hoje."
+msgstr "You have not played today."
 
 #: client/ui/character_screen.gd:117
 msgid "Ranking %d"
@@ -1954,7 +2266,7 @@ msgstr "BLACKSMITH"
 msgid "LOJA"
 msgstr "SHOP"
 
-#: client/ui/character_screen.gd:81 client/ui/city_screen.gd:172 client/ui/shop_screen.gd:71
+#: client/ui/character_screen.gd:81 client/ui/city_screen.gd:187 client/ui/shop_screen.gd:71
 msgid "CUPOM"
 msgstr "COUPON"
 
@@ -2110,6 +2422,14 @@ msgstr "Auction House"
 msgid "Leilão: compre e venda itens"
 msgstr "Auction House: buy and sell items"
 
+#: client/ui/city_screen.gd:139
+msgid "BEM-VINDO AO GUSTFIRE!"
+msgstr "WELCOME TO GUSTFIRE!"
+
+#: client/ui/city_screen.gd:139
+msgid "Quer fazer um treino rápido de artilharia? Em poucos minutos você aprende a andar, mirar, usar o vento e soltar o POW num Boneco de Treino, e ganha uma recompensa: %s."
+msgstr "Want a quick artillery training? In a few minutes you learn to move, aim, use the wind and fire the POW on a Training Dummy, and you get a reward: %s."
+
 #: client/ui/city_screen.gd:14 client/ui/city_screen.gd:28
 msgid "Centro Comercial"
 msgstr "Market"
@@ -2117,6 +2437,14 @@ msgstr "Market"
 #: client/ui/city_screen.gd:14 client/ui/city_screen.gd:28
 msgid "Centro Comercial: roupas e armas"
 msgstr "Market: outfits and weapons"
+
+#: client/ui/city_screen.gd:142
+msgid "COMEÇAR O TREINO"
+msgstr "START TRAINING"
+
+#: client/ui/city_screen.gd:145
+msgid "AGORA NÃO"
+msgstr "NOT NOW"
 
 #: client/ui/city_screen.gd:15 client/ui/city_screen.gd:27
 msgid "Casa de Câmbio"
@@ -2126,15 +2454,15 @@ msgstr "Currency Exchange"
 msgid "Câmbio: troque moedas e pedras com jogadores"
 msgstr "Exchange: trade currencies and stones with players"
 
-#: client/ui/city_screen.gd:174
+#: client/ui/city_screen.gd:189
 msgid "Resgatar cupom (TESTARTUDO libera tudo para testes)"
 msgstr "Redeem a coupon (TESTARTUDO unlocks everything for testing)"
 
-#: client/ui/city_screen.gd:179 client/ui/founder_screen.gd:95
+#: client/ui/city_screen.gd:194 client/ui/founder_screen.gd:95
 msgid "FOUNDER PACK"
 msgstr "FOUNDER PACK"
 
-#: client/ui/city_screen.gd:181
+#: client/ui/city_screen.gd:196
 msgid "Edição Paladino do Sol"
 msgstr "Sun Paladin Edition"
 
@@ -2142,35 +2470,35 @@ msgstr "Sun Paladin Edition"
 msgid "Casa dos Mascotes"
 msgstr "Pet House"
 
-#: client/ui/city_screen.gd:332
+#: client/ui/city_screen.gd:347
 msgid "CRIE SEU PERSONAGEM"
 msgstr "CREATE YOUR CHARACTER"
 
-#: client/ui/city_screen.gd:333
+#: client/ui/city_screen.gd:348
 msgid "Uma conta, um personagem. Escolha a aparência e o nome."
 msgstr "One account, one character. Choose the look and the name."
 
-#: client/ui/city_screen.gd:339
+#: client/ui/city_screen.gd:354
 msgid "Feminino"
 msgstr "Female"
 
-#: client/ui/city_screen.gd:339
+#: client/ui/city_screen.gd:354
 msgid "Masculino"
 msgstr "Male"
 
-#: client/ui/city_screen.gd:340
+#: client/ui/city_screen.gd:355
 msgid "Nome:"
 msgstr "Name:"
 
-#: client/ui/city_screen.gd:349
+#: client/ui/city_screen.gd:364
 msgid "CRIAR PERSONAGEM"
 msgstr "CREATE CHARACTER"
 
-#: client/ui/city_screen.gd:361 client/ui/city_screen.gd:365
+#: client/ui/city_screen.gd:376 client/ui/city_screen.gd:380
 msgid "NOME"
 msgstr "NAME"
 
-#: client/ui/city_screen.gd:361
+#: client/ui/city_screen.gd:376
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr "The name needs at least 3 letters."
 
@@ -2230,7 +2558,7 @@ msgstr "For testing: TESTARTUDO unlocks every weapon and cosmetic; AURAS shows t
 msgid "Cupom resgatado! "
 msgstr "Coupon redeemed! "
 
-#: client/ui/coupon_dialog.gd:33 client/ui/mission_screen.gd:67
+#: client/ui/coupon_dialog.gd:33 client/ui/mission_screen.gd:136
 msgid "RESGATAR"
 msgstr "REDEEM"
 
@@ -2538,149 +2866,165 @@ msgstr "SUN PALADIN EDITION"
 msgid "Fundador: estava no Gustfire desde o começo."
 msgstr "Founder: was in Gustfire from the very beginning."
 
-#: client/ui/hall_screen.gd:101
+#: client/ui/hall_screen.gd:100
+msgid "Página %d/%d  •  %d salas aguardando  •  %d em jogo"
+msgstr "Page %d/%d  •  %d rooms waiting  •  %d playing"
+
+#: client/ui/hall_screen.gd:107
 msgid "Sala %d — %s"
 msgstr "Room %d — %s"
 
-#: client/ui/hall_screen.gd:102
+#: client/ui/hall_screen.gd:108
 msgid "Desafio"
 msgstr "Battle"
 
-#: client/ui/hall_screen.gd:103
+#: client/ui/hall_screen.gd:109
 msgid "das Lutas"
 msgstr "Challenge"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:116
 msgid "Aberta"
 msgstr "Open"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:116
 msgid "Cheia"
 msgstr "Full"
 
-#: client/ui/hall_screen.gd:110
+#: client/ui/hall_screen.gd:116
 msgid "Em jogo"
 msgstr "Playing"
 
-#: client/ui/hall_screen.gd:114
+#: client/ui/hall_screen.gd:120
 msgid "Mapa\nAleatório"
 msgstr "Random\nArena"
 
-#: client/ui/hall_screen.gd:121
-msgid "A sala %d está em batalha. Escolha outra sala ou aguarde."
-msgstr "Room %d is in a battle. Choose another room or wait."
+#: client/ui/hall_screen.gd:128
+msgid "A sala %d está em batalha. Você pode assistir (a transmissão tem alguns segundos de atraso)."
+msgstr "Room %d is in a battle. You can watch it (the broadcast runs a few seconds behind)."
 
-#: client/ui/hall_screen.gd:121
+#: client/ui/hall_screen.gd:128 client/ui/hall_screen.gd:135
 msgid "SALA EM JOGO"
 msgstr "ROOM IN BATTLE"
 
-#: client/ui/hall_screen.gd:123
+#: client/ui/hall_screen.gd:135
+msgid "A sala %d está em batalha. Escolha outra sala ou aguarde."
+msgstr "Room %d is in a battle. Choose another room or wait."
+
+#: client/ui/hall_screen.gd:137
 msgid "A sala %d está cheia."
 msgstr "Room %d is full."
 
-#: client/ui/hall_screen.gd:123 client/ui/room_screen.gd:360
+#: client/ui/hall_screen.gd:137 client/ui/room_screen.gd:360
 msgid "SALA CHEIA"
 msgstr "ROOM FULL"
 
-#: client/ui/hall_screen.gd:130
+#: client/ui/hall_screen.gd:144
 msgid "Informações do usuário"
 msgstr "Player info"
 
-#: client/ui/hall_screen.gd:139 client/ui/player_profile.gd:73
+#: client/ui/hall_screen.gd:153 client/ui/player_profile.gd:82
 msgid "Ranking"
 msgstr "Ranking"
 
-#: client/ui/hall_screen.gd:141 client/ui/player_profile.gd:73
+#: client/ui/hall_screen.gd:155 client/ui/player_profile.gd:82
 msgid "Méritos"
 msgstr "Merits"
 
-#: client/ui/hall_screen.gd:159
+#: client/ui/hall_screen.gd:173
 msgid "Conquista: %d vitória(s)"
 msgstr "Achievement: %d win(s)"
 
-#: client/ui/hall_screen.gd:164
+#: client/ui/hall_screen.gd:178
 msgid "Clique em \"Jogar\" para começar o combate"
 msgstr "Click \"Play\" to start fighting"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Buscar"
 msgstr "Find"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Criar uma sala com a sua equipe"
 msgstr "Create a room with your team"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Entrar na primeira sala disponível"
 msgstr "Join the first open room"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Entrar numa sala pelo número"
 msgstr "Join a room by its number"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Equipe"
 msgstr "Team"
 
-#: client/ui/hall_screen.gd:165
+#: client/ui/hall_screen.gd:179
 msgid "Jogar"
 msgstr "Play"
 
-#: client/ui/hall_screen.gd:186 client/ui/hall_screen.gd:200
-msgid "BUSCAR SALA"
-msgstr "FIND ROOM"
+#: client/ui/hall_screen.gd:195
+msgid "A liga ranqueada só funciona online: as partidas são entre jogadores reais.\nEscolha um servidor na tela de entrada."
+msgstr "The ranked ladder only works online: matches are between real players.\nPick a server on the title screen."
 
-#: client/ui/hall_screen.gd:186
-msgid "Digite o número da sala:"
-msgstr "Type the room number:"
-
-#: client/ui/hall_screen.gd:200
-msgid "Sala %s não encontrada neste canal."
-msgstr "Room %s was not found on this channel."
-
-#: client/ui/hall_screen.gd:204 client/ui/title_screen.gd:70
-msgid "ENTRAR"
-msgstr "ENTER"
+#: client/ui/hall_screen.gd:195 client/ui/ranked_screen.gd:97
+msgid "LIGA RANQUEADA"
+msgstr "RANKED LADDER"
 
 #: client/ui/hall_screen.gd:21
 msgid "Salão de jogos"
 msgstr "Game Hall"
 
+#: client/ui/hall_screen.gd:211 client/ui/hall_screen.gd:225
+msgid "BUSCAR SALA"
+msgstr "FIND ROOM"
+
+#: client/ui/hall_screen.gd:211
+msgid "Digite o número da sala:"
+msgstr "Type the room number:"
+
 #: client/ui/hall_screen.gd:22
 msgid "Lista de salas"
 msgstr "Rooms"
+
+#: client/ui/hall_screen.gd:225
+msgid "Sala %s não encontrada neste canal."
+msgstr "Room %s was not found on this channel."
+
+#: client/ui/hall_screen.gd:229 client/ui/title_screen.gd:70
+msgid "ENTRAR"
+msgstr "ENTER"
 
 #: client/ui/hall_screen.gd:24
 msgid "Aguardando jogadores"
 msgstr "Waiting for players"
 
-#: client/ui/hall_screen.gd:24 client/ui/room_screen.gd:112
-msgid "Combate Livre"
-msgstr "Free Battle"
-
 #: client/ui/hall_screen.gd:24
 msgid "Todas as modalidades"
 msgstr "All modes"
 
-#: client/ui/hall_screen.gd:36
+#: client/ui/hall_screen.gd:36 client/ui/result_screen.gd:103
+msgid "RANQUEADA"
+msgstr "RANKED"
+
+#: client/ui/hall_screen.gd:40
+msgid "DESAFIO DIÁRIO"
+msgstr "DAILY CHALLENGE"
+
+#: client/ui/hall_screen.gd:42
 msgid "Canal atual"
 msgstr "Current channel"
 
-#: client/ui/hall_screen.gd:38 client/ui/room_screen.gd:264
+#: client/ui/hall_screen.gd:44 client/ui/room_screen.gd:264
 msgid "Canal 1"
 msgstr "Channel 1"
 
-#: client/ui/hall_screen.gd:46
+#: client/ui/hall_screen.gd:52
 msgid "◀ Anterior"
 msgstr "◀ Previous"
 
-#: client/ui/hall_screen.gd:47
+#: client/ui/hall_screen.gd:53
 msgid "Próximo ▶"
 msgstr "Next ▶"
-
-#: client/ui/hall_screen.gd:94
-msgid "Página %d/%d  •  %d salas aguardando  •  %d em jogo"
-msgstr "Page %d/%d  •  %d rooms waiting  •  %d playing"
 
 #: client/ui/hatch_outcome.gd:130
 msgid "Algo está se mexendo lá dentro..."
@@ -2866,7 +3210,7 @@ msgstr "Pets caught"
 msgid "Ovos"
 msgstr "Eggs"
 
-#: client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:559 client/ui/player_profile.gd:73
+#: client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:559 client/ui/player_profile.gd:82
 msgid "Vitórias"
 msgstr "Wins"
 
@@ -3002,7 +3346,7 @@ msgstr "No pets this time."
 msgid "Subiram de nível: "
 msgstr "Leveled up: "
 
-#: client/ui/hunt_tab.gd:590 client/ui/ui_kit.gd:459
+#: client/ui/hunt_tab.gd:590 client/ui/ui_kit.gd:463
 msgid "OK"
 msgstr "OK"
 
@@ -3102,37 +3446,89 @@ msgstr "RECEIVE ALL"
 msgid "RECEBER"
 msgstr "RECEIVE"
 
-#: client/ui/mission_screen.gd:21
-msgid "CONTRATOS DIÁRIOS"
-msgstr "DAILY CONTRACTS"
-
-#: client/ui/mission_screen.gd:25
-msgid "Resgate todos os contratos para receber o bônus diário."
-msgstr "Claim every contract to earn the daily bonus."
-
-#: client/ui/mission_screen.gd:34
-msgid "BÔNUS DIÁRIO  ·  %d/%d contratos resgatados"
-msgstr "DAILY BONUS  ·  %d/%d contracts claimed"
-
-#: client/ui/mission_screen.gd:35
-msgid "Moedas: %d   EXP: %d"
-msgstr "Coins: %d   EXP: %d"
-
-#: client/ui/mission_screen.gd:66
-msgid "+%d moedas\n+%d EXP"
-msgstr "+%d coins\n+%d EXP"
-
-#: client/ui/mission_screen.gd:67
+#: client/ui/mission_screen.gd:136
 msgid "EM ANDAMENTO"
 msgstr "IN PROGRESS"
 
-#: client/ui/mission_screen.gd:67
+#: client/ui/mission_screen.gd:136
 msgid "RESGATADA"
 msgstr "CLAIMED"
 
-#: client/ui/mission_screen.gd:79
-msgid "Renovação em %02d h %02d min (UTC)"
-msgstr "Resets in %02d h %02d min (UTC)"
+#: client/ui/mission_screen.gd:147
+msgid "+%d EXP"
+msgstr "+%d EXP"
+
+#: client/ui/mission_screen.gd:166
+msgid "Entre todo dia e resgate: dias seguidos sobem a escada de recompensas. Faltou um dia, volta ao começo."
+msgstr "Log in every day and claim: consecutive days climb the reward ladder. Miss a day and it starts over."
+
+#: client/ui/mission_screen.gd:167
+msgid "Sequência atual: %d dia(s)  ·  Melhor: %d"
+msgstr "Current streak: %d day(s)  ·  Best: %d"
+
+#: client/ui/mission_screen.gd:174
+msgid "DIA %d"
+msgstr "DAY %d"
+
+#: client/ui/mission_screen.gd:181
+msgid "✓ RESGATADO"
+msgstr "✓ CLAIMED"
+
+#: client/ui/mission_screen.gd:183
+msgid "RESGATAR A RECOMPENSA DE HOJE"
+msgstr "CLAIM TODAY'S REWARD"
+
+#: client/ui/mission_screen.gd:183
+msgid "VOLTE AMANHÃ"
+msgstr "COME BACK TOMORROW"
+
+#: client/ui/mission_screen.gd:212
+msgid "Resgate todos para receber o bônus semanal.  Renovação em %d d %02d h (segunda-feira, UTC)"
+msgstr "Claim them all to get the weekly bonus.  Renews in %d d %02d h (Monday, UTC)"
+
+#: client/ui/mission_screen.gd:214
+msgid "Resgate todos os contratos para receber o bônus diário.  Renovação em %02d h %02d min (UTC)"
+msgstr "Claim every contract to get the daily bonus.  Renews in %02d h %02d min (UTC)"
+
+#: client/ui/mission_screen.gd:32
+msgid "PRIMEIROS PASSOS"
+msgstr "FIRST STEPS"
+
+#: client/ui/mission_screen.gd:33
+msgid "DIÁRIOS"
+msgstr "DAILY"
+
+#: client/ui/mission_screen.gd:34
+msgid "SEMANAIS"
+msgstr "WEEKLY"
+
+#: client/ui/mission_screen.gd:35
+msgid "SEQUÊNCIA"
+msgstr "STREAK"
+
+#: client/ui/mission_screen.gd:51
+msgid "CONTRATOS"
+msgstr "CONTRACTS"
+
+#: client/ui/mission_screen.gd:81
+msgid "BÔNUS DOS PRIMEIROS PASSOS"
+msgstr "FIRST STEPS BONUS"
+
+#: client/ui/mission_screen.gd:82
+msgid "Um roteiro para conhecer o jogo. Cada passo dá uma recompensa, e completar todos dá um bônus."
+msgstr "A guide to get to know the game. Every step gives a reward, and finishing them all gives a bonus."
+
+#: client/ui/mission_screen.gd:85
+msgid "BÔNUS SEMANAL"
+msgstr "WEEKLY BONUS"
+
+#: client/ui/mission_screen.gd:88
+msgid "BÔNUS DIÁRIO"
+msgstr "DAILY BONUS"
+
+#: client/ui/mission_screen.gd:93
+msgid "%s  ·  %d/%d resgatados"
+msgstr "%s  ·  %d/%d claimed"
 
 #: client/ui/pet_screen.gd:113
 msgid "SEUS OVOS"
@@ -3258,111 +3654,111 @@ msgstr "Duplicates: %d"
 msgid "PODER"
 msgstr "POWER"
 
-#: client/ui/pet_screen.gd:349
-msgid "Os bônus do mascote ativo valem em todas as batalhas."
-msgstr "The active pet's bonuses count in every battle."
+#: client/ui/pet_screen.gd:352
+msgid "HABILIDADE EM BATALHA (G)"
+msgstr "BATTLE SKILL (G)"
 
-#: client/ui/pet_screen.gd:350
+#: client/ui/pet_screen.gd:355
 msgid "COMO EVOLUIR"
 msgstr "HOW TO GROW"
 
-#: client/ui/pet_screen.gd:351
+#: client/ui/pet_screen.gd:356
 msgid "Alimentar: +%d XP por %d moedas."
 msgstr "Feed: +%d XP for %d coins."
 
-#: client/ui/pet_screen.gd:353
+#: client/ui/pet_screen.gd:358
 msgid "Estrela: 1 duplicata + %d moedas. O nível máximo sobe para %d."
 msgstr "Star: 1 duplicate + %d coins. The maximum level rises to %d."
 
-#: client/ui/pet_screen.gd:355
+#: client/ui/pet_screen.gd:360
 msgid "Estrelas no máximo."
 msgstr "Stars maxed out."
 
-#: client/ui/pet_screen.gd:356
+#: client/ui/pet_screen.gd:361
 msgid "ATIVAR"
 msgstr "ACTIVATE"
 
-#: client/ui/pet_screen.gd:356
+#: client/ui/pet_screen.gd:361
 msgid "DESATIVAR"
 msgstr "DEACTIVATE"
 
-#: client/ui/pet_screen.gd:358
+#: client/ui/pet_screen.gd:363
 msgid "ALIMENTAR"
 msgstr "FEED"
 
-#: client/ui/pet_screen.gd:361
+#: client/ui/pet_screen.gd:366
 msgid "Gasta moedas e dá experiência ao mascote."
 msgstr "Spends coins and gives the pet experience."
 
-#: client/ui/pet_screen.gd:362
+#: client/ui/pet_screen.gd:367
 msgid "GANHAR ESTRELA"
 msgstr "GAIN STAR"
 
-#: client/ui/pet_screen.gd:367
+#: client/ui/pet_screen.gd:372
 msgid "Consome uma duplicata da mesma espécie. A metade da experiência dela passa para este mascote."
 msgstr "Consumes a duplicate of the same species. Half of its experience goes to this pet."
 
-#: client/ui/pet_screen.gd:368 client/ui/pet_screen.gd:420
+#: client/ui/pet_screen.gd:373 client/ui/pet_screen.gd:425
 msgid "LIBERTAR"
 msgstr "RELEASE"
 
-#: client/ui/pet_screen.gd:371
+#: client/ui/pet_screen.gd:376
 msgid "Liberta o mascote e devolve %d moedas."
 msgstr "Releases the pet and returns %d coins."
 
-#: client/ui/pet_screen.gd:394
+#: client/ui/pet_screen.gd:399
 msgid "%s agora acompanha você nas batalhas."
 msgstr "%s now joins you in battles."
 
-#: client/ui/pet_screen.gd:394
+#: client/ui/pet_screen.gd:399
 msgid "Mascote guardado."
 msgstr "Pet put away."
 
-#: client/ui/pet_screen.gd:402 client/ui/result_screen.gd:101
+#: client/ui/pet_screen.gd:407 client/ui/result_screen.gd:119
 msgid "Subiu para o nível %d!"
 msgstr "Reached level %d!"
 
-#: client/ui/pet_screen.gd:404
+#: client/ui/pet_screen.gd:409
 msgid "+%d XP"
 msgstr "+%d XP"
 
-#: client/ui/pet_screen.gd:412
+#: client/ui/pet_screen.gd:417
 msgid "Nova estrela! Os bônus do mascote aumentaram."
 msgstr "New star! The pet's bonuses grew."
 
-#: client/ui/pet_screen.gd:418
+#: client/ui/pet_screen.gd:423
 msgid "LIBERTAR MASCOTE"
 msgstr "RELEASE PET"
 
-#: client/ui/pet_screen.gd:418
+#: client/ui/pet_screen.gd:423
 msgid "Libertar %s? Ele vai embora para sempre e você recebe moedas."
 msgstr "Release %s? It leaves for good and you get coins."
 
-#: client/ui/pet_screen.gd:432
+#: client/ui/pet_screen.gd:437
 msgid "%s foi libertado."
 msgstr "%s was released."
 
-#: client/ui/pet_screen.gd:439
+#: client/ui/pet_screen.gd:444
 msgid "ÁLBUM DE MASCOTES"
 msgstr "PET ALBUM"
 
-#: client/ui/pet_screen.gd:440
+#: client/ui/pet_screen.gd:445
 msgid "%d de %d espécies encontradas"
 msgstr "%d of %d species found"
 
-#: client/ui/pet_screen.gd:450
+#: client/ui/pet_screen.gd:455
 msgid "Todos os elementos completos: %s"
 msgstr "All elements complete: %s"
 
-#: client/ui/pet_screen.gd:450
+#: client/ui/pet_screen.gd:455
 msgid "Álbum completo: %s"
 msgstr "Album complete: %s"
 
-#: client/ui/pet_screen.gd:471
+#: client/ui/pet_screen.gd:476
 msgid "No nível máximo, sem estrelas:"
 msgstr "At maximum level, no stars:"
 
-#: client/ui/pet_screen.gd:473
+#: client/ui/pet_screen.gd:478
 msgid "Ainda não encontrado. Choque ovos do elemento %s."
 msgstr "Not found yet. Hatch eggs of the %s element."
 
@@ -3438,10 +3834,6 @@ msgstr "Find player"
 msgid "Nível"
 msgstr "Level"
 
-#: client/ui/player_list.gd:34
-msgid "Jogador"
-msgstr "Player"
-
 #: client/ui/player_list.gd:35
 msgid "Sexo"
 msgstr "Gender"
@@ -3466,7 +3858,7 @@ msgstr "Private message"
 msgid "Adicionar amigo"
 msgstr "Add friend"
 
-#: client/ui/player_menu.gd:42 client/ui/player_profile.gd:103 client/ui/player_profile.gd:117
+#: client/ui/player_menu.gd:42 client/ui/player_profile.gd:112 client/ui/player_profile.gd:126
 msgid "Remover amigo"
 msgstr "Remove friend"
 
@@ -3474,15 +3866,23 @@ msgstr "Remove friend"
 msgid "Denunciar mensagem"
 msgstr "Report message"
 
-#: client/ui/player_menu.gd:73 client/ui/player_profile.gd:110
+#: client/ui/player_menu.gd:73 client/ui/player_profile.gd:119
 msgid "%s saiu da sua lista de amigos."
 msgstr "%s is no longer on your friends list."
 
-#: client/ui/player_menu.gd:76 client/ui/player_profile.gd:113
+#: client/ui/player_menu.gd:76 client/ui/player_profile.gd:122
 msgid "%s agora é seu amigo!"
 msgstr "%s is now your friend!"
 
-#: client/ui/player_profile.gd:103 client/ui/player_profile.gd:117
+#: client/ui/player_profile.gd:100
+msgid "Atributos dos itens"
+msgstr "Item attributes"
+
+#: client/ui/player_profile.gd:108
+msgid "MENSAGEM"
+msgstr "MESSAGE"
+
+#: client/ui/player_profile.gd:112 client/ui/player_profile.gd:126
 msgid "ADICIONAR AMIGO"
 msgstr "ADD FRIEND"
 
@@ -3490,37 +3890,133 @@ msgstr "ADD FRIEND"
 msgid "PERFIL DO JOGADOR"
 msgstr "PLAYER PROFILE"
 
-#: client/ui/player_profile.gd:37
-msgid "Carregando…"
-msgstr "Loading…"
-
-#: client/ui/player_profile.gd:73
+#: client/ui/player_profile.gd:82
 msgid "Partidas"
 msgstr "Matches"
 
-#: client/ui/player_profile.gd:86
+#: client/ui/player_profile.gd:95
 msgid "Arma equipada"
 msgstr "Equipped weapon"
 
-#: client/ui/player_profile.gd:88
+#: client/ui/player_profile.gd:97
 msgid "Sem arma equipada"
 msgstr "No weapon equipped"
-
-#: client/ui/player_profile.gd:91
-msgid "Atributos dos itens"
-msgstr "Item attributes"
-
-#: client/ui/player_profile.gd:99
-msgid "MENSAGEM"
-msgstr "MESSAGE"
 
 #: client/ui/pow_banner.gd:343 client/ui/pow_banner.gd:344
 msgid "POW!"
 msgstr "POW!"
 
-#: client/ui/pow_orb.gd:96
+#: client/ui/pow_orb.gd:96 shared/balance/tutorial.json:steps[6].name
 msgid "POW"
 msgstr "POW"
+
+#: client/ui/ranked_screen.gd:107
+msgid "%d d %02d h"
+msgstr "%d d %02d h"
+
+#: client/ui/ranked_screen.gd:108
+msgid "%d h %02d min"
+msgstr "%d h %02d min"
+
+#: client/ui/ranked_screen.gd:126
+msgid "Divisão máxima!"
+msgstr "Top division!"
+
+#: client/ui/ranked_screen.gd:126
+msgid "Faltam %d pontos para %s"
+msgstr "%d points to %s"
+
+#: client/ui/ranked_screen.gd:129
+msgid "Vença ou perca %d partidas para receber a sua divisão."
+msgstr "Play %d matches, win or lose, to get your division."
+
+#: client/ui/ranked_screen.gd:130
+msgid "Vitórias %d   Derrotas %d   Pico %d"
+msgstr "Wins %d   Losses %d   Peak %d"
+
+#: client/ui/ranked_screen.gd:137
+msgid "Temporada %d: você terminou em %s."
+msgstr "Season %d: you finished at %s."
+
+#: client/ui/ranked_screen.gd:138
+msgid "RESGATAR TÍTULO"
+msgstr "CLAIM TITLE"
+
+#: client/ui/ranked_screen.gd:148 server/game/game_server.gd:1128
+msgid "A liga ranqueada começa no nível %d."
+msgstr "The ranked ladder starts at level %d."
+
+#: client/ui/ranked_screen.gd:154
+msgid "BUSCAR PARTIDA"
+msgstr "FIND MATCH"
+
+#: client/ui/ranked_screen.gd:155
+msgid "1 contra 1 contra outro jogador. Sem bots."
+msgstr "1v1 against another player. No bots."
+
+#: client/ui/ranked_screen.gd:158
+msgid "Títulos"
+msgstr "Titles"
+
+#: client/ui/ranked_screen.gd:161
+msgid "Termine uma temporada com partidas suficientes para ganhar o título da sua divisão."
+msgstr "Finish a season with enough matches to earn the title of your division."
+
+#: client/ui/ranked_screen.gd:177
+msgid "USAR"
+msgstr "USE"
+
+#: client/ui/ranked_screen.gd:182 client/ui/replay_bar.gd:28
+msgid "AO VIVO"
+msgstr "LIVE"
+
+#: client/ui/ranked_screen.gd:182
+msgid "MELHORES"
+msgstr "BEST"
+
+#: client/ui/ranked_screen.gd:190
+msgid "Divisão"
+msgstr "Division"
+
+#: client/ui/ranked_screen.gd:194
+msgid "Ainda não há partidas ranqueadas nesta temporada. Seja o primeiro!"
+msgstr "There are no ranked matches this season yet. Be the first!"
+
+#: client/ui/ranked_screen.gd:209
+msgid "Jogue partidas ranqueadas para entrar na lista (%d jogadores listados)."
+msgstr "Play ranked matches to get on the list (%d players listed)."
+
+#: client/ui/ranked_screen.gd:220
+msgid "Nenhuma partida ranqueada em andamento agora."
+msgstr "No ranked match going on right now."
+
+#: client/ui/ranked_screen.gd:229
+msgid "%d assistindo"
+msgstr "%d watching"
+
+#: client/ui/ranked_screen.gd:85
+msgid "Procurando adversário…  %02d:%02d  ·  %d na fila"
+msgstr "Looking for an opponent…  %02d:%02d  ·  %d in the queue"
+
+#: client/ui/ranked_screen.gd:96
+msgid "Temporada %d"
+msgstr "Season %d"
+
+#: client/ui/ranked_screen.gd:96
+msgid "Temporada %d  ·  termina em %s"
+msgstr "Season %d  ·  ends in %s"
+
+#: client/ui/replay_bar.gd:28
+msgid "REPLAY"
+msgstr "REPLAY"
+
+#: client/ui/replay_bar.gd:33
+msgid "A transmissão tem alguns segundos de atraso."
+msgstr "The broadcast runs a few seconds behind."
+
+#: client/ui/replay_bar.gd:37 client/ui/replay_bar.gd:49
+msgid "PAUSAR"
+msgstr "PAUSE"
 
 #: client/ui/report_dialog.gd:10
 msgid "Discurso de ódio ou discriminação"
@@ -3582,59 +4078,71 @@ msgstr "Insults, threats or harassment"
 msgid "Denúncia enviada. Obrigado!"
 msgstr "Report sent. Thank you!"
 
-#: client/ui/result_screen.gd:101
+#: client/ui/result_screen.gd:105
+msgid "%d pontos  ·  %s"
+msgstr "%d points  ·  %s"
+
+#: client/ui/result_screen.gd:108
+msgid "SUBIU!"
+msgstr "PROMOTED!"
+
+#: client/ui/result_screen.gd:110
+msgid "DESCEU"
+msgstr "DEMOTED"
+
+#: client/ui/result_screen.gd:119
 msgid "Nível máximo para as estrelas dele"
 msgstr "Maximum level for its stars"
 
-#: client/ui/result_screen.gd:103
+#: client/ui/result_screen.gd:121
 msgid "+%d XP do mascote"
 msgstr "+%d pet XP"
 
-#: client/ui/result_screen.gd:108
+#: client/ui/result_screen.gd:126
 msgid "%s  •  %s  •  Fases %d/%d"
 msgstr "%s  •  %s  •  Stages %d/%d"
 
-#: client/ui/result_screen.gd:113
+#: client/ui/result_screen.gd:131
 msgid "Nenhum mapa, moeda ou Super Verdadeira desta vez."
 msgstr "No map, currency or Super True this time."
 
-#: client/ui/result_screen.gd:115
+#: client/ui/result_screen.gd:133
 msgid "%d recompensas recebidas • já na Mochila"
 msgstr "%d rewards received • already in your Bag"
 
-#: client/ui/result_screen.gd:130
+#: client/ui/result_screen.gd:148
 msgid "Baú do chefe: %s\n%s"
 msgstr "Boss chest: %s\n%s"
 
-#: client/ui/result_screen.gd:183
+#: client/ui/result_screen.gd:201
 msgid "esforce-se\nmais"
 msgstr "try\nharder"
 
-#: client/ui/result_screen.gd:183
+#: client/ui/result_screen.gd:201
 msgid "excelente!"
 msgstr "excellent!"
 
-#: client/ui/result_screen.gd:231
+#: client/ui/result_screen.gd:249
 msgid "Escolha %d cartas!"
 msgstr "Pick %d cards!"
 
-#: client/ui/result_screen.gd:231
+#: client/ui/result_screen.gd:249
 msgid "Escolha 1 carta!"
 msgstr "Pick 1 card!"
 
-#: client/ui/result_screen.gd:233
+#: client/ui/result_screen.gd:251
 msgid "Vencedores escolhem 2 cartas, derrotados 1."
 msgstr "Winners pick 2 cards, losers 1."
 
-#: client/ui/result_screen.gd:235
+#: client/ui/result_screen.gd:253
 msgid "A equipe caiu: o mapa foi perdido, o que caiu nas fases fica."
 msgstr "The party fell: the map is lost, the stage drops are kept."
 
-#: client/ui/result_screen.gd:235
+#: client/ui/result_screen.gd:253
 msgid "Baú do chefe: %d cartas (mapa, raridade e grupo dão mais)."
 msgstr "Boss chest: %d cards (map, rarity and party add more)."
 
-#: client/ui/result_screen.gd:309
+#: client/ui/result_screen.gd:327
 msgid "Recompensas adicionadas à sua mochila."
 msgstr "Rewards added to your bag."
 
@@ -3730,11 +4238,11 @@ msgstr "total EXP"
 msgid "valor de mérito total"
 msgstr "total merit"
 
-#: client/ui/result_screen.gd:89
+#: client/ui/result_screen.gd:91
 msgid "SUBIU PARA O NÍVEL %d!"
 msgstr "REACHED LEVEL %d!"
 
-#: client/ui/result_screen.gd:91 client/ui/result_screen.gd:261
+#: client/ui/result_screen.gd:93 client/ui/result_screen.gd:279
 msgid "Continuar ▶"
 msgstr "Continue ▶"
 
@@ -3910,7 +4418,7 @@ msgstr "INVITE"
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr "Only the room host can invite players."
 
-#: client/ui/room_screen.gd:360 server/game/game_server.gd:821
+#: client/ui/room_screen.gd:360 server/game/game_server.gd:852
 msgid "Não há vagas livres na sua equipe."
 msgstr "There are no free slots in your team."
 
@@ -4258,163 +4766,247 @@ msgstr "SELECT A SERVER"
 msgid "Gustfire %s"
 msgstr "Gustfire %s"
 
-#: server/game/game_server.gd:1076 server/game/game_server.gd:1425
-msgid "Aguarde um instante para buscar de novo."
-msgstr "Wait a moment before searching again."
+#: client/ui/tutorial_coach.gd:118
+msgid "O boneco se recompõe"
+msgstr "The dummy mends itself"
 
-#: server/game/game_server.gd:1265
-msgid "Saia da batalha antes de excluir a conta."
-msgstr "Leave the battle before deleting your account."
+#: client/ui/tutorial_coach.gd:124
+msgid "Dica: tente ângulo %d° e força %d%%."
+msgstr "Tip: try angle %d° and power %d%%."
 
-#: server/game/game_server.gd:1276
-msgid "Muitas tentativas. Aguarde alguns minutos."
-msgstr "Too many attempts. Wait a few minutes."
+#: client/ui/tutorial_coach.gd:159
+msgid "ACERTOU!"
+msgstr "HIT!"
 
-#: server/game/game_server.gd:1284
-msgid "Não foi possível excluir a conta agora. Tente de novo."
-msgstr "The account could not be deleted now. Try again."
+#: client/ui/tutorial_coach.gd:214
+msgid "TREINO CONCLUÍDO!"
+msgstr "TRAINING COMPLETE!"
 
-#: server/game/game_server.gd:1284
-msgid "Senha incorreta."
-msgstr "Wrong password."
+#: client/ui/tutorial_coach.gd:215
+msgid "Você já domina o básico. Veja o que fazer em seguida na aba PRIMEIROS PASSOS da MISSÃO."
+msgstr "You have the basics down. See what to do next in the FIRST STEPS tab of QUESTS."
 
-#: server/game/game_server.gd:1308
-msgid "Produto desconhecido."
-msgstr "Unknown product."
+#: client/ui/tutorial_coach.gd:216
+msgid "Recompensa: %s"
+msgstr "Reward: %s"
 
-#: server/game/game_server.gd:1311
-msgid "Este pacote não está mais à venda."
-msgstr "This pack is no longer on sale."
+#: client/ui/tutorial_coach.gd:70
+msgid "PULAR TREINO"
+msgstr "SKIP TRAINING"
 
-#: server/game/game_server.gd:1317
-msgid "Você já tem estes itens."
-msgstr "You already have these items."
+#: client/ui/tutorial_coach.gd:86
+msgid "Errou! A linha tracejada branca mostra o caminho do seu último tiro. Ajuste o ângulo ou a força e tente de novo."
+msgstr "Missed! The white dashed line shows the path of your last shot. Adjust the angle or the power and try again."
 
-#: server/game/game_server.gd:1347
-msgid "A Steam não respondeu. Tente de novo em instantes."
-msgstr "Steam did not answer. Try again in a moment."
+#: client/ui/tutorial_coach.gd:90
+msgid "ENTER: continuar"
+msgstr "ENTER: continue"
 
-#: server/game/game_server.gd:1349
-msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
-msgstr "The shop has no price in your Steam Wallet currency yet."
+#: server/game/game_server.gd:1012
+msgid "O ranking está indisponível agora. Tente de novo."
+msgstr "The ranking is unavailable right now. Try again."
 
-#: server/game/game_server.gd:1351
-msgid "Este pedido já foi encerrado."
-msgstr "This order is already closed."
+#: server/game/game_server.gd:1026
+msgid "O servidor está ocupado conferindo outras gravações. Tente de novo."
+msgstr "The server is busy checking other recordings. Try again."
 
-#: server/game/game_server.gd:1353
-msgid "Pedido não encontrado."
-msgstr "Order not found."
+#: server/game/game_server.gd:1041
+msgid "A gravação não termina o desafio."
+msgstr "The recording does not finish the challenge."
 
-#: server/game/game_server.gd:1354
-msgid "Não foi possível concluir a compra agora."
-msgstr "The purchase could not be completed now."
+#: server/game/game_server.gd:1096
+msgid "Saia da fila ranqueada antes de assistir."
+msgstr "Leave the ranked queue before watching."
 
-#: server/game/game_server.gd:1430
-msgid "Não foi possível consultar o câmbio. Tente novamente."
-msgstr "Could not load the exchange. Please try again."
+#: server/game/game_server.gd:1098
+msgid "Esta partida não está mais disponível."
+msgstr "This match is no longer available."
 
-#: server/game/game_server.gd:435 server/game/game_server.gd:475
-msgid "Este nome já está em uso. Escolha outro."
-msgstr "This name is taken. Choose another."
+#: server/game/game_server.gd:1100
+msgid "Você já está assistindo."
+msgstr "You are already watching."
 
-#: server/game/game_server.gd:462 server/game/game_server.gd:674 server/game/game_server.gd:697 server/game/game_server.gd:1024
-msgid "Você está numa batalha."
-msgstr "You are in a battle."
+#: server/game/game_server.gd:1109
+msgid "A partida está cheia de espectadores."
+msgstr "The match has too many spectators."
 
-#: server/game/game_server.gd:465 server/game/game_server.gd:838 server/game/game_server.gd:1028 server/game/game_server.gd:1268
-msgid "Aguarde a operação anterior terminar."
-msgstr "Wait for the previous operation to finish."
+#: server/game/game_server.gd:1122
+msgid "Saia da transmissão antes de procurar uma partida ranqueada."
+msgstr "Leave the broadcast before looking for a ranked match."
 
-#: server/game/game_server.gd:472
-msgid "Servidor indisponível. Tente de novo."
-msgstr "Server unavailable. Try again."
+#: server/game/game_server.gd:1124
+msgid "Saia da sala antes de procurar uma partida ranqueada."
+msgstr "Leave the room before looking for a ranked match."
 
-#: server/game/game_server.gd:504 server/game/game_server.gd:534 server/game/game_server.gd:612
-msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
-msgstr "You are muted in the chat because of reports from other players (%d min). The team will review them."
-
-#: server/game/game_server.gd:508 server/game/game_server.gd:538
-msgid "Calma! Aguarde um pouco para falar de novo."
-msgstr "Easy! Wait a little before talking again."
-
-#: server/game/game_server.gd:542
-msgid "%s não está online."
-msgstr "%s is not online."
-
-#: server/game/game_server.gd:569 server/game/game_server.gd:1026 server/game/game_server.gd:1314
-msgid "Crie o seu personagem primeiro."
-msgstr "Create your character first."
-
-#: server/game/game_server.gd:572
-msgid "Escolha o motivo da denúncia."
-msgstr "Choose the reason for the report."
-
-#: server/game/game_server.gd:580
-msgid "Esta mensagem é antiga demais para ser denunciada."
-msgstr "This message is too old to be reported."
-
-#: server/game/game_server.gd:584
-msgid "Você não pode denunciar a sua própria mensagem."
-msgstr "You cannot report your own message."
-
-#: server/game/game_server.gd:587
-msgid "Você já denunciou esta mensagem."
-msgstr "You already reported this message."
-
-#: server/game/game_server.gd:592
-msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
-msgstr "You have made too many reports. Wait a few minutes."
-
-#: server/game/game_server.gd:620
-msgid "Não foi possível enviar a denúncia agora. Tente de novo."
-msgstr "The report could not be sent now. Try again."
-
-#: server/game/game_server.gd:699
-msgid "Sala não encontrada neste canal."
-msgstr "Room not found on this channel."
-
-#: server/game/game_server.gd:701
-msgid "A sala está em batalha. Escolha outra sala ou aguarde."
-msgstr "The room is in battle. Pick another room or wait."
-
-#: server/game/game_server.gd:703
-msgid "A sala está cheia."
-msgstr "The room is full."
-
-#: server/game/game_server.gd:714
-msgid "%s entrou na sala."
-msgstr "%s joined the room."
-
-#: server/game/game_server.gd:730
-msgid "%s saiu da sala."
-msgstr "%s left the room."
-
-#: server/game/game_server.gd:749
-msgid "Somente o dono da sala pode fazer isso."
-msgstr "Only the room owner can do that."
-
-#: server/game/game_server.gd:752
-msgid "A sala está em batalha."
-msgstr "The room is in battle."
-
-#: server/game/game_server.gd:790
-msgid "Você não está numa sala."
-msgstr "You are not in a room."
-
-#: server/game/game_server.gd:804
-msgid "Jogador não encontrado."
-msgstr "Player not found."
-
-#: server/game/game_server.gd:833
-msgid "Todos os jogadores precisam estar preparados."
-msgstr "Every player must be ready."
-
-#: server/game/game_server.gd:975
+#: server/game/game_server.gd:1259
 msgid "Carta indisponível."
 msgstr "Card unavailable."
 
-#: server/game/match_host.gd:218
+#: server/game/game_server.gd:1360 server/game/game_server.gd:1709
+msgid "Aguarde um instante para buscar de novo."
+msgstr "Wait a moment before searching again."
+
+#: server/game/game_server.gd:1549
+msgid "Saia da batalha antes de excluir a conta."
+msgstr "Leave the battle before deleting your account."
+
+#: server/game/game_server.gd:1560
+msgid "Muitas tentativas. Aguarde alguns minutos."
+msgstr "Too many attempts. Wait a few minutes."
+
+#: server/game/game_server.gd:1568
+msgid "Não foi possível excluir a conta agora. Tente de novo."
+msgstr "The account could not be deleted now. Try again."
+
+#: server/game/game_server.gd:1568
+msgid "Senha incorreta."
+msgstr "Wrong password."
+
+#: server/game/game_server.gd:1592
+msgid "Produto desconhecido."
+msgstr "Unknown product."
+
+#: server/game/game_server.gd:1595
+msgid "Este pacote não está mais à venda."
+msgstr "This pack is no longer on sale."
+
+#: server/game/game_server.gd:1601
+msgid "Você já tem estes itens."
+msgstr "You already have these items."
+
+#: server/game/game_server.gd:1631
+msgid "A Steam não respondeu. Tente de novo em instantes."
+msgstr "Steam did not answer. Try again in a moment."
+
+#: server/game/game_server.gd:1633
+msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
+msgstr "The shop has no price in your Steam Wallet currency yet."
+
+#: server/game/game_server.gd:1635
+msgid "Este pedido já foi encerrado."
+msgstr "This order is already closed."
+
+#: server/game/game_server.gd:1637
+msgid "Pedido não encontrado."
+msgstr "Order not found."
+
+#: server/game/game_server.gd:1638
+msgid "Não foi possível concluir a compra agora."
+msgstr "The purchase could not be completed now."
+
+#: server/game/game_server.gd:1714
+msgid "Não foi possível consultar o câmbio. Tente novamente."
+msgstr "Could not load the exchange. Please try again."
+
+#: server/game/game_server.gd:462 server/game/game_server.gd:502
+msgid "Este nome já está em uso. Escolha outro."
+msgstr "This name is taken. Choose another."
+
+#: server/game/game_server.gd:489 server/game/game_server.gd:701 server/game/game_server.gd:726 server/game/game_server.gd:1094
+msgid "Você está numa batalha."
+msgstr "You are in a battle."
+
+#: server/game/game_server.gd:492 server/game/game_server.gd:869 server/game/game_server.gd:985 server/game/game_server.gd:1312
+msgid "Aguarde a operação anterior terminar."
+msgstr "Wait for the previous operation to finish."
+
+#: server/game/game_server.gd:499
+msgid "Servidor indisponível. Tente de novo."
+msgstr "Server unavailable. Try again."
+
+#: server/game/game_server.gd:531 server/game/game_server.gd:561 server/game/game_server.gd:639
+msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
+msgstr "You are muted in the chat because of reports from other players (%d min). The team will review them."
+
+#: server/game/game_server.gd:535 server/game/game_server.gd:565
+msgid "Calma! Aguarde um pouco para falar de novo."
+msgstr "Easy! Wait a little before talking again."
+
+#: server/game/game_server.gd:569
+msgid "%s não está online."
+msgstr "%s is not online."
+
+#: server/game/game_server.gd:596 server/game/game_server.gd:987 server/game/game_server.gd:1126 server/game/game_server.gd:1310
+msgid "Crie o seu personagem primeiro."
+msgstr "Create your character first."
+
+#: server/game/game_server.gd:599
+msgid "Escolha o motivo da denúncia."
+msgstr "Choose the reason for the report."
+
+#: server/game/game_server.gd:607
+msgid "Esta mensagem é antiga demais para ser denunciada."
+msgstr "This message is too old to be reported."
+
+#: server/game/game_server.gd:611
+msgid "Você não pode denunciar a sua própria mensagem."
+msgstr "You cannot report your own message."
+
+#: server/game/game_server.gd:614
+msgid "Você já denunciou esta mensagem."
+msgstr "You already reported this message."
+
+#: server/game/game_server.gd:619
+msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
+msgstr "You have made too many reports. Wait a few minutes."
+
+#: server/game/game_server.gd:647
+msgid "Não foi possível enviar a denúncia agora. Tente de novo."
+msgstr "The report could not be sent now. Try again."
+
+#: server/game/game_server.gd:728
+msgid "Sala não encontrada neste canal."
+msgstr "Room not found on this channel."
+
+#: server/game/game_server.gd:730
+msgid "A sala está em batalha. Escolha outra sala ou aguarde."
+msgstr "The room is in battle. Pick another room or wait."
+
+#: server/game/game_server.gd:732
+msgid "A sala está cheia."
+msgstr "The room is full."
+
+#: server/game/game_server.gd:745
+msgid "%s entrou na sala."
+msgstr "%s joined the room."
+
+#: server/game/game_server.gd:761
+msgid "%s saiu da sala."
+msgstr "%s left the room."
+
+#: server/game/game_server.gd:780
+msgid "Somente o dono da sala pode fazer isso."
+msgstr "Only the room owner can do that."
+
+#: server/game/game_server.gd:783
+msgid "A sala está em batalha."
+msgstr "The room is in battle."
+
+#: server/game/game_server.gd:821
+msgid "Você não está numa sala."
+msgstr "You are not in a room."
+
+#: server/game/game_server.gd:835
+msgid "Jogador não encontrado."
+msgstr "Player not found."
+
+#: server/game/game_server.gd:864
+msgid "Todos os jogadores precisam estar preparados."
+msgstr "Every player must be ready."
+
+#: server/game/game_server.gd:973
+msgid "Gravação não encontrada."
+msgstr "Recording not found."
+
+#: server/game/game_server.gd:983
+msgid "O desafio daquele dia já terminou."
+msgstr "That day's challenge is over."
+
+#: server/game/game_server.gd:990 server/game/game_server.gd:995
+msgid "A gravação não é válida."
+msgstr "The recording is not valid."
+
+#: server/game/match_host.gd:270
 msgid "Parabéns! [%s] ganhou [%s] através de Instância."
 msgstr "Congratulations! [%s] won [%s] in an Instance."
 
@@ -4422,7 +5014,7 @@ msgstr "Congratulations! [%s] won [%s] in an Instance."
 msgid "Vença uma partida."
 msgstr "Win a match."
 
-#: shared/balance/achievements.json:achievements[0].name
+#: shared/balance/achievements.json:achievements[0].name shared/balance/missions.json:starter[1].name
 msgid "Primeira Vitória"
 msgstr "First Victory"
 
@@ -4502,6 +5094,30 @@ msgstr "Own a level 16 map."
 msgid "Mapa Lendário"
 msgstr "Legendary Map"
 
+#: shared/balance/challenge.json:kinds[0].description
+msgid "Derrube os 3 alvos em 6 turnos. Cada turno que sobra vale pontos."
+msgstr "Knock down the 3 targets in 6 turns. Every turn left over is worth points."
+
+#: shared/balance/challenge.json:kinds[0].name
+msgid "Tiro ao Alvo"
+msgstr "Target Practice"
+
+#: shared/balance/challenge.json:kinds[1].description
+msgid "Vença o Rival do Dia em 10 turnos. Vida que sobra e turnos poupados valem pontos."
+msgstr "Beat the Rival of the Day in 10 turns. Life left and turns saved are worth points."
+
+#: shared/balance/challenge.json:kinds[1].name
+msgid "Duelo Relâmpago"
+msgstr "Lightning Duel"
+
+#: shared/balance/challenge.json:kinds[2].description
+msgid "Um alvo resistente do outro lado do mapa e só 5 turnos: o vento decide."
+msgstr "A tough target on the far side of the map and only 5 turns: the wind decides."
+
+#: shared/balance/challenge.json:kinds[2].name
+msgid "Alvo Distante"
+msgstr "Distant Target"
+
 #: shared/balance/combat.json:elites.affixes[0].desc
 msgid "Seus ataques causam Queimação."
 msgstr "Its attacks cause Burning."
@@ -4574,135 +5190,159 @@ msgstr "Solar Sting"
 msgid "Escaravelho Solar"
 msgstr "Sun Scarab"
 
-#: shared/balance/combat.json:enemies[10].abilities[0].name
+#: shared/balance/combat.json:enemies[10].abilities[1].name
+msgid "Estalactites"
+msgstr "Icicles"
+
+#: shared/balance/combat.json:enemies[10].abilities[2].name
+msgid "Barreira de Gelo"
+msgstr "Ice Barrier"
+
+#: shared/balance/combat.json:enemies[10].abilities[3].name
+msgid "Correntes de Gelo"
+msgstr "Ice Chains"
+
+#: shared/balance/combat.json:enemies[10].attack shared/balance/combat.json:enemies[10].abilities[0].name
+msgid "Sopro Glacial"
+msgstr "Glacial Breath"
+
+#: shared/balance/combat.json:enemies[10].fury_name shared/balance/combat.json:enemies[10].abilities[4].name
+msgid "Nevasca Eterna"
+msgstr "Endless Blizzard"
+
+#: shared/balance/combat.json:enemies[10].name shared/balance/combat.json:instances[2].phases[2].name
+msgid "Rainha da Nevasca"
+msgstr "Blizzard Queen"
+
+#: shared/balance/combat.json:enemies[11].abilities[0].name
 msgid "Rasante"
 msgstr "Swoop"
 
-#: shared/balance/combat.json:enemies[10].attack shared/balance/combat.json:enemies[10].abilities[1].name
+#: shared/balance/combat.json:enemies[11].attack shared/balance/combat.json:enemies[11].abilities[1].name
 msgid "Pena Cortante"
 msgstr "Razor Feather"
 
-#: shared/balance/combat.json:enemies[10].name
+#: shared/balance/combat.json:enemies[11].name
 msgid "Harpia das Ruínas"
 msgstr "Ruin Harpy"
 
-#: shared/balance/combat.json:enemies[11].abilities[2].name
+#: shared/balance/combat.json:enemies[12].abilities[2].name
 msgid "Escudo Celeste"
 msgstr "Celestial Shield"
 
-#: shared/balance/combat.json:enemies[11].abilities[3].name
+#: shared/balance/combat.json:enemies[12].abilities[3].name
 msgid "Furacão"
 msgstr "Hurricane"
 
-#: shared/balance/combat.json:enemies[11].attack shared/balance/combat.json:enemies[11].abilities[0].name
+#: shared/balance/combat.json:enemies[12].attack shared/balance/combat.json:enemies[12].abilities[0].name
 msgid "Lança do Vento"
 msgstr "Wind Lance"
 
-#: shared/balance/combat.json:enemies[11].fury_name shared/balance/combat.json:enemies[11].abilities[1].name shared/balance/items.json:weapons[7].pow.name shared/balance/pets.json:hunt.skill.ceu.name
+#: shared/balance/combat.json:enemies[12].fury_name shared/balance/combat.json:enemies[12].abilities[1].name shared/balance/items.json:weapons[7].pow.name shared/balance/pets.json:hunt.skill.ceu.name
 msgid "Tempestade"
 msgstr "Tempest"
 
-#: shared/balance/combat.json:enemies[11].name
+#: shared/balance/combat.json:enemies[12].name
 msgid "Cavaleiro Celeste"
 msgstr "Sky Knight"
 
-#: shared/balance/combat.json:enemies[12].abilities[1].name
+#: shared/balance/combat.json:enemies[13].abilities[1].name
 msgid "Mergulho do Grifo"
 msgstr "Griffin Dive"
 
-#: shared/balance/combat.json:enemies[12].abilities[2].name
+#: shared/balance/combat.json:enemies[13].abilities[2].name
 msgid "Raios do Grifo"
 msgstr "Griffin Bolts"
 
-#: shared/balance/combat.json:enemies[12].attack shared/balance/combat.json:enemies[12].abilities[0].name
+#: shared/balance/combat.json:enemies[13].attack shared/balance/combat.json:enemies[13].abilities[0].name
 msgid "Rajada do Grifo"
 msgstr "Griffin Gust"
 
-#: shared/balance/combat.json:enemies[12].fury_name shared/balance/combat.json:enemies[12].abilities[3].name
+#: shared/balance/combat.json:enemies[13].fury_name shared/balance/combat.json:enemies[13].abilities[3].name
 msgid "Olho da Tempestade"
 msgstr "Eye of the Storm"
 
-#: shared/balance/combat.json:enemies[12].name shared/balance/combat.json:instances[3].phases[2].name
+#: shared/balance/combat.json:enemies[13].name shared/balance/combat.json:instances[3].phases[2].name
 msgid "Grifo da Tempestade"
 msgstr "Storm Griffin"
 
-#: shared/balance/combat.json:enemies[13].abilities[1].name
+#: shared/balance/combat.json:enemies[14].abilities[1].name
 msgid "Machado Arremessado"
 msgstr "Thrown Axe"
 
-#: shared/balance/combat.json:enemies[13].abilities[2].name shared/balance/pets.json:hunt.skill.viking.name
+#: shared/balance/combat.json:enemies[14].abilities[2].name shared/balance/pets.json:hunt.skill.viking.name
 msgid "Grito de Guerra"
 msgstr "War Cry"
 
-#: shared/balance/combat.json:enemies[13].attack shared/balance/combat.json:enemies[13].abilities[0].name
+#: shared/balance/combat.json:enemies[14].attack shared/balance/combat.json:enemies[14].abilities[0].name
 msgid "Machadada"
 msgstr "Axe Chop"
 
-#: shared/balance/combat.json:enemies[13].name
+#: shared/balance/combat.json:enemies[14].name
 msgid "Saqueador Viking"
 msgstr "Viking Raider"
 
-#: shared/balance/combat.json:enemies[14].abilities[1].name
+#: shared/balance/combat.json:enemies[15].abilities[1].name
 msgid "Revoada"
 msgstr "Raven Swarm"
 
-#: shared/balance/combat.json:enemies[14].abilities[2].name
+#: shared/balance/combat.json:enemies[15].abilities[2].name
 msgid "Runa Restauradora"
 msgstr "Restoring Rune"
 
-#: shared/balance/combat.json:enemies[14].attack shared/balance/combat.json:enemies[14].abilities[0].name
+#: shared/balance/combat.json:enemies[15].attack shared/balance/combat.json:enemies[15].abilities[0].name
 msgid "Bicada Rúnica"
 msgstr "Rune Peck"
 
-#: shared/balance/combat.json:enemies[14].name shared/balance/pets.json:species[16].name
+#: shared/balance/combat.json:enemies[15].name shared/balance/pets.json:species[16].name
 msgid "Corvo Rúnico"
 msgstr "Rune Raven"
 
-#: shared/balance/combat.json:enemies[15].abilities[1].name
+#: shared/balance/combat.json:enemies[16].abilities[1].name
 msgid "Machados Giratórios"
 msgstr "Whirling Axes"
 
-#: shared/balance/combat.json:enemies[15].abilities[2].name
+#: shared/balance/combat.json:enemies[16].abilities[2].name
 msgid "Machados Arremessados"
 msgstr "Axe Volley"
 
-#: shared/balance/combat.json:enemies[15].attack shared/balance/combat.json:enemies[15].abilities[0].name
+#: shared/balance/combat.json:enemies[16].attack shared/balance/combat.json:enemies[16].abilities[0].name
 msgid "Fúria do Urso"
 msgstr "Bear Fury"
 
-#: shared/balance/combat.json:enemies[15].fury_name shared/balance/combat.json:enemies[15].abilities[3].name
+#: shared/balance/combat.json:enemies[16].fury_name shared/balance/combat.json:enemies[16].abilities[3].name
 msgid "Berserk"
 msgstr "Berserk"
 
-#: shared/balance/combat.json:enemies[15].name
+#: shared/balance/combat.json:enemies[16].name
 msgid "Berserker Urso"
 msgstr "Bear Berserker"
 
-#: shared/balance/combat.json:enemies[16].abilities[1].name
+#: shared/balance/combat.json:enemies[17].abilities[1].name
 msgid "Investida do Jarl"
 msgstr "Jarl's Charge"
 
-#: shared/balance/combat.json:enemies[16].abilities[2].name
+#: shared/balance/combat.json:enemies[17].abilities[2].name
 msgid "Tremor de Asgard"
 msgstr "Asgard Tremor"
 
-#: shared/balance/combat.json:enemies[16].abilities[3].name
+#: shared/balance/combat.json:enemies[17].abilities[3].name
 msgid "Muralha de Escudos"
 msgstr "Shield Wall"
 
-#: shared/balance/combat.json:enemies[16].abilities[4].name
+#: shared/balance/combat.json:enemies[17].abilities[4].name
 msgid "Grilhões de Ferro"
 msgstr "Iron Shackles"
 
-#: shared/balance/combat.json:enemies[16].attack shared/balance/combat.json:enemies[16].abilities[0].name
+#: shared/balance/combat.json:enemies[17].attack shared/balance/combat.json:enemies[17].abilities[0].name
 msgid "Martelo do Trovão"
 msgstr "Thunder Hammer"
 
-#: shared/balance/combat.json:enemies[16].fury_name shared/balance/combat.json:enemies[16].abilities[5].name
+#: shared/balance/combat.json:enemies[17].fury_name shared/balance/combat.json:enemies[17].abilities[5].name
 msgid "Ira de Valhalla"
 msgstr "Wrath of Valhalla"
 
-#: shared/balance/combat.json:enemies[16].name shared/balance/combat.json:instances[4].phases[2].name
+#: shared/balance/combat.json:enemies[17].name shared/balance/combat.json:instances[4].phases[2].name
 msgid "Jarl Barba-de-Ferro"
 msgstr "Jarl Ironbeard"
 
@@ -4826,53 +5466,29 @@ msgstr "Frozen Howl"
 msgid "Lobo da Nevasca"
 msgstr "Blizzard Wolf"
 
-#: shared/balance/combat.json:enemies[7].name
+#: shared/balance/combat.json:enemies[8].name
 msgid "Cristal Glacial"
 msgstr "Glacial Crystal"
 
-#: shared/balance/combat.json:enemies[8].abilities[0].name
+#: shared/balance/combat.json:enemies[9].abilities[0].name
 msgid "Punho de Gelo"
 msgstr "Ice Fist"
 
-#: shared/balance/combat.json:enemies[8].abilities[1].name
+#: shared/balance/combat.json:enemies[9].abilities[1].name
 msgid "Terremoto Gelado"
 msgstr "Frozen Quake"
 
-#: shared/balance/combat.json:enemies[8].attack shared/balance/combat.json:enemies[8].abilities[2].name
+#: shared/balance/combat.json:enemies[9].attack shared/balance/combat.json:enemies[9].abilities[2].name
 msgid "Bloco de Gelo"
 msgstr "Ice Block"
 
-#: shared/balance/combat.json:enemies[8].fury_name shared/balance/combat.json:enemies[8].abilities[3].name
+#: shared/balance/combat.json:enemies[9].fury_name shared/balance/combat.json:enemies[9].abilities[3].name
 msgid "Avalanche"
 msgstr "Avalanche"
 
-#: shared/balance/combat.json:enemies[8].name
+#: shared/balance/combat.json:enemies[9].name
 msgid "Golem de Gelo"
 msgstr "Ice Golem"
-
-#: shared/balance/combat.json:enemies[9].abilities[1].name
-msgid "Estalactites"
-msgstr "Icicles"
-
-#: shared/balance/combat.json:enemies[9].abilities[2].name
-msgid "Barreira de Gelo"
-msgstr "Ice Barrier"
-
-#: shared/balance/combat.json:enemies[9].abilities[3].name
-msgid "Correntes de Gelo"
-msgstr "Ice Chains"
-
-#: shared/balance/combat.json:enemies[9].attack shared/balance/combat.json:enemies[9].abilities[0].name
-msgid "Sopro Glacial"
-msgstr "Glacial Breath"
-
-#: shared/balance/combat.json:enemies[9].fury_name shared/balance/combat.json:enemies[9].abilities[4].name
-msgid "Nevasca Eterna"
-msgstr "Endless Blizzard"
-
-#: shared/balance/combat.json:enemies[9].name shared/balance/combat.json:instances[2].phases[2].name
-msgid "Rainha da Nevasca"
-msgstr "Blizzard Queen"
 
 #: shared/balance/combat.json:instances[0].desc
 msgid "O Rei Hélio desperta no coração do templo. Fúria Solar abaixo de 50% de vida."
@@ -5834,45 +6450,269 @@ msgstr "A spectral bull head throws enemies far away."
 msgid "Estouro da Manada"
 msgstr "Stampede"
 
-#: shared/balance/missions.json:daily[0].description
+#: shared/balance/missions.json:daily_pool[0].description
 msgid "Vença 5 partidas PvP."
 msgstr "Win 5 PvP matches."
 
-#: shared/balance/missions.json:daily[0].name
+#: shared/balance/missions.json:daily_pool[0].name
 msgid "Vitórias no PvP"
 msgstr "PvP Victories"
 
-#: shared/balance/missions.json:daily[1].description
+#: shared/balance/missions.json:daily_pool[10].description
+msgid "Alimente um mascote."
+msgstr "Feed a pet."
+
+#: shared/balance/missions.json:daily_pool[10].name
+msgid "Mascote Bem Alimentado"
+msgstr "Well-Fed Pet"
+
+#: shared/balance/missions.json:daily_pool[11].description
+msgid "Tente fortalecer um item 2 vezes no Ferreiro."
+msgstr "Try to strengthen an item twice at the Blacksmith."
+
+#: shared/balance/missions.json:daily_pool[12].description
+msgid "Use uma moeda de criação no Ferreiro."
+msgstr "Use a crafting currency at the Blacksmith."
+
+#: shared/balance/missions.json:daily_pool[12].name
+msgid "Alquimia"
+msgstr "Alchemy"
+
+#: shared/balance/missions.json:daily_pool[13].description
+msgid "Faça uma compra: item, pedra ou ferramenta."
+msgstr "Make a purchase: an item, a stone or a tool."
+
+#: shared/balance/missions.json:daily_pool[13].name
+msgid "Dia de Compras"
+msgstr "Shopping Day"
+
+#: shared/balance/missions.json:daily_pool[14].description
+msgid "Complete o Desafio do Dia."
+msgstr "Complete the Daily Challenge."
+
+#: shared/balance/missions.json:daily_pool[15].description
+msgid "Jogue 2 partidas ranqueadas."
+msgstr "Play 2 ranked matches."
+
+#: shared/balance/missions.json:daily_pool[15].name
+msgid "Liga Ranqueada"
+msgstr "Ranked Ladder"
+
+#: shared/balance/missions.json:daily_pool[1].description
+msgid "Jogue 4 partidas PvP."
+msgstr "Play 4 PvP matches."
+
+#: shared/balance/missions.json:daily_pool[2].description
 msgid "Cause 10.000 de dano em batalhas."
 msgstr "Deal 10,000 damage in battles."
 
-#: shared/balance/missions.json:daily[1].name
+#: shared/balance/missions.json:daily_pool[2].name
 msgid "Dano de Artilharia"
 msgstr "Artillery Damage"
 
-#: shared/balance/missions.json:daily[2].description
-msgid "Conclua uma expedição derrotando o chefe final."
-msgstr "Complete an expedition by defeating the final boss."
+#: shared/balance/missions.json:daily_pool[3].description
+msgid "Derrube 8 inimigos em batalhas."
+msgstr "Take down 8 enemies in battles."
 
-#: shared/balance/missions.json:daily[2].name
-msgid "Além da Fronteira"
-msgstr "Beyond the Frontier"
+#: shared/balance/missions.json:daily_pool[3].name
+msgid "Caçador de Lacaios"
+msgstr "Minion Hunter"
 
-#: shared/balance/missions.json:daily[3].description
-msgid "Derrote o Rei Hélio no Templo do Sol."
-msgstr "Defeat King Helios in the Temple of the Sun."
-
-#: shared/balance/missions.json:daily[3].name
-msgid "Queda do Rei Hélio"
-msgstr "Fall of King Helios"
-
-#: shared/balance/missions.json:daily[4].description
+#: shared/balance/missions.json:daily_pool[4].description
 msgid "Use POW 10 vezes."
 msgstr "Use POW 10 times."
 
-#: shared/balance/missions.json:daily[4].name
+#: shared/balance/missions.json:daily_pool[4].name
 msgid "Poder de Fogo"
 msgstr "Firepower"
+
+#: shared/balance/missions.json:daily_pool[5].description
+msgid "Conclua uma expedição derrotando o chefe final."
+msgstr "Complete an expedition by defeating the final boss."
+
+#: shared/balance/missions.json:daily_pool[5].name
+msgid "Além da Fronteira"
+msgstr "Beyond the Frontier"
+
+#: shared/balance/missions.json:daily_pool[6].description
+msgid "Derrote o Rei Hélio no Templo do Sol."
+msgstr "Defeat King Helios in the Temple of the Sun."
+
+#: shared/balance/missions.json:daily_pool[6].name
+msgid "Queda do Rei Hélio"
+msgstr "Fall of King Helios"
+
+#: shared/balance/missions.json:daily_pool[7].description
+msgid "Derrote um chefe de qualquer instância."
+msgstr "Defeat a boss of any dungeon."
+
+#: shared/balance/missions.json:daily_pool[7].name shared/balance/missions.json:weekly_pool[2].name
+msgid "Matador de Chefes"
+msgstr "Boss Slayer"
+
+#: shared/balance/missions.json:daily_pool[8].name
+msgid "Berço de Mascotes"
+msgstr "Pet Cradle"
+
+#: shared/balance/missions.json:daily_pool[9].description
+msgid "Colete o que a sua Caçada rendeu."
+msgstr "Collect what your Hunt earned."
+
+#: shared/balance/missions.json:daily_pool[9].name
+msgid "Colheita da Caçada"
+msgstr "Hunt Harvest"
+
+#: shared/balance/missions.json:starter[0].description
+msgid "Jogue uma partida PvP no Salão de Jogos."
+msgstr "Play a PvP match in the Game Hall."
+
+#: shared/balance/missions.json:starter[0].name
+msgid "Primeira Batalha"
+msgstr "First Battle"
+
+#: shared/balance/missions.json:starter[1].description
+msgid "Vença uma partida PvP."
+msgstr "Win a PvP match."
+
+#: shared/balance/missions.json:starter[2].description
+msgid "Tente fortalecer uma arma no Ferreiro."
+msgstr "Try to strengthen a weapon at the Blacksmith."
+
+#: shared/balance/missions.json:starter[2].name shared/balance/missions.json:daily_pool[11].name
+msgid "Mãos na Forja"
+msgstr "Hands on the Forge"
+
+#: shared/balance/missions.json:starter[3].description
+msgid "Complete uma Instância na entrada livre, vencendo ou não."
+msgstr "Finish a Dungeon on free entry, win or lose."
+
+#: shared/balance/missions.json:starter[3].name
+msgid "Além da Ilha"
+msgstr "Beyond the Island"
+
+#: shared/balance/missions.json:starter[4].description shared/balance/missions.json:daily_pool[8].description
+msgid "Choque um ovo na Casa dos Mascotes."
+msgstr "Hatch an egg at the Pet House."
+
+#: shared/balance/missions.json:starter[4].name
+msgid "Vida Nova"
+msgstr "New Life"
+
+#: shared/balance/missions.json:starter[5].description
+msgid "Inicie uma Caçada com o seu mascote."
+msgstr "Start a Hunt with your pet."
+
+#: shared/balance/missions.json:starter[5].name
+msgid "Treinador"
+msgstr "Trainer"
+
+#: shared/balance/missions.json:weekly_pool[0].description
+msgid "Vença 15 partidas PvP."
+msgstr "Win 15 PvP matches."
+
+#: shared/balance/missions.json:weekly_pool[0].name
+msgid "Campeão da Semana"
+msgstr "Champion of the Week"
+
+#: shared/balance/missions.json:weekly_pool[1].description
+msgid "Conclua 5 expedições."
+msgstr "Complete 5 expeditions."
+
+#: shared/balance/missions.json:weekly_pool[1].name
+msgid "Exploradores"
+msgstr "Explorers"
+
+#: shared/balance/missions.json:weekly_pool[2].description
+msgid "Derrote 4 chefes."
+msgstr "Defeat 4 bosses."
+
+#: shared/balance/missions.json:weekly_pool[3].description
+msgid "Cause 80.000 de dano em batalhas."
+msgstr "Deal 80,000 damage in battles."
+
+#: shared/balance/missions.json:weekly_pool[3].name
+msgid "Chuva de Aço"
+msgstr "Rain of Steel"
+
+#: shared/balance/missions.json:weekly_pool[4].description
+msgid "Choque 3 ovos."
+msgstr "Hatch 3 eggs."
+
+#: shared/balance/missions.json:weekly_pool[4].name
+msgid "Criador de Mascotes"
+msgstr "Pet Breeder"
+
+#: shared/balance/missions.json:weekly_pool[5].description
+msgid "Colete a Caçada 5 vezes."
+msgstr "Collect the Hunt 5 times."
+
+#: shared/balance/missions.json:weekly_pool[5].name
+msgid "Treinador Dedicado"
+msgstr "Dedicated Trainer"
+
+#: shared/balance/missions.json:weekly_pool[6].description
+msgid "Tente fortalecer itens 8 vezes."
+msgstr "Try to strengthen items 8 times."
+
+#: shared/balance/missions.json:weekly_pool[6].name
+msgid "Ferreiro da Semana"
+msgstr "Blacksmith of the Week"
+
+#: shared/balance/missions.json:weekly_pool[7].description
+msgid "Complete o Desafio do Dia em 5 dias diferentes."
+msgstr "Complete the Daily Challenge on 5 different days."
+
+#: shared/balance/missions.json:weekly_pool[7].name
+msgid "Constância"
+msgstr "Consistency"
+
+#: shared/balance/missions.json:weekly_pool[8].description
+msgid "Jogue 6 partidas ranqueadas."
+msgstr "Play 6 ranked matches."
+
+#: shared/balance/missions.json:weekly_pool[8].name
+msgid "Escalada"
+msgstr "The Climb"
+
+#: shared/balance/pets.json:battle.abilities.ceu.desc
+msgid "Zera o vento neste turno e devolve %d%% da energia."
+msgstr "Clears the wind this turn and gives back %d%% of your energy."
+
+#: shared/balance/pets.json:battle.abilities.ceu.name
+msgid "Corrente de Ar"
+msgstr "Air Current"
+
+#: shared/balance/pets.json:battle.abilities.gelo.desc
+msgid "Cura %d%% da sua vida e corta à metade o próximo golpe que você receber."
+msgstr "Heals %d%% of your life and halves the next hit you take."
+
+#: shared/balance/pets.json:battle.abilities.gelo.name shared/balance/pets.json:hunt.skill.gelo.name
+msgid "Muralha Glacial"
+msgstr "Glacial Wall"
+
+#: shared/balance/pets.json:battle.abilities.mascara.desc
+msgid "O seu tiro deste turno é crítico garantido e causa +%d%% de dano."
+msgstr "Your shot this turn is a guaranteed critical and deals +%d%% damage."
+
+#: shared/balance/pets.json:battle.abilities.mascara.name
+msgid "Truque da Máscara"
+msgstr "Mask Trick"
+
+#: shared/balance/pets.json:battle.abilities.sol.desc
+msgid "O seu próximo tiro causa +%d%% de dano."
+msgstr "Your next shot deals +%d%% damage."
+
+#: shared/balance/pets.json:battle.abilities.sol.name shared/balance/pets.json:hunt.skill.sol.name
+msgid "Rajada Solar"
+msgstr "Solar Blast"
+
+#: shared/balance/pets.json:battle.abilities.viking.desc
+msgid "Enche %d%% da barra de POW."
+msgstr "Fills %d%% of the POW bar."
+
+#: shared/balance/pets.json:battle.abilities.viking.name
+msgid "Selo de Runa"
+msgstr "Rune Seal"
 
 #: shared/balance/pets.json:eggs[0].name
 msgid "Ovo Solar"
@@ -5914,17 +6754,9 @@ msgstr "Sky"
 msgid "Runa"
 msgstr "Rune"
 
-#: shared/balance/pets.json:hunt.skill.gelo.name
-msgid "Muralha Glacial"
-msgstr "Glacial Wall"
-
 #: shared/balance/pets.json:hunt.skill.mascara.name
 msgid "Dupla Trapaça"
 msgstr "Double Trick"
-
-#: shared/balance/pets.json:hunt.skill.sol.name
-msgid "Rajada Solar"
-msgstr "Solar Blast"
 
 #: shared/balance/pets.json:hunt.zones.ceu.name
 msgid "Ilhas Flutuantes"
@@ -6110,6 +6942,18 @@ msgstr "Vanishes in the blizzard and reappears in your lap."
 msgid "Coelho da Neve"
 msgstr "Snow Hare"
 
+#: shared/balance/ranked.json:divisions[3].name
+msgid "Platina"
+msgstr "Platinum"
+
+#: shared/balance/ranked.json:divisions[4].name
+msgid "Diamante"
+msgstr "Diamond"
+
+#: shared/balance/ranked.json:divisions[5].name
+msgid "Mestre"
+msgstr "Master"
+
 #: shared/balance/store.json:products[0].desc shared/balance/store.json:products[1].desc shared/balance/store.json:products[2].desc shared/balance/store.json:products[3].desc
 msgid "Tintura de cabelo exclusiva. Só aparência: não muda atributos."
 msgstr "Exclusive hair dye. Looks only: no attributes."
@@ -6137,3 +6981,63 @@ msgstr "The Pet Hunt piles up for up to 8 hours while idle (instead of 2). Conve
 #: shared/balance/store.json:products[6].desc shared/balance/store.json:products[7].desc shared/balance/store.json:products[8].desc shared/balance/store.json:products[9].desc
 msgid "Mais 40 espaços na Mochila. Conveniência: não muda atributos."
 msgstr "40 more Bag slots. Convenience: changes no attributes."
+
+#: shared/balance/tutorial.json:steps[0].name
+msgid "BEM-VINDO AO TREINO"
+msgstr "WELCOME TO TRAINING"
+
+#: shared/balance/tutorial.json:steps[0].text
+msgid "Em poucos minutos você aprende o essencial da artilharia. Seu alvo é o Boneco de Treino, na ilha da frente: ele não revida."
+msgstr "In a few minutes you learn the essentials of artillery. Your target is the Training Dummy on the island ahead: it does not fight back."
+
+#: shared/balance/tutorial.json:steps[1].name
+msgid "ANDAR"
+msgstr "MOVE"
+
+#: shared/balance/tutorial.json:steps[1].text
+msgid "Use ← → (ou A e D) para andar. Andar gasta ENERGIA, a barra verde embaixo à direita. Dê alguns passos."
+msgstr "Use ← → (or A and D) to move. Moving spends ENERGY, the green bar at the bottom right. Take a few steps."
+
+#: shared/balance/tutorial.json:steps[2].name
+msgid "MIRAR"
+msgstr "AIM"
+
+#: shared/balance/tutorial.json:steps[2].text
+msgid "Use ↑ ↓ (ou W e S) para erguer ou baixar o canhão. O mostrador no canto esquerdo marca o ângulo em graus."
+msgstr "Use ↑ ↓ (or W and S) to raise or lower the cannon. The dial in the bottom left corner shows the angle in degrees."
+
+#: shared/balance/tutorial.json:steps[3].name
+msgid "VENTO"
+msgstr "WIND"
+
+#: shared/balance/tutorial.json:steps[3].text
+msgid "O vento empurra o tiro para o lado. As setas no alto mostram a direção e a força: com vento a favor o tiro vai mais longe, contra ele fica mais curto."
+msgstr "The wind pushes the shot sideways. The arrows at the top show its direction and strength: with a tailwind the shot goes farther, against it falls shorter."
+
+#: shared/balance/tutorial.json:steps[4].name
+msgid "DISPARAR"
+msgstr "FIRE"
+
+#: shared/balance/tutorial.json:steps[4].text
+msgid "Segure ESPAÇO para encher a barra de FORÇA e solte para atirar. Mire no boneco: perto de 50% de força costuma servir. Acerte-o uma vez."
+msgstr "Hold SPACE to fill the POWER bar and release to fire. Aim at the dummy: around 50% power usually works. Hit it once."
+
+#: shared/balance/tutorial.json:steps[5].name
+msgid "HABILIDADES"
+msgstr "SKILLS"
+
+#: shared/balance/tutorial.json:steps[5].text
+msgid "As teclas 1 a 9 dão vantagens no turno e gastam energia. Aperte 1 (+2 ataques) e dispare: saem três tiros em sequência."
+msgstr "Keys 1 to 9 give advantages for the turn and spend energy. Press 1 (+2 attacks) and fire: three shots come out in a row."
+
+#: shared/balance/tutorial.json:steps[6].text
+msgid "A barra POW enche quando você causa e recebe dano. A sua está cheia! Aperte B e dispare para soltar o especial da sua arma."
+msgstr "The POW bar fills as you deal and take damage. Yours is full! Press B and fire to unleash your weapon's special."
+
+#: shared/balance/tutorial.json:steps[7].name
+msgid "DERRUBE O BONECO"
+msgstr "KNOCK DOWN THE DUMMY"
+
+#: shared/balance/tutorial.json:steps[7].text
+msgid "Use tudo o que aprendeu e derrube o Boneco de Treino. Agora ele não se recompõe!"
+msgstr "Use everything you learned and knock down the Training Dummy. It no longer mends itself!"

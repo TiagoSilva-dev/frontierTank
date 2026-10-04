@@ -19,8 +19,10 @@ godot --headless --path . --editor --import --quit
 # um teste (cada arquivo de tests/ é um SceneTree que sai com quit(1) se falhar)
 godot --headless --path . --script tests/combat_tests.gd
 
-# suíte completa: powershell -File tools/run.ps1 -Test
-# (combat, ui, pve, armory, pow, craft, i18n, exchange, auction, launch, net, net_e2e)
+# suíte completa (todo tests/*_tests.gd; `net` e `net_e2e` por último):
+#   powershell -File tools/run.ps1 -Test        # Windows
+#   tools/test.sh [-j] [suite ...]              # Linux/macOS/WSL; -j roda em paralelo
+# `exchange_online_tests` fica de fora: precisa da API com PostgreSQL no ar (docs/CAMBIO.md)
 
 # i18n: toda mudança em textos visíveis exige atualizar locale/
 python tools/i18n.py            # atualiza messages.pot e en.po
@@ -41,9 +43,9 @@ Os `tests/*_visual_check.gd` e `*_balance.gd` geram capturas/simulações, não 
 ## Arquitetura (o que exige ler vários arquivos)
 
 - **Três peças online**: o cliente Godot (`client/`), a **API em Go** (`server/api/`, PostgreSQL, migrações em `server/api/migrations`, roda sozinhas ao subir) e o **servidor de jogo**, que é **este mesmo projeto Godot rodando sem tela** (`server/game/`). O código de regras em `client/` e `shared/` roda nos dois lados; mudar uma regra no cliente muda o servidor.
-- **Lockstep**: online, servidor e cada jogador rodam a mesma `LocalMatch` (`client/scripts/match.gd`) a partir da mesma semente, e só os comandos cruzam a rede (`client/net/lockstep_driver.gd`). Tudo na simulação tem de ser **determinístico**: passo fixo, o `rng` da partida e nada de `randf()` global, tempo real ou ordem de dicionário não controlada. O visual (`projectile.gd`, `*_fx.gd`, escala de sprites) não pode alterar o acerto; `tests/pow_tests.gd` e `tests/ability_tests.gd` verificam isso.
-- **Autoridade**: offline é local; online o servidor decide tudo (compras, Ferreiro, drops, EXP, cartas, leilão). `PlayerProfile.apply_op` (`client/scripts/profile.gd`) é a **porta única** das mudanças do perfil, com checagem de tipos; o mesmo código atende o save local e o JSON do servidor. Mexer em saves exige manter a leitura dos formatos antigos (hoje v5, lê v1–v4).
-- **Dados de balanceamento** ficam em `shared/balance/combat.json` (mapas, itens, ferramentas, PvE, instâncias, inimigos, bots) e `items.json` (armas, qualidades, fortalecimento, afixos, moedas). Eles alimentam o jogo, os testes **e a wiki** (`tools/build_site.py`); rode a ferramenta depois de mudar números.
+- **Lockstep**: online, servidor e cada jogador rodam a mesma `LocalMatch` (`client/systems/match.gd`) a partir da mesma semente, e só os comandos cruzam a rede (`client/net/lockstep_driver.gd`). Tudo na simulação tem de ser **determinístico**: passo fixo, o `rng` da partida e nada de `randf()` global, tempo real ou ordem de dicionário não controlada. O visual (`projectile.gd`, `*_fx.gd`, escala de sprites) não pode alterar o acerto; `tests/pow_tests.gd` e `tests/ability_tests.gd` verificam isso.
+- **Autoridade**: offline é local; online o servidor decide tudo (compras, Ferreiro, drops, EXP, cartas, leilão). `PlayerProfile.apply_op` (`client/systems/profile.gd`) é a **porta única** das mudanças do perfil, com checagem de tipos; o mesmo código atende o save local e o JSON do servidor. Mexer em saves exige manter a leitura dos formatos antigos (hoje v10, lê v1–v9; cada versão está comentada no topo de `profile.gd`).
+- **Dados de balanceamento** ficam em `shared/balance/combat.json` (mapas, itens, ferramentas, PvE, instâncias, inimigos, bots) e `items.json` (armas, qualidades, fortalecimento, afixos, moedas); `pets.json` (mascotes e Caçada), `missions.json`, `store.json`, `achievements.json` e `tutorial.json` (as lições do treino) completam. Os que mudam regras do servidor (`combat`, `items`, `store`, `missions`, `pets`) entram no hash de conteúdo (`NetClient.content_version`): mudou um, reimplante o servidor. Eles alimentam o jogo, os testes **e a wiki** (`tools/build_site.py`); rode a ferramenta depois de mudar números.
 - **Fluxo de telas**: `client/scripts/main.gd` troca as telas num `CanvasLayer` (entrada → cidade → salão → sala → partida → resultado). Mochila, Ferreiro, Loja, Leilão e Correio abrem por cima. `ui_kit.gd` concentra molduras, fonte e helpers.
 - **Terreno**: máscara RGBA onde o alfa é a colisão (`terrain.gd`); a mesma máscara serve de apoio, colisão, crateras e desenho.
 - **Arte e áudio** são gerados por ferramentas, não pintados à mão: PixelLab (MCP `pixellab`, `docs/PIXELLAB_*.md`), `tools/make_sfx.py`/`make_music.py` (síntese) e `tools/import_pixellab_skin.py`. `tools/character_anchors.py` e `terrain_pieces.py` produzem dados que o jogo lê; rode de novo quando a arte mudar.

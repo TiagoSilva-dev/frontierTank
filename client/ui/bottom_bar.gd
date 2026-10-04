@@ -2,12 +2,16 @@ class_name BottomBar
 extends Control
 
 # Persistent shortcut bar: SHOP · MOCHILA · PET · CORREIO · MISSÃO | AJUDA · SAIR.
-# CORREIO shows how many letters wait (Leilão 0.12).
+# CORREIO shows how many letters wait (Leilão 0.12) and MISSÃO how many contracts can be
+# claimed (0.21).
 
 var app: Node
 var mail_badge: Panel
 var mail_label: Label
 var shown_mail: int = -1
+var mission_badge: Panel
+var mission_label: Label
+var shown_missions: int = -1
 
 func _ready() -> void:
 	size = Vector2(560, 62)
@@ -24,7 +28,19 @@ func _ready() -> void:
 	mail_badge = UiKit.panel(self, Rect2(10 + 3 * 68 + 38, -4, 26, 22), "banner")
 	mail_badge.name = "MailBadge"
 	mail_label = UiKit.label(mail_badge, "", Rect2(0, -1, 26, 22), 14, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	mission_badge = UiKit.panel(self, Rect2(10 + 4 * 68 + 38, -4, 26, 22), "mode_green")
+	mission_badge.name = "MissionBadge"
+	mission_label = UiKit.label(mission_badge, "", Rect2(0, -1, 26, 22), 14, Color.WHITE, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	refresh_mail()
+	refresh_missions()
+
+func claimable() -> int:
+	return MissionsBoard.claimable(app.profile) if app != null and app.get("profile") != null else 0
+
+func refresh_missions() -> void:
+	shown_missions = claimable()
+	mission_badge.visible = shown_missions > 0
+	mission_label.text = str(shown_missions) if shown_missions < 100 else "99+"
 
 func refresh_mail() -> void:
 	var count: int = int(app.get("mail_count")) if app != null and app.get("mail_count") != null else 0
@@ -35,3 +51,5 @@ func refresh_mail() -> void:
 func _process(_delta: float) -> void:
 	if app != null and app.get("mail_count") != null and int(app.mail_count) != shown_mail:
 		refresh_mail()
+	if claimable() != shown_missions:
+		refresh_missions()

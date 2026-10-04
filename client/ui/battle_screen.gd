@@ -75,6 +75,19 @@ var sent_aim: float = 0.0
 var aim_base: float = 0.0
 var aim_clock: float = 0.0
 var catch_up: Label
+var coach: TutorialCoach
+# A replay being played (0.22): no controls, a driver feeds the stored intents.
+var replay: Dictionary = {}
+var replay_driver: ReplayDriver
+var watch_bar: ReplayBar
+# A live spectator (config.spectate): the online lockstep stream with no controls.
+var spectating: bool = false
+var replay_saved: bool = false
+# Lockstep on this computer (the daily challenge): the host stamps and records the intents.
+var host: LocalHost
+# The outcome of a daily challenge run: {"result": score info, "replay": replay} (0.22).
+var challenge_run: Dictionary = {}
+var challenge_card: ChallengeResult
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -112,6 +125,9 @@ func _ready() -> void:
 	camera = Camera2D.new()
 	world.add_child(camera)
 	camera.make_current()
+	spectating = bool(config.get("spectate", false))
+	# A replay or a live spectator only watches: the battle never takes the controls.
+	game.spectator = spectating or not replay.is_empty()
 	game.blast.connect(show_blast)
 	game.damage_text.connect(show_damage)
 	game.special.connect(show_special)
@@ -131,6 +147,16 @@ func _ready() -> void:
 	game.start(config)
 	if not online and game.pve and app.run != null:
 		game.monster_defeated.connect(on_monster_defeated)
+	if not replay.is_empty():
+		replay_driver = ReplayDriver.new()
+		replay_driver.setup(game, replay)
+		add_child(replay_driver)
+	elif bool(config.get("hosted", false)):
+		host = LocalHost.new()
+		host.game = game
+		host.refused = ["auto", "emote"]
+		add_child(host)
+		game.remote = host.submit
 	if online:
 		game.remote = send_intent
 		driver = LockstepDriver.new()
@@ -153,6 +179,23 @@ func _ready() -> void:
 	for fighter in game.fighters:
 		alive[fighter.player_id] = fighter.hp > 0
 	app.audio.play("battle_start", -2.0)
+	if not replay.is_empty() or spectating:
+		hud.quiet = true
+		hud.refresh_log()
+		watch_bar = ReplayBar.new()
+		watch_bar.screen = self
+		watch_bar.live = spectating
+		add_child(watch_bar)
+		hud.trust_button.hide()
+	if host != null:
+		hud.trust_button.hide()
+	if bool(config.get("tutorial", false)):
+		# The coach replaces the log: its card sits where the log would be.
+		hud.quiet = true
+		hud.refresh_log()
+		coach = TutorialCoach.new()
+		coach.screen = self
+		add_child(coach)
 
 func focus_point() -> Vector2:
 	if manual_time > 0:
@@ -201,8 +244,9 @@ func _process(delta: float) -> void:
 		end_timer -= delta
 		if end_timer <= 0:
 			show_results()
-	if online:
+	if online or host != null:
 		online_controls(delta)
+	if online:
 		if end_wait > 0.0:
 			end_wait -= delta
 			if end_wait <= 0.0 and not finished_here:
@@ -314,6 +358,8 @@ func on_skill(fighter: TankFighter, info: Dictionary) -> void:
 		get_tree().create_timer(start - now).timeout.connect(spawn_skill.bind(fighter, info))
 	if str(info.get("kind", "")) == "pow":
 		show_pow_aura(fighter)
+	if str(info.get("kind", "")) == "pet" and is_instance_valid(fighter.companion):
+		fighter.companion.perk()
 
 func spawn_skill(fighter: TankFighter, info: Dictionary) -> void:
 	if not is_instance_valid(fighter) or not is_instance_valid(effects) or fighter.hp <= 0:
@@ -324,7 +370,7 @@ func spawn_skill(fighter: TankFighter, info: Dictionary) -> void:
 	fx.icon = load(icon) if icon.begins_with("res://") and ResourceLoader.exists(icon) else PixelIcons.get_icon(icon)
 	fx.title = str(info.get("name", ""))
 	var kind: String = str(info.get("kind", "power"))
-	fx.color = SkillFx.color_for(kind)
+	fx.color = Color(str(info.color)) if info.has("color") else SkillFx.color_for(kind)
 	# Icons still showing push the new one aside.
 	var busy: int = effects.get_children().filter(func(node: Node) -> bool: return node is SkillFx and node.fighter == fighter).size()
 	fx.offset_x = [0.0, 88.0, -88.0, 176.0, -176.0][busy % 5]
@@ -526,9 +572,27 @@ func on_finished(winner: int) -> void:
 	for fighter: TankFighter in game.fighters:
 		if fighter.team == winner and fighter.hp > 0 and not fighter.is_monster:
 			fighter.celebrate()
+	if host != null and bool(config.get("challenge", false)):
+		challenge_finished(winner)
+		return
+	if not replay.is_empty() or spectating:
+		# Nothing to settle: the outcome is shown and the way out opens.
+		hud.show_outcome(winner == game.local().team, winner < 0)
+		app.audio.set_charge(false, 0.0)
+		app.audio.play_music("", 0.8)
+		end_timer = 3.4
+		return
 	if online:
 		finished_here = true
 		settle_online()
+		return
+	if bool(config.get("tutorial", false)):
+		# The training pays through the "tutorial" op once the coach's card is closed.
+		hud.show_outcome(true, false)
+		app.audio.set_charge(false, 0.0)
+		app.audio.play_music("", 0.8)
+		app.audio.play("victory")
+		end_timer = 3.0
 		return
 	if game.pve and app.run != null and winner == game.local().team and app.run.has_next_phase():
 		# Instance phase won: drops now, a transition screen, then the next phase.
@@ -557,6 +621,22 @@ func show_transition(report: Dictionary) -> void:
 
 func show_results() -> void:
 	end_timer = -1
+	if not challenge_run.is_empty():
+		hud.hide()
+		app.audio.play_music("lobby", 2.5)
+		challenge_card = ChallengeResult.new()
+		challenge_card.app = app
+		challenge_card.run = challenge_run
+		add_child(challenge_card)
+		return
+	if not replay.is_empty() or spectating:
+		leave_watching()
+		return
+	if bool(config.get("tutorial", false)):
+		hud.hide()
+		app.audio.play_music("lobby", 2.5)
+		coach.show_done()
+		return
 	if summary.is_empty():
 		summary = app.last_summary
 	if is_instance_valid(results):
@@ -592,7 +672,27 @@ func toggle_pause() -> void:
 		game.power = 0
 	hud.set_paused(game.paused)
 
+# Leaves a replay or a live broadcast: back to where it was opened from.
+func leave_watching() -> void:
+	if spectating and app.online:
+		app.net.send_kind("spectate_leave")
+	app.audio.play_music("lobby", 1.0)
+	if not replay.is_empty() and app.has_method("close_replay"):
+		app.close_replay()
+	else:
+		app.show_hall()
+
 func forfeit() -> void:
+	if not replay.is_empty() or spectating:
+		leave_watching()
+		return
+	if host != null:
+		# A challenge run that is left unfinished scores nothing: back to its screen.
+		app.show_challenge()
+		return
+	if bool(config.get("tutorial", false)):
+		app.leave_tutorial()
+		return
 	if online:
 		app.net.send_kind("match_leave")
 		app.room = {}
@@ -611,6 +711,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	var key: Key = event.physical_keycode
 	if key == KEY_ESCAPE and event.pressed:
+		if not replay.is_empty() or spectating:
+			leave_watching()
+			return
 		toggle_pause()
 		return
 	if key == KEY_SPACE:
@@ -631,6 +734,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		game.toggle_fly()
 	elif key == KEY_V:
 		game.use_aux()
+	elif key == KEY_G:
+		game.use_pet()
 	elif key == KEY_P:
 		game.pass_turn()
 	elif key == KEY_Q:
@@ -673,6 +778,32 @@ func on_net(message: Dictionary) -> void:
 			if is_instance_valid(results):
 				results.reveal_online(message)
 
+# The challenge run is over (a win, or the last turn): the score, the replay kept on the
+# computer, and the card with the result and the ranking.
+func challenge_finished(winner: int) -> void:
+	var result: Dictionary = Challenge.score(game)
+	var kept: Dictionary = config.duplicate(true)
+	kept.erase("hosted")
+	var names: Array = game.fighters.map(func(f: TankFighter) -> String: return f.display_name)
+	var meta: Dictionary = {"kind": "challenge", "day": int(config.get("day", 0)), "score": int(result.score), "medal": int(result.medal), "names": names, "at": int(Time.get_unix_time_from_system())}
+	var run_replay: Dictionary = Replay.make(kept, host.history, host.tick, winner, meta)
+	Replay.save(run_replay)
+	challenge_run = {"result": result, "replay": run_replay}
+	hud.show_outcome(bool(result.won), false)
+	app.audio.set_charge(false, 0.0)
+	app.audio.play_music("", 0.8)
+	app.audio.play("victory" if result.won else "defeat")
+	end_timer = 3.0
+
+# Keeps the battle just played (the configuration and every intent) for the Replays list.
+func save_replay() -> void:
+	if replay_saved or driver == null or game.pve or spectating or str(config.get("mode", "")) != "pvp":
+		return
+	replay_saved = true
+	var names: Array = game.fighters.map(func(f: TankFighter) -> String: return f.display_name)
+	var meta: Dictionary = {"mode": "pvp", "ranked": game.ranked, "names": names, "at": int(Time.get_unix_time_from_system()), "won": bool(summary.get("won", false)), "kind": "ranked" if game.ranked else "pvp"}
+	Replay.save(Replay.make(config, driver.history, driver.tick, game.winner_team, meta))
+
 func in_phase_break() -> bool:
 	return not phase_report.is_empty()
 
@@ -694,6 +825,7 @@ func settle_online() -> void:
 		return
 	summary = server_end.summary
 	app.last_summary = summary
+	save_replay()
 	hud.show_outcome(bool(summary.get("won", false)), bool(summary.get("draw", false)))
 	app.audio.play_music("", 0.8)
 	app.audio.play("victory" if summary.get("won", false) else "defeat")

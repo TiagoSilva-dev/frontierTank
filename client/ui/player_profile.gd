@@ -69,7 +69,16 @@ func build() -> void:
 		UiKit.label(content, str(info.get("name", "")), Rect2(x + 96, 60, 240, 38), 24, UiKit.TEXT).name = "Name"
 	else:
 		UiKit.label(content, str(info.get("name", "")), Rect2(x + 62, 60, 280, 38), 24, UiKit.TEXT).name = "Name"
-	UiKit.label(content, TankFighter.rank_for(level), Rect2(x, 100, 340, 26), 17, UiKit.GOOD)
+	UiKit.label(content, TankFighter.rank_for(level), Rect2(x, 100, 150, 26), 17, UiKit.GOOD)
+	# Ranked (0.22): the division badge and name, and the equipped season title on the stage.
+	var rating: Dictionary = info.get("rating", {})
+	if bool(rating.get("placed", false)):
+		var mmr: int = int(rating.get("mmr", 0))
+		RankBadge.create(content, Rect2(x + 150, 98, 30, 30), mmr, true).name = "RankBadge"
+		UiKit.label(content, Ranked.label(mmr), Rect2(x + 184, 100, 160, 26), 16, Ranked.division(mmr).color).name = "RankName"
+	var season_title: String = Ranked.title_text(str(info.get("title", "")))
+	if season_title != "":
+		UiKit.label(content, season_title, Rect2(34, 366, 242, 24), 14, PremiumUi.GOLD, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER).name = "Title"
 	var rows: Array = [[tr("Ranking"), str(int(info.get("ranking", 0))), UiKit.BAD], [tr("Méritos"), str(int(info.get("merits", 0))), UiKit.INFO], [tr("Vitórias"), str(int(info.get("victories", 0))), UiKit.TEXT], [tr("Partidas"), str(int(info.get("matches", 0))), UiKit.TEXT]]
 	for i in range(rows.size()):
 		var row: Array = rows[i]

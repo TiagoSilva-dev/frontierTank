@@ -31,6 +31,11 @@ var result: Dictionary = {}
 var busy: bool = false
 var discard: bool = false
 var last_search: float = 0.0
+# Waiting in the ranked queue (0.22), since when.
+var queued: bool = false
+var queued_since: float = 0.0
+# The battle this player is only watching (0.22).
+var watching: MatchHost = null
 # Attempts to delete the account (wrong passwords are limited).
 var delete_tries: Array[float] = []
 # The player's game language ("pt_BR" or "en"), told in hello: the Steam order text.
@@ -47,10 +52,10 @@ func display_name() -> String:
 	return profile.player_name if profile != null else username
 
 func public_info() -> Dictionary:
-	return {"account": account_id, "name": display_name(), "level": profile.level() if profile != null else 1, "gender": profile.gender if profile != null else "m", "founder": profile != null and profile.is_founder()}
+	return {"account": account_id, "name": display_name(), "level": profile.level() if profile != null else 1, "gender": profile.gender if profile != null else "m", "founder": profile != null and profile.is_founder(), "rating": Ranked.public(profile.rating) if profile != null else {}, "title": profile.title if profile != null else ""}
 
 # Everything another player may see of this one (profile window): looks, level, record and
 # the numbers of the equipped gear.
 func public_profile(balance: Dictionary) -> Dictionary:
 	var entry: Dictionary = profile.entry(balance)
-	return {"account": account_id, "name": display_name(), "level": profile.level(), "gender": profile.gender, "victories": profile.victories, "matches": profile.matches, "merits": profile.merits, "ranking": profile.ranking(), "look": entry.look, "arma": entry.arma, "attrs": entry.attrs, "founder": profile.is_founder()}
+	return {"account": account_id, "name": display_name(), "level": profile.level(), "gender": profile.gender, "victories": profile.victories, "matches": profile.matches, "merits": profile.merits, "ranking": profile.ranking(), "look": entry.look, "arma": entry.arma, "attrs": entry.attrs, "founder": profile.is_founder(), "rating": Ranked.public(profile.rating), "title": profile.title}

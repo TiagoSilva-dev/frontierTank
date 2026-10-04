@@ -131,7 +131,7 @@ func run_tests() -> void:
 	monster_turn(game, berserker, "machados_giratorios")
 	check(game.fighters[0].hp < near_hp and game.fighters[1].hp == far_hp, "slam: the shockwave hits only who is close")
 
-	# --- Sky: the Jarl's lightning falls on the hero and breaks the ground
+	# --- Sky: the Jarl's lightning falls on the hero (the ground stays intact in instances)
 	battle(game, ["jarl_barba_ferro"], [300.0])
 	var jarl: TankFighter = monster(game)
 	place(game, jarl, 1900.0)
@@ -143,7 +143,9 @@ func run_tests() -> void:
 	jarl.hp = jarl.max_hp / 3
 	hp = hero.hp
 	monster_turn(game, jarl, "ira_de_valhalla")
-	check(hero.hp < hp and game.terrain.mask.get_data() != mask_before, "the Jarl's fury spell breaks the ground")
+	# Instances keep their ground intact (LocalMatch.start: the terrain is not destructible
+	# in PvE), so even a spell with a crater only hurts.
+	check(hero.hp < hp and game.terrain.mask.get_data() == mask_before, "the Jarl's fury spell hurts but the instance ground stays intact")
 	# A fury spell hits the whole party; bosses spread single-target spells from 3 players.
 	battle(game, ["jarl_barba_ferro"], [200.0, 420.0, 1700.0])
 	jarl = monster(game)

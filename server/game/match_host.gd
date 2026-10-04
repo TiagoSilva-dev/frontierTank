@@ -12,7 +12,7 @@ const SEND_EVERY: int = 2
 const SUM_EVERY: int = 60
 # "FASE CONCLUÍDA" (1.6 s) plus the transition screen (8 s) on the players' side.
 const PHASE_PAUSE: float = 10.0
-const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pass", "flip", "auto", "emote"]
+const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pet", "pass", "flip", "auto", "emote"]
 # Pending intents per player; more than this in one tick is flooding.
 const MAX_PENDING: int = 12
 
@@ -39,6 +39,13 @@ var over: bool = false
 var phase_timer: float = -1.0
 var next_config: Dictionary = {}
 var started_at: float = 0.0
+# Ranked match (0.22): account -> rating before the match (empty otherwise).
+var ranked: Dictionary = {}
+# Live spectators (0.22): account -> session. They get the same stream as the players, a few
+# seconds late, so the broadcast cannot help the ones playing.
+var watchers: Dictionary = {}
+var watch_queue: Array = []
+var watch_sent: int = 0
 
 func _ready() -> void:
 	rng.randomize()
@@ -172,8 +179,50 @@ func flush() -> void:
 	for session: PlayerSession in players.values():
 		if not session.lingering and not gone.has(session.account_id):
 			session.send(message)
+	if not watchers.is_empty() or not watch_queue.is_empty() or watch_sent > 0:
+		watch_queue.append([tick, message])
 	outbox = []
 	sums = []
+	deliver_watch(false)
+
+# How many ticks behind the live battle a spectator watches.
+func watch_delay() -> int:
+	var rules: Dictionary = Ranked.data().spectate
+	return int(float(rules.delay_ranked if not ranked.is_empty() else rules.delay_casual) * 60.0)
+
+# Sends the spectators what is old enough (everything, when the battle is over).
+func deliver_watch(everything: bool) -> void:
+	while not watch_queue.is_empty() and (everything or int(watch_queue[0][0]) <= tick - watch_delay()):
+		var entry: Array = watch_queue.pop_front()
+		watch_sent = int(entry[0])
+		for session: PlayerSession in watchers.values():
+			session.send(entry[1])
+
+# A player joins as a spectator: the battle up to what is old enough, then the stream.
+func add_watcher(session: PlayerSession) -> bool:
+	if over or watchers.size() >= int(Ranked.data().spectate.max_watchers) or seats.has(session.account_id):
+		return false
+	var cutoff: int = watch_sent
+	var own: Dictionary = config.duplicate()
+	own.local = 0
+	var message: Dictionary = {"t": "match_start", "m": match_id, "config": own, "phase": false, "watch": true, "history": history.filter(func(entry: Array) -> bool: return int(entry[0]) < cutoff), "u": cutoff}
+	watchers[session.account_id] = session
+	session.watching = self
+	session.send(message)
+	return true
+
+func remove_watcher(session: PlayerSession) -> void:
+	watchers.erase(session.account_id)
+	if session.watching == self:
+		session.watching = null
+
+# The names of who is fighting (the list of live matches).
+func fighter_names() -> Array:
+	var names: Array = []
+	for team: Variant in config.teams:
+		for entry: Variant in team:
+			names.append(str(entry.name))
+	return names
 
 func on_finished(winner: int) -> void:
 	flush()
@@ -195,6 +244,7 @@ func fighter_of(account: int) -> TankFighter:
 
 # The battle is over: rewards for everyone who stayed, cards dealt on the server.
 func settle(winner: int) -> void:
+	var ranked_reports: Dictionary = settle_ranked(winner) if not ranked.is_empty() else {}
 	for account: int in seats:
 		var session: PlayerSession = players.get(account)
 		if session == null or gone.has(account):
@@ -211,12 +261,39 @@ func settle(winner: int) -> void:
 			summary.loot = visible
 		else:
 			cards = Rewards.pvp_cards(balance, rng)
+		if ranked_reports.has(account):
+			summary.ranked = ranked_reports[account]
 		session.result = {"match": match_id, "cards": cards, "picks": Rewards.picks(summary), "revealed": [], "at": Time.get_unix_time_from_system()}
 		session.send({"t": "match_end", "m": match_id, "winner": winner, "summary": summary, "picks": session.result.picks, "profile": session.profile.to_data()})
 		server.audit(session, "match", {"match": match_id, "mode": mode, "won": summary.won, "exp": summary.exp, "merit": summary.merit, "seconds": roundi(Time.get_unix_time_from_system() - started_at)})
 		for drop: Dictionary in summary.get("instance", {}).get("chest", []):
 			server.announce(Lang.t("Parabéns! [%s] ganhou [%s] através de Instância."), [session.profile.player_name], {"id": str(drop.get("weapon", "")), "quality": str(drop.get("quality", "super"))})
 	server.match_over(self)
+
+# Ranked (0.22): both ratings move by the result, the player who left loses. Runs before
+# the rewards, so the profile saved with them already has the new rating. Returns
+# account -> what happened (shown on the result screen).
+func settle_ranked(winner: int) -> Dictionary:
+	var reports: Dictionary = {}
+	var accounts: Array = ranked.keys()
+	for account: int in accounts:
+		var session: PlayerSession = players.get(account)
+		if session == null or session.profile == null:
+			continue
+		var other: int = int(accounts[1] if account == accounts[0] else accounts[0])
+		var team: int = fighter_of(account).team
+		var outcome: float = 0.5 if winner < 0 else (1.0 if winner == team else 0.0)
+		if gone.has(account):
+			outcome = 0.0
+		elif gone.has(other):
+			outcome = 1.0
+		session.profile.sync_rating()
+		var report: Dictionary = Ranked.apply_result(session.profile.rating, int(ranked[other]), outcome)
+		report.opponent = int(ranked[other])
+		session.profile.save_profile()
+		reports[account] = report
+		server.audit(session, "ranked", {"match": match_id, "opponent": other, "won": outcome > 0.5, "delta": report.delta, "mmr": report.after})
+	return reports
 
 # A player dropped (connection lost): the AI plays for them; they may come back.
 func dropped(session: PlayerSession) -> void:

@@ -85,7 +85,11 @@ func summary() -> Dictionary:
 	for member in members:
 		var who: Dictionary = member.session.public_info() if member.has("session") else member.bot
 		people.append({"name": str(who.name), "level": int(who.level), "human": member.has("session")})
-	return {"id": id, "title": title, "mode": mode, "capacity": capacity, "members": people, "playing": state == "playing", "map": map}
+	var summary: Dictionary = {"id": id, "title": title, "mode": mode, "capacity": capacity, "members": people, "playing": state == "playing", "map": map}
+	if state == "playing" and host != null and host.mode == "pvp" and not host.over:
+		# Others may watch this battle (0.22).
+		summary.match = host.match_id
+	return summary
 
 func details(balance: Dictionary) -> Dictionary:
 	var people: Array = []

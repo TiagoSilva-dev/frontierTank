@@ -9,6 +9,9 @@ extends Node2D
 # "Modo offline" keeps everything local, as before. With --server this same project is
 # the game server instead (server/game/game_server.gd).
 
+# The ranked queue changed on the server (0.22): the ranked screen follows it.
+signal ranked_changed(state: Dictionary)
+
 var balance: Dictionary
 var profile: PlayerProfile
 var audio: GameAudio
@@ -37,6 +40,8 @@ var pending_start: Dictionary = {}
 var waiting_phase: bool = false
 # Letters waiting in the Correio (Leilão 0.12), told by the server.
 var mail_count: int = 0
+# The city offers the training once per session (a "not now" is saved in the profile).
+var tutorial_offered: bool = false
 # FPS counter (F3) and the battle benchmark (--bench=30, ?bench=30 on the web).
 var perf: PerfProbe
 
@@ -192,6 +197,29 @@ func open_named(target: String) -> void:
 		"founder":
 			show_city()
 			FounderScreen.open(self)
+		"tutorial":
+			start_tutorial()
+		"missions":
+			show_city()
+			open_missions(str(args.get("tab", "")))
+		"challenge":
+			show_hall()
+			ChallengeScreen.open(screen, self)
+		"ranked":
+			show_hall()
+			profile.experience = PlayerProfile.exp_for_level(5)
+			profile.rating = Ranked.empty_rating()
+			profile.rating.mmr = int(args.get("mmr", "1288"))
+			profile.rating.games = 12
+			profile.rating.wins = 8
+			profile.rating.losses = 4
+			profile.rating.peak = profile.rating.mmr + 12
+			profile.titles = ["s1_ouro"]
+			profile.title = "s1_ouro"
+			var demo_screen: RankedScreen = RankedScreen.new()
+			demo_screen.app = self
+			demo_screen.demo = true
+			screen.add_child(demo_screen)
 		"room":
 			create_room("pvp")
 			for i in range(2):
@@ -579,11 +607,94 @@ func shortcut(id: String) -> void:
 		"mail":
 			open_mail()
 		"mission":
-			var missions: MissionScreen = MissionScreen.new()
-			missions.app = self
-			ui.add_child(missions)
+			open_missions()
 		"pet":
 			PetScreen.open(ui, self)
+
+func open_missions(tab: String = "") -> MissionScreen:
+	var missions: MissionScreen = MissionScreen.new()
+	missions.app = self
+	missions.tab = tab
+	ui.add_child(missions)
+	return missions
+
+# ---------- daily challenge (0.22) ----------
+
+# Plays today's challenge: a local battle in lockstep through a LocalHost that records it.
+func start_challenge() -> void:
+	leave_room_quietly()
+	run = null
+	var battle: BattleScreen = BattleScreen.new()
+	battle.config = Challenge.local_config(Challenge.day_id(), profile, balance)
+	switch_to(battle, "battle")
+
+# The challenge screen over the Salão.
+func show_challenge() -> ChallengeScreen:
+	show_hall()
+	return ChallengeScreen.open(screen, self)
+
+# Online the server re-runs the replay and answers with the verified score and the position.
+func submit_challenge(replay: Dictionary) -> Dictionary:
+	var reply: Dictionary = await net.request("challenge_submit", {"day": int(replay.meta.day), "replay": replay}, 90.0)
+	if reply.get("profile") is Dictionary:
+		apply_profile(reply.profile)
+	return reply
+
+# ---------- replays (0.22) ----------
+
+# Where the replay was opened from, to return there when it ends ("hall" or "city").
+var replay_origin: String = "hall"
+
+# Plays a stored replay (Replay.load_file) with no controls.
+func start_replay(replay: Dictionary) -> void:
+	replay_origin = screen_name if screen_name in ["hall", "city"] else "hall"
+	leave_room_quietly()
+	var battle: BattleScreen = BattleScreen.new()
+	battle.config = localize(replay.config)
+	battle.replay = replay
+	switch_to(battle, "battle")
+
+# Asks the server to broadcast a battle that is going on; its answer is a match_start with
+# the stream, which opens the screen like any online battle.
+func watch(match_id: int, host: Node = null) -> void:
+	if not online:
+		return
+	var reply: Dictionary = await net.request("spectate", {"m": match_id})
+	if not reply.ok:
+		UiKit.notice(host if host != null else ui, tr("ASSISTIR"), server_text(reply.get("error", "")))
+
+func close_replay() -> void:
+	if replay_origin == "city":
+		show_city()
+	else:
+		show_hall()
+
+# ---------- training (0.21) ----------
+
+# The scripted battle against the Boneco de Treino. Always local, even when online.
+func start_tutorial() -> void:
+	tutorial_offered = true
+	leave_room_quietly()
+	if online:
+		net.send_kind("lobby", {"on": false})
+	run = null
+	var battle: BattleScreen = BattleScreen.new()
+	battle.config = Tutorial.config(balance, profile)
+	switch_to(battle, "battle")
+
+# Leaves the training before the end: it is not offered again, but AJUDA keeps the button.
+func leave_tutorial() -> void:
+	if profile.tutorial == "":
+		await do_op("tutorial", ["skip"])
+	show_city()
+
+# The dummy is down: the reward comes once, then the starter checklist opens.
+func finish_tutorial() -> void:
+	var result: Dictionary = await do_op("tutorial", ["done"])
+	show_city()
+	if result.error == "":
+		toast(tr("Treino concluído!"))
+		open_missions("starter")
 
 # The controls, the legal texts and the account (launch checklist: LGPD/GDPR).
 func open_help() -> Control:
@@ -599,6 +710,11 @@ func open_help() -> Control:
 		dialog.queue_free()
 		open_account(), "button_green", 14)
 	account.name = "HelpAccount"
+	if screen_name in ["city", "hall", "room"]:
+		var training: Button = UiKit.button(dialog, tr("TREINO"), Rect2(rect.position.x + 30, row - 52, 170, 42), func() -> void:
+			dialog.queue_free()
+			start_tutorial(), "button_green", 16)
+		training.name = "HelpTraining"
 	UiKit.button(dialog, tr("FECHAR"), Rect2(rect.end.x - 190, row, 160, 42), dialog.queue_free)
 	return dialog
 
@@ -800,6 +916,8 @@ func on_net_event(message: Dictionary) -> void:
 			on_match_start(message)
 		"mail":
 			mail_count = maxi(0, int(message.get("count", 0)))
+		"ranked_state":
+			ranked_changed.emit(message)
 		"ticks", "phase_end", "match_end", "cards", "mob_loot":
 			if message.get("profile") is Dictionary:
 				apply_profile(message.profile)
@@ -817,6 +935,9 @@ func on_match_start(message: Dictionary) -> void:
 
 func start_online_battle(message: Dictionary) -> void:
 	var config: Dictionary = localize(message.config)
+	if bool(message.get("watch", false)):
+		# A live broadcast of someone else's battle (0.22).
+		config.spectate = true
 	var battle: BattleScreen = BattleScreen.new()
 	battle.config = config
 	battle.online = true

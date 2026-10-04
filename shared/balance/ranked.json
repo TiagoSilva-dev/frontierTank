@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "start": 1000,
+  "floor": 700,
+  "k": 32,
+  "k_new": 48,
+  "new_games": 10,
+  "placement_games": 5,
+  "min_level": 3,
+  "turn_seconds": 15,
+  "queue": {"window": 120, "growth": 30, "growth_every": 10, "limit": 900, "rematch_limit": 3, "rematch_window": 3600},
+  "spectate": {"delay_ranked": 20, "delay_casual": 3, "max_watchers": 12},
+  "season": {"epoch": "2026-10-05", "days": 28, "min_games": 5, "keep": 0.5, "anchor": 1000, "log": 12},
+  "divisions": [
+    {"id": "bronze", "name": "Bronze", "from": 700, "tiers": 3, "color": "c98a4b"},
+    {"id": "prata", "name": "Prata", "from": 1000, "tiers": 3, "color": "c8d4e0"},
+    {"id": "ouro", "name": "Ouro", "from": 1150, "tiers": 3, "color": "ffd04a"},
+    {"id": "platina", "name": "Platina", "from": 1300, "tiers": 3, "color": "6fe0d0"},
+    {"id": "diamante", "name": "Diamante", "from": 1450, "tiers": 3, "color": "7ab8ff"},
+    {"id": "mestre", "name": "Mestre", "from": 1600, "tiers": 1, "color": "e07aff"}
+  ]
+}
