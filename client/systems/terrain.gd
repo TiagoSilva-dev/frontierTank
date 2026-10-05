@@ -24,6 +24,9 @@ var rim_color: Color = Color("3a2418")
 var last_debris: PackedColorArray = PackedColorArray()
 var world_size: Vector2 = Vector2(1280, 720)
 var destructible: bool = true
+# Bedrock (piece "hard": true): pixels no crater can remove. A map can have an
+# unbreakable floor with destructible platforms hanging above it.
+var hard: PackedByteArray = PackedByteArray()
 
 func generate(map: Dictionary, seed_value: int = 1) -> void:
 	world_size = Vector2(map.size[0], map.size[1])
@@ -60,6 +63,8 @@ func generate(map: Dictionary, seed_value: int = 1) -> void:
 				data[offset + 2] = int(color.b8)
 				data[offset + 3] = 255
 	mask = Image.create_from_data(width, height, false, Image.FORMAT_RGBA8, data)
+	hard.clear()
+	hard.resize(width * height)
 	for piece: Dictionary in map.get("terrain", []):
 		stamp(piece)
 	surface_texture = ImageTexture.create_from_image(mask)
@@ -74,6 +79,11 @@ func stamp(piece: Dictionary) -> void:
 		art.flip_x()
 	var at: Vector2i = Vector2i(roundi(float(piece.x) / PIXEL), roundi(float(piece.y) / PIXEL))
 	mask.blend_rect(art, Rect2i(Vector2i.ZERO, art.get_size()), at)
+	if piece.get("hard", false):
+		for y in range(maxi(0, -at.y), mini(art.get_height(), height - at.y)):
+			for x in range(maxi(0, -at.x), mini(art.get_width(), width - at.x)):
+				if art.get_pixel(x, y).a >= 0.5:
+					hard[(at.y + y) * width + at.x + x] = 1
 
 func shade(x: int, y: int, depth: int, from_bottom: int, detail: FastNoiseLite) -> Color:
 	var tops: Array = palette.top
@@ -135,7 +145,7 @@ func crater(center: Vector2, radius: float) -> int:
 		for x in range(maxi(0, floori(c.x - reach)), mini(width, ceili(c.x + reach) + 1)):
 			var dist: float = Vector2(x, y).distance_to(c)
 			var pixel: Color = mask.get_pixel(x, y)
-			if pixel.a <= 0.0 or dist > reach:
+			if pixel.a <= 0.0 or dist > reach or hard[y * width + x] != 0:
 				continue
 			if dist <= r:
 				if removed % 7 == 0 and last_debris.size() < 32:

@@ -4162,7 +4162,7 @@ msgstr ""
 msgid "Informações"
 msgstr ""
 
-#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:371
+#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:369
 msgid "Mapa Aleatório"
 msgstr ""
 
@@ -4250,7 +4250,7 @@ msgstr ""
 msgid "%s — %d moedas\n%s"
 msgstr ""
 
-#: client/ui/room_screen.gd:301 client/ui/room_screen.gd:302 client/ui/room_screen.gd:439
+#: client/ui/room_screen.gd:301 client/ui/room_screen.gd:302 client/ui/room_screen.gd:442
 msgid "Cancelar"
 msgstr ""
 
@@ -4322,19 +4322,19 @@ msgstr ""
 msgid "Somente o dono da sala escolhe o mapa."
 msgstr ""
 
-#: client/ui/room_screen.gd:369
+#: client/ui/room_screen.gd:376
 msgid "ESCOLHER LOCAL"
 msgstr ""
 
-#: client/ui/room_screen.gd:432
+#: client/ui/room_screen.gd:435
 msgid "Entrando na instância…"
 msgstr ""
 
-#: client/ui/room_screen.gd:432
+#: client/ui/room_screen.gd:435
 msgid "Procurando adversários com níveis próximos…"
 msgstr ""
 
-#: client/ui/room_screen.gd:476
+#: client/ui/room_screen.gd:479
 msgid "vamos lá!"
 msgstr ""
 
@@ -5704,6 +5704,22 @@ msgstr ""
 
 #: shared/balance/combat.json:maps[14].name
 msgid "Trono do Jarl"
+msgstr ""
+
+#: shared/balance/combat.json:maps[15].name
+msgid "Pagode dos Dragões"
+msgstr ""
+
+#: shared/balance/combat.json:maps[16].name
+msgid "Jardim das Sakuras"
+msgstr ""
+
+#: shared/balance/combat.json:maps[17].name
+msgid "Vale das Pirâmides"
+msgstr ""
+
+#: shared/balance/combat.json:maps[18].name
+msgid "Estação Orbital"
 msgstr ""
 
 #: shared/balance/combat.json:maps[9].name

@@ -4162,7 +4162,7 @@ msgstr "You are not in a guild yet."
 msgid "Informações"
 msgstr "Info"
 
-#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:371
+#: client/ui/room_screen.gd:128 client/ui/room_screen.gd:136 client/ui/room_screen.gd:369
 msgid "Mapa Aleatório"
 msgstr "Random Arena"
 
@@ -4250,7 +4250,7 @@ msgstr "TOOLS FOR SALE"
 msgid "%s — %d moedas\n%s"
 msgstr "%s — %d gold\n%s"
 
-#: client/ui/room_screen.gd:301 client/ui/room_screen.gd:302 client/ui/room_screen.gd:439
+#: client/ui/room_screen.gd:301 client/ui/room_screen.gd:302 client/ui/room_screen.gd:442
 msgid "Cancelar"
 msgstr "Cancel"
 
@@ -4322,19 +4322,19 @@ msgstr "ARENA"
 msgid "Somente o dono da sala escolhe o mapa."
 msgstr "Only the room host chooses the arena."
 
-#: client/ui/room_screen.gd:369
+#: client/ui/room_screen.gd:376
 msgid "ESCOLHER LOCAL"
 msgstr "CHOOSE ARENA"
 
-#: client/ui/room_screen.gd:432
+#: client/ui/room_screen.gd:435
 msgid "Entrando na instância…"
 msgstr "Entering the dungeon…"
 
-#: client/ui/room_screen.gd:432
+#: client/ui/room_screen.gd:435
 msgid "Procurando adversários com níveis próximos…"
 msgstr "Looking for opponents of similar level…"
 
-#: client/ui/room_screen.gd:476
+#: client/ui/room_screen.gd:479
 msgid "vamos lá!"
 msgstr "let's go!"
 
@@ -5705,6 +5705,22 @@ msgstr "Sanctuary of Winds"
 #: shared/balance/combat.json:maps[14].name
 msgid "Trono do Jarl"
 msgstr "Jarl's Throne"
+
+#: shared/balance/combat.json:maps[15].name
+msgid "Pagode dos Dragões"
+msgstr "Dragon Pagoda"
+
+#: shared/balance/combat.json:maps[16].name
+msgid "Jardim das Sakuras"
+msgstr "Sakura Garden"
+
+#: shared/balance/combat.json:maps[17].name
+msgid "Vale das Pirâmides"
+msgstr "Valley of the Pyramids"
+
+#: shared/balance/combat.json:maps[18].name
+msgid "Estação Orbital"
+msgstr "Orbital Station"
 
 #: shared/balance/combat.json:maps[9].name
 msgid "Pico da Nevasca"

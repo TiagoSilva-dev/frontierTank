@@ -366,15 +366,18 @@ func choose_map() -> void:
 	if app.room.mode == "pve":
 		choose_instance()
 		return
-	var dialog: Control = UiKit.modal(self, tr("ESCOLHER LOCAL"), "", Vector2(920, 500))
-	var rect: Rect2 = dialog.get_meta("rect")
 	var options: Array = [{"id": "", "name": "Mapa Aleatório", "bg": ""}]  # i18n
 	for entry: Dictionary in app.balance.maps:
 		if not entry.get("pve_only", false):
 			options.append(entry)
+	# Five columns once the pool outgrows four rows of four.
+	var columns: int = 5 if options.size() > 16 else 4
+	var rows: int = ceili(options.size() / float(columns))
+	var dialog: Control = UiKit.modal(self, tr("ESCOLHER LOCAL"), "", Vector2(columns * 218 + 38, 76 + rows * 128))
+	var rect: Rect2 = dialog.get_meta("rect")
 	for i in range(options.size()):
 		var entry: Dictionary = options[i]
-		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 26 + (i % 4) * 218, rect.position.y + 56 + (i / 4) * 128, 204, 120), pick_map.bind(str(entry.id), dialog), "card_hover" if app.room.map == entry.id else "card")
+		var cell: Button = UiKit.button(dialog, "", Rect2(rect.position.x + 26 + (i % columns) * 218, rect.position.y + 56 + (i / columns) * 128, 204, 120), pick_map.bind(str(entry.id), dialog), "card_hover" if app.room.map == entry.id else "card")
 		cell.name = "Map_" + (str(entry.id) if entry.id != "" else "random")
 		if str(entry.bg) != "":
 			UiKit.art(cell, map_thumb(entry), Rect2(10, 8, 184, 78), false)
