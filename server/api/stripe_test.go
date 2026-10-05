@@ -22,6 +22,7 @@ type fakeStripe struct {
 	forms    map[string]url.Values
 	calls    int
 	fail     bool
+	pixOff   bool // the account has no Pix: Stripe refuses payment_method_types[]=pix
 }
 
 func newFakeStripe(t *testing.T) (*fakeStripe, *httptest.Server) {
@@ -43,6 +44,11 @@ func (f *fakeStripe) serve(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodPost && r.URL.Path == "/v1/checkout/sessions":
 		_ = r.ParseForm()
 		f.calls++
+		if f.pixOff && r.Form.Get("payment_method_types[1]") == "pix" {
+			w.WriteHeader(http.StatusBadRequest)
+			_ = json.NewEncoder(w).Encode(map[string]any{"error": map[string]any{"type": "invalid_request_error", "message": "The payment method type provided: pix is invalid."}})
+			return
+		}
 		if f.fail {
 			w.WriteHeader(http.StatusBadRequest)
 			_ = json.NewEncoder(w).Encode(map[string]any{"error": map[string]any{"type": "invalid_request_error", "code": "payment_method_unavailable", "message": "pix is not enabled"}})
@@ -339,6 +345,18 @@ func TestStripe(t *testing.T) {
 		t.Fatalf("the refused order is closed: %d", failedOrders)
 	}
 	fake.fail = false
+
+	// Pix not active in the account: the page is still sold, by card alone.
+	fake.pixOff = true
+	code, cardOnly := checkout(nilo, map[string]any{"sku": "tintura_card", "description": "Cabelo Card", "prices": map[string]int{"BRL": 499}})
+	fake.pixOff = false
+	if code != http.StatusOK || !strings.HasPrefix(cardOnly["url"].(string), "https://checkout.stripe.test/") {
+		t.Fatalf("without Pix the checkout falls back to card: %d %v", code, cardOnly)
+	}
+	cardForm := fake.forms[strings.TrimPrefix(cardOnly["url"].(string), "https://checkout.stripe.test/")]
+	if cardForm.Get("payment_method_types[0]") != "card" || cardForm.Get("payment_method_types[1]") != "" || cardForm.Get("payment_method_options[pix][expires_after_seconds]") != "" {
+		t.Fatalf("the fallback asks for card only: %v", cardForm)
+	}
 
 	// Orders in a row are limited (a script cannot open hundreds of Stripe sessions).
 	var limited bool

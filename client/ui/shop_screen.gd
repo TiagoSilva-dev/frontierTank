@@ -61,13 +61,14 @@ func build_preview() -> void:
 		var equipped: Array = app.profile.equipped_list().filter(func(inst: Dictionary) -> bool: return Armory.slot_of(str(inst.id)) != Armory.slot_of(str(trying.id)))
 		equipped.append(trying)
 		look = Armory.look_for(app.profile.gender, equipped)
-	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 420), "dark")
+	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 340), "dark")
 	stage.clip_contents = true
-	AvatarView.create(stage, look, Rect2(0, 20, 332, 390))
-	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 556, 34, 34))
-	UiKit.label(contents, str(app.profile.coins), Rect2(130, 552, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
+	AvatarView.create(stage, look, Rect2(0, 10, 332, 320))
+	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 472, 34, 34))
+	UiKit.label(contents, str(app.profile.coins), Rect2(130, 468, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
 	var hint: String = premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")
-	UiKit.label(contents, hint, Rect2(70, 596, 332, 50), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	# The hint wraps inside its box (the text is long and the font never goes under 16).
+	UiKit.wrapped(contents, hint, Rect2(70, 514, 332, 124), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
 
 func items() -> Array:
@@ -104,9 +105,9 @@ func card(def: Dictionary, rect: Rect2) -> void:
 		# 0.21: the shop sells Normal only; Excelente, Verdadeira and Super come from
 		# instances (or the auction).
 		var price: int = PlayerProfile.item_price(str(def.id), "normal")
-		var buy: Button = UiKit.button(box, "%s  %d" % [Armory.quality_label("normal"), price], Rect2(8, 156, 172, 32), buy_item.bind(str(def.id), "normal"), "button", 14)
+		var buy: Button = UiKit.button(box, "%s  %d" % [Armory.quality_label("normal"), price], Rect2(8, 148, 172, 32), buy_item.bind(str(def.id), "normal"), "button", 14)
 		buy.disabled = app.profile.coins < price
-		UiKit.label(box, tr("Excelente e Verdadeira:\ninstâncias e leilão"), Rect2(4, 196, 180, 40), 13, Color("c9a8ff"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(box, tr("Excelente e Verdadeira:\ninstâncias e leilão"), Rect2(4, 184, 180, 50), 13, Color("c9a8ff"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		return
 	var price_value: int = int(def.get("price", 0))
 	UiKit.label(box, tr("%d moedas") % price_value, Rect2(4, 148, 180, 28), 16, UiKit.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)

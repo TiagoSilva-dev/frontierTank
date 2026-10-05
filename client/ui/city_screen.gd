@@ -33,6 +33,7 @@ var buildings: Array[Dictionary] = BUILDINGS
 var hovered: int = -1
 var time: float = 0.0
 var labels: Array[Label] = []
+const TIP_WIDTH: float = 360.0
 var tip_panel: Panel
 var tip_label: Label
 var glow: Control
@@ -101,8 +102,9 @@ func _ready() -> void:
 			if full or PetHunt.pending_slots(app.profile, now) >= 25:
 				var ready: Label = UiKit.label(self, tr("Caçada cheia! Colete") if full else tr("Caçada pronta para coletar"), Rect2(pos[0] - 130, pos[1] + 14, 260, 28), 16, Color("9aff7a"), Color("0d2a14"), HORIZONTAL_ALIGNMENT_CENTER)
 				ready.add_theme_constant_override("outline_size", 6)
-	tip_panel = UiKit.panel(self, Rect2(0, 0, 340, 40), "banner")
-	tip_label = UiKit.label(tip_panel, "", Rect2(0, 0, 340, 40), 17, Color("fff4a0"), Color("5a1004"), HORIZONTAL_ALIGNMENT_CENTER)
+	tip_panel = UiKit.panel(self, Rect2(0, 0, TIP_WIDTH, 40), "banner")
+	tip_label = UiKit.label(tip_panel, "", Rect2(16, 0, TIP_WIDTH - 32, 40), 17, Color("fff4a0"), Color("5a1004"), HORIZONTAL_ALIGNMENT_CENTER)
+	tip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tip_panel.hide()
 	var speaker: SpeakerBar = SpeakerBar.new()
 	speaker.app = app
@@ -208,8 +210,13 @@ func set_hover(index: int) -> void:
 	else:
 		var building: Dictionary = buildings[index]
 		tip_label.text = tr(building.tip)
+		# The banner grows with the wrapped text instead of letting it spill past the frame.
+		var lines: Vector2 = tip_label.get_theme_font("font").get_multiline_string_size(tip_label.text, HORIZONTAL_ALIGNMENT_CENTER, TIP_WIDTH - 32, tip_label.get_theme_font_size("font_size"))
+		var tip_height: float = maxf(40.0, lines.y + 20.0)
+		tip_panel.size = Vector2(TIP_WIDTH, tip_height)
+		tip_label.size = Vector2(TIP_WIDTH - 32, tip_height)
 		var pos: Array = building.label
-		tip_panel.position = Vector2(clampf(pos[0] - 170, 8, 932), clampf(pos[1] + 40, 40, 640))
+		tip_panel.position = Vector2(clampf(pos[0] - TIP_WIDTH / 2.0, 8, 1272 - TIP_WIDTH), clampf(pos[1] + 40, 40, 680 - tip_height))
 		tip_panel.show()
 	glow.queue_redraw()
 

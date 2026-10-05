@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -159,6 +160,15 @@ func (c *StripeClient) CreateCheckout(ctx context.Context, p CheckoutParams) (St
 	}
 	var session StripeSession
 	err := c.call(ctx, http.MethodPost, "/v1/checkout/sessions", params, "gustfire-order-"+order, &session)
+	var failure *StripeError
+	if errors.As(err, &failure) && failure.Status == http.StatusBadRequest && strings.Contains(strings.ToLower(failure.Message), "pix") {
+		// Pix is not active on the account (yet): sell by card alone instead of failing the
+		// purchase. It comes back on its own once the account enables Pix.
+		slog.Warn("pix indisponivel na conta Stripe; checkout so com cartao", "err", err)
+		params.Del("payment_method_types[1]")
+		params.Del("payment_method_options[pix][expires_after_seconds]")
+		err = c.call(ctx, http.MethodPost, "/v1/checkout/sessions", params, "gustfire-order-"+order+"-card", &session)
+	}
 	return session, err
 }
 
