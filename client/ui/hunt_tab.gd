@@ -188,7 +188,9 @@ func build() -> void:
 	if message != "":
 		var note: Label = label(message, Rect2(620, 99, 604, 36), 16, HudPaint.GOLD_HOT, HORIZONTAL_ALIGNMENT_RIGHT)
 		note.name = "HuntMessage"
+		note.clip_text = true
 		note.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		note.size = Vector2(604, 36)
 		note.tooltip_text = message
 	refresh_live()
 

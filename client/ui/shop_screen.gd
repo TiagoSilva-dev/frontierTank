@@ -50,8 +50,9 @@ func build() -> void:
 	UiKit.label(contents, "%d/%d" % [page + 1, pages], Rect2(1096, 636, 80, 36), 16, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, ">", Rect2(1176, 636, 44, 36), turn_page.bind(1), "tab", 16)
 	if message != "":
-		var bar: Panel = UiKit.panel(contents, Rect2(442, 636, 600, 36), "dark")
-		UiKit.label(bar, message, Rect2(8, 0, 584, 36), 15, Color("fff4a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		# Two lines fit: the payment messages are long.
+		var bar: Panel = UiKit.panel(contents, Rect2(442, 630, 600, 48), "dark")
+		UiKit.wrapped(bar, message, Rect2(10, 0, 580, 48), 15, Color("fff4a0"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 
 func build_preview() -> void:
 	UiKit.panel(contents, Rect2(56, 84, 360, 596), "paper")
