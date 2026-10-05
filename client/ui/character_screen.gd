@@ -177,6 +177,14 @@ func build_equipment() -> void:
 		await app.do_op("skin_only", [on])
 		if is_inside_tree():
 			stage.avatar.show_look(app.profile.look()))
+	# 0.29: the alternative colours of the skin being worn.
+	var worn_skin: Dictionary = app.profile.equipped_instance("skin")
+	if not worn_skin.is_empty():
+		var skin_id: String = str(worn_skin.id)
+		SkinColors.build(profile_root, Vector2(134, 250), skin_id, str(app.profile.skin_colors.get(skin_id, "")), func(color_id: String) -> void:
+			await app.do_op("skin_color", [skin_id, color_id])
+			if is_inside_tree():
+				build())
 	build_stats(Rect2(48, 544, 564, 144))
 
 func equipment_slot(slot: String, rect: Rect2) -> void:

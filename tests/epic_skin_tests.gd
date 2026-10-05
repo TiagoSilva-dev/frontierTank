@@ -168,6 +168,59 @@ func run_tests() -> void:
 		check(is_instance_valid(rig.skin_fx) and rig.skin_fx.energy() >= 0.0, "the %s layer lives through every state" % theme)
 		check(SkinFx.noise(7) == SkinFx.noise(7) and SkinFx.noise(7) != SkinFx.noise(8), "the layer's randomness is a pure function (no global generator)")
 		host.queue_free()
+	# --- 0.29: alternative colours (a hue turn in the shader, a pick saved in the profile)
+	for skin: String in SKINS:
+		var colors: Array = Armory.skin_colors_of(skin)
+		check(colors.size() == 2, "%s brings two alternative colours" % skin)
+		var shifts: Array = colors.map(func(color: Dictionary) -> float: return float(color.shift))
+		check(shifts[0] != shifts[1] and not 0.0 in shifts, "%s colours differ from each other and from the original" % skin)
+		check(Armory.skin_color_turn(skin, "").is_empty() and Armory.skin_color_turn(skin, "nao_existe").is_empty(), "%s: the original and an unknown colour turn nothing" % skin)
+		var turn: Array = Armory.skin_color_turn(skin, str(colors[0].id))
+		check(turn.size() == 3 and float(turn[2]) == float(colors[0].shift), "%s: a colour gives [from, range, shift]" % skin)
+		var worn: Dictionary = {"id": skin, "quality": "normal", "level": 0}
+		var tinted: Dictionary = Armory.look_for("f", [worn], false, {skin: str(colors[0].id)})
+		check(tinted.get("recolor", []) == turn and tinted.skin_color == colors[0].id, "%s: the look carries the picked colour" % skin)
+		check(not Armory.look_for("m", [worn]).has("recolor") and not Armory.look_for("m", [worn], false, {skin: "nao_existe"}).has("recolor"), "%s: no pick, no turn" % skin)
+		check(not Armory.look_for("m", [worn], true, {skin: str(colors[1].id)}).is_empty() and Armory.look_for("m", [worn], true, {skin: str(colors[1].id)}).has("recolor"), "%s: skin only keeps the colour (it is the skin)" % skin)
+	var wearer: PlayerProfile = PlayerProfile.new()
+	check("skin_color" in PlayerProfile.OPS, "skin_color is a profile operation")
+	check(wearer.apply_op("skin_color", ["epica_gelo", "rosa"], {}).error != "", "a skin the player does not own cannot be coloured")
+	wearer.equip(int(wearer.add_instance("epica_gelo").uid))
+	check(wearer.apply_op("skin_color", ["epica_gelo", "rosa"], {}).error == "" and wearer.look().skin_color == "rosa", "an owned skin takes a colour")
+	check(wearer.apply_op("skin_color", ["epica_gelo", "azul_marinho"], {}).error != "" and wearer.skin_colors.epica_gelo == "rosa", "an unknown colour is refused and the pick stays")
+	var saved: PlayerProfile = PlayerProfile.new()
+	saved.load_data(wearer.to_data())
+	check(saved.skin_colors.get("epica_gelo", "") == "rosa" and saved.look().has("recolor"), "the colour survives a save")
+	var hand_edited: PlayerProfile = PlayerProfile.new()
+	hand_edited.load_data({"version": 11, "gender": "m", "skin_colors": {"epica_gelo": "feio", "nao_skin": "rosa", "epica_magma": "plasma"}})
+	check(hand_edited.skin_colors == {"epica_magma": "plasma"}, "a save keeps only the colours the data knows")
+	check(wearer.apply_op("skin_color", ["epica_gelo", ""], {}).error == "" and not wearer.skin_colors.has("epica_gelo") and not wearer.look().has("recolor"), "an empty colour goes back to the original")
+	# The colour is the hue band of the art itself: it moves the skin's accent and nothing else.
+	var south: Image = (load("res://assets/characters/epica_gelo_m/south.png") as Texture2D).get_image()
+	var band: Dictionary = Armory.cosmetic_def("epica_gelo").recolor
+	var inside: int = 0
+	var saturated: int = 0
+	for y in range(south.get_height()):
+		for x in range(south.get_width()):
+			var pixel: Color = south.get_pixel(x, y)
+			if pixel.a > 0.5 and pixel.s > 0.3:
+				saturated += 1
+				if absf(wrapf(pixel.h * 360.0 - float(band.from), -180.0, 180.0)) <= float(band.range):
+					inside += 1
+	check(inside * 100 >= saturated * 60, "most of the saturated art of Coroa de Gelo sits inside its hue band (%d of %d)" % [inside, saturated])
+	# --- the shader takes the band
+	var turned: LookRig = LookRig.new()
+	turned.setup(Armory.look_for("m", [{"id": "epica_gelo", "quality": "normal", "level": 0}], false, {"epica_gelo": "rosa"}), "south")
+	var body: Sprite2D = Sprite2D.new()
+	body.texture = load("res://assets/characters/epica_gelo_m/south.png")
+	turned.style(body)
+	var applied: Vector4 = (body.material as ShaderMaterial).get_shader_parameter("recolor")
+	check(is_equal_approx(applied.x, 200.0 / 360.0) and is_equal_approx(applied.z, 120.0 / 360.0) and applied.w == 1.0, "the rig hands the hue band and the turn to the shader")
+	turned.setup(Armory.look_for("m", [{"id": "epica_gelo", "quality": "normal", "level": 0}]), "south")
+	turned.style(body)
+	check((body.material as ShaderMaterial).get_shader_parameter("recolor") == Vector4(), "the original colour turns nothing")
+	body.free()
+	turned.free()
 	var plain: LookRig = LookRig.new()
 	plain.setup({"skin": "base_m", "weapon": "", "weapon_level": 0}, "prone")
 	check(plain.skin_fx == null, "a plain skin has no layer")

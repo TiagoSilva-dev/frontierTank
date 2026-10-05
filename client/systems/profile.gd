@@ -77,6 +77,9 @@ var founder_fx: Dictionary = FounderPack.clean_fx({})
 # 0.27: show the skin as drawn. Hat, glasses, wings and hair dye stay on the character
 # (attributes untouched) but are not drawn; what the skin itself carries still is.
 var skin_only: bool = false
+# 0.29: the alternative colour picked for each skin that has them ({skin item id: colour id}).
+# Appearance only; the colours come with the skin.
+var skin_colors: Dictionary = {}
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var remote: bool = false
 var on_save: Callable = Callable()
@@ -200,6 +203,7 @@ func load_data(data: Dictionary) -> bool:
 	bag = fit_bag(clean_bag(data.get("bag", [])))
 	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
 	skin_only = bool(data.get("skin_only", false))
+	skin_colors = clean_skin_colors(data.get("skin_colors", {}))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
 	if saved_coupons is Array:
@@ -274,7 +278,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 11, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx, "skin_only": skin_only}
+	return {"version": 11, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx, "skin_only": skin_only, "skin_colors": skin_colors}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -668,11 +672,35 @@ func buy_stone(id: String, amount: int = 1) -> String:
 	save_profile()
 	return ""
 
+# Keeps only {skin id: colour id} pairs the item data knows (a hand-edited or old save).
+static func clean_skin_colors(raw: Variant) -> Dictionary:
+	var clean: Dictionary = {}
+	if typeof(raw) != TYPE_DICTIONARY:
+		return clean
+	for key: Variant in raw:
+		var turn: Array = Armory.skin_color_turn(str(key), str(raw[key]))
+		if not turn.is_empty():
+			clean[str(key)] = str(raw[key])
+	return clean
+
+# Picks the colour a skin is drawn in ("" for the original). The skin must be owned.
+func pick_skin_color(skin_id: String, color_id: String) -> String:
+	if not has_item(skin_id):
+		return tr("Você não tem essa skin.")
+	if color_id == "":
+		skin_colors.erase(skin_id)
+	elif Armory.skin_color_turn(skin_id, color_id).is_empty():
+		return tr("Cor desconhecida.")
+	else:
+		skin_colors[skin_id] = color_id
+	save_profile()
+	return ""
+
 func stats(balance: Dictionary) -> Dictionary:
 	return Armory.character_stats(level(), equipped_list(), balance, pet_bonus())
 
 func look() -> Dictionary:
-	var result: Dictionary = Armory.look_for(gender, equipped_list(), skin_only)
+	var result: Dictionary = Armory.look_for(gender, equipped_list(), skin_only, skin_colors)
 	if not active_pet().is_empty():
 		result["pet"] = str(active_pet().species)
 	if is_founder():
@@ -1107,7 +1135,7 @@ func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "streak_claim", "tutorial", "title_set", "season_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop", "skin_only"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "streak_claim", "tutorial", "title_set", "season_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop", "skin_only", "skin_color"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -1189,6 +1217,8 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			# Cosmetic only: draw the skin alone (no hat, glasses, wings or hair dye).
 			skin_only = not args.is_empty() and typeof(args[0]) == TYPE_BOOL and args[0]
 			save_profile()
+		"skin_color":
+			error = pick_skin_color(arg_str(args, 0), arg_str(args, 1))
 		"pet_hatch":
 			error = hatch(arg_str(args, 0))
 		"pet_equip":

@@ -149,6 +149,9 @@ func demo_loadout(kind: String) -> void:
 				profile.equip(int(inst.uid))
 				break
 	profile.add_item("strength_stone_iv", 20)
+	# 0.29 capture helper: --color=<id> draws the epic skin in one of its alternative colours.
+	if kind.begins_with("epica_") and args.has("color"):
+		profile.pick_skin_color(kind, str(args.color))
 	# 0.19 showcase: a few pets of every rarity, the Fênix Dourada by your side.
 	if profile.pets.is_empty():
 		for entry: Array in [["fenix_dourada", 12, 2], ["leao_dourado", 9, 1], ["raposa_glacial", 6, 0], ["chacal_ambar", 4, 0], ["escaravelho_solar", 2, 0]]:
@@ -615,6 +618,7 @@ func shortcut(id: String) -> void:
 			# Capture helpers: --try=<item> on the fitting stage, --view=battle, --dir=east.
 			if args.has("try"):
 				shop.trying = {"id": str(args.try), "quality": "normal", "level": 0}
+				shop.preview_color = str(args.get("color", ""))
 			shop.preview_mode = str(args.get("view", "stand"))
 			shop.preview_direction = str(args.get("dir", "south"))
 			shop.closed.connect(refresh_room)

@@ -98,6 +98,10 @@ func cell(at: Vector2, color: Color, size: float = 0.0) -> void:
 	if color.a < 0.4:
 		return
 	color.a = 1.0
+	var turn: Array = rig.look.get("recolor", [])
+	if turn.size() == 3 and color.s > 0.2:
+		# The alternative colour of the skin turns the whole layer with it.
+		color.h = fposmod(color.h + float(turn[2]) / 360.0, 1.0)
 	var edge: float = size if size > 0.0 else cs
 	draw_rect(Rect2((at / cs).round() * cs - Vector2(edge, edge) / 2.0, Vector2(edge, edge)), color)
 

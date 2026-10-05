@@ -13,6 +13,10 @@ uniform vec4 head_rect = vec4(0.0, 0.0, 1.0, 1.0);
 uniform vec4 dye = vec4(0.0);
 uniform vec4 glow = vec4(0.0);
 uniform float glow_width = 5.0;
+// Alternative colour of an epic skin: x = hue it was drawn in, y = half-width of that
+// hue band, z = how far to turn it (all in turns, 0..1), w = 1 when active. Only the
+// saturated pixels inside the band move, so skin, hair and outlines keep their colour.
+uniform vec4 recolor = vec4(0.0);
 
 float luma(vec3 c) {
 	return dot(c, vec3(0.299, 0.587, 0.114));
@@ -26,7 +30,37 @@ void vertex() {
 	tint = COLOR;
 }
 
+vec3 rgb_to_hsv(vec3 c) {
+	float hi = max(c.r, max(c.g, c.b));
+	float lo = min(c.r, min(c.g, c.b));
+	float d = hi - lo;
+	float h = 0.0;
+	if (d > 0.0001) {
+		if (hi == c.r) {
+			h = mod((c.g - c.b) / d, 6.0);
+		} else if (hi == c.g) {
+			h = (c.b - c.r) / d + 2.0;
+		} else {
+			h = (c.r - c.g) / d + 4.0;
+		}
+	}
+	return vec3(h / 6.0, hi > 0.0 ? d / hi : 0.0, hi);
+}
+
+vec3 hsv_to_rgb(vec3 c) {
+	vec3 k = clamp(abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+	return c.z * mix(vec3(1.0), k, c.y);
+}
+
 vec4 dyed(vec4 color, vec2 uv) {
+	if (recolor.w > 0.0 && color.a > 0.5) {
+		vec3 hsv = rgb_to_hsv(color.rgb);
+		float away = abs(fract(hsv.x - recolor.x + 0.5) - 0.5);
+		if (hsv.y > 0.3 && away <= recolor.y) {
+			hsv.x = fract(hsv.x + recolor.z + 1.0);
+			color.rgb = hsv_to_rgb(hsv);
+		}
+	}
 	if (dye.a > 0.0 && color.a > 0.5 && uv.x >= head_rect.x && uv.y >= head_rect.y && uv.x <= head_rect.z && uv.y <= head_rect.w) {
 		for (int i = 0; i < hair_count; i++) {
 			vec3 d = abs(color.rgb - hair[i]);

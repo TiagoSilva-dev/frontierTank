@@ -185,6 +185,21 @@ static func projectile_path(weapon_id: String, key: String, level: int = 0) -> S
 			return path
 	return weapon_icon(weapon_id, level)
 
+# The alternative colours of a skin ({id, name, shift}); empty for a skin without them.
+static func skin_colors_of(skin_id: String) -> Array:
+	return cosmetic_def(skin_id).get("colors", [])
+
+# [from, range, shift] in degrees for one colour of a skin, [] when it is the original or unknown.
+static func skin_color_turn(skin_id: String, color_id: String) -> Array:
+	if skin_id == "" or color_id == "":
+		return []
+	var def: Dictionary = cosmetic_def(skin_id)
+	var band: Dictionary = def.get("recolor", {})
+	for color: Dictionary in def.get("colors", []):
+		if str(color.id) == color_id and not band.is_empty():
+			return [float(band.from), float(band.range), float(color.shift)]
+	return []
+
 static func skin_path(skin: String, direction: String = "south") -> String:
 	return "res://assets/characters/%s/%s.png" % [skin, direction]
 
@@ -351,7 +366,7 @@ static func crit_chance(extra: Dictionary) -> float:
 
 # `skin_only` (0.27) draws the skin as it was made: hat, glasses, wings and hair dye are
 # left out of the look, and the stats never notice (they read the equipment, not the look).
-static func look_for(gender: String, equipped: Array, skin_only: bool = false) -> Dictionary:
+static func look_for(gender: String, equipped: Array, skin_only: bool = false, skin_colors: Dictionary = {}) -> Dictionary:
 	var look: Dictionary = {"skin": "lani" if gender == "f" else "base_m", "hair": "", "hat": "", "glasses": "", "wings": "", "weapon": LEGACY_ORDER[0], "weapon_level": 0, "clothes_level": 0}
 	var skin_id: String = ""
 	for inst: Dictionary in equipped:
@@ -394,6 +409,12 @@ static func look_for(gender: String, equipped: Array, skin_only: bool = false) -
 	# to the skin, so "only the skin" keeps it.
 	if skin_id != "" and str(cosmetic_def(skin_id).get("fx", "")) != "":
 		look["skin_fx"] = str(cosmetic_def(skin_id).fx)
+	# The colour the player picked for this skin (0.29): a hue turn the shader and the layer apply.
+	var picked: String = str(skin_colors.get(skin_id, "")) if skin_id != "" else ""
+	var turn: Array = skin_color_turn(skin_id, picked)
+	if not turn.is_empty():
+		look["recolor"] = turn
+		look["skin_color"] = picked
 	return look
 
 static func random_loadout(rng: RandomNumberGenerator, level: int, gender: String, skin: String) -> Dictionary:

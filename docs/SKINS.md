@@ -243,5 +243,14 @@ Respondidas em 04/10/2026: D1 camisa e calça **não** aparecem no boneco; D2 si
 - **Servidor**: `items.json` e `store.json` mudaram (e `PremiumStore`/`game_server.gd`): reimplantar servidor de jogo e API juntos.
 - **Não saiu / ficou para a 0.29**: cores alternativas e "Cor extra", a Épica Deluxe (Capitã Fantasma, Guardião de Jade e Caçador do Eclipse), o emote da skin, a skin de conquista da liga e o som de cada POW (nenhum som foi ouvido; só medido). A **entrada no Salão** só para lendárias continua como estava. (O POW do Gelo foi refeito uma vez, com "chest arches up, arms thrown wide, glowing white-blue", e agora tem clarão e redemoinho de gelo.)
 
+### 0.29 — parte 1: cores alternativas (feita em 05/10/2026)
+- **Sem arte nova**: cada skin épica traz `recolor` (`from` = matiz em que foi desenhada, `range` = meia-largura da faixa, em graus) e `colors` (duas cores `{id, name, shift}`). O *shader* `look.gdshader` (uniform `recolor`) gira o matiz só dos pixels saturados dentro da faixa: pele, cabelo e contorno ficam como estão. A `SkinFx` gira as próprias cores pelo mesmo `shift` (em `cell()`).
+- **Cores**: Tempestade Viva (220°, ±35): Aurora Verde, Relâmpago Violeta; Coroa de Gelo (200°, ±30): Geada Rosa, Gelo de Jade; Coração de Magma (5°, ±40): Plasma Azul, Magma Venenoso.
+- **Perfil**: `skin_colors` ({id da skin: id da cor}, sem mudar a versão do save, como `skin_only`), op `skin_color` [skin, cor] (a skin tem de ser do jogador; `""` volta ao original), limpeza no `load_data` (`clean_skin_colors`). `Armory.look_for(..., skin_colors)` põe `look.recolor` e `look.skin_color`.
+- **Interface**: `client/ui/skin_colors.gd` (`SkinColors.build`, três bolinhas) na Mochila (salva) e no provador da loja (só prova). Captura: `--demo=epica_gelo --color=rosa`, `--screen=shop --tab=premium --try=epica_magma --color=veneno`.
+- **Decisão**: as duas cores **vêm com a skin** (como na tabela de preços); a "Cor extra avulsa" (R$ 6,90) e a cor exclusiva da Deluxe ficam para quando houver o que vender.
+- **Testes**: `tests/epic_skin_tests.gd` (127 checagens).
+- **Falta na 0.29**: as três skins Épica Deluxe (Capitã Fantasma, Guardião de Jade, Caçador do Eclipse), o emote e a skin de conquista da liga.
+
 ### Próximo: 0.29 (skins épicas, temporada 1: o resto)
 Capitã Fantasma, Guardião de Jade e Caçador do Eclipse (Épica Deluxe), as cores alternativas (`recolor`, deslocamento de paleta no *shader*) e a "Cor extra". Saldo do PixelLab depois da 0.28: **953 gerações até 24/10/2026**; três skins para os dois gêneros custam cerca de 320 se nada for refeito.

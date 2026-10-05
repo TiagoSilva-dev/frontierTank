@@ -199,6 +199,8 @@ func style(body: Sprite2D, clip: String = "") -> void:
 	material.set_shader_parameter("dye", Color(dye) if dye != "" else Color(0, 0, 0, 0))
 	material.set_shader_parameter("glow", Color(glow_color.r, glow_color.g, glow_color.b, 1.0) if glow_color.a > 0 else Color(0, 0, 0, 0))
 	material.set_shader_parameter("head_rect", head_rect_uv(body.texture, clip))
+	var turn: Array = look.get("recolor", [])
+	material.set_shader_parameter("recolor", Vector4(float(turn[0]) / 360.0, float(turn[1]) / 360.0, float(turn[2]) / 360.0, 1.0) if turn.size() == 3 else Vector4())
 	body.material = material
 
 func head_rect_uv(texture: Texture2D, clip: String) -> Vector4:

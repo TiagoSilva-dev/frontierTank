@@ -24,6 +24,8 @@ var preview_skin_only: bool = false
 # The fitting stage (SkinStage): standing (turning to the four directions) or in the battle pose.
 var preview_mode: String = "stand"
 var preview_direction: String = "south"
+# The alternative colour tried on the skin in the fitting room ("" = the original).
+var preview_color: String = ""
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -68,7 +70,10 @@ func build_preview() -> void:
 	if not trying.is_empty():
 		equipped = equipped.filter(func(inst: Dictionary) -> bool: return Armory.slot_of(str(inst.id)) != Armory.slot_of(str(trying.id)))
 		equipped.append(trying)
-	var look: Dictionary = app.profile.look() if trying.is_empty() and preview_skin_only == app.profile.skin_only else Armory.look_for(app.profile.gender, equipped, preview_skin_only)
+	var colors: Dictionary = app.profile.skin_colors.duplicate()
+	if not trying.is_empty() and Armory.slot_of(str(trying.id)) == "skin":
+		colors[str(trying.id)] = preview_color
+	var look: Dictionary = app.profile.look() if trying.is_empty() and preview_skin_only == app.profile.skin_only else Armory.look_for(app.profile.gender, equipped, preview_skin_only, colors)
 	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 340), "dark")
 	stage.clip_contents = true
 	var fitting: Dictionary = app.profile.entry(app.balance).duplicate()
@@ -78,6 +83,10 @@ func build_preview() -> void:
 	only.toggled.connect(func(on: bool) -> void:
 		preview_skin_only = on
 		build())
+	if not trying.is_empty() and Armory.slot_of(str(trying.id)) == "skin":
+		SkinColors.build(stage, Vector2(10, 262), str(trying.id), preview_color, func(color_id: String) -> void:
+			preview_color = color_id
+			build())
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 472, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 468, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
 	var hint: String = premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")
@@ -185,6 +194,7 @@ func buy_premium(sku: String) -> void:
 		build()
 
 func try_on(def: Dictionary) -> void:
+	preview_color = ""
 	trying = {"id": def.id, "quality": "super" if def.get("super", false) else "normal", "level": 0}
 	build()
 
