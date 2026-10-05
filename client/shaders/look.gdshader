@@ -14,8 +14,8 @@ uniform vec4 dye = vec4(0.0);
 uniform vec4 glow = vec4(0.0);
 uniform float glow_width = 5.0;
 // Alternative colour of an epic skin: x = hue it was drawn in, y = half-width of that
-// hue band, z = how far to turn it (all in turns, 0..1), w = 1 when active. Only the
-// saturated pixels inside the band move, so skin, hair and outlines keep their colour.
+// hue band, z = how far to turn it (all in turns, 0..1), w = the least saturation that
+// moves (0 = off). Only the saturated pixels inside the band move, so skin, hair and outlines keep their colour.
 uniform vec4 recolor = vec4(0.0);
 
 float luma(vec3 c) {
@@ -56,7 +56,7 @@ vec4 dyed(vec4 color, vec2 uv) {
 	if (recolor.w > 0.0 && color.a > 0.5) {
 		vec3 hsv = rgb_to_hsv(color.rgb);
 		float away = abs(fract(hsv.x - recolor.x + 0.5) - 0.5);
-		if (hsv.y > 0.3 && away <= recolor.y) {
+		if (hsv.y >= recolor.w && away <= recolor.y) {
 			hsv.x = fract(hsv.x + recolor.z + 1.0);
 			color.rgb = hsv_to_rgb(hsv);
 		}

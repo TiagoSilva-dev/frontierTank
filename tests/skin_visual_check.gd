@@ -8,7 +8,7 @@ extends SceneTree
 # Rows: the standing avatar of each skin and, below, the lying fighter of each (men on the left,
 # women on the right) with their living layer (SkinFx).
 
-const SKINS: Array[String] = ["epica_tempestade", "epica_gelo", "epica_magma"]
+const SKINS: Array[String] = ["epica_tempestade", "epica_gelo", "epica_magma", "epica_fantasma"]
 const BACKDROPS: Dictionary = {"sky": Color("86b4e0"), "cave": Color("2c2338"), "snow": Color("dfe9f2")}
 
 func _initialize() -> void:

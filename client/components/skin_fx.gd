@@ -9,7 +9,7 @@ extends Node2D
 # names a theme; the owner tells it what is happening with `rig.fx_state` and `rig.fx_event`.
 # It is only drawing: the time here is real time and nothing reads it back (lockstep stays safe).
 
-const THEMES: Array[String] = ["storm", "ice", "magma"]
+const THEMES: Array[String] = ["storm", "ice", "magma", "ghost"]
 const POW_SECONDS: float = 1.3
 
 var rig: LookRig
@@ -85,6 +85,8 @@ func _draw() -> void:
 			draw_ice(level)
 		"magma":
 			draw_magma(level)
+		"ghost":
+			draw_ghost(level)
 
 # ---------- helpers ----------
 
@@ -99,7 +101,7 @@ func cell(at: Vector2, color: Color, size: float = 0.0) -> void:
 		return
 	color.a = 1.0
 	var turn: Array = rig.look.get("recolor", [])
-	if turn.size() == 3 and color.s > 0.2:
+	if turn.size() == 4 and color.s > 0.2:
 		# The alternative colour of the skin turns the whole layer with it.
 		color.h = fposmod(color.h + float(turn[2]) / 360.0, 1.0)
 	var edge: float = size if size > 0.0 else cs
@@ -320,3 +322,78 @@ func draw_magma_pow() -> void:
 		var color: Color = ember_color(clampf(age * 0.9, 0.0, 1.0))
 		color.a *= clampf(1.0 - age * 0.8, 0.0, 1.0)
 		cell(at, color, cs * (2.0 if i % 3 == 0 else 1.0))
+
+# ---------- Capitania Fantasma ----------
+
+const GHOST_RAMP: Array[Color] = [Color("f2fffa"), Color("9ff5da"), Color("3fc9a6"), Color("1d8a86")]
+
+func ghost_color(phase: float) -> Color:
+	var scaled: float = clampf(phase, 0.0, 1.0) * float(GHOST_RAMP.size() - 1)
+	var low: int = int(scaled)
+	var high: int = mini(low + 1, GHOST_RAMP.size() - 1)
+	return GHOST_RAMP[low].lerp(GHOST_RAMP[high], scaled - low)
+
+# Cold flame licking up from the head, two eyes that burn in the blank face, and the hem of
+# the coat coming apart into mist. It stays on the fighter and above the head: the shot line
+# and the damage area are never covered.
+func draw_ghost(level: float) -> void:
+	var unit: float = scale_unit()
+	var dims: Vector2 = rig.head_dims
+	var head: Vector2 = rig.head_center
+	var rect: Rect2 = rig.body_rect
+	# Eyes: two bright cells standing, one lying prone (the face is in profile), blinking now and then.
+	var blink: bool = fposmod(time + noise(3) * 5.0, 3.4) < 0.14 or rig.fx_state == "defeat"
+	if not blink:
+		# Dark on the pale face: bright eyes would vanish into it.
+		var eye: Color = Color("0b4a52")
+		if standing():
+			cell(head + Vector2(-dims.x * 0.1, dims.y * 0.1), eye)
+			cell(head + Vector2(dims.x * 0.1, dims.y * 0.1), eye)
+		else:
+			cell(head + Vector2(facing() * dims.x * 0.24, -dims.y * 0.02), eye)
+	# Flame tongues from the sides and the back of the head: they rise, sway and thin out.
+	var tongues: int = 6 + int(level * 5.0)
+	for i in range(tongues):
+		var life: float = 0.9 + noise(i * 7) * 0.7
+		var phase: float = fposmod(time / life + noise(i * 13), 1.0)
+		var side: float = (noise(i * 5 + 2) - 0.5) * 2.0
+		var x: float = head.x + side * dims.x * 0.55 + sin(time * 3.0 + i * 1.7) * 2.5 * unit
+		var y: float = head.y + dims.y * 0.1 - phase * dims.y * (0.9 + 0.5 * level)
+		var color: Color = ghost_color(phase)
+		color.a *= clampf(sin(phase * PI) * 1.8, 0.0, 1.0)
+		# A tongue is a short column that thins toward the tip and leans with the sway.
+		for k in range(3):
+			var lick: Color = color
+			lick.a *= 1.0 - 0.28 * k
+			cell(Vector2(x + sin(time * 4.0 + i + k) * 0.8 * k * cs, y - k * cs * 2.0), lick, cs * (2.0 if k == 0 else 1.0))
+	# The hem of the coat dissolves: pale puffs rise from the bottom of the body and fade.
+	var puffs: int = 7 + int(level * 6.0)
+	for i in range(puffs):
+		var life: float = 1.6 + noise(i * 11) * 1.2
+		var phase: float = fposmod(time / life + noise(i * 19), 1.0)
+		var x: float = rect.position.x + noise(i * 3 + 1) * rect.size.x + sin(time * 1.4 + i) * 3.0 * unit
+		var y: float = rect.end.y - phase * rect.size.y * 0.55
+		var color: Color = ghost_color(0.15 + phase * 0.7)
+		color.a *= sin(phase * PI) * 0.8
+		cell(Vector2(x, y), color, cs * 2.0)
+	if pow_time > 0.0:
+		draw_ghost_pow()
+
+# The POW: a ring of spirits spreads out from the body while cold flames shoot up from it.
+func draw_ghost_pow() -> void:
+	var t: float = 1.0 - pow_time / POW_SECONDS
+	var center: Vector2 = rig.body_rect.get_center()
+	var unit: float = scale_unit()
+	for i in range(30):
+		var angle: float = float(i) / 30.0 * TAU + t * 2.4
+		var radius: float = (14.0 + 150.0 * t) * unit
+		var color: Color = ghost_color(t * 0.9)
+		color.a *= clampf(1.25 - t, 0.0, 1.0)
+		cell(center + Vector2(cos(angle) * radius, sin(angle) * radius * 0.5), color, cs * (2.0 if i % 3 == 0 else 1.0))
+	for i in range(9):
+		var x: float = center.x + (float(i) - 4.0) * 12.0 * unit
+		var rise: float = clampf(t * 1.6 - noise(i * 5) * 0.4, 0.0, 1.0)
+		for step in range(int(rise * 9.0)):
+			var color: Color = ghost_color(float(step) / 9.0)
+			color.a *= clampf(1.1 - t, 0.0, 1.0)
+			cell(Vector2(x + sin(time * 6.0 + step + i) * 2.0, center.y - step * cs * 2.5 * unit), color)

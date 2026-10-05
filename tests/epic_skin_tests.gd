@@ -1,11 +1,11 @@
 extends SceneTree
 
-# 0.28 (docs/SKINS.md): the first three epic skins, Tempestade Viva, Coroa de Gelo and Coração
+# 0.28/0.29 (docs/SKINS.md): the epic skins, Tempestade Viva, Coroa de Gelo, Coração
 # de Magma. Each is one item and one product for both genders (a folder of art per gender), has
 # the full set of frames, a living layer of its own (SkinFx), no attributes, and is told apart
 # from the others by its silhouette. The season bundle is never sold on top of owned skins.
 
-const SKINS: Array[String] = ["epica_tempestade", "epica_gelo", "epica_magma"]
+const SKINS: Array[String] = ["epica_tempestade", "epica_gelo", "epica_magma", "epica_fantasma"]
 const CLIP_FRAMES: Dictionary = {"idle": 6, "crawl": 8, "shoot": 6, "hit": 4, "victory": 6, "defeat": 6, "pow": 4}
 
 var failures: int = 0
@@ -21,6 +21,12 @@ func check(value: bool, message: String) -> void:
 		push_error(message)
 	else:
 		print("PASS: " + message)
+
+func _distinct(values: Array) -> int:
+	var seen: Dictionary = {}
+	for value: Variant in values:
+		seen[value] = true
+	return seen.size()
 
 func frames_in(folder: String) -> int:
 	var count: int = 0
@@ -87,7 +93,7 @@ func run_tests() -> void:
 		for i in range(masks.size()):
 			for j in range(i + 1, masks.size()):
 				apart = apart and overlap(masks[i], masks[j]) < 0.85
-		check(apart, "the three lying silhouettes of the %s versions differ" % ("male" if gender == "skin" else "female"))
+		check(apart, "the lying silhouettes of the %s versions differ" % ("male" if gender == "skin" else "female"))
 	# --- the look picks the version of the player's gender and carries the layer
 	for id: String in SKINS:
 		var def: Dictionary = Armory.definition(id)
@@ -118,7 +124,7 @@ func run_tests() -> void:
 	coupon.redeem("TESTARTUDO")
 	check(SKINS.all(func(id: String) -> bool: return coupon.has_item(id)), "the test coupon hands out the epic skins")
 	# --- the store
-	var skus: Dictionary = {"epica_tempestade": "skin_tempestade", "epica_gelo": "skin_gelo", "epica_magma": "skin_magma"}
+	var skus: Dictionary = {"epica_tempestade": "skin_tempestade", "epica_gelo": "skin_gelo", "epica_magma": "skin_magma", "epica_fantasma": "skin_fantasma"}
 	var ids: Array = []
 	for id: String in skus:
 		var entry: Dictionary = PremiumStore.product(str(skus[id]))
@@ -128,8 +134,8 @@ func run_tests() -> void:
 		ids.append(int(entry.steam_item_id))
 	var bundle: Dictionary = PremiumStore.product("pacote_temporada_1")
 	var sum: int = 0
-	for sku: String in skus.values():
-		sum += int(PremiumStore.product(sku).prices.BRL)
+	for id: String in bundle.items:
+		sum += int(PremiumStore.product(str(skus[id])).prices.BRL)
 	check(PremiumStore.valid(bundle) and (bundle.items as Array).size() == 3 and bool(bundle.get("bundle", false)), "the season bundle holds the three skins")
 	check(int(bundle.prices.BRL) == 10990 and int(bundle.prices.BRL) < sum, "the bundle is cheaper than the three apart")
 	ids.append(int(bundle.steam_item_id))
@@ -171,12 +177,12 @@ func run_tests() -> void:
 	# --- 0.29: alternative colours (a hue turn in the shader, a pick saved in the profile)
 	for skin: String in SKINS:
 		var colors: Array = Armory.skin_colors_of(skin)
-		check(colors.size() == 2, "%s brings two alternative colours" % skin)
+		check(colors.size() >= 2, "%s brings at least two alternative colours" % skin)
 		var shifts: Array = colors.map(func(color: Dictionary) -> float: return float(color.shift))
-		check(shifts[0] != shifts[1] and not 0.0 in shifts, "%s colours differ from each other and from the original" % skin)
+		check(not 0.0 in shifts and shifts.size() == _distinct(shifts), "%s colours differ from each other and from the original" % skin)
 		check(Armory.skin_color_turn(skin, "").is_empty() and Armory.skin_color_turn(skin, "nao_existe").is_empty(), "%s: the original and an unknown colour turn nothing" % skin)
 		var turn: Array = Armory.skin_color_turn(skin, str(colors[0].id))
-		check(turn.size() == 3 and float(turn[2]) == float(colors[0].shift), "%s: a colour gives [from, range, shift]" % skin)
+		check(turn.size() == 4 and float(turn[2]) == float(colors[0].shift), "%s: a colour gives [from, range, shift, saturation]" % skin)
 		var worn: Dictionary = {"id": skin, "quality": "normal", "level": 0}
 		var tinted: Dictionary = Armory.look_for("f", [worn], false, {skin: str(colors[0].id)})
 		check(tinted.get("recolor", []) == turn and tinted.skin_color == colors[0].id, "%s: the look carries the picked colour" % skin)
@@ -215,7 +221,7 @@ func run_tests() -> void:
 	body.texture = load("res://assets/characters/epica_gelo_m/south.png")
 	turned.style(body)
 	var applied: Vector4 = (body.material as ShaderMaterial).get_shader_parameter("recolor")
-	check(is_equal_approx(applied.x, 200.0 / 360.0) and is_equal_approx(applied.z, 120.0 / 360.0) and applied.w == 1.0, "the rig hands the hue band and the turn to the shader")
+	check(is_equal_approx(applied.x, 200.0 / 360.0) and is_equal_approx(applied.z, 120.0 / 360.0) and is_equal_approx(applied.w, 0.3), "the rig hands the hue band and the turn to the shader")
 	turned.setup(Armory.look_for("m", [{"id": "epica_gelo", "quality": "normal", "level": 0}]), "south")
 	turned.style(body)
 	check((body.material as ShaderMaterial).get_shader_parameter("recolor") == Vector4(), "the original colour turns nothing")

@@ -33,14 +33,17 @@ Cada personagem em pé saiu bom **na primeira geração** (uma variação por ve
 - Os personagens saem dentro de uma tela de 136 px com margem; o `anchors.json` mede cabeça, olhos e costas. `epica_*` não tem tintura de cabelo.
 - Camada própria: nada de PixelLab. `SkinFx` desenha em código.
 
-## 0.29 — Capitã Fantasma (Épica Deluxe)
-**Só a versão feminina feita até aqui** (`assets/characters/epica_fantasma_f/`, ainda sem item, sem camada `ghost` e sem a versão masculina).
+## 0.29 — Capitania Fantasma (nome neutro; Épica)
+Duas versões: **feminina** (a "Capitã") e **masculina**, em `assets/characters/epica_fantasma_f/` e `epica_fantasma_m/`. O item é `epica_fantasma` (nome "Capitania Fantasma", que serve aos dois), camada `ghost` e três cores (Névoa Violeta, Fogo-Fátuo Dourado e a exclusiva Chama Rubi).
 
-| Passo | Id | Custo |
+| Versão | Em pé (id) | Deitado `ProneB` (id) |
 |---|---|---|
-| Em pé A (descartada): capitã pirata humana, cabelo verde-água, rosto normal | `e5a15f13-212f-4f8a-af7e-b543f28a5714` | 1 |
-| Em pé B (escolhida): rosto de brilho verde-água fantasmagórico, chapéu de capitão, casaco azul-marinho com bordas douradas | `8fe509e3-481e-4e2a-9601-d6cd82d30cdf` | 1 |
-| Deitado `ProneB` (de mãos vazias, saiu bom na primeira) | `24083818-6c63-49f9-b1c6-f93bb31242d0` | ~30 |
-| 7 clipes (idle 3, crawl 4, shoot 3, hit 2, victory 3, defeat 3, pow 2) | mesmo id | 20 |
+| Feminina | B `8fe509e3-481e-4e2a-9601-d6cd82d30cdf` (A, descartada: `e5a15f13-212f-4f8a-af7e-b543f28a5714`) | `24083818-6c63-49f9-b1c6-f93bb31242d0` |
+| Masculina | A `42572eff-4635-4202-aee6-956df7655d5b` (B, descartada, "Davy Jones" de barba: `8c669d51-c564-40c4-a2a0-d3f776726296`) | `20bc0e66-173e-4ec9-a844-c18fa32d83b1` |
 
-Saldo: 953 antes, cerca de 900 depois. Lições: a A (rosto humano) não se distingue de uma pirata qualquer; o rosto de "chama" com olhos vira um brilho liso, que lê como espectro e fica bem a 80 px. O `pow` saiu com um disco branco grande e nuvens brancas nos primeiros quadros: serve como carga de poder, mas confira no jogo. A direção leste do rosto perde os olhos: a camada `SkinFx` (chama fria e névoa) é que dá o rosto de fantasma.
+- **Custo**: cerca de 55 (feminina) e 70 (masculina, contando o refazer de 3 clipes); saldo 953 → cerca de 830.
+- **Rosto**: o rosto de "chama" saiu como um brilho verde-água liso, que lê como espectro a 80 px e distingue a skin das outras. A escolha da feminina (B) e da masculina (A) foi pelo **rosto liso em comum**; as variações com rosto humano ou de barba foram descartadas.
+- **Lição**: na masculina, `shoot`, `victory` e `pow` saíram com olhos fechados, boca vermelha e um "ovo" branco com um olho. Refeitos (11 gerações) com "the face stays a smooth blank glowing mint-green mask with no eyes and no mouth", saíram com o rosto liso. Peça isso já na primeira vez.
+- **Camada** (`SkinFx`, tema `ghost`): olhos escuros no rosto (brancos sumiam no rosto claro), línguas de chama fria que sobem da cabeça, névoa que se solta da barra do casaco e, no POW, um anel de espíritos e colunas de chama. As cores alternativas giram a camada junto.
+- **Cores**: matiz de origem 168° (±22°), saturação mínima 0,2 (o rosto tem 0,30: no limite padrão de 0,3 ele não girava com o cabelo). `recolor.sat` é opcional por skin.
+- **Preço**: R$ 44,90 / US$ 8,99 como as outras épicas (SKU `skin_fantasma`, 2104). A "Épica Deluxe" (R$ 59,90) só passa a valer com o emote da skin, que ainda não existe.

@@ -189,7 +189,8 @@ static func projectile_path(weapon_id: String, key: String, level: int = 0) -> S
 static func skin_colors_of(skin_id: String) -> Array:
 	return cosmetic_def(skin_id).get("colors", [])
 
-# [from, range, shift] in degrees for one colour of a skin, [] when it is the original or unknown.
+# [from, range, shift, min_saturation] for one colour of a skin (degrees; a saturation under the
+# minimum is left alone), [] when it is the original or unknown.
 static func skin_color_turn(skin_id: String, color_id: String) -> Array:
 	if skin_id == "" or color_id == "":
 		return []
@@ -197,7 +198,7 @@ static func skin_color_turn(skin_id: String, color_id: String) -> Array:
 	var band: Dictionary = def.get("recolor", {})
 	for color: Dictionary in def.get("colors", []):
 		if str(color.id) == color_id and not band.is_empty():
-			return [float(band.from), float(band.range), float(color.shift)]
+			return [float(band.from), float(band.range), float(color.shift), float(band.get("sat", 0.3))]
 	return []
 
 static func skin_path(skin: String, direction: String = "south") -> String:

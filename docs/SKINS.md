@@ -250,7 +250,8 @@ Respondidas em 04/10/2026: D1 camisa e calça **não** aparecem no boneco; D2 si
 - **Interface**: `client/ui/skin_colors.gd` (`SkinColors.build`, três bolinhas) na Mochila (salva) e no provador da loja (só prova). Captura: `--demo=epica_gelo --color=rosa`, `--screen=shop --tab=premium --try=epica_magma --color=veneno`.
 - **Decisão**: as duas cores **vêm com a skin** (como na tabela de preços); a "Cor extra avulsa" (R$ 6,90) e a cor exclusiva da Deluxe ficam para quando houver o que vender.
 - **Testes**: `tests/epic_skin_tests.gd` (127 checagens).
-- **Falta na 0.29**: as três skins Épica Deluxe (Capitã Fantasma, Guardião de Jade, Caçador do Eclipse), o emote e a skin de conquista da liga.
+- **Capitania Fantasma feita** (05/10/2026, nome neutro, ver `docs/PIXELLAB_SKINS.md`): arte nas duas versões, camada `ghost`, três cores (a terceira, Chama Rubi, é a "cor exclusiva" da Deluxe), SKU `skin_fantasma` a R$ 44,90. `recolor.sat` (saturação mínima) passou a ser configurável por skin.
+- **Falta na 0.29**: Guardião de Jade e Caçador do Eclipse, o emote (e com ele o preço Deluxe de R$ 59,90) e a skin de conquista da liga.
 
 ### Próximo: 0.29 (skins épicas, temporada 1: o resto)
 Capitã Fantasma, Guardião de Jade e Caçador do Eclipse (Épica Deluxe), as cores alternativas (`recolor`, deslocamento de paleta no *shader*) e a "Cor extra". Saldo do PixelLab depois da 0.28: **953 gerações até 24/10/2026**; três skins para os dois gêneros custam cerca de 320 se nada for refeito.
