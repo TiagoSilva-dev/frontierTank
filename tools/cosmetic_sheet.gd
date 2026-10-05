@@ -4,7 +4,7 @@ extends SceneTree
 # to tune assets/cosmetics/fit.json by eye.
 #
 #   godot --path . --rendering-driver opengl3 --script tools/cosmetic_sheet.gd -- \
-#     --set=hats|glasses|mixed --view=front|prone --scale=2 --out=sheet.png [--bodies=base_m,lani]
+#     --set=hats|glasses|mixed|pve_hats|pve_glasses --view=front|prone --scale=2 --out=sheet.png [--bodies=base_m,lani]
 #
 # Rows are bodies, columns the pieces of headwear (the first column is bare, for reference).
 
@@ -12,6 +12,9 @@ var args: Dictionary = {}
 
 const HATS: Array[String] = ["", "chapeu_kabuto", "chapeu_cartola", "chapeu_coroa", "chapeu_coelho", "chapeu_pirata", "chapeu_viking"]
 const GLASSES: Array[String] = ["", "oculos_escuros", "oculos_redondos", "oculos_coracao", "oculos_heroi"]
+# The PvE gear (0.31): four rarities of each, Comum to Lendário.
+const PVE_HATS: Array[String] = ["", "chapeu_couro", "chapeu_aco_azul", "chapeu_arcano", "chapeu_dragao"]
+const PVE_GLASSES: Array[String] = ["", "oculos_aviador", "oculos_cristal", "oculos_arcano", "oculos_dragao"]
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -36,6 +39,12 @@ func run() -> void:
 				columns.append({"hat": hat, "glasses": ""})
 		"glasses":
 			for glasses: String in GLASSES:
+				columns.append({"hat": "", "glasses": glasses})
+		"pve_hats":
+			for hat: String in PVE_HATS:
+				columns.append({"hat": hat, "glasses": ""})
+		"pve_glasses":
+			for glasses: String in PVE_GLASSES:
 				columns.append({"hat": "", "glasses": glasses})
 		_:
 			for hat: String in HATS.slice(1):

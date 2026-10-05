@@ -94,8 +94,8 @@ func build_item_list() -> void:
 		var slot: Button = UiKit.button(contents, "", rect, pick.bind(uid), kind)
 		slot.name = "Smith_%d" % uid
 		with_card(slot, {"key": "uid:%d" % uid, "inst": inst, "name": Armory.item_name(inst)})
-		if str(inst.get("quality", "normal")) != "normal":
-			slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.quality_color(inst)))
+		if Armory.glow_color(inst).a > 0.0:
+			slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.glow_color(inst), Armory.quality_gem(inst)))
 		var picture: TextureRect = UiKit.art(slot, Armory.load_icon(inst), Rect2(12, 6, 52, 52))
 		picture.modulate = Armory.icon_tint(inst)
 		if int(inst.level) > 0:
@@ -165,7 +165,7 @@ func build_strengthen() -> void:
 	stage.item = inst
 	contents.add_child(stage)
 	if not inst.is_empty():
-		UiKit.label(contents, Armory.item_name(inst, false), Rect2(354, 160, 544, 34), 26, Armory.quality_color(inst), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.label(contents, Armory.item_name(inst, false), Rect2(354, 160, 544, 34), 26, Armory.name_color(inst), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 	var level: int = int(inst.get("level", 0))
 	var cost: Dictionary = app.profile.strengthen_cost(inst) if not inst.is_empty() else {}
 	UiKit.label(contents, tr("PEDRAS DE FORTALECIMENTO"), Rect2(56, 562, 420, 24), 16, HudPaint.GOLD)
@@ -279,8 +279,8 @@ func build_craft_list() -> void:
 		if craft_target == "item":
 			slot.name = "Craft_%d" % uid
 			with_card(slot, {"key": "uid:%d" % uid, "inst": entry, "name": Armory.item_name(entry)})
-			if str(entry.quality) != "normal":
-				slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.quality_color(entry)))
+			if Armory.glow_color(entry).a > 0.0:
+				slot.add_child(BagSlot.glow_node(Rect2(6, 3, 64, 60), Armory.glow_color(entry), Armory.quality_gem(entry)))
 			var picture: TextureRect = UiKit.art(slot, Armory.load_icon(entry), Rect2(12, 6, 52, 52))
 			picture.modulate = Armory.icon_tint(entry)
 			if int(entry.level) > 0:
@@ -319,15 +319,15 @@ func build_craft() -> void:
 	box.clip_contents = true
 	if craft_target == "item":
 		var quality: String = str(subject.quality)
-		UiKit.clipped(contents, Armory.item_name(subject), Rect2(600, 158, 612, 32), 22, Armory.quality_color(subject).lightened(0.15), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+		UiKit.clipped(contents, Armory.item_name(subject), Rect2(600, 158, 612, 32), 22, Armory.name_color(subject).lightened(0.15), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 		var facts: Array[String] = [Armory.quality_label(quality), tr("Nível do item %d") % Crafting.item_level(subject), tr("%d/%d bônus") % [(subject.get("mods", []) as Array).size(), Crafting.max_mods(quality)]]
 		if bool(subject.get("mirrored", false)):
 			facts.append(tr("Espelhado"))
 		elif bool(subject.get("bound", false)):
 			facts.append(tr("Vinculado"))
 		UiKit.label(contents, "  •  ".join(facts), Rect2(600, 192, 612, 26), 16, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		if quality != "normal":
-			box.add_child(BagSlot.glow_node(Rect2(4, 4, 112, 112), Armory.quality_color(subject)))
+		if Armory.glow_color(subject).a > 0.0:
+			box.add_child(BagSlot.glow_node(Rect2(4, 4, 112, 112), Armory.glow_color(subject), Armory.quality_gem(subject)))
 		var picture: TextureRect = UiKit.art(box, Armory.load_icon(subject), Rect2(14, 14, 92, 92))
 		picture.modulate = Armory.icon_tint(subject)
 		lines = Crafting.describe(subject)

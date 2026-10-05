@@ -15,8 +15,8 @@ Plano de 04/10/2026. O texto diz o que existe hoje, o que muda, em que ordem e a
 
 | Tipo | Slots | Atributos | Onde se consegue | Leilão |
 |---|---|---|---|---|
-| **Poder** | arma, auxiliar, camisa, calça, chapéu, óculos, asas, anel 1, anel 2, amuleto | sim (e afixos, Ferreiro, moedas) | drops, loja de ouro, craft | sim |
-| **Aparência** | skin, cabelo | **nunca** | loja de ouro (comuns), loja premium (raras, épicas, lendárias), eventos, temporada | só as de ouro e de drop; as premium continuam vinculadas |
+| **Poder** | arma, auxiliar, camisa, calça, chapéu, óculos, anel 1, anel 2, amuleto | sim (e afixos, Ferreiro, moedas) | drops, loja de ouro, craft | sim |
+| **Aparência** | skin, cabelo, asas (0.32) | **nunca** | loja de ouro (comuns), loja premium (raras, épicas, lendárias; as asas só aqui), eventos, temporada | só as de ouro e de drop; as premium continuam vinculadas |
 
 Consequência direta: **só o slot `skin` e itens cosméticos "dentro" da skin podem ser premium**. `PremiumStore.valid` passa a exigir `slot ∈ COSMETIC_SLOTS` e `attrs` vazio, e um teste falha se um produto de `store.json` tocar um slot de poder. As Asas da Aurora e a Solaris do Founder Pack são o caso a resolver (decisão D4).
 
@@ -31,7 +31,7 @@ Consequência direta: **só o slot `skin` e itens cosméticos "dentro" da skin p
 | 5 | **Calça** | não existe | poder: Defesa e Agilidade (cabe Ferreiro) | não (D1) |
 | 6 | Chapéu | existe | igual (poder) | sim, sobre a skin |
 | 7 | Óculos | existe | igual (poder) | sim, sobre a skin |
-| 8 | Asas | existe | igual (poder) | sim, atrás da skin |
+| 8 | Asas | existe | **só aparência** desde a 0.32 (`docs/GEAR.md`, "Asas"): sem atributos, vendidas por dinheiro | sim, atrás da skin |
 | 9 | Cabelo | existe, com `sorte 5`, 4 premium | **só aparência**, sem atributos, fora da loja premium | sim, tinge o cabelo da skin |
 | 10 | **Anel 1** | não existe | poder: os 4 atributos | não |
 | 11 | **Anel 2** | não existe | poder, mesmo catálogo do anel 1 | não |

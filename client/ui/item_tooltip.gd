@@ -138,7 +138,7 @@ func build_item(inst: Dictionary, profile: PlayerProfile) -> void:
 	var id: String = str(inst.id)
 	var kind: String = Armory.kind_of(id)
 	var quality: String = str(inst.get("quality", "normal"))
-	var color: Color = Armory.quality_color(inst)
+	var color: Color = Armory.name_color(inst)
 	var slot: String = Armory.slot_of(id)
 	var level: int = int(inst.get("level", 0))
 	var equipped: bool = profile.is_equipped(int(inst.get("uid", -1)))
@@ -149,6 +149,13 @@ func build_item(inst: Dictionary, profile: PlayerProfile) -> void:
 		var gender: String = str(Armory.cosmetic_def(id).get("gender", "u"))
 		kind_text += {"m": tr(" (masculino)"), "f": tr(" (feminino)")}.get(gender, "")
 	var subtitle: String = paint(Armory.quality_label(quality), color) + "  •  " + kind_text
+	var rarity: String = Armory.item_rarity(id)
+	if rarity != "":
+		# Gear (0.31): its rarity first, then its quality when it is above Normal, then the slot.
+		subtitle = paint(Armory.rarity_label(rarity), Armory.rarity_color(rarity))
+		if quality != "normal":
+			subtitle += "  •  " + paint(Armory.quality_label(quality), Armory.quality_color(inst))
+		subtitle += "  •  " + kind_text
 	if level > 0:
 		subtitle += "  •  " + paint("+%d" % level, Armory.aura_color(level).lightened(0.3))
 	header({"key": "tip", "inst": inst}, Armory.item_name(inst), color, subtitle)
@@ -228,6 +235,14 @@ func build_map(entry: Dictionary) -> void:
 		section(paint(tr("Sem atributos."), MUTED))
 	else:
 		section("\n".join(threats + rewards))
+	# 0.31: how likely each rarity of instance gear is on this map (the higher the level, the better).
+	var odds: Dictionary = InstanceRun.map_gear_odds(item)
+	var chances: Array[String] = []
+	for id: String in odds:
+		var percent: float = float(odds[id]) * 100.0
+		chances.append(paint("%s %s" % [Armory.rarity_label(id), ("%.1f%%" if percent < 10.0 else "%.0f%%") % percent], Armory.rarity_color(id)))
+	divider()
+	section(paint(tr("CHANCE DE EQUIPAMENTO"), "ffd46b") + "\n" + "  •  ".join(chances))
 	divider()
 	section(paint(tr("Coloque no espaço de mapa da sala da instância. É consumido ao entrar."), MUTED))
 

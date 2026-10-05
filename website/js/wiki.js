@@ -127,7 +127,7 @@
     return { fury: T("Fúria", "Fury"), summon: T("Invocação", "Summon"), freeze: T("Congelamento", "Freeze"), teleport: T("Teletransporte", "Teleport") }[m] || m;
   }
   function slotName(slot) {
-    return { skin: T("Skins", "Skins"), camisa: T("Camisas", "Shirts"), calca: T("Calças", "Trousers"), chapeu: T("Chapéus", "Hats"), oculos: T("Óculos", "Glasses"), asas: T("Asas", "Wings"), cabelo: T("Cabelos", "Hair") }[slot] || slot;
+    return { skin: T("Skins", "Skins"), camisa: T("Camisas", "Shirts"), calca: T("Calças", "Trousers"), chapeu: T("Chapéus", "Hats"), oculos: T("Óculos", "Glasses"), asas: T("Asas", "Wings"), anel: T("Anéis", "Rings"), amuleto: T("Amuletos", "Amulets"), cabelo: T("Cabelos", "Hair") }[slot] || slot;
   }
 
   function powDetails(p) {
@@ -366,8 +366,8 @@
       <p class="intro">${T("A qualidade multiplica o dano e os atributos das armas e define quantos bônus aleatórios o item pode ter. No jogo ela aparece como um brilho atrás do item, na cor da qualidade.",
         "Quality multiplies a weapon's damage and attributes and sets how many random bonuses an item can have. In game it shows as a glow behind the item, in the quality's colour.")}</p>
       ${table([T("Qualidade", "Quality"), [T("Dano", "Damage"), "num"], [T("Atributos", "Attributes"), "num"], [T("Preço na loja", "Shop price"), "num"], [T("Bônus", "Bonuses"), "num"], T("Como conseguir", "How to get it")], rows)}
-      <p class="note">${T("Camisas, calças, chapéus, óculos e asas também têm qualidade (mudada pela Brasa e pela Coroa), mas nelas a qualidade só define o número de bônus: só as armas multiplicam dano e atributos.",
-        "Shirts, trousers, hats, glasses and wings have a quality too (changed with Embers and Crowns), but for them it only sets the number of bonuses: only weapons multiply damage and attributes.")}</p>`;
+      <p class="note">${T("Camisas, calças, chapéus e óculos também têm qualidade (mudada pela Brasa e pela Coroa), mas nelas a qualidade só define o número de bônus: só as armas multiplicam dano e atributos.",
+        "Shirts, trousers, hats and glasses have a quality too (changed with Embers and Crowns), but for them it only sets the number of bonuses: only weapons multiply damage and attributes.")}</p>`;
     return page(T("Qualidades", "Qualities"), [], body, { icon: byId(D.weapons, "lanca_antiga").tiers[3] });
   }
 
@@ -405,15 +405,15 @@
     const tierHead = A.tiers.map((t) => [`${t.name} <span class="muted">(${T("nível", "level")} ${t.ilvl}+)</span>`, null]);
     const rows = (list) => list.map((a) => `<tr>${td(`<b>${esc(L(a.text).replace(/%d%%/g, "#%").replace(/%d/g, "#"))}</b>`, null)}${a.values.map((v) => td(`${v[0]}–${v[1]}`, v[0], "num")).join("")}</tr>`);
     const body = `
-      <p class="intro">${T("Armas, camisas, calças, chapéus, óculos e asas podem ter bônus aleatórios. Cada bônus tem faixas de F1 (a melhor) a F5, e o nível do item (o nível do mapa onde ele caiu) decide quais faixas podem aparecer.",
-        "Weapons, shirts, trousers, hats, glasses and wings can roll random bonuses. Each bonus has tiers from F1 (best) to F5, and the item level (the level of the map it dropped on) decides which tiers can appear.")}</p>
+      <p class="intro">${T("Armas, camisas, calças, chapéus e óculos podem ter bônus aleatórios. Cada bônus tem faixas de F1 (a melhor) a F5, e o nível do item (o nível do mapa onde ele caiu) decide quais faixas podem aparecer.",
+        "Weapons, shirts, trousers, hats and glasses can roll random bonuses. Each bonus has tiers from F1 (best) to F5, and the item level (the level of the map it dropped on) decides which tiers can appear.")}</p>
       <div class="kv">${Object.entries(A.counts).map(([q, c]) => `<div><span style="color:#${qual(q).color}">${esc(L(qual(q).label))}</span><b>${c[0] === c[1] ? c[0] : c.join("–")} ${T("bônus", "bonuses")}</b></div>`).join("")}</div>
       <h2>${T("Faixas", "Tiers")}</h2>
       ${table([T("Faixa", "Tier"), [T("Nível mínimo do item", "Minimum item level"), "num"], [T("Peso", "Weight"), "num"]], A.tiers.map((t) => `<tr>${td(`<b>${t.name}</b>`)}${tdn(t.ilvl)}${tdn(t.weight)}</tr>`))}
       <p>${T("O peso é a chance relativa de cada faixa entre as liberadas: F5 é a mais comum.", "The weight is each tier's relative chance among the unlocked ones: F5 is the most common.")}</p>
       <h2>${T("Bônus de arma", "Weapon bonuses")}</h2>
       ${table([T("Bônus", "Bonus")].concat(tierHead), rows(A.weapon))}
-      <h2>${T("Bônus de camisa, calça, chapéu, óculos e asas", "Shirt, trousers, hat, glasses and wing bonuses")}</h2>
+      <h2>${T("Bônus de camisa, calça, chapéu e óculos", "Shirt, trousers, hat and glasses bonuses")}</h2>
       ${table([T("Bônus", "Bonus")].concat(tierHead), rows(A.armor))}
       <p class="note">${T(`Limites somados: redução de vento até ${A.limits.vento}% e chance de não gastar a habilidade até ${A.limits.poupar}%. Fortalecer multiplica só os atributos base do item: os bônus aleatórios não mudam. Nenhum bônus muda o raio da explosão ou o hitbox.`,
         `Summed caps: wind reduction up to ${A.limits.vento}% and free-skill chance up to ${A.limits.poupar}%. Strengthening only scales the item's base attributes: random bonuses stay the same. No bonus changes the blast radius or the hitbox.`)}</p>
@@ -423,16 +423,39 @@
 
   // --- cosmetics / skills / tools / aux ---
 
+  // The chance of each rarity of instance gear on a map of this level (the game's own formula).
+  function gearOdds(level) {
+    const spans = D.map_items.loot.gear_rarity;
+    const weights = D.rarities.map((r) => Math.max(0, spans[r.id][0] + spans[r.id][1] * (level - 1)));
+    const total = weights.reduce((a, b) => a + b, 0);
+    return weights.map((w) => w / total);
+  }
+
+  function rarityPill(id) {
+    const r = D.rarities.find((entry) => entry.id === id);
+    return r ? `<span class="pill" style="color:#${r.color}">${esc(L(r.label))}</span>` : "";
+  }
+
   function cosmetics(focus) {
-    const slots = ["skin", "camisa", "calca", "chapeu", "oculos", "asas", "cabelo"];
+    const slots = ["skin", "camisa", "calca", "chapeu", "oculos", "asas", "anel", "amuleto", "cabelo"];
     const gender = (g) => ({ m: T("Masculina", "Male"), f: T("Feminina", "Female"), u: T("Todos", "All") }[g]);
+    const levels = [1, 2, 4, 6, 8, 10, 12, 14, 16];
+    const oddsTable = table([[T("Nível do mapa", "Map level"), "num"]].concat(D.rarities.map((r) => [L(r.label), "num"])),
+      levels.map((lv) => `<tr>${tdn(lv)}${gearOdds(lv).map((p) => td(`${(p * 100).toFixed(p < 0.1 ? 1 : 0)}%`, p, "num")).join("")}</tr>`));
     const body = `
-      <p class="intro">${T("As skins e as tinturas de cabelo são só aparência e a loja premium vende só isso. Camisas e calças dão atributos e não aparecem no personagem; chapéus, óculos e asas dão atributos e aparecem sobre a skin. Anéis (dois espaços) e o amuleto (que dá vida) dão atributos e ficam só na ficha.",
-        "Skins and hair dyes are appearance only, and the premium shop sells nothing else. Shirts and trousers give attributes and do not show on the character; hats, glasses and wings give attributes and show over the skin. Rings (two slots) and the amulet (which gives life) give attributes and show on the sheet only.")}</p>
+      <p class="intro">${T("As skins, as asas e as tinturas de cabelo são só aparência, e a loja premium vende só aparência (e conveniência). Camisas e calças dão atributos e não aparecem no personagem; chapéus e óculos dão atributos e aparecem sobre a skin. Anéis (dois espaços) e o amuleto (que dá vida) dão atributos e ficam só na ficha.",
+        "Skins, wings and hair dyes are appearance only, and the premium shop sells only appearance (and convenience). Shirts and trousers give attributes and do not show on the character; hats and glasses give attributes and show over the skin. Rings (two slots) and the amulet (which gives life) give attributes and show on the sheet only.")}</p>
+      <h2>${T("Equipamentos de instância", "Instance gear")}</h2>
+      <p>${T("Camisas, calças, chapéus, óculos, anéis e amuletos de quatro raridades (Comum, Raro, Épico e Lendário) só caem nas instâncias, nas cartas do baú e dos monstros, e podem ir ao leilão. Quanto melhor a raridade, mais atributos e mais bonita a arte. Quanto mais alto o nível do mapa, maior a chance das raridades melhores; nada é garantido. Cada peça ainda tem a qualidade (Normal, Excelente, Verdadeira) e os bônus aleatórios.",
+        "Shirts, trousers, hats, glasses, rings and amulets in four rarities (Common, Rare, Epic and Legendary) only drop in instances, from chest cards and monsters, and can go to the auction. The better the rarity, the more attributes and the prettier the art. The higher the map level, the likelier the better rarities; nothing is guaranteed. Each piece also has a quality (Normal, Excellent, True) and random bonuses.")}</p>
+      ${oddsTable}
+      <h2>${T("Asas à venda", "Wings for sale")}</h2>
+      <p>${T("As oito asas não caem nas instâncias nem custam moedas: são só aparência (sem atributos nem bônus) e se compram com dinheiro, na aba Asas do Centro Comercial, por R$ 14,90 (Comum), R$ 24,90 (Raro), R$ 39,90 (Épico) ou R$ 59,90 (Lendário). A raridade só muda a cor e o brilho. Chegam vinculadas pelo Correio e não vão ao Leilão; quem já tinha as asas antigas as mantém, sem atributos.",
+        "The eight pairs of wings neither drop in instances nor cost coins: they are appearance only (no stats or bonuses) and are bought with real money in the Wings tab of the Shopping Center, for R$ 14.90 (Common), R$ 24.90 (Rare), R$ 39.90 (Epic) or R$ 59.90 (Legendary). The rarity only changes the colour and the glow. They arrive bound by Mail and cannot be auctioned; anyone who already had the old wings keeps them, without stats.")}</p>
       ${slots.map((slot) => `<h2>${esc(slotName(slot))}</h2>` + table(["", [T("Nome", "Name"), "text"], T("Atributos", "Attributes"), [T("Preço", "Price"), "num"], slot === "skin" ? T("Personagem", "Character") : ""],
         D.cosmetics.filter((c) => c.slot === slot).map((c) => `<tr id="row-${c.id}">${td(icon(c.icon))}${td(ref("cosmetic", c.id), L(c.name))}
           ${td(Object.entries(c.attrs).map(([k, v]) => `+${v} ${esc(attrName(k))}`).concat(c.hp ? [`+${c.hp} ${T("vida", "life")}`] : []).join(", ") || `<span class="muted">${T("só aparência", "cosmetic only")}</span>`)}
-          ${td(c.premium ? `<span class="pill gold">${T("premium", "premium")}</span>` : n(c.price), c.premium ? 1e9 : c.price, "num")}${td(slot === "skin" ? gender(c.gender) : "")}</tr>`), { sortable: true })).join("")}`;
+          ${td(c.premium ? `${c.rarity ? rarityPill(c.rarity) + " " : ""}<span class="pill gold">${T("premium", "premium")}</span>` : c.drop_only ? `${rarityPill(c.rarity)} <span class="muted">${T("instâncias", "instances")}</span>` : n(c.price), c.premium ? 1e9 : c.drop_only ? 1e8 : c.price, "num")}${td(slot === "skin" ? gender(c.gender) : "")}</tr>`), { sortable: true })).join("")}`;
     return page(T("Visual", "Cosmetics"), [], body, { icon: byId(D.cosmetics, "asas_fenix").icon, focus });
   }
 
@@ -695,8 +718,8 @@
 
   function store() {
     const body = `
-      <p class="intro">${T("Gustfire é grátis. A loja com dinheiro de verdade vende só aparência e conveniência (skins, mascotes, abas extras da Mochila e o Passe do Caçador): nada ali tem atributo, tudo chega vinculado pelo Correio e não vai ao Leilão. Não existem caixas de recompensa pagas.",
-        "Gustfire is free. The real-money shop only sells looks and convenience (skins, pets, extra Bag tabs and the Hunter Pass): nothing there has stats, everything arrives bound by Mail and cannot be auctioned. There are no paid loot boxes.")}</p>
+      <p class="intro">${T("Gustfire é grátis. A loja com dinheiro de verdade vende só aparência e conveniência (skins, asas, mascotes, abas extras da Mochila e o Passe do Caçador): nada ali tem atributo, tudo chega vinculado pelo Correio e não vai ao Leilão. Não existem caixas de recompensa pagas.",
+        "Gustfire is free. The real-money shop only sells looks and convenience (skins, wings, pets, extra Bag tabs and the Hunter Pass): nothing there has stats, everything arrives bound by Mail and cannot be auctioned. There are no paid loot boxes.")}</p>
       ${table([T("Produto", "Product"), T("Inclui", "Includes"), ["BRL", "num"], ["USD", "num"], ["EUR", "num"]], D.store.filter((p) => !/^aba_mochila_[2-9]$/.test(p.sku)).map((p) => p.sku === "aba_mochila_1" ? { ...p, name: { pt: "Abas de Mochila (1 a 6)", en: "Bag tabs (1 to 6)" }, desc: { pt: "Cada aba soma 40 espaços à Mochila; são seis, vendidas uma a uma. Conveniência: não muda atributos.", en: "Each tab adds 40 Bag slots; there are six, sold one by one. Convenience: changes no stats." } } : p).map((p) => `<tr>${td(`<b>${esc(L(p.name))}</b><br><span class="muted">${esc(L(p.desc))}</span>`)}${td((p.items || []).map((i) => ref("cosmetic", i, true)).concat((p.pets || []).map((i) => ref("pet", i, true))).join("<br>"))}
         ${tdn(p.prices.BRL / 100, "R$ " + n(p.prices.BRL / 100, 2))}${tdn(p.prices.USD / 100, "US$ " + n(p.prices.USD / 100, 2))}${tdn(p.prices.EUR / 100, "€ " + n(p.prices.EUR / 100, 2))}</tr>`))}
       <p class="note">${T("Preços de referência; a Steam converte para a moeda da sua carteira. A loja de moedas de ouro do Centro Comercial vende armas Normais e Excelentes, visuais, auxiliares, ferramentas e pedras.",

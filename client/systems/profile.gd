@@ -671,6 +671,9 @@ func buy(id: String, quality: String = "normal") -> String:
 		return tr("Item desconhecido.")
 	if Armory.kind_of(id) == "aux":
 		return tr("Itens auxiliares só vêm de drops ou do leilão.")
+	if bool(def.get("drop_only", false)):
+		# The shop never lists these (0.31 closes the operation too, which the server also accepts).
+		return tr("Este item só cai nas instâncias ou vem do leilão.")
 	var price: int = item_price(id, quality)
 	if price <= 0:
 		return tr("Item desconhecido.")
@@ -920,6 +923,11 @@ func redeem(code: String) -> String:
 		# The epic skins of the shop (0.28), for testing: premium cosmetics of rarity "epica".
 		for def: Dictionary in Armory.data().cosmetics:
 			if str(def.get("rarity", "")) == "epica" and not has_item(def.id):
+				add_instance(def.id)
+	if bool(coupon.get("asas", false)):
+		# The wings of the shop (0.32, premium), for testing.
+		for def: Dictionary in Armory.data().cosmetics:
+			if str(def.slot) == "asas" and not has_item(def.id):
 				add_instance(def.id)
 	if bool(coupon.get("founder", false)):
 		# The whole Founder Pack for testing; Solaris comes at +12 to show every form.

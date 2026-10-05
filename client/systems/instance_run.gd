@@ -325,12 +325,16 @@ func roll_mob_drop(target: TankFighter, shared: bool) -> Array[Dictionary]:
 		return [roll_stone()]
 	if rng.randf() >= minf(chance, 1.0):
 		return []
+	# What a monster drops: a stone, a currency, a weapon or (0.31) a piece of gear, by `split`.
+	var split: Array = rules.split
 	var roll: float = rng.randf()
-	if roll < 0.75:
+	if roll < float(split[0]):
 		return [roll_stone()]
-	if roll < 0.95:
+	if roll < float(split[0]) + float(split[1]):
 		return [currency_entry(Crafting.roll_currency(level, rng))]
-	return [weapon_card()]
+	if roll < float(split[0]) + float(split[1]) + float(split[2]):
+		return [weapon_card()]
+	return [gear_card()]
 
 # 0.30: the boss chest may hold the Comum of the instance's element (never guaranteed).
 func roll_pet() -> Dictionary:
@@ -516,17 +520,66 @@ func weapon_card() -> Dictionary:
 	inst.mods = Crafting.roll_mods(inst, rng, rarity())
 	return {"id": "weapon_" + id, "name": Armory.item_name(inst), "weapon": id, "quality": quality, "ilvl": effective_level(), "mods": inst.mods, "rarity": CARD_RARITY[quality], "icon": Armory.weapon_icon(id)}
 
+# 0.31: the chance of each rarity of PvE gear on a map of this level. Every rarity has a weight that
+# starts at `base` on a level 1 map and moves by `slope` for each level above it (never under 0);
+# the map's item rarity (and the party's) multiplies everything above Comum. Nothing is guaranteed:
+# the better the map the likelier the better piece, never a certainty. Returns {rarity id: 0..1}.
+static func gear_rarity_odds(loot: Dictionary, map_level: int, boost: float = 0.0) -> Dictionary:
+	var odds: Dictionary = loot.gear_rarity
+	var weights: Dictionary = {}
+	var total: float = 0.0
+	for id: String in odds:
+		var span: Array = odds[id]
+		var weight: float = maxf(0.0, float(span[0]) + float(span[1]) * (maxi(1, map_level) - 1))
+		if id != "comum":
+			weight *= 1.0 + boost
+		weights[id] = weight
+		total += weight
+	for id: String in weights:
+		weights[id] = float(weights[id]) / total if total > 0.0 else 0.0
+	return weights
+
+# The same chances for a map item (what the player sees before entering): its level and its
+# item rarity modifier (the party's bonus is not known yet).
+static func map_gear_odds(item: Dictionary) -> Dictionary:
+	var boost: float = 0.0
+	for mod: Dictionary in item.get("mods", []):
+		if str(mod.id) == "rarity":
+			boost += float(mod.get("value", 0)) / 100.0
+	return gear_rarity_odds(rules().map_items.loot, int(item.get("level", 1)), boost)
+
+func roll_gear_rarity() -> String:
+	var odds: Dictionary = InstanceRun.gear_rarity_odds(balance.map_items.loot, effective_level(), rarity())
+	var ticket: float = rng.randf()
+	var chosen: String = "comum"
+	for id: String in odds:
+		ticket -= float(odds[id])
+		chosen = id
+		if ticket <= 0.0:
+			break
+	return chosen
+
+# The PvE pieces of one rarity (and slot, when given) this player may receive.
+static func gear_pool(rarity_id: String, slot: String, gender: String) -> Array:
+	return Armory.data().cosmetics.filter(func(def: Dictionary) -> bool: return bool(def.get("pve", false)) and str(def.get("rarity", "comum")) == rarity_id and (slot == "" or str(def.slot) == slot) and (gender == "" or str(def.gender) in ["u", gender]))
+
 func gear_card() -> Dictionary:
-	# 0.10: hats, glasses, wings and outfits (of the player's gender) also drop, with the
-	# map level as item level, so their bonuses can reach the best tiers.
-	var gender: String = profile.gender if profile != null else ""
-	var pool: Array = Armory.data().cosmetics.filter(func(def: Dictionary) -> bool: return Crafting.can_have_mods(str(def.id)) and (gender == "" or str(def.gender) in ["u", gender]))
+	# 0.10: gear drops with the map level as item level, so its bonuses can reach the best tiers.
 	# 0.21: auxiliary items are no longer sold in the shop; they drop here (and go to the auction).
-	pool.append_array(Armory.data().auxiliary)
+	# 0.31: the rest is PvE gear: the map level picks its rarity, then a slot, then a piece.
+	var loot: Dictionary = balance.map_items.loot
+	if rng.randf() < float(loot.aux_share):
+		var aux: Array = Armory.data().auxiliary
+		var aux_id: String = str(aux[rng.randi() % aux.size()].id)
+		return {"id": "gear_" + aux_id, "name": Armory.item_name({"id": aux_id}), "gear": aux_id, "quality": "normal", "ilvl": 0, "mods": [], "rarity": CARD_RARITY["normal"], "icon": Armory.icon_path({"id": aux_id})}
+	var gender: String = profile.gender if profile != null else ""
+	var rarity_id: String = roll_gear_rarity()
+	var slots: Array = loot.gear_slots
+	var pool: Array = InstanceRun.gear_pool(rarity_id, str(slots[rng.randi() % slots.size()]), gender)
+	if pool.is_empty():
+		pool = InstanceRun.gear_pool(rarity_id, "", gender)
 	var id: String = str(pool[rng.randi() % pool.size()].id)
-	if Armory.kind_of(id) == "aux":
-		return {"id": "gear_" + id, "name": Armory.item_name({"id": id}), "gear": id, "quality": "normal", "ilvl": 0, "mods": [], "rarity": CARD_RARITY["normal"], "icon": Armory.icon_path({"id": id})}
 	var quality: String = roll_quality()
 	var inst: Dictionary = {"id": id, "quality": quality, "ilvl": effective_level()}
 	inst.mods = Crafting.roll_mods(inst, rng, rarity())
-	return {"id": "gear_" + id, "name": Armory.item_name(inst), "gear": id, "quality": quality, "ilvl": effective_level(), "mods": inst.mods, "rarity": CARD_RARITY[quality], "icon": Armory.icon_path(inst)}
+	return {"id": "gear_" + id, "name": Armory.item_name(inst), "gear": id, "quality": quality, "ilvl": effective_level(), "mods": inst.mods, "rarity": str(Armory.RARITY_CARDS[Armory.item_rarity(id)]), "icon": Armory.icon_path(inst)}

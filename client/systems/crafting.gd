@@ -157,7 +157,7 @@ static func check(currency: String, inst: Dictionary) -> String:
 	if inst.is_empty():
 		return Lang.t("Escolha um item.")
 	if not can_have_mods(id):
-		return Lang.t("Só armas, camisas, calças, chapéus, óculos e asas recebem bônus.")
+		return Lang.t("Só armas, camisas, calças, chapéus, óculos, anéis e amuletos recebem bônus.")
 	if bool(inst.get("mirrored", false)):
 		return Lang.t("Itens espelhados não podem ser modificados.")
 	var quality: String = str(inst.get("quality", "normal"))

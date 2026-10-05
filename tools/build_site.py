@@ -183,7 +183,9 @@ def build_data():
                 or art(f"res://assets/cosmetics/{c['art']}/front.png", f"cosmetics/{c['id']}.png", crop=True)
         cosmetics.append({"id": c["id"], "slot": slot, "slot_name": T(SLOT_NAMES[slot]), "gender": c["gender"],
                           "name": T(c["name"]), "price": c["price"], "premium": bool(c.get("premium", False)),
-                          "attrs": c.get("attrs", {}), "hp": c.get("hp", 0), "dye": c.get("dye"), "icon": icon})
+                          "attrs": c.get("attrs", {}), "hp": c.get("hp", 0), "dye": c.get("dye"), "icon": icon,
+                          # 0.31: PvE gear drops only in instances and has a rarity (Comum..Lendário).
+                          "drop_only": bool(c.get("drop_only", False)), "rarity": c.get("rarity") if slot not in ("skin", "cabelo") else None})
 
     enemies = []
     appears = {}
@@ -260,6 +262,7 @@ def build_data():
         "pve": combat["pve"], "party_scaling": combat["party_scaling"],
         "ranks": [T(r) for r in RANKS], "max_level": 60,
         "attr_names": {k: T(v) for k, v in ATTR_NAMES.items()},
+        "rarities": [{"id": r["id"], "label": T(r["label"]), "color": r["color"]} for r in items["rarities"]],
         "qualities": [{"id": q["id"], "label": T(q["label"]), "damage": q["damage"], "attrs": q["attrs"],
                        "price": q["price"], "color": q["color"]} for q in items["qualities"]],
         "strengthen": strengthen,

@@ -475,7 +475,7 @@ func refresh_grid() -> void:
 
 func describe(inst: Dictionary) -> String:
 	var id: String = str(inst.id)
-	var color: String = Armory.quality_color(inst).to_html(false)
+	var color: String = Armory.name_color(inst).to_html(false)
 	var text: String = "[color=#%s]%s[/color]" % [color, Armory.item_name(inst)]
 	var attrs: Dictionary = Armory.item_attrs(inst)
 	var parts: Array[String] = []

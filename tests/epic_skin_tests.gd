@@ -151,7 +151,7 @@ func run_tests() -> void:
 	check(not PremiumStore.overlaps(owner, PremiumStore.product("skin_gelo")) and PremiumStore.owns_all(owner, PremiumStore.product("skin_gelo")), "a single skin is never an overlap, only 'owned'")
 	check(not PremiumStore.overlaps(owner, PremiumStore.product("passe_cacador")), "a pass never overlaps")
 	for entry: Dictionary in PremiumStore.products():
-		check(str(entry.get("section", "")) in ["skins", "conveniencias", "mascotes"], "%s sits in a section of the showcase" % entry.sku)
+		check(str(entry.get("section", "")) in ["skins", "conveniencias", "mascotes", "asas"], "%s sits in a section of the showcase" % entry.sku)
 	check(PremiumStore.products()[0].section == "skins", "the skins come first in the showcase")
 	# --- the living layer: builds in a rig for each theme and draws without error
 	for theme: String in SkinFx.THEMES:

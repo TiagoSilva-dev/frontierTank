@@ -21,7 +21,11 @@ var equip_slot: String = ""
 var icon: Texture2D
 var icon_tint: Color = Color.WHITE
 var rarity: Color = Color.TRANSPARENT
+# The corner gem of the glow when it is not the glow's own colour (an item's quality).
+var gem: Color = Color.TRANSPARENT
 var shimmer: bool = false
+# Épico gear: the glow breathes but no glint crosses it.
+var breathe: bool = false
 var level: int = 0
 var count: int = 0
 var corner_text: String = ""
@@ -53,7 +57,9 @@ func show_entry(entry: Dictionary) -> void:
 	icon = null
 	icon_tint = Color.WHITE
 	rarity = Color.TRANSPARENT
+	gem = Color.TRANSPARENT
 	shimmer = false
+	breathe = false
 	level = 0
 	count = 0
 	corner_text = ""
@@ -62,10 +68,11 @@ func show_entry(entry: Dictionary) -> void:
 		icon = Armory.load_icon(inst)
 		icon_tint = Armory.icon_tint(inst)
 		level = int(inst.get("level", 0))
-		var quality: String = str(inst.get("quality", "normal"))
-		if quality != "normal":
-			rarity = Armory.quality_color(inst)
-			shimmer = quality == "super"
+		# Behind the item: the glow of its rarity (Raro and up) or of its quality (Excelente and up).
+		rarity = Armory.glow_color(inst)
+		gem = Armory.quality_gem(inst)
+		shimmer = Armory.glow_life(inst) == 2
+		breathe = Armory.glow_life(inst) == 1
 	elif entry.has("map"):
 		icon = load(str(entry.icon))
 		var quality: String = str(entry.map.get("quality", "normal"))
@@ -126,7 +133,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	time += delta
-	if shimmer or selected:
+	if shimmer or breathe or selected:
 		redraw()
 	if drop_hover and not get_global_rect().has_point(TouchMode.pointer(self)):
 		drop_hover = false
@@ -184,7 +191,7 @@ func _draw() -> void:
 	var rect: Rect2 = Rect2(Vector2.ZERO, size)
 	draw_style_box(UiKit.frame("slot_hover" if (hover or drop_hover) and interactive else "slot"), rect)
 	if rarity.a > 0.0:
-		paint_glow(self, size, rarity, 0.5 + 0.5 * sin(time * 3.0) if shimmer else 0.5)
+		paint_glow(self, size, rarity, 0.5 + 0.5 * sin(time * 3.0) if (shimmer or breathe) else 0.5, gem)
 	if shimmer and rarity.a > 0.0:
 		# Super Verdadeira: a glint sweeps across the cell now and then.
 		var x: float = (fposmod(time * 0.6, 2.2) - 0.3) * size.x
@@ -219,25 +226,26 @@ func draw_overlay() -> void:
 	if drop_hover:
 		brackets(overlay, rect.grow(-1), Color.WHITE, 14.0, 3.0)
 
-static func paint_glow(canvas: CanvasItem, area: Vector2, rarity: Color, pulse: float = 0.5) -> void:
-	# Quality glow: stepped rings, brightest in the middle, like pixel-art light, and a
-	# small gem of the quality's colour in the corner.
+static func paint_glow(canvas: CanvasItem, area: Vector2, rarity: Color, pulse: float = 0.5, gem_color: Color = Color.TRANSPARENT) -> void:
+	# Rarity/quality glow: stepped rings, brightest in the middle, like pixel-art light, and a
+	# small gem in the corner (the glow's colour, or `gem_color` when it is another one).
 	var center: Vector2 = area / 2.0
 	for i in range(7):
 		var glow: Color = rarity.lerp(Color.WHITE, i * 0.05)
 		glow.a = 0.07 + i * 0.012 + pulse * 0.03
 		canvas.draw_circle(center, minf(area.x, area.y) * (0.46 - i * 0.05), glow)
-	var gem: Vector2 = Vector2(area.x - 8.0, 8.0)
-	canvas.draw_colored_polygon(PackedVector2Array([gem + Vector2(0, -4), gem + Vector2(4, 0), gem + Vector2(0, 4), gem + Vector2(-4, 0)]), rarity.lightened(0.2))
-	canvas.draw_colored_polygon(PackedVector2Array([gem + Vector2(0, -2), gem + Vector2(2, 0), gem + Vector2(0, 0), gem + Vector2(-2, 0)]), Color(1, 1, 1, 0.8))
+	var corner: Vector2 = Vector2(area.x - 8.0, 8.0)
+	var gem_tint: Color = gem_color if gem_color.a > 0.0 else rarity
+	canvas.draw_colored_polygon(PackedVector2Array([corner + Vector2(0, -4), corner + Vector2(4, 0), corner + Vector2(0, 4), corner + Vector2(-4, 0)]), gem_tint.lightened(0.2))
+	canvas.draw_colored_polygon(PackedVector2Array([corner + Vector2(0, -2), corner + Vector2(2, 0), corner + Vector2(0, 0), corner + Vector2(-2, 0)]), Color(1, 1, 1, 0.8))
 
-static func glow_node(rect: Rect2, rarity: Color) -> Control:
+static func glow_node(rect: Rect2, rarity: Color, gem_color: Color = Color.TRANSPARENT) -> Control:
 	# The same glow for item buttons outside the Mochila (Ferreiro); add it behind the art.
 	var node: Control = Control.new()
 	node.position = rect.position
 	node.size = rect.size
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	node.draw.connect(func() -> void: paint_glow(node, node.size, rarity))
+	node.draw.connect(func() -> void: paint_glow(node, node.size, rarity, 0.5, gem_color))
 	return node
 
 func brackets(canvas: CanvasItem, rect: Rect2, color: Color, length: float, width: float) -> void:

@@ -44,6 +44,10 @@ static func pet_species(entry: Dictionary) -> Array:
 static func is_pet_product(entry: Dictionary) -> bool:
 	return not pet_species(entry).is_empty()
 
+# A pair of wings (0.32): appearance only, sold one by one on the Asas tab of the shop.
+static func is_wings_product(entry: Dictionary) -> bool:
+	return str(entry.get("section", "")) == "asas"
+
 # The rule of gold (0.24): the shop sells appearance, never power. Only the skin and the
 # hair (appearance slots) and keepsakes ("selo": the seal, the pass, the bag tabs, the
 # layers of a skin) can be sold; a power slot (weapon, shirt, hat...) never. The one
@@ -101,6 +105,8 @@ static func overlaps(profile: PlayerProfile, entry: Dictionary) -> bool:
 static func kind_label(entry: Dictionary) -> String:
 	if is_pet_product(entry):
 		return Pets.rarity_label(str(Pets.species_def(str(pet_species(entry)[0])).get("rarity", "comum"))).to_upper()
+	if is_wings_product(entry):
+		return Armory.rarity_label(wings_rarity(entry)).to_upper()
 	if str(entry.get("section", "")) != "skins":
 		return Lang.t("CONVENIÊNCIA")
 	var first: Dictionary = Armory.definition(str((entry.get("items", [""]) as Array)[0]))
@@ -110,6 +116,10 @@ static func kind_label(entry: Dictionary) -> String:
 		"epica":
 			return Lang.t("ÉPICA")
 	return Lang.t("SKIN")
+
+# The rarity of the wings a product delivers (Comum, Raro, Épico or Lendário).
+static func wings_rarity(entry: Dictionary) -> String:
+	return Armory.item_rarity(str((entry.get("items", [""]) as Array)[0]))
 
 # The reference price shown in the game (US dollars); Steam shows the final price in the
 # player's currency before the purchase.

@@ -26,5 +26,13 @@
   "oculos_escuros": {"front": {"width": 0.64}, "side": {"width": 0.34, "dx": 0.0, "drop": 0.0}},
   "oculos_redondos": {"front": {"width": 0.64}, "side": {"width": 0.34, "dx": 0.0, "drop": 0.0}},
   "oculos_coracao": {"front": {"width": 0.64}, "side": {"width": 0.34, "dx": 0.0, "drop": 0.0}},
-  "oculos_heroi": {"front": {"width": 0.7}, "side": {"width": 0.38, "dx": 0.0, "drop": 0.0}}
+  "oculos_heroi": {"front": {"width": 0.7}, "side": {"width": 0.38, "dx": 0.0, "drop": 0.0}},
+  "chapeu_couro": {"front": {"width": 1.05, "drop": 0.3}, "side": {"width": 0.95, "drop": 0.3, "dx": -0.04}},
+  "chapeu_aco_azul": {"front": {"width": 1.1, "drop": 0.34}, "side": {"width": 1.0, "drop": 0.36, "dx": -0.03}},
+  "chapeu_arcano": {"front": {"width": 1.45, "drop": 0.26}, "side": {"width": 1.3, "drop": 0.26, "dx": -0.04}},
+  "chapeu_dragao": {"front": {"width": 1.35, "drop": 0.36}, "side": {"width": 1.2, "drop": 0.38, "dx": -0.04}},
+  "oculos_aviador": {"front": {"width": 0.7}, "side": {"width": 0.36, "dx": 0.0, "drop": 0.0}},
+  "oculos_cristal": {"front": {"width": 0.7}, "side": {"width": 0.36, "dx": 0.0, "drop": 0.0}},
+  "oculos_arcano": {"front": {"width": 0.62}, "side": {"width": 0.38, "dx": 0.0, "drop": 0.0}},
+  "oculos_dragao": {"front": {"width": 0.74}, "side": {"width": 0.38, "dx": 0.0, "drop": 0.0}}
 }

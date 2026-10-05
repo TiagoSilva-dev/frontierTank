@@ -15,10 +15,11 @@ const RING_SLOTS: Array[String] = ["anel1", "anel2"]
 const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "skin": "Skin", "camisa": "Camisa", "calca": "Calça", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas", "anel": "Anel", "anel1": "Anel", "anel2": "Anel", "amuleto": "Amuleto", "selo": "Selo"}  # i18n
 # 0.24: the rule of gold. Appearance slots never carry attributes and are the only ones the
 # premium shop may sell; power slots carry attributes and are never sold for money.
-const COSMETIC_SLOTS: Array[String] = ["skin", "cabelo"]
+# 0.32: the wings joined them (no attributes, sold for money, never dropped).
+const COSMETIC_SLOTS: Array[String] = ["skin", "cabelo", "asas"]
 # Slots of gear that gives attributes. "selo" is a keepsake (seals, passes, tabs): it is not
 # worn and has no attributes.
-const POWER_SLOTS: Array[String] = ["arma", "auxiliar", "camisa", "calca", "chapeu", "oculos", "asas", "anel", "amuleto"]
+const POWER_SLOTS: Array[String] = ["arma", "auxiliar", "camisa", "calca", "chapeu", "oculos", "anel", "amuleto"]
 # Slots that take the Defense and life of the Ferreiro's strengthening.
 const ARMOR_SLOTS: Array[String] = ["camisa", "calca", "chapeu"]
 const ATTRS: Array[String] = ["ataque", "defesa", "agilidade", "sorte"]
@@ -58,6 +59,66 @@ static func attr_name(key: String) -> String:
 
 static func quality_label(id: String) -> String:
 	return Lang.t(str(quality_def(id).label))
+
+# ---------- rarity of gear (0.31) ----------
+# Worn gear has a rarity of its own, from the item (Comum, Raro, Épico, Lendário): it sets the base
+# attributes, how pretty the art is and how likely it drops on a high map. It is not the quality
+# (Normal, Excelente, Verdadeira), which is what the Ferreiro's currencies change on any copy.
+
+# The face of the reward card for each rarity (assets/expansion/rewards/reward_card_<face>.png).
+const RARITY_CARDS: Dictionary = {"comum": "common", "raro": "rare", "epico": "epic", "lendario": "legendary"}
+
+static func rarity_def(id: String) -> Dictionary:
+	return _find("rarities", id)
+
+static func rarity_label(id: String) -> String:
+	return Lang.t(str(rarity_def(id).get("label", id)))
+
+static func rarity_color(id: String) -> Color:
+	return Color(str(rarity_def(id).get("color", "c4cdd8")))
+
+# The rarity of a piece of worn gear; gear that does not say is Comum. "" for what is not gear
+# (weapons, auxiliary items, skins, hair, keepsakes). The wings (0.32) are appearance now, but
+# keep the four rarities of their art (name colour, glow, the tag of the shop card).
+static func item_rarity(id: String) -> String:
+	var def: Dictionary = cosmetic_def(id)
+	if def.is_empty() or not (str(def.slot) in POWER_SLOTS or str(def.slot) == "asas"):
+		return ""
+	var rarity: String = str(def.get("rarity", "comum"))
+	return rarity if not rarity_def(rarity).is_empty() else "comum"
+
+# Gear that only drops in instances (the PvE pieces): never sold, never worn by bots.
+static func is_pve_gear(id: String) -> bool:
+	return bool(cosmetic_def(id).get("pve", false))
+
+# The colour of the glow behind an item: its rarity from Raro up, else its quality from Excelente up;
+# transparent when it has neither (Comum and Normal).
+static func glow_color(inst: Dictionary) -> Color:
+	var rarity: String = item_rarity(str(inst.get("id", "")))
+	if rarity not in ["", "comum"]:
+		return rarity_color(rarity)
+	if str(inst.get("quality", "normal")) != "normal" and kind_of(str(inst.get("id", ""))) != "":
+		return quality_color(inst)
+	return Color.TRANSPARENT
+
+# The little gem in the corner of the glow: the item's quality colour from Excelente up, so a Raro
+# piece that is also Excelente shows both (transparent: the gem takes the glow's colour).
+static func quality_gem(inst: Dictionary) -> Color:
+	if str(inst.get("quality", "normal")) != "normal" and kind_of(str(inst.get("id", ""))) != "":
+		return quality_color(inst)
+	return Color.TRANSPARENT
+
+# How alive an item's glow is: 2 = shimmers (Lendário, Super Verdadeira), 1 = breathes (Épico), 0 = still.
+static func glow_life(inst: Dictionary) -> int:
+	var rarity: String = item_rarity(str(inst.get("id", "")))
+	if rarity == "lendario" or str(inst.get("quality", "normal")) == "super":
+		return 2
+	return 1 if rarity == "epico" else 0
+
+# The colour of an item's name: the glow's, or cream for a plain Comum Normal one.
+static func name_color(inst: Dictionary) -> Color:
+	var glow: Color = glow_color(inst)
+	return glow if glow.a > 0.0 else Color("f4ead6")
 
 static func aux_def(id: String) -> Dictionary:
 	return _find("auxiliary", id)
@@ -425,7 +486,9 @@ static func random_loadout(rng: RandomNumberGenerator, level: int, gender: Strin
 		if rng.randf() < 0.3 + level * 0.01:
 			var pool: Array = []
 			for def: Dictionary in data().cosmetics:
-				if def.slot == slot and not bool(def.get("premium", false)):
+				# Pieces that only drop in instances (0.31) are not for bots. The wings (0.32) are
+				# premium but only appearance, so bots wear them like any other.
+				if def.slot == slot and (slot == "asas" or not bool(def.get("premium", false))) and not bool(def.get("drop_only", false)):
 					pool.append(def.id)
 			equipped.append({"id": pool[rng.randi() % pool.size()], "level": 0})
 	# 0.26: bots also wear a shirt, trousers, up to two rings and an amulet (attributes only;

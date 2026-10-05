@@ -141,6 +141,19 @@ func demo_loadout(kind: String) -> void:
 	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "skin": [kind if kind.begins_with("epica_") else ("roupa_samurai" if profile.gender == "m" else "roupa_princesa"), 0], "camisa": ["camisa_guerra", 7], "calca": ["calca_guerra", 0], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0], "anel1": ["anel_esmeralda", 0], "anel2": ["anel_bronze", 0], "amuleto": ["amuleto_lobo", 0]}
 	if founder_demo:
 		wanted = {"arma": [FounderPack.WEAPON, int(args.get("wlevel", "12"))], "skin": [FounderPack.SKIN, 0], "auxiliar": ["dom_de_anjo_v", 0]}
+	if kind.begins_with("pve"):
+		# 0.31 capture helper (--demo=pve_lendario|pve_epico|pve_raro|pve_comum): a whole set of
+		# instance gear of one rarity (the Lendário one by default), to see the art side by side.
+		var tier: String = kind.substr(4) if kind.length() > 4 else "lendario"
+		var rings: int = 0
+		for def: Dictionary in Armory.data().cosmetics:
+			if bool(def.get("pve", false)) and str(def.get("rarity", "")) == tier:
+				var place: String = str(def.slot)
+				if place == "anel":
+					rings += 1
+					place = "anel%d" % rings
+				if wanted.has(place) and (place not in ["anel1", "anel2"] or rings <= 2):
+					wanted[place] = [str(def.id), 0]
 	for slot: String in wanted:
 		var id: String = wanted[slot][0]
 		for inst: Dictionary in profile.inventory:

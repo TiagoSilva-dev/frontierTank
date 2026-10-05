@@ -33,7 +33,7 @@ func run_tests() -> void:
 			bad_power.append(def.id)
 	check(bad_cosmetic.is_empty(), "no skin or hair carries attributes %s" % [bad_cosmetic])
 	check(bad_power.is_empty(), "no premium item takes a power slot %s" % [bad_power])
-	check(Armory.COSMETIC_SLOTS == ["skin", "cabelo"] and not "roupa" in Armory.EQUIP_SLOTS, "the outfit slot is the skin now")
+	check(Armory.COSMETIC_SLOTS == ["skin", "cabelo", "asas"] and not "roupa" in Armory.EQUIP_SLOTS, "the outfit slot is the skin now, and the wings are appearance too (0.32)")
 	for slot: String in ["skin", "camisa", "calca", "chapeu", "oculos", "cabelo", "asas", "arma", "auxiliar"]:
 		check(slot in Armory.EQUIP_SLOTS, "%s is an equipment slot" % slot)
 	var worn_slots: Array = Armory.COSMETIC_SLOTS + Armory.POWER_SLOTS

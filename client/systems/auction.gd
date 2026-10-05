@@ -13,7 +13,7 @@ extends RefCounted
 #   - The item bought and the seller's currencies arrive by mail (Correio).
 # Also the texts every screen shows: prices, names, time left and the mail lines.
 
-const SLOTS: Array[String] = ["arma", "camisa", "calca", "chapeu", "oculos", "asas", "anel", "amuleto", "mapa"]
+const SLOTS: Array[String] = ["arma", "camisa", "calca", "chapeu", "oculos", "anel", "amuleto", "mapa"]
 const QUALITIES: Array[String] = ["normal", "excelente", "verdadeira", "super"]
 const SORTS: Array[String] = ["recent", "price", "level"]
 
@@ -219,7 +219,7 @@ static func item_name(kind: String, item: Dictionary) -> String:
 static func item_color(kind: String, item: Dictionary) -> Color:
 	if item.has("pet"):
 		return Pets.rarity_color(str(Pets.species_def(str(item.pet)).get("rarity", "comum")))
-	return InstanceRun.quality_color(str(item.get("quality", "normal"))) if kind == "map" else Armory.quality_color(item)
+	return InstanceRun.quality_color(str(item.get("quality", "normal"))) if kind == "map" else Armory.name_color(item)
 
 static func item_icon(kind: String, item: Dictionary) -> Texture2D:
 	if item.has("pet"):

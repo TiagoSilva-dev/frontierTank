@@ -45,7 +45,7 @@ func run_tests() -> void:
 	check(weapon_ids == ["ataque", "dano", "critico", "pow", "pow_inicial", "poupar"] and armor_ids == ["defesa", "vida", "agilidade", "sorte", "energia", "delay", "vento", "cura"], "bonus pools per kind of piece (weapon / shirt, trousers, hat, glasses, wings)")
 	check(not (weapon_ids + armor_ids).any(func(id: String) -> bool: return id.contains("raio") or id.contains("radius") or id.contains("hit")), "no bonus changes the blast radius or the hitbox")
 	check(not Crafting.can_have_mods("roupa_samurai") and Crafting.can_have_mods("camisa_guerra") and Crafting.can_have_mods("calca_guerra"), "skins take no bonuses; shirts and trousers do")
-	check(Crafting.can_have_mods("trovao") and Crafting.can_have_mods("chapeu_kabuto") and Crafting.can_have_mods("asas_fada") and not Crafting.can_have_mods("cabelo_azul") and not Crafting.can_have_mods("dom_de_anjo"), "hair colours and auxiliary items take no bonuses")
+	check(Crafting.can_have_mods("trovao") and Crafting.can_have_mods("chapeu_kabuto") and not Crafting.can_have_mods("asas_fada") and not Crafting.can_have_mods("cabelo_azul") and not Crafting.can_have_mods("dom_de_anjo"), "wings (appearance since 0.32), hair colours and auxiliary items take no bonuses")
 
 	# --- Rolling bonuses
 	var counts_ok: bool = true
