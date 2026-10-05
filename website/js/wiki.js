@@ -106,7 +106,7 @@
       case "weapon": return weaponCard(e);
       case "enemy": return enemyCard(e);
       case "currency": return simpleCard(L(e.name), T("Moeda de criação", "Crafting currency") + " · " + rarityName(e.rarity), e.icon, `<div>${esc(L(e.desc))}</div>`, RARITY[e.rarity][0]);
-      case "cosmetic": return simpleCard(L(e.name), L(e.slot_name), e.icon, attrLines(e.attrs) + `<div class="req">${e.premium ? T("Loja premium · só aparência", "Premium shop · cosmetic only") : T(`${n(e.price)} moedas`, `${n(e.price)} gold`)}</div>`, e.premium ? "ffb347" : null);
+      case "cosmetic": return simpleCard(L(e.name), L(e.slot_name), e.icon, attrLines(e.attrs) + (e.hp ? `<div class="mod">+${n(e.hp)} ${T("vida", "life")}</div>` : "") + `<div class="req">${e.premium ? T("Loja premium · só aparência", "Premium shop · cosmetic only") : T(`${n(e.price)} moedas`, `${n(e.price)} gold`)}</div>`, e.premium ? "ffb347" : null);
       case "instance": return simpleCard(L(e.name), T("Instância", "Dungeon"), e.map_icon, `<div>${esc(L(e.desc))}</div>`, e.color);
       case "arena": return simpleCard(L(e.name), e.pve_only ? T("Só na Instância", "Dungeon only") : T("Arena", "Arena"), null, `<img src="${esc(img(e.thumb))}" alt="" style="width:100%;image-rendering:pixelated">`);
       case "skill": return simpleCard(L(e.name), T("Habilidade · tecla ", "Skill · key ") + e.key, e.icon, `<div>${esc(L(e.desc))}</div><div class="req">${T("Energia", "Energy")} ${e.energy} · Delay +${e.delay}</div>`);
@@ -127,7 +127,7 @@
     return { fury: T("Fúria", "Fury"), summon: T("Invocação", "Summon"), freeze: T("Congelamento", "Freeze"), teleport: T("Teletransporte", "Teleport") }[m] || m;
   }
   function slotName(slot) {
-    return { roupa: T("Roupas", "Outfits"), chapeu: T("Chapéus", "Hats"), oculos: T("Óculos", "Glasses"), asas: T("Asas", "Wings"), cabelo: T("Cabelos", "Hair") }[slot] || slot;
+    return { skin: T("Skins", "Skins"), camisa: T("Camisas", "Shirts"), calca: T("Calças", "Trousers"), chapeu: T("Chapéus", "Hats"), oculos: T("Óculos", "Glasses"), asas: T("Asas", "Wings"), cabelo: T("Cabelos", "Hair") }[slot] || slot;
   }
 
   function powDetails(p) {
@@ -366,8 +366,8 @@
       <p class="intro">${T("A qualidade multiplica o dano e os atributos das armas e define quantos bônus aleatórios o item pode ter. No jogo ela aparece como um brilho atrás do item, na cor da qualidade.",
         "Quality multiplies a weapon's damage and attributes and sets how many random bonuses an item can have. In game it shows as a glow behind the item, in the quality's colour.")}</p>
       ${table([T("Qualidade", "Quality"), [T("Dano", "Damage"), "num"], [T("Atributos", "Attributes"), "num"], [T("Preço na loja", "Shop price"), "num"], [T("Bônus", "Bonuses"), "num"], T("Como conseguir", "How to get it")], rows)}
-      <p class="note">${T("Roupas, chapéus, óculos e asas também têm qualidade (mudada pela Brasa e pela Coroa), mas nelas a qualidade só define o número de bônus: só as armas multiplicam dano e atributos.",
-        "Outfits, hats, glasses and wings have a quality too (changed with Embers and Crowns), but for them it only sets the number of bonuses: only weapons multiply damage and attributes.")}</p>`;
+      <p class="note">${T("Camisas, calças, chapéus, óculos e asas também têm qualidade (mudada pela Brasa e pela Coroa), mas nelas a qualidade só define o número de bônus: só as armas multiplicam dano e atributos.",
+        "Shirts, trousers, hats, glasses and wings have a quality too (changed with Embers and Crowns), but for them it only sets the number of bonuses: only weapons multiply damage and attributes.")}</p>`;
     return page(T("Qualidades", "Qualities"), [], body, { icon: byId(D.weapons, "lanca_antiga").tiers[3] });
   }
 
@@ -385,8 +385,8 @@
     const total = S.max;
     const coins = S.coins.reduce((a, b) => a + b, 0);
     const body = `
-      <p class="intro">${T(`No Ferreiro, armas, roupas e chapéus sobem até +${S.max}. Cada tentativa usa <b>uma pedra do nível desejado</b> e moedas. Pode falhar: a pedra e as moedas são consumidas, mas o nível do item é preservado.`,
-        `At the Blacksmith, weapons, outfits and hats go up to +${S.max}. Each attempt uses <b>one stone of the target level</b> and gold. Attempts can fail: the stone and gold are consumed, but the item keeps its level.`)}</p>
+      <p class="intro">${T(`No Ferreiro, armas, camisas, calças e chapéus sobem até +${S.max}. Cada tentativa usa <b>uma pedra do nível desejado</b> e moedas. Pode falhar: a pedra e as moedas são consumidas, mas o nível do item é preservado.`,
+        `At the Blacksmith, weapons, shirts, trousers and hats go up to +${S.max}. Each attempt uses <b>one stone of the target level</b> and gold. Attempts can fail: the stone and gold are consumed, but the item keeps its level.`)}</p>
       ${table([[T("Nível", "Level"), "num"], [T("Chance de sucesso", "Success chance"), "num"], [T("Moedas", "Gold"), "num"], [T("Dano da arma", "Weapon damage"), "num"], [T("Atributos do item", "Item attributes"), "num"], [T("Defesa (roupa/chapéu)", "Defence (outfit/hat)"), "num"], [T("Vida (roupa/chapéu)", "HP (outfit/hat)"), "num"], T("Aura", "Aura")], rows)}
       <p>${T(`Sem falhas: uma pedra de cada nível e <b>${n(coins)}</b> moedas do +0 ao +${S.max}.`, `With no failures: one stone of each level and <b>${n(coins)}</b> gold from +0 to +${S.max}.`)}</p>
       <h2>${T("Pedras de Fortalecimento", "Strengthening Stones")}</h2>
@@ -405,15 +405,15 @@
     const tierHead = A.tiers.map((t) => [`${t.name} <span class="muted">(${T("nível", "level")} ${t.ilvl}+)</span>`, null]);
     const rows = (list) => list.map((a) => `<tr>${td(`<b>${esc(L(a.text).replace(/%d%%/g, "#%").replace(/%d/g, "#"))}</b>`, null)}${a.values.map((v) => td(`${v[0]}–${v[1]}`, v[0], "num")).join("")}</tr>`);
     const body = `
-      <p class="intro">${T("Armas, roupas, chapéus, óculos e asas podem ter bônus aleatórios. Cada bônus tem faixas de F1 (a melhor) a F5, e o nível do item (o nível do mapa onde ele caiu) decide quais faixas podem aparecer.",
-        "Weapons, outfits, hats, glasses and wings can roll random bonuses. Each bonus has tiers from F1 (best) to F5, and the item level (the level of the map it dropped on) decides which tiers can appear.")}</p>
+      <p class="intro">${T("Armas, camisas, calças, chapéus, óculos e asas podem ter bônus aleatórios. Cada bônus tem faixas de F1 (a melhor) a F5, e o nível do item (o nível do mapa onde ele caiu) decide quais faixas podem aparecer.",
+        "Weapons, shirts, trousers, hats, glasses and wings can roll random bonuses. Each bonus has tiers from F1 (best) to F5, and the item level (the level of the map it dropped on) decides which tiers can appear.")}</p>
       <div class="kv">${Object.entries(A.counts).map(([q, c]) => `<div><span style="color:#${qual(q).color}">${esc(L(qual(q).label))}</span><b>${c[0] === c[1] ? c[0] : c.join("–")} ${T("bônus", "bonuses")}</b></div>`).join("")}</div>
       <h2>${T("Faixas", "Tiers")}</h2>
       ${table([T("Faixa", "Tier"), [T("Nível mínimo do item", "Minimum item level"), "num"], [T("Peso", "Weight"), "num"]], A.tiers.map((t) => `<tr>${td(`<b>${t.name}</b>`)}${tdn(t.ilvl)}${tdn(t.weight)}</tr>`))}
       <p>${T("O peso é a chance relativa de cada faixa entre as liberadas: F5 é a mais comum.", "The weight is each tier's relative chance among the unlocked ones: F5 is the most common.")}</p>
       <h2>${T("Bônus de arma", "Weapon bonuses")}</h2>
       ${table([T("Bônus", "Bonus")].concat(tierHead), rows(A.weapon))}
-      <h2>${T("Bônus de roupa, chapéu, óculos e asas", "Outfit, hat, glasses and wing bonuses")}</h2>
+      <h2>${T("Bônus de camisa, calça, chapéu, óculos e asas", "Shirt, trousers, hat, glasses and wing bonuses")}</h2>
       ${table([T("Bônus", "Bonus")].concat(tierHead), rows(A.armor))}
       <p class="note">${T(`Limites somados: redução de vento até ${A.limits.vento}% e chance de não gastar a habilidade até ${A.limits.poupar}%. Fortalecer multiplica só os atributos base do item: os bônus aleatórios não mudam. Nenhum bônus muda o raio da explosão ou o hitbox.`,
         `Summed caps: wind reduction up to ${A.limits.vento}% and free-skill chance up to ${A.limits.poupar}%. Strengthening only scales the item's base attributes: random bonuses stay the same. No bonus changes the blast radius or the hitbox.`)}</p>
@@ -424,15 +424,15 @@
   // --- cosmetics / skills / tools / aux ---
 
   function cosmetics(focus) {
-    const slots = ["roupa", "chapeu", "oculos", "asas", "cabelo"];
+    const slots = ["skin", "camisa", "calca", "chapeu", "oculos", "asas", "cabelo"];
     const gender = (g) => ({ m: T("Masculina", "Male"), f: T("Feminina", "Female"), u: T("Todos", "All") }[g]);
     const body = `
-      <p class="intro">${T("Roupas, chapéus, óculos, asas e tinturas de cabelo aparecem no personagem em batalha, na sala e na Mochila. Os da loja de ouro dão alguns atributos; os da loja premium são só aparência.",
-        "Outfits, hats, glasses, wings and hair dyes show on your character in battle, in rooms and in the Bag. Gold-shop items give a few attributes; premium ones are cosmetic only.")}</p>
-      ${slots.map((slot) => `<h2>${esc(slotName(slot))}</h2>` + table(["", [T("Nome", "Name"), "text"], T("Atributos", "Attributes"), [T("Preço", "Price"), "num"], slot === "roupa" ? T("Personagem", "Character") : ""],
+      <p class="intro">${T("As skins e as tinturas de cabelo são só aparência e a loja premium vende só isso. Camisas e calças dão atributos e não aparecem no personagem; chapéus, óculos e asas dão atributos e aparecem sobre a skin. Anéis (dois espaços) e o amuleto (que dá vida) dão atributos e ficam só na ficha.",
+        "Skins and hair dyes are appearance only, and the premium shop sells nothing else. Shirts and trousers give attributes and do not show on the character; hats, glasses and wings give attributes and show over the skin. Rings (two slots) and the amulet (which gives life) give attributes and show on the sheet only.")}</p>
+      ${slots.map((slot) => `<h2>${esc(slotName(slot))}</h2>` + table(["", [T("Nome", "Name"), "text"], T("Atributos", "Attributes"), [T("Preço", "Price"), "num"], slot === "skin" ? T("Personagem", "Character") : ""],
         D.cosmetics.filter((c) => c.slot === slot).map((c) => `<tr id="row-${c.id}">${td(icon(c.icon))}${td(ref("cosmetic", c.id), L(c.name))}
-          ${td(Object.entries(c.attrs).map(([k, v]) => `+${v} ${esc(attrName(k))}`).join(", ") || `<span class="muted">${T("só aparência", "cosmetic only")}</span>`)}
-          ${td(c.premium ? `<span class="pill gold">${T("premium", "premium")}</span>` : n(c.price), c.premium ? 1e9 : c.price, "num")}${td(slot === "roupa" ? gender(c.gender) : "")}</tr>`), { sortable: true })).join("")}`;
+          ${td(Object.entries(c.attrs).map(([k, v]) => `+${v} ${esc(attrName(k))}`).concat(c.hp ? [`+${c.hp} ${T("vida", "life")}`] : []).join(", ") || `<span class="muted">${T("só aparência", "cosmetic only")}</span>`)}
+          ${td(c.premium ? `<span class="pill gold">${T("premium", "premium")}</span>` : n(c.price), c.premium ? 1e9 : c.price, "num")}${td(slot === "skin" ? gender(c.gender) : "")}</tr>`), { sortable: true })).join("")}`;
     return page(T("Visual", "Cosmetics"), [], body, { icon: byId(D.cosmetics, "asas_fenix").icon, focus });
   }
 

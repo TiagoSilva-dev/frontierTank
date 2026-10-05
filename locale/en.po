@@ -154,31 +154,31 @@ msgstr "This Steam account is already linked to another game account."
 msgid "Erro do servidor: %s"
 msgstr "Server error: %s"
 
-#: client/scripts/main.gd:1007
+#: client/scripts/main.gd:1008
 msgid "AVISO"
 msgstr "NOTICE"
 
-#: client/scripts/main.gd:1020
+#: client/scripts/main.gd:1021
 msgid "Você foi removido da sala."
 msgstr "You were removed from the room."
 
-#: client/scripts/main.gd:1117
+#: client/scripts/main.gd:1118
 msgid "Música desligada"
 msgstr "Music off"
 
-#: client/scripts/main.gd:1117
+#: client/scripts/main.gd:1118
 msgid "Música ligada"
 msgstr "Music on"
 
-#: client/scripts/main.gd:1133
+#: client/scripts/main.gd:1134
 msgid "Mensagem privada de %s"
 msgstr "Private message from %s"
 
-#: client/scripts/main.gd:1154 client/ui/exchange_screen.gd:48
+#: client/scripts/main.gd:1155 client/ui/exchange_screen.gd:48
 msgid "CASA DE CÂMBIO"
 msgstr "CURRENCY EXCHANGE"
 
-#: client/scripts/main.gd:1154
+#: client/scripts/main.gd:1155
 msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
 msgstr "Join an online server to exchange currencies and stones with other players."
 
@@ -194,7 +194,7 @@ msgstr "Team war, endless fun"
 msgid "Expedição: %s"
 msgstr "Expedition: %s"
 
-#: client/scripts/main.gd:404 client/scripts/main.gd:415 client/scripts/main.gd:474 client/scripts/main.gd:1020
+#: client/scripts/main.gd:404 client/scripts/main.gd:415 client/scripts/main.gd:474 client/scripts/main.gd:1021
 msgid "SALA"
 msgstr "ROOM"
 
@@ -214,155 +214,175 @@ msgstr "Go back to the title screen?"
 msgid "FICAR"
 msgstr "STAY"
 
-#: client/scripts/main.gd:679 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
+#: client/scripts/main.gd:680 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
 msgid "ASSISTIR"
 msgstr "WATCH"
 
-#: client/scripts/main.gd:711
+#: client/scripts/main.gd:712
 msgid "Treino concluído!"
 msgstr "Training complete!"
 
-#: client/scripts/main.gd:716 client/ui/bottom_bar.gd:26
+#: client/scripts/main.gd:717 client/ui/bottom_bar.gd:26
 msgid "AJUDA"
 msgstr "HELP"
 
-#: client/scripts/main.gd:722 client/ui/title_screen.gd:80
+#: client/scripts/main.gd:723 client/ui/title_screen.gd:80
 msgid "Privacidade"
 msgstr "Privacy"
 
-#: client/scripts/main.gd:724 client/ui/title_screen.gd:128
+#: client/scripts/main.gd:725 client/ui/title_screen.gd:128
 msgid "Minha conta"
 msgstr "My account"
 
-#: client/scripts/main.gd:729
+#: client/scripts/main.gd:730
 msgid "TREINO"
 msgstr "TRAINING"
 
-#: client/scripts/main.gd:733 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
+#: client/scripts/main.gd:734 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
 msgid "FECHAR"
 msgstr "CLOSE"
 
-#: client/scripts/main.gd:739
+#: client/scripts/main.gd:740
 msgid "◀ ▶ andar (gasta energia)   ↑ ↓ ângulo\nSegure FOGO e solte: força (a barra reinicia uma vez no máximo)\nHAB. abre as habilidades 1–9 (+2, x3, +1, POW 50%…10%, POW máx)\nPOW: com a barra cheia   Ferramentas, avião, item auxiliar e mascote: botões em fila\nPASS: passar a vez   Confiar: a IA joga por você\nSegure um botão para ver o que ele faz"
 msgstr "◀ ▶ move (uses energy)   ↑ ↓ angle\nHold FIRE and release: power (the bar restarts once at most)\nSKILLS opens skills 1–9 (+2, x3, +1, POW 50%…10%, Max POW)\nPOW: when the bar is full   Tools, plane, support item and pet: the row of buttons\nPASS: pass the turn   Auto: the AI plays for you\nHold a button to see what it does"
 
-#: client/scripts/main.gd:740
+#: client/scripts/main.gd:741
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr "← → move (uses energy)   ↑ ↓ angle\nHold and release SPACE: power (the bar restarts once at most)\n1–9 skills (+2, x3, +1, POW 50%…10%, Max POW)   Z X C tools\nB: POW when the bar is full   F: paper plane   V: support item\nP: pass the turn   Auto: the AI plays for you   M: music on/off"
 
-#: client/scripts/main.gd:752 client/ui/auction_screen.gd:69
+#: client/scripts/main.gd:753 client/ui/auction_screen.gd:69
 msgid "LEILÃO"
 msgstr "AUCTION HOUSE"
 
-#: client/scripts/main.gd:752
+#: client/scripts/main.gd:753
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr "The Auction House only works online: the items on sale are kept on the server.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:762 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
+#: client/scripts/main.gd:763 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
 msgid "CORREIO"
 msgstr "MAIL"
 
-#: client/scripts/main.gd:762
+#: client/scripts/main.gd:763
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr "Mail only works online: it delivers what you buy and sell at the Auction House.\nChoose a server on the title screen."
 
-#: client/scripts/main.gd:773
+#: client/scripts/main.gd:774
 msgid "O Leilão só funciona online."
 msgstr "The Auction House only works online."
 
-#: client/scripts/main.gd:827
+#: client/scripts/main.gd:828
 msgid "Conquista: %s"
 msgstr "Achievement: %s"
 
-#: client/scripts/main.gd:836 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:140
+#: client/scripts/main.gd:837 client/ui/hunt_tab.gd:364 client/ui/shop_screen.gd:141
 msgid "Entre com a sua conta para comprar."
 msgstr "Log in to your account to buy."
 
-#: client/scripts/main.gd:847
+#: client/scripts/main.gd:848
 msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
 msgstr "Steam has not confirmed the purchase yet. If you approve it, the items arrive in your Mail."
 
-#: client/scripts/main.gd:850
+#: client/scripts/main.gd:851
 msgid "Compra cancelada."
 msgstr "Purchase cancelled."
 
-#: client/scripts/main.gd:855
+#: client/scripts/main.gd:856
 msgid "Compra concluída! Os itens chegaram ao Correio."
 msgstr "Purchase complete! The items arrived in your Mail."
 
-#: client/scripts/main.gd:872
+#: client/scripts/main.gd:873
 msgid "Página de pagamento aberta no navegador (cartão ou Pix). Os itens chegam ao Correio quando o pagamento for confirmado."
 msgstr "Payment page opened in your browser (card or Pix). The items arrive in the Mail as soon as the payment is confirmed."
 
-#: client/scripts/main.gd:899
+#: client/scripts/main.gd:900
 msgid "Compra confirmada! Os itens chegaram ao Correio."
 msgstr "Purchase confirmed! The items arrived in the Mail."
 
-#: client/scripts/main.gd:903
+#: client/scripts/main.gd:904
 msgid "O pagamento não foi concluído."
 msgstr "The payment was not completed."
 
-#: client/scripts/main.gd:929
+#: client/scripts/main.gd:930
 msgid "Bem-vindo ao servidor %s!"
 msgstr "Welcome to server %s!"
 
-#: client/scripts/main.gd:957
+#: client/scripts/main.gd:958
 msgid "Reconectando…"
 msgstr "Reconnecting…"
 
-#: client/scripts/main.gd:997
+#: client/scripts/main.gd:998
 msgid "CONEXÃO"
 msgstr "CONNECTION"
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:221 client/ui/founder_screen.gd:115
+#: client/systems/armory.gd:15
+msgid "Amuleto"
+msgstr "Amulet"
+
+#: client/systems/armory.gd:15
+msgid "Anel"
+msgstr "Ring"
+
+#: client/systems/armory.gd:15 client/ui/character_screen.gd:232 client/ui/founder_screen.gd:115
 msgid "Arma"
 msgstr "Weapon"
 
-#: client/systems/armory.gd:12 client/ui/auction_screen.gd:18 client/ui/founder_screen.gd:116 client/ui/shop_screen.gd:12
+#: client/systems/armory.gd:15 client/ui/auction_screen.gd:18 client/ui/founder_screen.gd:116 client/ui/shop_screen.gd:12
 msgid "Asas"
 msgstr "Wings"
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:14
+#: client/systems/armory.gd:15 client/ui/character_screen.gd:14
 msgid "Auxiliar"
 msgstr "Support"
 
-#: client/systems/armory.gd:12
+#: client/systems/armory.gd:15
 msgid "Cabelo"
 msgstr "Hair"
 
-#: client/systems/armory.gd:12
+#: client/systems/armory.gd:15
+msgid "Calça"
+msgstr "Trousers"
+
+#: client/systems/armory.gd:15 client/ui/character_screen.gd:232
+msgid "Camisa"
+msgstr "Shirt"
+
+#: client/systems/armory.gd:15
 msgid "Chapéu"
 msgstr "Hat"
 
-#: client/systems/armory.gd:12 client/ui/character_screen.gd:221
-msgid "Roupa"
-msgstr "Outfit"
+#: client/systems/armory.gd:15 shared/balance/combat.json:statuses[4].name
+msgid "Selo"
+msgstr "Seal"
 
-#: client/systems/armory.gd:12 client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
+#: client/systems/armory.gd:15 client/ui/founder_screen.gd:114
+msgid "Skin"
+msgstr "Skin"
+
+#: client/systems/armory.gd:15 client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
 msgid "Óculos"
 msgstr "Glasses"
 
-#: client/systems/armory.gd:131
+#: client/systems/armory.gd:159
 msgid "%s Excelente"
 msgstr "Excellent %s"
 
-#: client/systems/armory.gd:133
+#: client/systems/armory.gd:161
 msgid "Verdadeiro %s"
 msgstr "True %s"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
+#: client/systems/armory.gd:25 client/ui/character_screen.gd:203 client/ui/player_profile.gd:101
 msgid "Agilidade"
 msgstr "Agility"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
+#: client/systems/armory.gd:25 client/ui/character_screen.gd:203 client/ui/player_profile.gd:101
 msgid "Ataque"
 msgstr "Attack"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
+#: client/systems/armory.gd:25 client/ui/character_screen.gd:203 client/ui/player_profile.gd:101
 msgid "Defesa"
 msgstr "Defense"
 
-#: client/systems/armory.gd:14 client/ui/character_screen.gd:192 client/ui/player_profile.gd:101
+#: client/systems/armory.gd:25 client/ui/character_screen.gd:203 client/ui/player_profile.gd:101
 msgid "Sorte"
 msgstr "Luck"
 
@@ -478,7 +498,7 @@ msgstr "You have reached the limit of listings at the same time."
 msgid "Esta carta já foi recebida."
 msgstr "This letter was already received."
 
-#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:414 client/systems/profile.gd:838
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:474 client/systems/profile.gd:913
 msgid "Item não encontrado."
 msgstr "Item not found."
 
@@ -550,83 +570,83 @@ msgstr "Target"
 msgid "Alvo %d"
 msgstr "Target %d"
 
-#: client/systems/crafting.gd:152
+#: client/systems/crafting.gd:158
 msgid "Escolha um item."
 msgstr "Choose an item."
 
-#: client/systems/crafting.gd:154
-msgid "Só armas, roupas, chapéus, óculos e asas recebem bônus."
-msgstr "Only weapons, outfits, hats, glasses and wings take bonuses."
+#: client/systems/crafting.gd:160
+msgid "Só armas, camisas, calças, chapéus, óculos e asas recebem bônus."
+msgstr "Only weapons, shirts, trousers, hats, glasses and wings take bonuses."
 
-#: client/systems/crafting.gd:156
+#: client/systems/crafting.gd:162
 msgid "Itens espelhados não podem ser modificados."
 msgstr "Mirrored items cannot be changed."
 
-#: client/systems/crafting.gd:162
+#: client/systems/crafting.gd:168
 msgid "A Brasa só funciona em itens Normais."
 msgstr "Embers only work on Normal items."
 
-#: client/systems/crafting.gd:165
+#: client/systems/crafting.gd:171
 msgid "A Coroa só funciona em itens Excelentes."
 msgstr "Crowns only work on Excellent items."
 
-#: client/systems/crafting.gd:168
+#: client/systems/crafting.gd:174
 msgid "A Estrela precisa de um item Excelente ou melhor."
 msgstr "Stars need an Excellent or better item."
 
-#: client/systems/crafting.gd:170
+#: client/systems/crafting.gd:176
 msgid "Este item já tem o máximo de bônus da sua qualidade."
 msgstr "This item already has the most bonuses its quality allows."
 
-#: client/systems/crafting.gd:173
+#: client/systems/crafting.gd:179
 msgid "A Tormenta precisa de um item Excelente ou melhor."
 msgstr "Storms need an Excellent or better item."
 
-#: client/systems/crafting.gd:176
+#: client/systems/crafting.gd:182
 msgid "Este item não tem bônus."
 msgstr "This item has no bonuses."
 
-#: client/systems/crafting.gd:180 client/systems/crafting.gd:236 client/systems/profile.gd:694 client/systems/profile.gd:718
+#: client/systems/crafting.gd:186 client/systems/crafting.gd:242 client/systems/profile.gd:769 client/systems/profile.gd:793
 msgid "Moeda desconhecida."
 msgstr "Unknown currency."
 
-#: client/systems/crafting.gd:234
+#: client/systems/crafting.gd:240
 msgid "Escolha um mapa."
 msgstr "Choose a map."
 
-#: client/systems/crafting.gd:236
+#: client/systems/crafting.gd:242
 msgid "O Espelho Celeste só duplica equipamentos."
 msgstr "The Sky Mirror only copies gear."
 
-#: client/systems/crafting.gd:242
+#: client/systems/crafting.gd:248
 msgid "A Brasa só funciona em mapas Normais."
 msgstr "Embers only work on Normal maps."
 
-#: client/systems/crafting.gd:245
+#: client/systems/crafting.gd:251
 msgid "A Coroa só funciona em mapas Excelentes."
 msgstr "Crowns only work on Excellent maps."
 
-#: client/systems/crafting.gd:248
+#: client/systems/crafting.gd:254
 msgid "A Estrela precisa de um mapa Excelente ou melhor."
 msgstr "Stars need an Excellent or better map."
 
-#: client/systems/crafting.gd:250
+#: client/systems/crafting.gd:256
 msgid "Este mapa já tem o máximo de atributos da sua qualidade."
 msgstr "This map already has the most modifiers its quality allows."
 
-#: client/systems/crafting.gd:253
+#: client/systems/crafting.gd:259
 msgid "A Tormenta precisa de um mapa Excelente ou melhor."
 msgstr "Storms need an Excellent or better map."
 
-#: client/systems/crafting.gd:256
+#: client/systems/crafting.gd:262
 msgid "Este mapa não tem valores para rerolar."
 msgstr "This map has no values to reroll."
 
-#: client/systems/crafting.gd:259
+#: client/systems/crafting.gd:265
 msgid "Este mapa não tem atributos."
 msgstr "This map has no modifiers."
 
-#: client/systems/crafting.gd:67
+#: client/systems/crafting.gd:73
 msgid "F%d"
 msgstr "T%d"
 
@@ -998,201 +1018,209 @@ msgstr "Benchmark: warming up…"
 msgid "Teste de desempenho: medindo… %d s"
 msgstr "Benchmark: measuring… %d s"
 
-#: client/systems/premium_store.gd:83 client/ui/auction_screen.gd:323 client/ui/auction_screen.gd:410 client/ui/auction_screen.gd:413
+#: client/systems/premium_store.gd:94 client/ui/auction_screen.gd:323 client/ui/auction_screen.gd:410 client/ui/auction_screen.gd:413
 msgid "COMPRAR"
 msgstr "BUY"
 
-#: client/systems/premium_store.gd:83
+#: client/systems/premium_store.gd:94
 msgid "COMPRAR NA STEAM"
 msgstr "BUY ON STEAM"
 
-#: client/systems/premium_store.gd:86
+#: client/systems/premium_store.gd:97
 msgid "Abre a janela de compra da Steam. O Passe chega pelo Correio."
 msgstr "Opens the Steam purchase window. The Pass arrives by mail."
 
-#: client/systems/premium_store.gd:86
+#: client/systems/premium_store.gd:97
 msgid "Abre a página de pagamento (cartão ou Pix). O Passe chega pelo Correio."
 msgstr "Opens the payment page (card or Pix). The Pass arrives in the Mail."
 
-#: client/systems/profile.gd:1058
-msgid "Este item é a prova de uma compra e não pode ser vendido."
-msgstr "This item is the proof of a purchase and cannot be sold."
-
-#: client/systems/profile.gd:1062 client/ui/mission_screen.gd:145 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:128
-msgid "+%d moedas"
-msgstr "+%d gold"
-
-#: client/systems/profile.gd:1095
-msgid "Só Fundadores têm efeitos do Founder Pack."
-msgstr "Only Founders have Founder Pack effects."
-
-#: client/systems/profile.gd:1097
-msgid "Efeito desconhecido."
-msgstr "Unknown effect."
-
-#: client/systems/profile.gd:1134
-msgid "Título conquistado: %s"
-msgstr "Title earned: %s"
-
-#: client/systems/profile.gd:1144
-msgid "O personagem já foi criado."
-msgstr "The character was already created."
-
-#: client/systems/profile.gd:1146
-msgid "Nome inválido: use de 2 a 14 letras ou números."
-msgstr "Invalid name: use 2 to 14 letters or digits."
-
-#: client/systems/profile.gd:1153 client/systems/tutorial.gd:70 server/game/game_server.gd:488
-msgid "Operação desconhecida."
-msgstr "Unknown operation."
-
-#: client/systems/profile.gd:291
-msgid "Você ainda não tem este título."
-msgstr "You do not have this title yet."
-
-#: client/systems/profile.gd:302
-msgid "Esta recompensa já foi resgatada."
-msgstr "This reward was already claimed."
-
-#: client/systems/profile.gd:311
-msgid "Não há recompensa para esta temporada."
-msgstr "There is no reward for this season."
-
-#: client/systems/profile.gd:417
-msgid "Este item não se equipa."
-msgstr "This item cannot be equipped."
-
-#: client/systems/profile.gd:421
-msgid "Esta roupa é do outro gênero."
-msgstr "This outfit is for the other gender."
-
-#: client/systems/profile.gd:430
-msgid "Você precisa ter uma arma equipada."
-msgstr "You must keep a weapon equipped."
-
-#: client/systems/profile.gd:502
-msgid "Mochila cheia! Venda itens ou compre mais abas na loja Premium."
-msgstr "Bag full! Sell items or buy more tabs in the Premium shop."
-
-#: client/systems/profile.gd:550 client/systems/profile.gd:558 client/systems/profile.gd:563 client/systems/profile.gd:578
-msgid "Item desconhecido."
-msgstr "Unknown item."
-
-#: client/systems/profile.gd:552
-msgid "Super armas só caem do chefe das instâncias."
-msgstr "Super weapons only drop from dungeon bosses."
-
-#: client/systems/profile.gd:554
-msgid "Armas Verdadeiras só caem nas instâncias."
-msgstr "True weapons only drop in dungeons."
-
-#: client/systems/profile.gd:556
-msgid "Armas Excelentes só caem nas instâncias ou vêm do leilão."
-msgstr "Excellent weapons only drop in instances or come from the auction."
-
-#: client/systems/profile.gd:560
-msgid "Itens auxiliares só vêm de drops ou do leilão."
-msgstr "Auxiliary items only come from drops or the auction."
-
-#: client/systems/profile.gd:565 client/systems/profile.gd:583 client/systems/profile.gd:659 client/systems/profile.gd:677
-msgid "Moedas insuficientes."
-msgstr "Not enough gold."
-
-#: client/systems/profile.gd:580
-msgid "Pedras de fortalecimento são encontradas nas instâncias."
-msgstr "Strengthening stones are found in instances."
-
-#: client/systems/profile.gd:652
-msgid "Só armas, roupas e chapéus podem ser fortalecidos."
-msgstr "Only weapons, outfits and hats can be strengthened."
-
-#: client/systems/profile.gd:655
-msgid "Este item já está no +12."
-msgstr "This item is already +12."
-
-#: client/systems/profile.gd:657 client/ui/smith_screen.gd:220
-msgid "Você precisa de uma Pedra de Fortalecimento nível %d."
-msgstr "You need a level %d Strengthening Stone."
-
-#: client/systems/profile.gd:672
-msgid "Escolha dois itens diferentes."
-msgstr "Choose two different items."
-
-#: client/systems/profile.gd:674
-msgid "A transferência só funciona entre itens do mesmo tipo."
-msgstr "Transfer only works between items of the same kind."
-
-#: client/systems/profile.gd:699 client/systems/profile.gd:723 client/ui/smith_screen.gd:372
-msgid "Você não tem %s."
-msgstr "You have no %s."
-
-#: client/systems/profile.gd:757 client/systems/profile.gd:1082
-msgid "Cupom inválido."
-msgstr "Invalid coupon."
-
-#: client/systems/profile.gd:759 client/systems/profile.gd:1084
-msgid "Este cupom já foi usado nesta conta."
-msgstr "This coupon was already used on this account."
-
-#: client/systems/profile.gd:829 client/ui/room_screen.gd:326
-msgid "%s custa %d moedas."
-msgstr "%s costs %d gold."
-
-#: client/systems/profile.gd:831
-msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
-msgstr "Your 3 slots (Z, X, C) are full. Click a tool to return it."
-
-#: client/systems/profile.gd:872
-msgid "Você não tem este ovo."
-msgstr "You don't have this egg."
-
-#: client/systems/profile.gd:874
-msgid "A Casa dos Mascotes está cheia. Liberte algum mascote."
-msgstr "The Pet House is full. Release a pet first."
-
-#: client/systems/profile.gd:903 client/systems/profile.gd:910 client/systems/profile.gd:927 client/systems/profile.gd:948
-msgid "Mascote não encontrado."
-msgstr "Pet not found."
-
-#: client/systems/profile.gd:912 client/ui/pet_screen.gd:366
-msgid "Nível máximo para %d estrelas. Evolua o mascote para subir mais."
-msgstr "Maximum level for %d stars. Gain a star to level up further."
-
-#: client/systems/profile.gd:929
+#: client/systems/profile.gd:1004
 msgid "O mascote consumido precisa ser da mesma espécie."
 msgstr "The pet you consume must be of the same species."
 
-#: client/systems/profile.gd:931
+#: client/systems/profile.gd:1006
 msgid "Este mascote já está com 5 estrelas."
 msgstr "This pet already has 5 stars."
 
-#: client/systems/profile.gd:933
+#: client/systems/profile.gd:1008
 msgid "Tire o mascote ativo antes de consumi-lo."
 msgstr "Deactivate the active pet before consuming it."
 
-#: client/systems/profile.gd:950 client/ui/pet_screen.gd:376
+#: client/systems/profile.gd:1025 client/ui/pet_screen.gd:376
 msgid "Tire o mascote ativo antes de libertá-lo."
 msgstr "Deactivate the active pet before releasing it."
 
-#: client/systems/profile.gd:965
+#: client/systems/profile.gd:1040
 msgid "Zona desconhecida."
 msgstr "Unknown zone."
 
-#: client/systems/profile.gd:967
+#: client/systems/profile.gd:1042
 msgid "Este nível de caça ainda está bloqueado."
 msgstr "This hunting tier is still locked."
 
-#: client/systems/profile.gd:973
+#: client/systems/profile.gd:1048
 msgid "Escolha pelo menos um mascote para o time."
 msgstr "Pick at least one pet for the team."
 
-#: client/systems/profile.gd:975
+#: client/systems/profile.gd:1050
 msgid "O time tem no máximo %d mascotes."
 msgstr "The team holds at most %d pets."
 
-#: client/systems/profile.gd:992
+#: client/systems/profile.gd:1067
 msgid "Nenhuma caçada em andamento."
 msgstr "No hunt is running."
+
+#: client/systems/profile.gd:1133
+msgid "Este item é a prova de uma compra e não pode ser vendido."
+msgstr "This item is the proof of a purchase and cannot be sold."
+
+#: client/systems/profile.gd:1137 client/ui/mission_screen.gd:145 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:128
+msgid "+%d moedas"
+msgstr "+%d gold"
+
+#: client/systems/profile.gd:1170
+msgid "Só Fundadores têm efeitos do Founder Pack."
+msgstr "Only Founders have Founder Pack effects."
+
+#: client/systems/profile.gd:1172
+msgid "Efeito desconhecido."
+msgstr "Unknown effect."
+
+#: client/systems/profile.gd:1209
+msgid "Título conquistado: %s"
+msgstr "Title earned: %s"
+
+#: client/systems/profile.gd:1219
+msgid "O personagem já foi criado."
+msgstr "The character was already created."
+
+#: client/systems/profile.gd:1221
+msgid "Nome inválido: use de 2 a 14 letras ou números."
+msgstr "Invalid name: use 2 to 14 letters or digits."
+
+#: client/systems/profile.gd:1228 client/systems/tutorial.gd:70 server/game/game_server.gd:488
+msgid "Operação desconhecida."
+msgstr "Unknown operation."
+
+#: client/systems/profile.gd:335
+msgid "Você ainda não tem este título."
+msgstr "You do not have this title yet."
+
+#: client/systems/profile.gd:346
+msgid "Esta recompensa já foi resgatada."
+msgstr "This reward was already claimed."
+
+#: client/systems/profile.gd:355
+msgid "Não há recompensa para esta temporada."
+msgstr "There is no reward for this season."
+
+#: client/systems/profile.gd:478
+msgid "Este item não se equipa."
+msgstr "This item cannot be equipped."
+
+#: client/systems/profile.gd:482
+msgid "Esta skin é do outro gênero."
+msgstr "This skin is for the other gender."
+
+#: client/systems/profile.gd:491
+msgid "Este item não vai nesse espaço."
+msgstr "This item does not go in that slot."
+
+#: client/systems/profile.gd:496
+msgid "Você já usa um anel igual a este."
+msgstr "You already wear a ring like this one."
+
+#: client/systems/profile.gd:505
+msgid "Você precisa ter uma arma equipada."
+msgstr "You must keep a weapon equipped."
+
+#: client/systems/profile.gd:577
+msgid "Mochila cheia! Venda itens ou compre mais abas na loja Premium."
+msgstr "Bag full! Sell items or buy more tabs in the Premium shop."
+
+#: client/systems/profile.gd:625 client/systems/profile.gd:633 client/systems/profile.gd:638 client/systems/profile.gd:653
+msgid "Item desconhecido."
+msgstr "Unknown item."
+
+#: client/systems/profile.gd:627
+msgid "Super armas só caem do chefe das instâncias."
+msgstr "Super weapons only drop from dungeon bosses."
+
+#: client/systems/profile.gd:629
+msgid "Armas Verdadeiras só caem nas instâncias."
+msgstr "True weapons only drop in dungeons."
+
+#: client/systems/profile.gd:631
+msgid "Armas Excelentes só caem nas instâncias ou vêm do leilão."
+msgstr "Excellent weapons only drop in instances or come from the auction."
+
+#: client/systems/profile.gd:635
+msgid "Itens auxiliares só vêm de drops ou do leilão."
+msgstr "Auxiliary items only come from drops or the auction."
+
+#: client/systems/profile.gd:640 client/systems/profile.gd:658 client/systems/profile.gd:734 client/systems/profile.gd:752
+msgid "Moedas insuficientes."
+msgstr "Not enough gold."
+
+#: client/systems/profile.gd:655
+msgid "Pedras de fortalecimento são encontradas nas instâncias."
+msgstr "Strengthening stones are found in instances."
+
+#: client/systems/profile.gd:727
+msgid "Só armas, camisas, calças e chapéus podem ser fortalecidos."
+msgstr "Only weapons, shirts, trousers and hats can be strengthened."
+
+#: client/systems/profile.gd:730
+msgid "Este item já está no +12."
+msgstr "This item is already +12."
+
+#: client/systems/profile.gd:732 client/ui/smith_screen.gd:220
+msgid "Você precisa de uma Pedra de Fortalecimento nível %d."
+msgstr "You need a level %d Strengthening Stone."
+
+#: client/systems/profile.gd:747
+msgid "Escolha dois itens diferentes."
+msgstr "Choose two different items."
+
+#: client/systems/profile.gd:749
+msgid "A transferência só funciona entre itens do mesmo tipo."
+msgstr "Transfer only works between items of the same kind."
+
+#: client/systems/profile.gd:774 client/systems/profile.gd:798 client/ui/smith_screen.gd:372
+msgid "Você não tem %s."
+msgstr "You have no %s."
+
+#: client/systems/profile.gd:832 client/systems/profile.gd:1157
+msgid "Cupom inválido."
+msgstr "Invalid coupon."
+
+#: client/systems/profile.gd:834 client/systems/profile.gd:1159
+msgid "Este cupom já foi usado nesta conta."
+msgstr "This coupon was already used on this account."
+
+#: client/systems/profile.gd:904 client/ui/room_screen.gd:326
+msgid "%s custa %d moedas."
+msgstr "%s costs %d gold."
+
+#: client/systems/profile.gd:906
+msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
+msgstr "Your 3 slots (Z, X, C) are full. Click a tool to return it."
+
+#: client/systems/profile.gd:947
+msgid "Você não tem este ovo."
+msgstr "You don't have this egg."
+
+#: client/systems/profile.gd:949
+msgid "A Casa dos Mascotes está cheia. Liberte algum mascote."
+msgstr "The Pet House is full. Release a pet first."
+
+#: client/systems/profile.gd:978 client/systems/profile.gd:985 client/systems/profile.gd:1002 client/systems/profile.gd:1023
+msgid "Mascote não encontrado."
+msgstr "Pet not found."
+
+#: client/systems/profile.gd:987 client/ui/pet_screen.gd:366
+msgid "Nível máximo para %d estrelas. Evolua o mascote para subir mais."
+msgstr "Maximum level for %d stars. Gain a star to level up further."
 
 #: client/systems/ranked.gd:189
 msgid "%s · Temporada %d"
@@ -1370,13 +1398,29 @@ msgstr "%d bonuses"
 msgid "1 bônus"
 msgstr "1 bonus"
 
-#: client/ui/auction_screen.gd:175 client/ui/character_screen.gd:475 client/ui/item_tooltip.gd:194 client/ui/smith_screen.gd:323
+#: client/ui/auction_screen.gd:175 client/ui/character_screen.gd:486 client/ui/item_tooltip.gd:197 client/ui/smith_screen.gd:323
 msgid "Nível do item %d"
 msgstr "Item level %d"
+
+#: client/ui/auction_screen.gd:18
+msgid "Amuletos"
+msgstr "Amulets"
+
+#: client/ui/auction_screen.gd:18
+msgid "Anéis"
+msgstr "Rings"
 
 #: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:14 client/ui/shop_screen.gd:12
 msgid "Armas"
 msgstr "Weapons"
+
+#: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
+msgid "Calças"
+msgstr "Trousers"
+
+#: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
+msgid "Camisas"
+msgstr "Shirts"
 
 #: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
 msgid "Chapéus"
@@ -1385,10 +1429,6 @@ msgstr "Hats"
 #: client/ui/auction_screen.gd:18 client/ui/auction_screen.gd:464 client/ui/character_screen.gd:14 client/ui/smith_screen.gd:260
 msgid "Mapas"
 msgstr "Maps"
-
-#: client/ui/auction_screen.gd:18 client/ui/shop_screen.gd:12
-msgid "Roupas"
-msgstr "Outfits"
 
 #: client/ui/auction_screen.gd:18 client/ui/character_screen.gd:14 client/ui/player_list.gd:94
 msgid "Todos"
@@ -1502,7 +1542,7 @@ msgstr "Seller: %s"
 msgid "Termina em %s"
 msgstr "Ends in %s"
 
-#: client/ui/auction_screen.gd:310 client/ui/item_tooltip.gd:225
+#: client/ui/auction_screen.gd:310 client/ui/item_tooltip.gd:228
 msgid "Sem atributos."
 msgstr "No modifiers."
 
@@ -1534,7 +1574,7 @@ msgstr "You do not have enough Solars and Stars."
 msgid "Comprar %s por %s?\nO item vai direto para a sua Mochila."
 msgstr "Buy %s for %s?\nThe item goes straight to your Bag."
 
-#: client/ui/auction_screen.gd:416 client/ui/auction_screen.gd:619 client/ui/auction_screen.gd:700 client/ui/character_screen.gd:78
+#: client/ui/auction_screen.gd:416 client/ui/auction_screen.gd:619 client/ui/auction_screen.gd:700 client/ui/character_screen.gd:89
 msgid "VOLTAR"
 msgstr "BACK"
 
@@ -1934,7 +1974,7 @@ msgstr "PARTY"
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/ui/bottom_bar.gd:21 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:192
+#: client/ui/bottom_bar.gd:21 client/ui/character_screen.gd:88 client/ui/character_screen.gd:689 client/ui/city_screen.gd:192
 msgid "MOCHILA"
 msgstr "BAG"
 
@@ -2114,13 +2154,9 @@ msgstr "The day's reward was already received."
 msgid "Ainda não jogou hoje."
 msgstr "You have not played today."
 
-#: client/ui/character_screen.gd:117
+#: client/ui/character_screen.gd:128
 msgid "Ranking %d"
 msgstr "Ranking %d"
-
-#: client/ui/character_screen.gd:131
-msgid "EXP  %.1f%%  •  %d / %d"
-msgstr "EXP  %.1f%%  •  %d / %d"
 
 #: client/ui/character_screen.gd:14
 msgid "Materiais"
@@ -2130,203 +2166,207 @@ msgstr "Materials"
 msgid "Visual"
 msgstr "Style"
 
-#: client/ui/character_screen.gd:157
+#: client/ui/character_screen.gd:142
+msgid "EXP  %.1f%%  •  %d / %d"
+msgstr "EXP  %.1f%%  •  %d / %d"
+
+#: client/ui/character_screen.gd:168
 msgid "Abrir a Casa dos Mascotes"
 msgstr "Open the Pet House"
 
-#: client/ui/character_screen.gd:160
+#: client/ui/character_screen.gd:171
 msgid "Mascote"
 msgstr "Pet"
 
-#: client/ui/character_screen.gd:187 client/ui/item_tooltip.gd:182
+#: client/ui/character_screen.gd:198 client/ui/item_tooltip.gd:185
 msgid "sem aura"
 msgstr "no aura"
 
-#: client/ui/character_screen.gd:199 client/ui/smith_screen.gd:206
+#: client/ui/character_screen.gd:210 client/ui/smith_screen.gd:206
 msgid "Dano"
 msgstr "Damage"
 
-#: client/ui/character_screen.gd:199
+#: client/ui/character_screen.gd:210
 msgid "Força física"
 msgstr "Stamina"
 
-#: client/ui/character_screen.gd:199
+#: client/ui/character_screen.gd:210
 msgid "Proteção"
 msgstr "Protection"
 
-#: client/ui/character_screen.gd:199
+#: client/ui/character_screen.gd:210 client/ui/item_tooltip.gd:179
 msgid "Vida"
 msgstr "HP"
 
-#: client/ui/character_screen.gd:210
+#: client/ui/character_screen.gd:221
 msgid "ATRIBUTOS DE COMBATE"
 msgstr "BATTLE STATS"
 
-#: client/ui/character_screen.gd:214
+#: client/ui/character_screen.gd:225
 msgid "Arma: %s  •  Dano %d  •  Cratera %d"
 msgstr "Weapon: %s  •  Damage %d  •  Crater %d"
 
-#: client/ui/character_screen.gd:215
+#: client/ui/character_screen.gd:226
 msgid "Ângulo %d° a %d°  •  POW: %s"
 msgstr "Angle %d° to %d°  •  POW: %s"
 
-#: client/ui/character_screen.gd:216
+#: client/ui/character_screen.gd:227
 msgid "Ataque +%d dos itens: dano x%.2f"
 msgstr "Attack +%d from items: damage x%.2f"
 
-#: client/ui/character_screen.gd:217
+#: client/ui/character_screen.gd:228
 msgid "Defesa +%d dos itens: dano recebido x%.2f"
 msgstr "Defense +%d from items: damage taken x%.2f"
 
-#: client/ui/character_screen.gd:218
+#: client/ui/character_screen.gd:229
 msgid "Agilidade %d: define o Delay e quem começa"
 msgstr "Agility %d: sets the Delay and who starts"
 
-#: client/ui/character_screen.gd:219
+#: client/ui/character_screen.gd:230
 msgid "Sorte +%d dos itens: %.1f%% de acerto crítico (x1,5)"
 msgstr "Luck +%d from items: %.1f%% critical hits (x1.5)"
 
-#: client/ui/character_screen.gd:220
+#: client/ui/character_screen.gd:231
 msgid "Vida %d  •  Força física %d por turno"
 msgstr "HP %d  •  Stamina %d per turn"
 
-#: client/ui/character_screen.gd:229
+#: client/ui/character_screen.gd:240
 msgid "Bônus: %s"
 msgstr "Bonuses: %s"
 
-#: client/ui/character_screen.gd:229
+#: client/ui/character_screen.gd:240
 msgid "nenhum (use moedas no Ferreiro)"
 msgstr "none (use currency at the Blacksmith)"
 
-#: client/ui/character_screen.gd:243
+#: client/ui/character_screen.gd:254
 msgid "SUA JORNADA"
 msgstr "YOUR JOURNEY"
 
-#: client/ui/character_screen.gd:245
+#: client/ui/character_screen.gd:256
 msgid "%d partidas locais\n\n%d vitórias (%d%%)\n\n%d EXP acumulada\n\n%d méritos  •  ranking %d\n\n%d itens na mochila"
 msgstr "%d local matches\n\n%d wins (%d%%)\n\n%d total EXP\n\n%d merits  •  ranking %d\n\n%d items in the bag"
 
-#: client/ui/character_screen.gd:377
+#: client/ui/character_screen.gd:388
 msgid "ORGANIZAR"
 msgstr "SORT"
 
-#: client/ui/character_screen.gd:379
+#: client/ui/character_screen.gd:390
 msgid "Arruma a mochila por tipo, qualidade e fortalecimento."
 msgstr "Sorts the bag by type, quality and strengthening."
 
-#: client/ui/character_screen.gd:380
+#: client/ui/character_screen.gd:391
 msgid "+ ABAS"
 msgstr "+ TABS"
 
-#: client/ui/character_screen.gd:382
+#: client/ui/character_screen.gd:393
 msgid "Compre mais abas de mochila na loja Premium."
 msgstr "Buy more bag tabs in the Premium shop."
 
-#: client/ui/character_screen.gd:407 client/ui/character_screen.gd:493 client/ui/character_screen.gd:509
+#: client/ui/character_screen.gd:418 client/ui/character_screen.gd:504 client/ui/character_screen.gd:520
 msgid "EQUIPAR"
 msgstr "EQUIP"
 
-#: client/ui/character_screen.gd:408
+#: client/ui/character_screen.gd:419
 msgid "VENDER"
 msgstr "SELL"
 
-#: client/ui/character_screen.gd:409 client/ui/smith_screen.gd:216
+#: client/ui/character_screen.gd:420 client/ui/smith_screen.gd:216
 msgid "FORTALECER"
 msgstr "STRENGTHEN"
 
-#: client/ui/character_screen.gd:447
+#: client/ui/character_screen.gd:458
 msgid "%d/%d itens"
 msgstr "%d/%d items"
 
-#: client/ui/character_screen.gd:449 client/ui/shop_screen.gd:130 client/ui/smith_screen.gd:305
+#: client/ui/character_screen.gd:460 client/ui/shop_screen.gd:131 client/ui/smith_screen.gd:305
 msgid "%d itens"
 msgstr "%d items"
 
-#: client/ui/character_screen.gd:465
+#: client/ui/character_screen.gd:476
 msgid "  [color=#ffd46b]%s[/color]\nDano %d • Cratera %d • Ângulo %d°–%d° • POW: %s\n%s"
 msgstr "  [color=#ffd46b]%s[/color]\nDamage %d • Crater %d • Angle %d°–%d° • POW: %s\n%s"
 
-#: client/ui/character_screen.gd:470 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:481 client/ui/item_tooltip.gd:150
 msgid " (feminino)"
 msgstr " (female)"
 
-#: client/ui/character_screen.gd:470 client/ui/item_tooltip.gd:150
+#: client/ui/character_screen.gd:481 client/ui/item_tooltip.gd:150
 msgid " (masculino)"
 msgstr " (male)"
 
-#: client/ui/character_screen.gd:477 client/ui/item_tooltip.gd:196 client/ui/smith_screen.gd:325
+#: client/ui/character_screen.gd:488 client/ui/item_tooltip.gd:199 client/ui/smith_screen.gd:325
 msgid "Espelhado"
 msgstr "Mirrored"
 
-#: client/ui/character_screen.gd:479 client/ui/item_tooltip.gd:198 client/ui/smith_screen.gd:327
+#: client/ui/character_screen.gd:490 client/ui/item_tooltip.gd:201 client/ui/smith_screen.gd:327
 msgid "Vinculado"
 msgstr "Bound"
 
-#: client/ui/character_screen.gd:489
+#: client/ui/character_screen.gd:500
 msgid "Selecione um item da mochila ou um espaço de equipamento."
 msgstr "Select an item in the bag or an equipment slot."
 
-#: client/ui/character_screen.gd:496
+#: client/ui/character_screen.gd:507
 msgid "%s: nenhum item equipado."
 msgstr "%s: nothing equipped."
 
-#: client/ui/character_screen.gd:509
+#: client/ui/character_screen.gd:520
 msgid "REMOVER"
 msgstr "REMOVE"
 
-#: client/ui/character_screen.gd:514
+#: client/ui/character_screen.gd:525
 msgid "Sem atributos. Coloque no espaço de mapa da sala da instância."
 msgstr "No modifiers. Put it in the map slot of a dungeon room."
 
-#: client/ui/character_screen.gd:520
+#: client/ui/character_screen.gd:531
 msgid "Abra na Casa dos Mascotes para revelar o mascote."
 msgstr "Open it in the Pet House to reveal the pet."
 
-#: client/ui/character_screen.gd:521
+#: client/ui/character_screen.gd:532
 msgid "CHOCAR"
 msgstr "HATCH"
 
-#: client/ui/character_screen.gd:524 client/ui/item_tooltip.gd:245
+#: client/ui/character_screen.gd:535 client/ui/item_tooltip.gd:248
 msgid "Use no Ferreiro, aba Moedas, em equipamentos e mapas."
 msgstr "Use it at the Blacksmith, Currency tab, on gear and maps."
 
-#: client/ui/character_screen.gd:526
+#: client/ui/character_screen.gd:537
 msgid "\nUma pedra: +%d → +%d. Encontrada nas instâncias."
 msgstr "\nOne stone: +%d → +%d. Found in instances."
 
-#: client/ui/character_screen.gd:528
+#: client/ui/character_screen.gd:539
 msgid "\nFerramenta de batalha (Z/X/C)."
 msgstr "\nBattle tool (Z/X/C)."
 
-#: client/ui/character_screen.gd:79
+#: client/ui/character_screen.gd:90
 msgid "FERREIRO"
 msgstr "BLACKSMITH"
 
-#: client/ui/character_screen.gd:80
+#: client/ui/character_screen.gd:91
 msgid "LOJA"
 msgstr "SHOP"
 
-#: client/ui/character_screen.gd:81 client/ui/city_screen.gd:189 client/ui/shop_screen.gd:72
+#: client/ui/character_screen.gd:92 client/ui/city_screen.gd:189 client/ui/shop_screen.gd:73
 msgid "CUPOM"
 msgstr "COUPON"
 
-#: client/ui/character_screen.gd:84 client/ui/hunt_arena.gd:338
+#: client/ui/character_screen.gd:95 client/ui/hunt_arena.gd:338
 msgid "moedas"
 msgstr "gold"
 
-#: client/ui/character_screen.gd:86
+#: client/ui/character_screen.gd:97
 msgid "Informações Pessoais"
 msgstr "Personal Info"
 
-#: client/ui/character_screen.gd:88
+#: client/ui/character_screen.gd:99
 msgid "Atributos"
 msgstr "Stats"
 
-#: client/ui/character_screen.gd:88
+#: client/ui/character_screen.gd:99
 msgid "Histórico"
 msgstr "History"
 
-#: client/ui/character_screen.gd:88
+#: client/ui/character_screen.gd:99
 msgid "Perfil"
 msgstr "Profile"
 
@@ -2682,7 +2722,7 @@ msgstr "CHOOSE A CURRENCY OR STONE"
 msgid "Buscar pelo nome"
 msgstr "Search by name"
 
-#: client/ui/exchange_screen.gd:261 client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:560 client/ui/smith_screen.gd:8
+#: client/ui/exchange_screen.gd:261 client/ui/hunt_tab.gd:299 client/ui/hunt_tab.gd:562 client/ui/smith_screen.gd:8
 msgid "Moedas"
 msgstr "Currency"
 
@@ -2778,13 +2818,9 @@ msgstr "SUN PALADIN"
 msgid "O CONJUNTO"
 msgstr "THE SET"
 
-#: client/ui/founder_screen.gd:114 shared/balance/items.json:cosmetics[32].name
+#: client/ui/founder_screen.gd:114 shared/balance/items.json:cosmetics[49].name
 msgid "Paladino do Sol"
 msgstr "Sun Paladin"
-
-#: client/ui/founder_screen.gd:114
-msgid "Skin"
-msgstr "Skin"
 
 #: client/ui/founder_screen.gd:115 client/ui/founder_screen.gd:163 shared/balance/items.json:weapons[12].name
 msgid "Solaris"
@@ -2826,7 +2862,7 @@ msgstr "Sun Paladin skin"
 msgid "Skin de arma Solaris"
 msgstr "Solaris weapon skin"
 
-#: client/ui/founder_screen.gd:16 client/ui/founder_screen.gd:116 shared/balance/items.json:cosmetics[33].name
+#: client/ui/founder_screen.gd:16 client/ui/founder_screen.gd:116 shared/balance/items.json:cosmetics[50].name
 msgid "Asas da Aurora"
 msgstr "Dawn Wings"
 
@@ -3142,239 +3178,239 @@ msgstr "Shows up within %d encounters"
 msgid "Um Lendário vai aparecer!"
 msgstr "A Legendary is about to appear!"
 
-#: client/ui/hunt_tab.gd:197
+#: client/ui/hunt_tab.gd:199
 msgid "ZONAS DE CAÇA"
 msgstr "HUNTING ZONES"
 
-#: client/ui/hunt_tab.gd:207
+#: client/ui/hunt_tab.gd:209
 msgid "Nível %d de %d"
 msgstr "Tier %d of %d"
 
-#: client/ui/hunt_tab.gd:209
+#: client/ui/hunt_tab.gd:211
 msgid "CAÇANDO"
 msgstr "HUNTING"
 
-#: client/ui/hunt_tab.gd:211
+#: client/ui/hunt_tab.gd:213
 msgid "NÍVEL DE CAÇA"
 msgstr "HUNT TIER"
 
-#: client/ui/hunt_tab.gd:221
+#: client/ui/hunt_tab.gd:223
 msgid "Faltam %d vitórias para o próximo"
 msgstr "%d more wins unlock the next one"
 
-#: client/ui/hunt_tab.gd:222
+#: client/ui/hunt_tab.gd:224
 msgid "Cada nível abre depois de %d vitórias no nível abaixo."
 msgstr "Each tier opens after %d wins in the tier below."
 
-#: client/ui/hunt_tab.gd:224
+#: client/ui/hunt_tab.gd:226
 msgid "ESTIMATIVA DO TIME"
 msgstr "TEAM ESTIMATE"
 
-#: client/ui/hunt_tab.gd:226
+#: client/ui/hunt_tab.gd:228
 msgid "Escolha mascotes para o time."
 msgstr "Pick pets for the team."
 
-#: client/ui/hunt_tab.gd:231
+#: client/ui/hunt_tab.gd:233
 msgid "Selvagens nv %d  •  Vitórias: %d%%"
 msgstr "Wild lv %d  •  Wins: %d%%"
 
-#: client/ui/hunt_tab.gd:232
+#: client/ui/hunt_tab.gd:234
 msgid "Por hora: %d XP  •  %d moedas"
 msgstr "Per hour: %d XP  •  %d coins"
 
-#: client/ui/hunt_tab.gd:233
+#: client/ui/hunt_tab.gd:235
 msgid "Ovos por hora: %.1f"
 msgstr "Eggs per hour: %.1f"
 
-#: client/ui/hunt_tab.gd:234
+#: client/ui/hunt_tab.gd:236
 msgid "Contra o Lendário: "
 msgstr "Against the Legendary: "
 
-#: client/ui/hunt_tab.gd:234
+#: client/ui/hunt_tab.gd:236
 msgid "difícil"
 msgstr "hard"
 
-#: client/ui/hunt_tab.gd:234
+#: client/ui/hunt_tab.gd:236
 msgid "equilibrado"
 msgstr "even"
 
-#: client/ui/hunt_tab.gd:234
+#: client/ui/hunt_tab.gd:236
 msgid "forte"
 msgstr "strong"
 
-#: client/ui/hunt_tab.gd:238
+#: client/ui/hunt_tab.gd:240
 msgid "Selvagens do nível da zona; o time sempre se cura entre os encontros."
 msgstr "Wild pets of the zone's level; the team always heals between encounters."
 
-#: client/ui/hunt_tab.gd:253
+#: client/ui/hunt_tab.gd:255
 msgid "Escolha a zona, o nível e o time, e inicie a caçada.\nOs mascotes lutam sozinhos, até com o jogo fechado."
 msgstr "Pick the zone, the tier and the team, then start the hunt.\nYour pets fight on their own, even with the game closed."
 
-#: client/ui/hunt_tab.gd:276
+#: client/ui/hunt_tab.gd:278
 msgid "TIME  %d / %d"
 msgstr "TEAM  %d / %d"
 
-#: client/ui/hunt_tab.gd:284
+#: client/ui/hunt_tab.gd:286
 msgid "Clique para tirar do time"
 msgstr "Click to remove from the team"
 
-#: client/ui/hunt_tab.gd:291
+#: client/ui/hunt_tab.gd:293
 msgid "Escolher mascotes"
 msgstr "Pick pets"
 
-#: client/ui/hunt_tab.gd:292
+#: client/ui/hunt_tab.gd:294
 msgid "ESCOLHER MASCOTES"
 msgstr "PICK PETS"
 
-#: client/ui/hunt_tab.gd:295
+#: client/ui/hunt_tab.gd:297
 msgid "O QUE JÁ RENDEU"
 msgstr "EARNED SO FAR"
 
-#: client/ui/hunt_tab.gd:297
+#: client/ui/hunt_tab.gd:299
 msgid "Encontros"
 msgstr "Encounters"
 
-#: client/ui/hunt_tab.gd:297
+#: client/ui/hunt_tab.gd:299
 msgid "Mascotes capturados"
 msgstr "Pets caught"
 
-#: client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:566
+#: client/ui/hunt_tab.gd:299 client/ui/hunt_tab.gd:568
 msgid "Ovos"
 msgstr "Eggs"
 
-#: client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:559 client/ui/player_profile.gd:82
+#: client/ui/hunt_tab.gd:299 client/ui/hunt_tab.gd:561 client/ui/player_profile.gd:82
 msgid "Vitórias"
 msgstr "Wins"
 
-#: client/ui/hunt_tab.gd:297 client/ui/hunt_tab.gd:561
+#: client/ui/hunt_tab.gd:299 client/ui/hunt_tab.gd:563
 msgid "XP por mascote"
 msgstr "XP per pet"
 
-#: client/ui/hunt_tab.gd:301
+#: client/ui/hunt_tab.gd:303
 msgid "PRÓXIMO LENDÁRIO"
 msgstr "NEXT LEGENDARY"
 
-#: client/ui/hunt_tab.gd:308
+#: client/ui/hunt_tab.gd:310
 msgid "Cada encontro aproxima o Lendário da zona. Derrote-o e ele entra para os seus mascotes."
 msgstr "Every encounter brings the zone's Legendary closer. Defeat it and it joins your pets."
 
-#: client/ui/hunt_tab.gd:313
+#: client/ui/hunt_tab.gd:315
 msgid "Caçando em %s, nível %d"
 msgstr "Hunting in %s, tier %d"
 
-#: client/ui/hunt_tab.gd:313
+#: client/ui/hunt_tab.gd:315
 msgid "Nenhuma caçada em andamento"
 msgstr "No hunt running"
 
-#: client/ui/hunt_tab.gd:324
+#: client/ui/hunt_tab.gd:326
 msgid "Acumula até %d h parado. O que passar do limite se perde."
 msgstr "Piles up for up to %d h while idle. Anything past the limit is lost."
 
-#: client/ui/hunt_tab.gd:326
+#: client/ui/hunt_tab.gd:328
 msgid "COLETAR"
 msgstr "COLLECT"
 
-#: client/ui/hunt_tab.gd:330
+#: client/ui/hunt_tab.gd:332
 msgid "Recebe moedas, XP, ovos e os mascotes capturados até agora."
 msgstr "Receive the coins, XP, eggs and pets caught so far."
 
-#: client/ui/hunt_tab.gd:332
+#: client/ui/hunt_tab.gd:334
 msgid "APLICAR E CAÇAR"
 msgstr "APPLY AND HUNT"
 
-#: client/ui/hunt_tab.gd:332
+#: client/ui/hunt_tab.gd:334
 msgid "INICIAR CAÇADA"
 msgstr "START HUNT"
 
-#: client/ui/hunt_tab.gd:335
+#: client/ui/hunt_tab.gd:337
 msgid "Muda a zona, o nível e o time. O que já rendeu é recolhido antes."
 msgstr "Changes the zone, tier and team. What was earned so far is collected first."
 
-#: client/ui/hunt_tab.gd:335
+#: client/ui/hunt_tab.gd:337
 msgid "O time começa a lutar e continua mesmo com o jogo fechado."
 msgstr "The team starts fighting and keeps going with the game closed."
 
-#: client/ui/hunt_tab.gd:336
+#: client/ui/hunt_tab.gd:338
 msgid "PARAR"
 msgstr "STOP"
 
-#: client/ui/hunt_tab.gd:349
+#: client/ui/hunt_tab.gd:351
 msgid "PASSE DO CAÇADOR"
 msgstr "HUNTER'S PASS"
 
-#: client/ui/hunt_tab.gd:350
+#: client/ui/hunt_tab.gd:352
 msgid "A caçada passa a acumular até 8 horas em vez de 2: durma, trabalhe e colete tudo de manhã. Só conveniência: os mascotes não ficam mais fortes."
 msgstr "The hunt piles up for up to 8 hours instead of 2: sleep, work, and collect it all in the morning. Convenience only: your pets do not get stronger."
 
-#: client/ui/hunt_tab.gd:350
+#: client/ui/hunt_tab.gd:352
 msgid "Passe ativo: sua caçada acumula até 8 horas. Obrigado por apoiar o jogo!"
 msgstr "Pass active: your hunt piles up for up to 8 hours. Thanks for supporting the game!"
 
-#: client/ui/hunt_tab.gd:355 client/ui/shop_screen.gd:135
+#: client/ui/hunt_tab.gd:357 client/ui/shop_screen.gd:136
 msgid "VOCÊ TEM"
 msgstr "OWNED"
 
-#: client/ui/hunt_tab.gd:400
+#: client/ui/hunt_tab.gd:402
 msgid "ESCOLHA O TIME  (%d / %d)"
 msgstr "PICK THE TEAM  (%d / %d)"
 
-#: client/ui/hunt_tab.gd:401
+#: client/ui/hunt_tab.gd:403
 msgid "Misture elementos: cada um vence um e perde para outro."
 msgstr "Mix elements: each one beats one and loses to another."
 
-#: client/ui/hunt_tab.gd:416
+#: client/ui/hunt_tab.gd:418
 msgid "PRONTO"
 msgstr "DONE"
 
-#: client/ui/hunt_tab.gd:471
+#: client/ui/hunt_tab.gd:473
 msgid "Caçada iniciada! O time já está lutando."
 msgstr "Hunt started! The team is already fighting."
 
-#: client/ui/hunt_tab.gd:503
+#: client/ui/hunt_tab.gd:505
 msgid "Caçada parada."
 msgstr "Hunt stopped."
 
-#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:155
+#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:156
 msgid "Abrindo a página de pagamento…"
 msgstr "Opening the payment page…"
 
-#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:155
+#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:156
 msgid "Aprove a compra na janela da Steam…"
 msgstr "Approve the purchase in the Steam window…"
 
-#: client/ui/hunt_tab.gd:556
+#: client/ui/hunt_tab.gd:558
 msgid "CAÇADA RECOLHIDA"
 msgstr "HUNT COLLECTED"
 
-#: client/ui/hunt_tab.gd:557
+#: client/ui/hunt_tab.gd:559
 msgid "%s de caça  •  %d encontros"
 msgstr "%s of hunting  •  %d encounters"
 
-#: client/ui/hunt_tab.gd:559
+#: client/ui/hunt_tab.gd:561
 msgid "derrotas"
 msgstr "losses"
 
-#: client/ui/hunt_tab.gd:566
+#: client/ui/hunt_tab.gd:568
 msgid "nenhum"
 msgstr "none"
 
-#: client/ui/hunt_tab.gd:571
+#: client/ui/hunt_tab.gd:573
 msgid "CAPTURAS"
 msgstr "CATCHES"
 
-#: client/ui/hunt_tab.gd:573
+#: client/ui/hunt_tab.gd:575
 msgid "A Casa dos Mascotes estava cheia: a captura virou moedas."
 msgstr "The Pet House was full: the catch turned into coins."
 
-#: client/ui/hunt_tab.gd:573
+#: client/ui/hunt_tab.gd:575
 msgid "Nenhum mascote desta vez."
 msgstr "No pets this time."
 
-#: client/ui/hunt_tab.gd:587
+#: client/ui/hunt_tab.gd:589
 msgid "Subiram de nível: "
 msgstr "Leveled up: "
 
-#: client/ui/hunt_tab.gd:590 client/ui/ui_kit.gd:470
+#: client/ui/hunt_tab.gd:592 client/ui/ui_kit.gd:470
 msgid "OK"
 msgstr "OK"
 
@@ -3398,47 +3434,47 @@ msgstr "POW: %s"
 msgid "Usos por batalha: %d"
 msgstr "Uses per battle: %d"
 
-#: client/ui/item_tooltip.gd:183
+#: client/ui/item_tooltip.gd:186
 msgid "Fortalecido +%d  •  %s"
 msgstr "Strengthened +%d  •  %s"
 
-#: client/ui/item_tooltip.gd:188
+#: client/ui/item_tooltip.gd:191
 msgid "Sem bônus (use moedas no Ferreiro)"
 msgstr "No bonuses (use currency at the Blacksmith)"
 
-#: client/ui/item_tooltip.gd:190
+#: client/ui/item_tooltip.gd:193
 msgid "BÔNUS"
 msgstr "BONUSES"
 
-#: client/ui/item_tooltip.gd:203
+#: client/ui/item_tooltip.gd:206
 msgid "Equipado"
 msgstr "Equipped"
 
-#: client/ui/item_tooltip.gd:205
+#: client/ui/item_tooltip.gd:208
 msgid "Vende por %d moedas"
 msgstr "Sells for %d gold"
 
-#: client/ui/item_tooltip.gd:206
+#: client/ui/item_tooltip.gd:209
 msgid "Clique duplo: equipar  •  Arraste: organizar"
 msgstr "Double click: equip  •  Drag: arrange"
 
-#: client/ui/item_tooltip.gd:215
+#: client/ui/item_tooltip.gd:218
 msgid "Mapa de instância"
 msgstr "Instance map"
 
-#: client/ui/item_tooltip.gd:229
+#: client/ui/item_tooltip.gd:232
 msgid "Coloque no espaço de mapa da sala da instância. É consumido ao entrar."
 msgstr "Put it in the map slot of an instance room. It is used up on entry."
 
-#: client/ui/item_tooltip.gd:237
+#: client/ui/item_tooltip.gd:240
 msgid "Ferramenta de batalha (Z/X/C)"
 msgstr "Battle tool (Z/X/C)"
 
-#: client/ui/item_tooltip.gd:243
+#: client/ui/item_tooltip.gd:246
 msgid "Moeda"
 msgstr "Currency"
 
-#: client/ui/item_tooltip.gd:247 client/ui/smith_screen.gd:178
+#: client/ui/item_tooltip.gd:250 client/ui/smith_screen.gd:178
 msgid "Uma pedra: +%d → +%d. Encontrada nas instâncias."
 msgstr "One stone: +%d → +%d. Found in instances."
 
@@ -4502,19 +4538,19 @@ msgstr "Ready"
 msgid "Remover da sala"
 msgstr "Remove from the room"
 
-#: client/ui/shop_screen.gd:102
+#: client/ui/shop_screen.gd:103
 msgid "SUPER VERDADEIRA\nSó no baú do chefe"
 msgstr "SUPER TRUE\nBoss chest only"
 
-#: client/ui/shop_screen.gd:103
+#: client/ui/shop_screen.gd:104
 msgid "Você tem"
 msgstr "Owned"
 
-#: client/ui/shop_screen.gd:110
+#: client/ui/shop_screen.gd:111
 msgid "Excelente e Verdadeira:\ninstâncias e leilão"
 msgstr "Excellent and True:\ninstances and auction"
 
-#: client/ui/shop_screen.gd:115
+#: client/ui/shop_screen.gd:116
 msgid "COMPRADO"
 msgstr "OWNED"
 
@@ -4523,30 +4559,38 @@ msgid "Cabelos"
 msgstr "Hair"
 
 #: client/ui/shop_screen.gd:12
+msgid "Joias"
+msgstr "Jewelry"
+
+#: client/ui/shop_screen.gd:12
 msgid "Premium"
 msgstr "Premium"
 
-#: client/ui/shop_screen.gd:135
+#: client/ui/shop_screen.gd:12
+msgid "Skins"
+msgstr "Skins"
+
+#: client/ui/shop_screen.gd:136
 msgid "ABRIR PAGAMENTO"
 msgstr "OPEN PAYMENT"
 
-#: client/ui/shop_screen.gd:141
+#: client/ui/shop_screen.gd:142
 msgid "Só online"
 msgstr "Online only"
 
-#: client/ui/shop_screen.gd:145
+#: client/ui/shop_screen.gd:146
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam."
 msgstr "Looks and convenience only: no attributes, and it arrives by mail.\nThe price in your currency shows on Steam."
 
-#: client/ui/shop_screen.gd:146
+#: client/ui/shop_screen.gd:147
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nPagamento por cartão ou Pix, em reais."
 msgstr "Looks and convenience only: no stats, and it arrives in the Mail.\nPay by card or Pix, in reais (BRL)."
 
-#: client/ui/shop_screen.gd:151
+#: client/ui/shop_screen.gd:152
 msgid "Página de pagamento aberta no navegador."
 msgstr "Payment page opened in your browser."
 
-#: client/ui/shop_screen.gd:167
+#: client/ui/shop_screen.gd:168
 msgid "Comprado! Veja na Mochila."
 msgstr "Bought! Check your Bag."
 
@@ -4554,11 +4598,11 @@ msgstr "Bought! Check your Bag."
 msgid "CENTRO COMERCIAL"
 msgstr "MARKET"
 
-#: client/ui/shop_screen.gd:58
+#: client/ui/shop_screen.gd:59
 msgid "PROVADOR"
 msgstr "FITTING ROOM"
 
-#: client/ui/shop_screen.gd:69
+#: client/ui/shop_screen.gd:70
 msgid "Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão."
 msgstr "Click an item to try it on.\nBetter weapons only drop in instances or come from the auction."
 
@@ -5878,10 +5922,6 @@ msgstr "Cannot use skills 1–9 or POW."
 msgid "SELADO!"
 msgstr "SEALED!"
 
-#: shared/balance/combat.json:statuses[4].name
-msgid "Selo"
-msgstr "Seal"
-
 #: shared/balance/combat.json:statuses[5].desc
 msgid "Não pode andar nem usar o avião de papel."
 msgstr "Cannot walk or use the paper plane."
@@ -6103,140 +6143,208 @@ msgid "Roupa de Explorador"
 msgstr "Explorer Outfit"
 
 #: shared/balance/items.json:cosmetics[10].name
-msgid "Coroa Real"
-msgstr "Royal Crown"
+msgid "Camisa de Aventureiro"
+msgstr "Adventurer's Shirt"
 
 #: shared/balance/items.json:cosmetics[11].name
-msgid "Orelhas de Coelho"
-msgstr "Bunny Ears"
+msgid "Calça de Aventureiro"
+msgstr "Adventurer's Trousers"
 
 #: shared/balance/items.json:cosmetics[12].name
-msgid "Chapéu de Pirata"
-msgstr "Pirate Hat"
+msgid "Gibão de Guerra"
+msgstr "War Jerkin"
 
 #: shared/balance/items.json:cosmetics[13].name
-msgid "Elmo Viking"
-msgstr "Viking Helmet"
+msgid "Calça de Guerra"
+msgstr "War Trousers"
 
 #: shared/balance/items.json:cosmetics[14].name
-msgid "Óculos Escuros"
-msgstr "Sunglasses"
+msgid "Túnica Celeste"
+msgstr "Celestial Tunic"
 
 #: shared/balance/items.json:cosmetics[15].name
-msgid "Óculos Redondos"
-msgstr "Round Glasses"
+msgid "Calça Celeste"
+msgstr "Celestial Trousers"
 
 #: shared/balance/items.json:cosmetics[16].name
-msgid "Óculos de Coração"
-msgstr "Heart Glasses"
+msgid "Anel de Bronze"
+msgstr "Bronze Ring"
 
 #: shared/balance/items.json:cosmetics[17].name
-msgid "Máscara de Herói"
-msgstr "Hero Mask"
+msgid "Anel de Safira"
+msgstr "Sapphire Ring"
 
 #: shared/balance/items.json:cosmetics[18].name
-msgid "Asas de Anjo"
-msgstr "Angel Wings"
+msgid "Anel do Vento"
+msgstr "Ring of the Wind"
 
 #: shared/balance/items.json:cosmetics[19].name
-msgid "Asas de Demônio"
-msgstr "Demon Wings"
+msgid "Anel de Esmeralda"
+msgstr "Emerald Ring"
 
 #: shared/balance/items.json:cosmetics[1].name
 msgid "Armadura Samurai"
 msgstr "Samurai Armor"
 
 #: shared/balance/items.json:cosmetics[20].name
-msgid "Asas de Fada"
-msgstr "Fairy Wings"
+msgid "Anel Solar"
+msgstr "Sun Ring"
 
 #: shared/balance/items.json:cosmetics[21].name
-msgid "Asas de Fênix"
-msgstr "Phoenix Wings"
+msgid "Amuleto de Pedra"
+msgstr "Stone Amulet"
 
 #: shared/balance/items.json:cosmetics[22].name
-msgid "Cabelo Azul Elétrico"
-msgstr "Electric Blue Hair"
+msgid "Amuleto do Lobo"
+msgstr "Wolf Amulet"
 
 #: shared/balance/items.json:cosmetics[23].name
-msgid "Cabelo Dourado"
-msgstr "Golden Hair"
+msgid "Amuleto da Coruja"
+msgstr "Owl Amulet"
 
 #: shared/balance/items.json:cosmetics[24].name
-msgid "Cabelo Prateado"
-msgstr "Silver Hair"
+msgid "Amuleto Celeste"
+msgstr "Celestial Amulet"
 
 #: shared/balance/items.json:cosmetics[25].name
-msgid "Cabelo Verde Menta"
-msgstr "Mint Green Hair"
+msgid "Kabuto Samurai"
+msgstr "Samurai Kabuto"
 
 #: shared/balance/items.json:cosmetics[26].name
-msgid "Cabelo Roxo"
-msgstr "Purple Hair"
+msgid "Cartola Mágica"
+msgstr "Magic Top Hat"
 
 #: shared/balance/items.json:cosmetics[27].name
-msgid "Cabelo Preto"
-msgstr "Black Hair"
+msgid "Coroa Real"
+msgstr "Royal Crown"
 
-#: shared/balance/items.json:cosmetics[28].name shared/balance/store.json:products[0].name
-msgid "Cabelo Rosa Neon"
-msgstr "Neon Pink Hair"
+#: shared/balance/items.json:cosmetics[28].name
+msgid "Orelhas de Coelho"
+msgstr "Bunny Ears"
 
-#: shared/balance/items.json:cosmetics[29].name shared/balance/store.json:products[1].name
-msgid "Cabelo Branco Gelo"
-msgstr "Ice White Hair"
+#: shared/balance/items.json:cosmetics[29].name
+msgid "Chapéu de Pirata"
+msgstr "Pirate Hat"
 
 #: shared/balance/items.json:cosmetics[2].name
 msgid "Traje Ninja"
 msgstr "Ninja Suit"
 
-#: shared/balance/items.json:cosmetics[30].name shared/balance/store.json:products[2].name
-msgid "Cabelo Chama"
-msgstr "Flame Hair"
+#: shared/balance/items.json:cosmetics[30].name
+msgid "Elmo Viking"
+msgstr "Viking Helmet"
 
-#: shared/balance/items.json:cosmetics[31].name shared/balance/store.json:products[3].name
-msgid "Cabelo Aurora"
-msgstr "Aurora Hair"
+#: shared/balance/items.json:cosmetics[31].name
+msgid "Óculos Escuros"
+msgstr "Sunglasses"
+
+#: shared/balance/items.json:cosmetics[32].name
+msgid "Óculos Redondos"
+msgstr "Round Glasses"
+
+#: shared/balance/items.json:cosmetics[33].name
+msgid "Óculos de Coração"
+msgstr "Heart Glasses"
 
 #: shared/balance/items.json:cosmetics[34].name
-msgid "Selo de Fundador"
-msgstr "Founder Seal"
+msgid "Máscara de Herói"
+msgstr "Hero Mask"
 
-#: shared/balance/items.json:cosmetics[35].name shared/balance/store.json:products[5].name
-msgid "Passe do Caçador"
-msgstr "Hunter's Pass"
+#: shared/balance/items.json:cosmetics[35].name
+msgid "Asas de Anjo"
+msgstr "Angel Wings"
 
-#: shared/balance/items.json:cosmetics[36].name shared/balance/store.json:products[6].name
-msgid "Aba de Mochila 1"
-msgstr "Bag Tab 1"
+#: shared/balance/items.json:cosmetics[36].name
+msgid "Asas de Demônio"
+msgstr "Demon Wings"
 
-#: shared/balance/items.json:cosmetics[37].name shared/balance/store.json:products[7].name
-msgid "Aba de Mochila 2"
-msgstr "Bag Tab 2"
+#: shared/balance/items.json:cosmetics[37].name
+msgid "Asas de Fada"
+msgstr "Fairy Wings"
 
-#: shared/balance/items.json:cosmetics[38].name shared/balance/store.json:products[8].name
-msgid "Aba de Mochila 3"
-msgstr "Bag Tab 3"
+#: shared/balance/items.json:cosmetics[38].name
+msgid "Asas de Fênix"
+msgstr "Phoenix Wings"
 
-#: shared/balance/items.json:cosmetics[39].name shared/balance/store.json:products[9].name
-msgid "Aba de Mochila 4"
-msgstr "Bag Tab 4"
+#: shared/balance/items.json:cosmetics[39].name
+msgid "Cabelo Azul Elétrico"
+msgstr "Electric Blue Hair"
 
 #: shared/balance/items.json:cosmetics[3].name
 msgid "Uniforme de Capitão"
 msgstr "Captain's Uniform"
 
-#: shared/balance/items.json:cosmetics[40].name shared/balance/store.json:products[10].name
-msgid "Aba de Mochila 5"
-msgstr "Bag Tab 5"
+#: shared/balance/items.json:cosmetics[40].name
+msgid "Cabelo Dourado"
+msgstr "Golden Hair"
 
-#: shared/balance/items.json:cosmetics[41].name shared/balance/store.json:products[11].name
-msgid "Aba de Mochila 6"
-msgstr "Bag Tab 6"
+#: shared/balance/items.json:cosmetics[41].name
+msgid "Cabelo Prateado"
+msgstr "Silver Hair"
+
+#: shared/balance/items.json:cosmetics[42].name
+msgid "Cabelo Verde Menta"
+msgstr "Mint Green Hair"
+
+#: shared/balance/items.json:cosmetics[43].name
+msgid "Cabelo Roxo"
+msgstr "Purple Hair"
+
+#: shared/balance/items.json:cosmetics[44].name
+msgid "Cabelo Preto"
+msgstr "Black Hair"
+
+#: shared/balance/items.json:cosmetics[45].name shared/balance/store.json:products[0].name
+msgid "Cabelo Rosa Neon"
+msgstr "Neon Pink Hair"
+
+#: shared/balance/items.json:cosmetics[46].name shared/balance/store.json:products[1].name
+msgid "Cabelo Branco Gelo"
+msgstr "Ice White Hair"
+
+#: shared/balance/items.json:cosmetics[47].name shared/balance/store.json:products[2].name
+msgid "Cabelo Chama"
+msgstr "Flame Hair"
+
+#: shared/balance/items.json:cosmetics[48].name shared/balance/store.json:products[3].name
+msgid "Cabelo Aurora"
+msgstr "Aurora Hair"
 
 #: shared/balance/items.json:cosmetics[4].name
 msgid "Roupa de Exploradora"
 msgstr "Explorer Outfit"
+
+#: shared/balance/items.json:cosmetics[51].name
+msgid "Selo de Fundador"
+msgstr "Founder Seal"
+
+#: shared/balance/items.json:cosmetics[52].name shared/balance/store.json:products[5].name
+msgid "Passe do Caçador"
+msgstr "Hunter's Pass"
+
+#: shared/balance/items.json:cosmetics[53].name shared/balance/store.json:products[6].name
+msgid "Aba de Mochila 1"
+msgstr "Bag Tab 1"
+
+#: shared/balance/items.json:cosmetics[54].name shared/balance/store.json:products[7].name
+msgid "Aba de Mochila 2"
+msgstr "Bag Tab 2"
+
+#: shared/balance/items.json:cosmetics[55].name shared/balance/store.json:products[8].name
+msgid "Aba de Mochila 3"
+msgstr "Bag Tab 3"
+
+#: shared/balance/items.json:cosmetics[56].name shared/balance/store.json:products[9].name
+msgid "Aba de Mochila 4"
+msgstr "Bag Tab 4"
+
+#: shared/balance/items.json:cosmetics[57].name shared/balance/store.json:products[10].name
+msgid "Aba de Mochila 5"
+msgstr "Bag Tab 5"
+
+#: shared/balance/items.json:cosmetics[58].name shared/balance/store.json:products[11].name
+msgid "Aba de Mochila 6"
+msgstr "Bag Tab 6"
 
 #: shared/balance/items.json:cosmetics[5].name
 msgid "Vestido de Princesa"
@@ -6251,16 +6359,16 @@ msgid "Uniforme de Marinheira"
 msgstr "Sailor Uniform"
 
 #: shared/balance/items.json:cosmetics[8].name
-msgid "Kabuto Samurai"
-msgstr "Samurai Kabuto"
+msgid "Camisa de Algodão"
+msgstr "Cotton Shirt"
 
 #: shared/balance/items.json:cosmetics[9].name
-msgid "Cartola Mágica"
-msgstr "Magic Top Hat"
+msgid "Calça de Algodão"
+msgstr "Cotton Trousers"
 
 #: shared/balance/items.json:coupons[0].desc
-msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, roupas, chapéus, óculos, asas, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas, 20 ovos de cada tipo e o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador) e o Passe do Caçador. Cupom reutilizável."
-msgstr "All weapons (every quality), super weapons, auxiliary items, outfits, hats, glasses, wings, hair, 200 stones of each level, 200 of each special currency, maps of every instance from level 1 to 16, 99,999 coins, 20 eggs of each kind, the full Founder Pack (Sun Paladin, Solaris +12, Dawn Wings and Founder Seal) and the Hunter's Pass. Reusable coupon."
+msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, skins, camisas, calças, chapéus, óculos, asas, anéis, amuletos, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas, 20 ovos de cada tipo e o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador) e o Passe do Caçador. Cupom reutilizável."
+msgstr "All weapons (every quality), super weapons, auxiliary items, skins, shirts, trousers, hats, glasses, wings, rings, amulets, hair, 200 stones of each level, 200 of each special currency, maps of every instance from level 1 to 16, 99,999 coins, 20 eggs of each kind, the full Founder Pack (Sun Paladin, Solaris +12, Dawn Wings and Founder Seal) and the Hunter's Pass. Reusable coupon."
 
 #: shared/balance/items.json:coupons[1].desc
 msgid "Quatro Tijolaços Verdadeiros em +3, +7, +10 e +12 para ver as quatro auras."

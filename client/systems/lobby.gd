@@ -100,7 +100,7 @@ func make_bot(nick: String, level: int) -> Dictionary:
 func random_outfit(gender: String) -> String:
 	var pool: Array[String] = []
 	for def: Dictionary in Armory.data().cosmetics:
-		if def.slot == "roupa" and def.gender == gender and ResourceLoader.exists(Armory.skin_path(str(def.skin), "east")):
+		if def.slot == "skin" and def.gender == gender and ResourceLoader.exists(Armory.skin_path(str(def.skin), "east")):
 			pool.append(str(def.skin))
 	var base: String = "lani" if gender == "f" else "base_m"
 	if ResourceLoader.exists(Armory.skin_path(base, "east")):

@@ -134,7 +134,7 @@ window.GF.I18N = {
     "c3.title": "Player auction",
     "c3.text": "Sell what dropped in dungeons for Solars and Stars. The payment arrives by Mail.",
     "c4.title": "Your own style",
-    "c4.text": "Outfits, hats, glasses, wings and hair dyes. Your character shows them in battle, in the room and in the Bag.",
+    "c4.text": "Skins, hats, glasses, wings and hair dyes. Your character shows them in battle, in the room and in the Bag.",
     "arsenal.kicker": "Arsenal",
     "arsenal.title": "12 weapons, 12 specials",
     "arsenal.lead": "From the Bricklayer that bursts into pieces to the Lightning Rod that calls down three bolts. The Super True weapons only drop from bosses.",

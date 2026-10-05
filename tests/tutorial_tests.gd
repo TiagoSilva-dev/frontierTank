@@ -80,7 +80,7 @@ func profile_checks() -> void:
 	check(profile.coins == coins + int(rules.coins) and int(profile.items.get("pet_egg", 0)) == 1, "the reward is paid once")
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.load_data(JSON.parse_string(JSON.stringify(profile.to_data())))
-	check(copy.tutorial == "done" and int(profile.to_data().version) == 10, "the state survives the save (version 10)")
+	check(copy.tutorial == "done" and int(profile.to_data().version) == 11, "the state survives the save (version 11)")
 	# Saves from before 0.21: veterans are not offered the training, newcomers are.
 	var old: Dictionary = profile.to_data()
 	old.erase("tutorial")

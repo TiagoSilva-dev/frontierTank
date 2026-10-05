@@ -301,7 +301,7 @@ func save_tests() -> void:
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.on_save = func() -> void: pass
 	copy.load_data(data)
-	check(int(data.version) == 10 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
+	check(int(data.version) == 11 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
 	check(int(copy.hunt.n) == int(p.hunt.n) and int(copy.hunt.seed) == int(p.hunt.seed) and int(copy.hunt.report.slots) == int(p.hunt.report.slots), "its counters and report survive too")
 	var old: Dictionary = data.duplicate(true)
 	old.erase("hunt")

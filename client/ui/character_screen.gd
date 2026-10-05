@@ -12,14 +12,25 @@ extends Control
 # right click) equips too. Selecting only redraws the cells, it never rebuilds the page.
 
 const CATEGORIES: Array[String] = ["Todos", "Armas", "Visual", "Auxiliar", "Materiais", "Mapas"]  # i18n
-const LEFT_SLOTS: Array[String] = ["chapeu", "oculos", "cabelo", "roupa"]
-const RIGHT_SLOTS: Array[String] = ["asas", "arma", "auxiliar"]
+const LEFT_SLOTS: Array[String] = ["chapeu", "oculos", "cabelo", "skin", "camisa", "calca"]
+const RIGHT_SLOTS: Array[String] = ["asas", "arma", "auxiliar", "amuleto", "anel1", "anel2"]
+# Six rows of equipment slots on each side of the character (0.24: skin, shirt and trousers;
+# 0.26: amulet and two rings; the pet moved onto the stage, beside the character).
+const SLOT_SIZE: float = 48.0
+const SLOT_PITCH: float = 53.0
+const SLOT_TOP: float = 216.0
+const PET_POSITION: Vector2 = Vector2(136, 468)
 # Pale silhouettes of what goes in each empty equipment slot.
 const GHOSTS: Dictionary = {
 	"chapeu": "res://assets/cosmetics/chapeu_cartola/front.png",
 	"oculos": "res://assets/cosmetics/oculos_redondos/front.png",
 	"cabelo": "res://assets/cosmetics/cabelo/icon.png",
-	"roupa": "res://assets/characters/base_m/south.png",
+	"skin": "res://assets/characters/base_m/south.png",
+	"camisa": "res://assets/cosmetics/camisa_algodao/icon.png",
+	"calca": "res://assets/cosmetics/calca_algodao/icon.png",
+	"anel1": "res://assets/cosmetics/anel_bronze/icon.png",
+	"anel2": "res://assets/cosmetics/anel_bronze/icon.png",
+	"amuleto": "res://assets/cosmetics/amuleto_pedra/icon.png",
 	"asas": "res://assets/cosmetics/asas_anjo/icon.png",
 	"arma": "res://assets/weapons/canhao_explorador.png",
 	"auxiliar": "res://assets/aux/dom_de_anjo.png",
@@ -32,7 +43,7 @@ const CELL: float = 60.0
 const GAP: float = 8.0
 const GRID: Vector2 = Vector2(684, 148)
 const QUALITY_RANK: Dictionary = {"super": 3, "verdadeira": 2, "excelente": 1}
-const SLOT_ORDER: Array[String] = ["arma", "chapeu", "oculos", "cabelo", "roupa", "asas", "auxiliar"]
+const SLOT_ORDER: Array[String] = ["arma", "skin", "camisa", "calca", "chapeu", "oculos", "cabelo", "asas", "anel", "amuleto", "auxiliar"]
 
 var app: Node
 var contents: Control
@@ -134,9 +145,9 @@ func build_equipment() -> void:
 	stage.accepts = func(data: Dictionary) -> bool: return can_equip_key(str(data.bag_key))
 	stage.dropped.connect(func(data: Dictionary) -> void: equip_key(str(data.bag_key)))
 	for i in range(LEFT_SLOTS.size()):
-		equipment_slot(LEFT_SLOTS[i], Rect2(50, 222 + i * 78, 64, 64))
+		equipment_slot(LEFT_SLOTS[i], Rect2(56, SLOT_TOP + i * SLOT_PITCH, SLOT_SIZE, SLOT_SIZE))
 	for i in range(RIGHT_SLOTS.size()):
-		equipment_slot(RIGHT_SLOTS[i], Rect2(546, 222 + i * 78, 64, 64))
+		equipment_slot(RIGHT_SLOTS[i], Rect2(556, SLOT_TOP + i * SLOT_PITCH, SLOT_SIZE, SLOT_SIZE))
 	var pet: BagSlot = BagSlot.new()
 	pet.interactive = false
 	var companion: Dictionary = app.profile.active_pet()
@@ -145,8 +156,8 @@ func build_equipment() -> void:
 		pet.rarity = Pets.rarity_color(str(Pets.species_def(str(companion.species)).rarity))
 		pet.corner_text = str(int(companion.level))
 		pet.corner_color = HudPaint.CREAM
-	pet.position = Vector2(546, 456)
-	pet.size = Vector2(64, 64)
+	pet.position = PET_POSITION
+	pet.size = Vector2(SLOT_SIZE, SLOT_SIZE)
 	pet.name = "PetSlot"
 	profile_root.add_child(pet)
 	var pet_hit: Button = Button.new()
@@ -157,7 +168,7 @@ func build_equipment() -> void:
 	pet_hit.tooltip_text = tr("Abrir a Casa dos Mascotes")
 	pet_hit.pressed.connect(open_pets.bind("Mascotes"))
 	profile_root.add_child(pet_hit)
-	UiKit.label(profile_root, tr("Mascote"), Rect2(538, 518, 80, 18), 12, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(profile_root, tr("Mascote"), Rect2(PET_POSITION.x - 12, PET_POSITION.y + SLOT_SIZE - 2, 72, 18), 12, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	build_stats(Rect2(48, 544, 564, 144))
 
 func equipment_slot(slot: String, rect: Rect2) -> void:
@@ -179,7 +190,7 @@ func equipment_slot(slot: String, rect: Rect2) -> void:
 		if target.key != "":
 			toggle_key(target.key))
 	cell.hovered.connect(on_hover)
-	cell.dropped.connect(func(_target: BagSlot, data: Dictionary) -> void: equip_key(str(data.bag_key)))
+	cell.dropped.connect(func(target: BagSlot, data: Dictionary) -> void: equip_key(str(data.bag_key), target.equip_slot))
 	equip_cells[slot] = cell
 
 func aura_text(label_text: String, level: int) -> String:
@@ -218,7 +229,7 @@ func build_attributes() -> void:
 		tr("Agilidade %d: define o Delay e quem começa") % int(numbers.agilidade),
 		tr("Sorte +%d dos itens: %.1f%% de acerto crítico (x1,5)") % [int(extra.sorte), Armory.crit_chance(extra) * 100.0],
 		tr("Vida %d  •  Força física %d por turno") % [int(numbers.vida), int(numbers.energia)],
-		"%s  •  %s" % [aura_text(tr("Arma"), int(look.weapon_level)), aura_text(tr("Roupa"), int(look.clothes_level))],
+		"%s  •  %s" % [aura_text(tr("Arma"), int(look.weapon_level)), aura_text(tr("Camisa"), int(look.clothes_level))],
 	]
 	# Battle bonuses from the random attributes (0.10), summed over the equipment.
 	var bonus: Dictionary = numbers.bonus
@@ -550,12 +561,13 @@ func can_equip_key(key: String, slot: String = "") -> bool:
 	if inst.is_empty() or app.profile.is_equipped(int(inst.uid)):
 		return false
 	var wanted: String = Armory.slot_of(str(inst.id))
-	return wanted != "" and (slot == "" or slot == wanted)
+	return wanted != "" and (slot == "" or slot in Armory.worn_places(wanted))
 
-func equip_key(key: String) -> void:
+# `place` is the slot an item was dropped on (which hand a ring goes in); "" lets the profile pick.
+func equip_key(key: String, place: String = "") -> void:
 	if can_equip_key(key):
 		select_item(key)
-		equip_selected()
+		equip_selected(place)
 
 func toggle_key(key: String) -> void:
 	if key.begins_with("item:") and Pets.is_egg(key.substr(5)):
@@ -665,14 +677,14 @@ func open_pets(first_tab: String = "Chocar", egg: String = "") -> void:
 	var screen: PetScreen = PetScreen.open(self, app, first_tab, egg)
 	screen.closed.connect(build)
 
-func equip_selected() -> void:
+func equip_selected(place: String = "") -> void:
 	if selected.begins_with("item:") and Pets.is_egg(selected.substr(5)):
 		open_pets("Chocar", selected.substr(5))
 		return
 	if not selected.begins_with("uid:"):
 		return
 	var uid: int = selected.substr(4).to_int()
-	var message: String = (await app.do_op("toggle_equip", [uid])).error
+	var message: String = (await app.do_op("toggle_equip", [uid, place] if place != "" else [uid])).error
 	if message != "":
 		UiKit.notice(self, tr("MOCHILA"), message)
 		return

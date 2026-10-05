@@ -25,7 +25,13 @@ extends RefCounted
 # v10 (0.22, ranked ladder) adds `rating` (Ranked: season, rating, record and the log of
 # the seasons that ended) and the cosmetic titles (`titles`, `title`), and `challenge` (the
 # day of the daily challenge last finished and the best score of that day).
+# v11 (0.24, skins) makes the old outfit slot ("roupa") the skin: appearance only, with no
+# attributes, never strengthened or modified. Each outfit a v10 save owned becomes the
+# skin (level and bonuses dropped) plus a shirt and trousers that carry what the outfit
+# had (LEGACY_OUTFITS), so nobody loses defence in the move.
 const SAVE_PATH: String = "user://profile.json"
+# Old outfit -> the shirt and trousers family that replaces its attributes.
+const LEGACY_OUTFITS: Dictionary = {"roupa_explorador": "algodao", "roupa_exploradora": "algodao", "roupa_ninja": "aventureiro", "roupa_marinheira": "aventureiro", "roupa_maga": "aventureiro", "roupa_samurai": "guerra", "roupa_capitao": "guerra", "roupa_princesa": "guerra"}
 # Tests point this at a scratch file so they never touch the player's save.
 static var path_override: String = ""
 var save_path: String = SAVE_PATH
@@ -111,6 +117,11 @@ func load_data(data: Dictionary) -> bool:
 	next_uid = maxi(1, int(data.get("next_uid", 1)))
 	var saved_inventory: Variant = data.get("inventory", [])
 	var migrated: bool = false
+	var old_save: bool = int(data.get("version", 1)) < 11
+	# v10 saves: the outfits to replace (after the loop, so the new uids never collide
+	# with the ones still to be read) and, once replaced, outfit uid -> its shirt and trousers.
+	var outfits: Array = []
+	var outfit_gear: Dictionary = {}
 	if saved_inventory is Array:
 		for raw: Variant in saved_inventory:
 			var inst: Dictionary = clean_instance(raw)
@@ -122,15 +133,27 @@ func load_data(data: Dictionary) -> bool:
 					migrated = true
 				inventory.append(inst)
 				next_uid = maxi(next_uid, int(inst.uid) + 1)
+				if old_save and LEGACY_OUTFITS.has(str(inst.id)):
+					outfits.append([inst, raw])
+	for pair: Array in outfits:
+		outfit_gear[int(pair[0].uid)] = replace_outfit(pair[0], pair[1])
+		migrated = true
 	var saved_equipped: Variant = data.get("equipped", {})
 	if saved_equipped is Dictionary:
-		for slot: String in saved_equipped:
-			var worn: Dictionary = find_instance(int(saved_equipped[slot]))
-			if worn.size() > 0:
-				equipped[slot] = int(saved_equipped[slot])
+		for key: String in saved_equipped:
+			var slot: String = "skin" if key == "roupa" else key
+			var uid: int = int(saved_equipped[key])
+			var worn: Dictionary = find_instance(uid)
+			# Only an item of that slot can be worn there (old saves had wings that are now
+			# a layer of a skin, outfits where the skin goes).
+			if worn.size() > 0 and slot in Armory.worn_places(Armory.slot_of(str(worn.id))):
+				equipped[slot] = uid
 				if worn.quality == "super":
 					# 0.12: Super Verdadeiras bind when equipped (saves from before too).
 					worn.bound = true
+				if outfit_gear.has(uid):
+					equipped["camisa"] = int(outfit_gear[uid].camisa)
+					equipped["calca"] = int(outfit_gear[uid].calca)
 	maps.clear()
 	var saved_maps: Variant = data.get("maps", [])
 	if saved_maps is Array:
@@ -186,6 +209,27 @@ func load_data(data: Dictionary) -> bool:
 	ensure_starter()
 	return migrated
 
+# v11: the outfit `inst` (just read from `raw`) becomes a plain skin; the shirt takes its
+# level, quality and bonuses and the trousers come with the same quality. Returns the uids
+# of the new shirt and trousers.
+func replace_outfit(inst: Dictionary, raw: Dictionary) -> Dictionary:
+	var family: String = str(LEGACY_OUTFITS[str(inst.id)])
+	var quality: String = valid_quality("camisa_" + family, str(raw.get("quality", "normal")))
+	var level: int = clampi(int(raw.get("level", 0)), 0, 12)
+	var ilvl: int = clampi(int(raw.get("ilvl", 0)), 0, 16)
+	var shirt: Dictionary = add_instance("camisa_" + family, quality, level, ilvl, raw.get("mods", []) if raw.get("mods", []) is Array else [])
+	var trousers: Dictionary = add_instance("calca_" + family, quality, 0, ilvl)
+	if quality != "normal":
+		trousers.mods = Crafting.roll_mods(trousers, rng)
+	for gear: Dictionary in [shirt, trousers]:
+		if bool(raw.get("bound", false)):
+			gear.bound = true
+	inst.level = 0
+	inst.quality = "normal"
+	inst.mods = []
+	inst.erase("ilvl")
+	return {"camisa": shirt.uid, "calca": trousers.uid}
+
 func load_pets(data: Dictionary) -> void:
 	pets.clear()
 	pet_album.clear()
@@ -223,7 +267,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 10, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
+	return {"version": 11, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -397,6 +441,14 @@ func has_item(id: String, quality: String = "") -> bool:
 func equipped_instance(slot: String) -> Dictionary:
 	return find_instance(int(equipped.get(slot, -1)))
 
+# What is worn in an item slot, for comparing: with two rings, the first one worn.
+func worn_for(item_slot: String) -> Dictionary:
+	for place: String in Armory.worn_places(item_slot):
+		var inst: Dictionary = equipped_instance(place)
+		if not inst.is_empty():
+			return inst
+	return {}
+
 func equipped_list() -> Array:
 	var list: Array = []
 	for slot: String in Armory.EQUIP_SLOTS:
@@ -408,18 +460,41 @@ func equipped_list() -> Array:
 func is_equipped(uid: int) -> bool:
 	return equipped.values().has(uid)
 
-func equip(uid: int) -> String:
+# The place where an item is worn ("" if it is not).
+func worn_place(uid: int) -> String:
+	for slot: String in equipped:
+		if int(equipped[slot]) == uid:
+			return slot
+	return ""
+
+# `place` is the worn place the player aimed at (a ring slot); "" picks the first free one.
+func equip(uid: int, place: String = "") -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty():
 		return tr("Item não encontrado.")
 	var id: String = str(inst.id)
-	if not Armory.slot_of(id) in Armory.EQUIP_SLOTS:
+	var places: Array[String] = Armory.worn_places(Armory.slot_of(id))
+	if places.is_empty():
 		return tr("Este item não se equipa.")
 	if Armory.kind_of(id) == "cosmetic":
 		var wanted: String = str(Armory.cosmetic_def(id).gender)
 		if wanted != "u" and wanted != gender:
-			return tr("Esta roupa é do outro gênero.")
-	equipped[Armory.slot_of(id)] = uid
+			return tr("Esta skin é do outro gênero.")
+	var target: String = place if place in places else places[0]
+	if place == "" and places.size() > 1:
+		# Two rings: the first empty hand, else the first one is replaced.
+		for candidate: String in places:
+			if equipped_instance(candidate).is_empty():
+				target = candidate
+				break
+	if place != "" and not place in places:
+		return tr("Este item não vai nesse espaço.")
+	if places.size() > 1:
+		# Never two of the same ring: the other hand must hold a different piece.
+		for other: String in places:
+			if other != target and str(equipped_instance(other).get("id", "")) == id:
+				return tr("Você já usa um anel igual a este.")
+	equipped[target] = uid
 	if inst.quality == "super":
 		# 0.12: a Super Verdadeira binds when equipped; unequipped it can still be sold.
 		inst.bound = true
@@ -442,7 +517,7 @@ func remove_instance(uid: int) -> void:
 	ensure_starter()
 
 static func is_keepsake(id: String) -> bool:
-	return id == FounderPack.SEAL or id == str(PetHunt.rules().pass_item) or id.begins_with(BAG_TAB_PREFIX)
+	return id == FounderPack.SEAL or id == FounderPack.WINGS or id == str(PetHunt.rules().pass_item) or id.begins_with(BAG_TAB_PREFIX)
 
 func sell(uid: int) -> int:
 	var inst: Dictionary = find_instance(uid)
@@ -649,7 +724,7 @@ func strengthen_cost(inst: Dictionary) -> Dictionary:
 func strengthen(uid: int) -> String:
 	var inst: Dictionary = find_instance(uid)
 	if inst.is_empty() or not Armory.can_strengthen(str(inst.id)):
-		return tr("Só armas, roupas e chapéus podem ser fortalecidos.")
+		return tr("Só armas, camisas, calças e chapéus podem ser fortalecidos.")
 	var cost: Dictionary = strengthen_cost(inst)
 	if cost.is_empty():
 		return tr("Este item já está no +12.")
@@ -1051,7 +1126,7 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			if inst.is_empty():
 				error = tr("Item não encontrado.")
 			else:
-				error = unequip(Armory.slot_of(str(inst.id))) if is_equipped(uid) else equip(uid)
+				error = unequip(worn_place(uid)) if is_equipped(uid) else equip(uid, arg_str(args, 1))
 		"sell":
 			var value: int = sell(arg_int(args, 0))
 			if is_keepsake(str(find_instance(arg_int(args, 0)).get("id", ""))):

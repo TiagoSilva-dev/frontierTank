@@ -35,7 +35,13 @@ static func can_have_mods(id: String) -> bool:
 	return Armory.slot_of(id) in rules().slots
 
 static func pool_for(id: String) -> Array:
-	return rules().weapon if Armory.slot_of(id) == "arma" else rules().armor
+	var slot: String = Armory.slot_of(id)
+	if slot == "arma":
+		return rules().weapon
+	# Rings and amulets (0.26) draw from their own short lists of the same bonuses.
+	if rules().pools.has(slot):
+		return rules().pools[slot].map(func(bonus_id: String) -> Dictionary: return affix_def(bonus_id))
+	return rules().armor
 
 static func affix_def(id: String) -> Dictionary:
 	for list: String in ["weapon", "armor"]:
@@ -151,7 +157,7 @@ static func check(currency: String, inst: Dictionary) -> String:
 	if inst.is_empty():
 		return Lang.t("Escolha um item.")
 	if not can_have_mods(id):
-		return Lang.t("Só armas, roupas, chapéus, óculos e asas recebem bônus.")
+		return Lang.t("Só armas, camisas, calças, chapéus, óculos e asas recebem bônus.")
 	if bool(inst.get("mirrored", false)):
 		return Lang.t("Itens espelhados não podem ser modificados.")
 	var quality: String = str(inst.get("quality", "normal"))

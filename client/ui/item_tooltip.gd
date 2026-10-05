@@ -8,7 +8,7 @@ extends PanelContainer
 # threats and rewards; currencies, stones and tools say what they are for.
 
 const WIDTH: float = 320.0
-const ICONS: Dictionary = {"ataque": "res://assets/ui/stats/ataque.png", "defesa": "res://assets/ui/stats/defesa.png", "agilidade": "res://assets/ui/stats/agilidade.png", "sorte": "res://assets/ui/stats/sorte.png"}
+const ICONS: Dictionary = {"ataque": "res://assets/ui/stats/ataque.png", "defesa": "res://assets/ui/stats/defesa.png", "agilidade": "res://assets/ui/stats/agilidade.png", "sorte": "res://assets/ui/stats/sorte.png", "vida": "res://assets/ui/stats/vida.png"}
 const UP: String = "7dff6a"
 const DOWN: String = "ff7a6a"
 const MUTED: String = "b8a58a"
@@ -143,7 +143,7 @@ func build_item(inst: Dictionary, profile: PlayerProfile) -> void:
 	var level: int = int(inst.get("level", 0))
 	var equipped: bool = profile.is_equipped(int(inst.get("uid", -1)))
 	# Compared with what the player wears in the same slot (nothing to compare when worn).
-	var worn: Dictionary = {} if equipped else profile.equipped_instance(slot)
+	var worn: Dictionary = {} if equipped else profile.worn_for(slot)
 	var kind_text: String = Armory.slot_name(slot)
 	if kind == "cosmetic":
 		var gender: String = str(Armory.cosmetic_def(id).get("gender", "u"))
@@ -174,6 +174,9 @@ func build_item(inst: Dictionary, profile: PlayerProfile) -> void:
 		if int(attrs[key]) == 0 and int(worn_attrs[key]) == 0:
 			continue
 		rows.append("[img=16x16]%s[/img] %s %s%s" % [ICONS[key], Armory.attr_name(key), paint("+%d" % int(attrs[key]), "ffffff"), delta(int(attrs[key]), int(worn_attrs[key]))])
+	var hp: int = Armory.item_hp(inst)
+	if hp > 0:
+		rows.append("[img=16x16]%s[/img] %s %s%s" % [ICONS["vida"], tr("Vida"), paint("+%d" % hp, "ffffff"), delta(hp, Armory.item_hp(worn) if not worn.is_empty() else hp)])
 	if not rows.is_empty():
 		divider()
 		section("\n".join(rows))

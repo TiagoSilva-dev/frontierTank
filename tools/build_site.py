@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Battle ranks shown under the name (client/components/fighter.gd).
 RANKS = ["Recruta", "Soldado", "Veterano", "Sargento", "Capitão", "Major", "Coronel", "General", "Marechal"]
 ATTR_NAMES = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}
-SLOT_NAMES = {"arma": "Arma", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "asas": "Asas", "cabelo": "Cabelo", "selo": "Selo"}
+SLOT_NAMES = {"arma": "Arma", "skin": "Skin", "camisa": "Camisa", "calca": "Calça", "chapeu": "Chapéu", "oculos": "Óculos", "asas": "Asas", "anel": "Anel", "amuleto": "Amuleto", "cabelo": "Cabelo", "selo": "Selo"}
 
 
 # ---------- translations ----------
@@ -174,7 +174,7 @@ def build_data():
     cosmetics = []
     for c in items["cosmetics"]:
         slot = c["slot"]
-        if slot == "roupa":
+        if slot == "skin":
             icon = art(f"res://assets/characters/{c['skin']}/south.png", f"cosmetics/{c['id']}.png", crop=True)
         elif slot == "cabelo":
             icon = art("res://assets/cosmetics/cabelo/icon.png", f"cosmetics/{c['id']}.png", tint=c["dye"])
@@ -183,7 +183,7 @@ def build_data():
                 or art(f"res://assets/cosmetics/{c['art']}/front.png", f"cosmetics/{c['id']}.png", crop=True)
         cosmetics.append({"id": c["id"], "slot": slot, "slot_name": T(SLOT_NAMES[slot]), "gender": c["gender"],
                           "name": T(c["name"]), "price": c["price"], "premium": bool(c.get("premium", False)),
-                          "attrs": c.get("attrs", {}), "dye": c.get("dye"), "icon": icon})
+                          "attrs": c.get("attrs", {}), "hp": c.get("hp", 0), "dye": c.get("dye"), "icon": icon})
 
     enemies = []
     appears = {}

@@ -23,6 +23,8 @@ func go() -> void:
 	var heroes: Array = [
 		{"label": "nv6 Normal", "entry": {"name": "Nilo", "human": true, "level": 6, "arma": {"id": "quebra_tijolos", "quality": "normal", "level": 0}}},
 		{"label": "nv15 Exc+6", "entry": {"name": "Nilo", "human": true, "level": 15, "arma": {"id": "trovao", "quality": "excelente", "level": 6}, "attrs": {"ataque": 90, "defesa": 120, "agilidade": 40, "sorte": 60}}},
+		# 0.26: the same hero with two rings (Bronze and Esmeralda), the Amuleto de Pedra and no bonuses.
+		{"label": "nv15 +joias", "entry": {"name": "Nilo", "human": true, "level": 15, "hp": 2250, "arma": {"id": "trovao", "quality": "excelente", "level": 6}, "attrs": {"ataque": 115, "defesa": 135, "agilidade": 40, "sorte": 85}}},
 	]
 	for hero: Dictionary in heroes:
 		for instance: Dictionary in balance.instances:

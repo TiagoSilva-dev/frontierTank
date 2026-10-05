@@ -34,13 +34,24 @@ static func mail_items(entry: Dictionary) -> Array:
 		list.append({"id": str(id), "quality": "normal", "level": 0, "bound": true})
 	return list
 
+# The rule of gold (0.24): the shop sells appearance, never power. Only the skin and the
+# hair (appearance slots) and keepsakes ("selo": the seal, the pass, the bag tabs, the
+# layers of a skin) can be sold; a power slot (weapon, shirt, hat...) never. The one
+# exception is the Founder Pack's Solaris, from before the rule (docs/SKINS.md, D4): a
+# weapon with no attributes that a future "weapon skin" will replace.
+const LEGACY_POWER: Array[String] = [FounderPack.WEAPON]
+
+static func sellable_slot(def: Dictionary) -> bool:
+	var slot: String = str(def.get("slot", ""))
+	return slot in Armory.COSMETIC_SLOTS or slot == "selo" or (str(def.get("id", "")) in LEGACY_POWER)
+
 # Only premium cosmetics the game knows can be sold, and nothing with attributes.
 static func valid(entry: Dictionary) -> bool:
 	if entry.is_empty() or (entry.get("items", []) as Array).is_empty() or int(entry.get("steam_item_id", 0)) <= 0 or not entry.get("prices") is Dictionary:
 		return false
 	for id: Variant in entry.items:
 		var def: Dictionary = Armory.definition(str(id))
-		if def.is_empty() or not bool(def.get("premium", false)) or not (def.get("attrs", {}) as Dictionary).is_empty():
+		if def.is_empty() or not bool(def.get("premium", false)) or not (def.get("attrs", {}) as Dictionary).is_empty() or not sellable_slot(def):
 			return false
 	return true
 

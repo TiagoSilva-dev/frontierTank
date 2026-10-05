@@ -45,7 +45,7 @@
           <p>No Salão de Jogos, crie uma sala e aperte <b>Início</b>: o jogo procura uma equipe rival do mesmo tamanho; se ninguém aparecer, a IA completa a sala em alguns segundos. Na sua vez, ajuste o ângulo com <b>↑ ↓</b>, olhe o vento no alto da tela, segure <b>Espaço</b> e solte na força certa. Veja <a href="#/guia/mira">Mira, força e vento</a>.</p>
           <h2>4. Fique mais forte</h2>
           <ol>
-            <li>Equipe a melhor arma e roupas na Mochila (clique duplo, ou arraste até o personagem).</li>
+            <li>Equipe a melhor arma, a camisa e a calça na Mochila (clique duplo, ou arraste até o personagem).</li>
             <li>Fortaleça a arma no Ferreiro: cada nível aumenta o dano e os atributos (<a href="#/fortalecimento">Fortalecimento</a>).</li>
             <li>Entre nas instâncias: lá caem armas Verdadeiras, <a href="#/mapas">mapas</a> e moedas de criação.</li>
             <li>Use as moedas para melhorar os <a href="#/bonus">bônus</a> dos itens, ou venda o que sobrar no <a href="#/leilao">Leilão</a>.</li>
@@ -264,13 +264,13 @@ y(t) = y₀ − v·sin(θ)·t + ½·${C.gravity}·t²</code>
             <div class="twrap" style="max-width:420px">${h.table([h.T("Distância (fração do alcance)", "Distance (share of reach)"), [h.T("Dano do " + h.L(w.name), h.L(w.name) + " damage"), "num"]], falloff).replace('<div class="twrap">', "").replace(/<\/div>$/, "")}</div>
             <p class="note fire">A explosão também atinge aliados (sem crítico). Cuidado com tiros perto do seu time.</p>
             <h2>Atributos</h2>
-            <p>Na batalha contam os atributos que vêm dos <b>equipamentos</b> (arma, roupa, chapéu, óculos, asas e bônus). A Mochila mostra também a base do nível.</p>
+            <p>Na batalha contam os atributos que vêm dos <b>equipamentos</b> (arma, camisa, calça, chapéu, óculos, asas e bônus). A Mochila mostra também a base do nível.</p>
             <ul>
               <li><b>Ataque</b>: +0,1% de dano por ponto. <code>dano × (1 + Ataque ÷ 1000)</code></li>
               <li><b>Defesa</b>: reduz o dano recebido com retorno decrescente. <code>dano × (1 − Defesa ÷ (Defesa + 800))</code></li>
               <li><b>Sorte</b>: chance de crítico de Sorte ÷ 1500, até 25%. O crítico causa ×1,5 (mais o bônus “% de dano crítico”).</li>
               <li><b>Agilidade</b>: ${C.base_agility} + ${C.agility_per_level} por nível + metade da Agilidade dos equipamentos. Cada ponto tira 1 de Delay por turno, e cada 30 pontos dão +1 de energia.</li>
-              <li><b>Vida</b>: ${h.n(C.base_hp)} + ${C.hp_per_level} por nível, +${D.strengthen.hp_per_level} por nível de fortalecimento na roupa e no chapéu, mais o bônus de vida.</li>
+              <li><b>Vida</b>: ${h.n(C.base_hp)} + ${C.hp_per_level} por nível, +${D.strengthen.hp_per_level} por nível de fortalecimento na camisa, na calça e no chapéu, mais o bônus de vida.</li>
             </ul>
             <h3>Defesa na prática</h3>
             <div class="twrap" style="max-width:420px">${h.table([[h.T("Defesa", "Defence"), "num"], [h.T("Dano recebido", "Damage taken"), "num"]], defRows).replace('<div class="twrap">', "").replace(/<\/div>$/, "")}</div>
@@ -285,13 +285,13 @@ y(t) = y₀ − v·sin(θ)·t + ½·${C.gravity}·t²</code>
             <div class="twrap" style="max-width:420px">${h.table([h.T("Distância (fração do alcance)", "Distance (share of reach)"), [h.T("Dano do " + h.L(w.name), h.L(w.name) + " damage"), "num"]], falloff).replace('<div class="twrap">', "").replace(/<\/div>$/, "")}</div>
             <p class="note fire">Blasts hit allies too (never critically). Careful with shots near your team.</p>
             <h2>Attributes</h2>
-            <p>In battle, the attributes that count are the ones from your <b>gear</b> (weapon, outfit, hat, glasses, wings and bonuses). The Bag also shows your level base.</p>
+            <p>In battle, the attributes that count are the ones from your <b>gear</b> (weapon, shirt, trousers, hat, glasses, wings and bonuses). The Bag also shows your level base.</p>
             <ul>
               <li><b>Attack</b>: +0.1% damage per point. <code>damage × (1 + Attack ÷ 1000)</code></li>
               <li><b>Defence</b>: reduces damage taken, with diminishing returns. <code>damage × (1 − Defence ÷ (Defence + 800))</code></li>
               <li><b>Luck</b>: critical chance of Luck ÷ 1500, up to 25%. Criticals deal ×1.5 (plus the “% critical damage” bonus).</li>
               <li><b>Agility</b>: ${C.base_agility} + ${C.agility_per_level} per level + half the Agility from gear. Each point removes 1 Delay per turn, and every 30 points give +1 energy.</li>
-              <li><b>HP</b>: ${h.n(C.base_hp)} + ${C.hp_per_level} per level, +${D.strengthen.hp_per_level} per strengthening level on outfit and hat, plus the HP bonus.</li>
+              <li><b>HP</b>: ${h.n(C.base_hp)} + ${C.hp_per_level} per level, +${D.strengthen.hp_per_level} per strengthening level on shirt, trousers and hat, plus the HP bonus.</li>
             </ul>
             <h3>Defence in practice</h3>
             <div class="twrap" style="max-width:420px">${h.table([[h.T("Defesa", "Defence"), "num"], [h.T("Dano recebido", "Damage taken"), "num"]], defRows).replace('<div class="twrap">', "").replace(/<\/div>$/, "")}</div>

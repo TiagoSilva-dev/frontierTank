@@ -8,8 +8,19 @@ extends RefCounted
 const PATH: String = "res://shared/balance/items.json"
 # Old saves, bots and tests pick weapons by index; indexes map onto the classic arsenal.
 const LEGACY_ORDER: Array[String] = ["quebra_tijolos", "fogo_intenso", "canhao_arco_iris", "vento_de_deus", "cesto_newton", "kit_medico", "eletrodomestico", "trovao", "desentupidor"]
-const EQUIP_SLOTS: Array[String] = ["arma", "auxiliar", "roupa", "chapeu", "oculos", "cabelo", "asas"]
-const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "roupa": "Roupa", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas"}  # i18n
+# Places where gear is worn. Two of them take rings (0.26); every other place takes the one
+# item slot of the same name, so `slot_of(id)` ("anel") is not always the worn place ("anel1").
+const EQUIP_SLOTS: Array[String] = ["arma", "auxiliar", "skin", "camisa", "calca", "chapeu", "oculos", "cabelo", "asas", "anel1", "anel2", "amuleto"]
+const RING_SLOTS: Array[String] = ["anel1", "anel2"]
+const SLOT_NAMES: Dictionary = {"arma": "Arma", "auxiliar": "Auxiliar", "skin": "Skin", "camisa": "Camisa", "calca": "Calça", "chapeu": "Chapéu", "oculos": "Óculos", "cabelo": "Cabelo", "asas": "Asas", "anel": "Anel", "anel1": "Anel", "anel2": "Anel", "amuleto": "Amuleto", "selo": "Selo"}  # i18n
+# 0.24: the rule of gold. Appearance slots never carry attributes and are the only ones the
+# premium shop may sell; power slots carry attributes and are never sold for money.
+const COSMETIC_SLOTS: Array[String] = ["skin", "cabelo"]
+# Slots of gear that gives attributes. "selo" is a keepsake (seals, passes, tabs): it is not
+# worn and has no attributes.
+const POWER_SLOTS: Array[String] = ["arma", "auxiliar", "camisa", "calca", "chapeu", "oculos", "asas", "anel", "amuleto"]
+# Slots that take the Defense and life of the Ferreiro's strengthening.
+const ARMOR_SLOTS: Array[String] = ["camisa", "calca", "chapeu"]
 const ATTRS: Array[String] = ["ataque", "defesa", "agilidade", "sorte"]
 const ATTR_NAMES: Dictionary = {"ataque": "Ataque", "defesa": "Defesa", "agilidade": "Agilidade", "sorte": "Sorte"}  # i18n
 
@@ -85,6 +96,23 @@ static func slot_of(id: String) -> String:
 		"cosmetic":
 			return str(cosmetic_def(id).slot)
 	return ""
+
+# Worn places that take an item of this slot ("anel" → both rings).
+static func worn_places(item_slot: String) -> Array[String]:
+	var places: Array[String] = []
+	if item_slot == "anel":
+		places.assign(RING_SLOTS)
+	elif item_slot in EQUIP_SLOTS:
+		places.append(item_slot)
+	return places
+
+# Base life of an amulet (0.26): a flat number on the item, scaled by its quality like the
+# base attributes of a weapon (150 / 195 / 240 / 300). Never read for other slots.
+static func item_hp(inst: Dictionary) -> int:
+	var def: Dictionary = cosmetic_def(str(inst.get("id", "")))
+	if def.is_empty() or not def.has("hp"):
+		return 0
+	return roundi(float(def.hp) * float(quality_def(str(inst.get("quality", "normal"))).attrs))
 
 static func can_strengthen(id: String) -> bool:
 	return slot_of(id) in data().strengthen.slots
@@ -174,7 +202,7 @@ static func icon_path(inst: Dictionary) -> String:
 		"cosmetic":
 			var def: Dictionary = cosmetic_def(id)
 			match str(def.slot):
-				"roupa":
+				"skin":
 					return skin_path(str(def.skin))
 				"cabelo":
 					return "res://assets/cosmetics/cabelo/icon.png"
@@ -194,7 +222,7 @@ static func load_icon(inst: Dictionary) -> Texture2D:
 	if path == "" or not ResourceLoader.exists(path):
 		return PixelIcons.get_icon("bag")
 	var texture: Texture2D = load(path)
-	if cosmetic_def(str(inst.get("id", ""))).get("slot", "") == "roupa":
+	if cosmetic_def(str(inst.get("id", ""))).get("slot", "") == "skin":
 		return UiKit.head_crop(texture, 1.0)
 	return texture
 
@@ -246,7 +274,7 @@ static func item_attrs(inst: Dictionary) -> Dictionary:
 	for key: String in mods:
 		if result.has(key):
 			result[key] += int(mods[key])
-	if slot_of(id) in ["roupa", "chapeu"]:
+	if slot_of(id) in ARMOR_SLOTS:
 		result.defesa += int(inst.get("level", 0)) * int(data().strengthen.defense_per_level)
 	return result
 
@@ -266,8 +294,9 @@ static func character_stats(level: int, equipped: Array, balance: Dictionary, pe
 		for key: String in mods:
 			if not extra.has(key):
 				bonus[key] = int(bonus.get(key, 0)) + int(mods[key])
-		if slot_of(str(inst.id)) in ["roupa", "chapeu"]:
+		if slot_of(str(inst.id)) in ARMOR_SLOTS:
 			bonus_hp += int(inst.get("level", 0)) * int(data().strengthen.hp_per_level)
+		bonus_hp += item_hp(inst)
 		if slot_of(str(inst.id)) == "arma":
 			weapon_inst = inst
 	# The active pet and the album (0.19): attributes join the gear's, talents the battle bonuses.
@@ -311,6 +340,7 @@ static func crit_chance(extra: Dictionary) -> float:
 
 static func look_for(gender: String, equipped: Array) -> Dictionary:
 	var look: Dictionary = {"skin": "lani" if gender == "f" else "base_m", "hair": "", "hat": "", "glasses": "", "wings": "", "weapon": LEGACY_ORDER[0], "weapon_level": 0, "clothes_level": 0}
+	var skin_id: String = ""
 	for inst: Dictionary in equipped:
 		var id: String = str(inst.id)
 		var level: int = int(inst.get("level", 0))
@@ -318,10 +348,13 @@ static func look_for(gender: String, equipped: Array) -> Dictionary:
 			"arma":
 				look.weapon = id
 				look.weapon_level = level
-			"roupa":
+			"skin":
 				var skin: String = str(cosmetic_def(id).skin)
 				if ResourceLoader.exists(skin_path(skin)):
 					look.skin = skin
+					skin_id = id
+			"camisa":
+				# The shirt carries the strength glow; it never shows on the sprite.
 				look.clothes_level = level
 			"chapeu":
 				look.hat = str(cosmetic_def(id).art)
@@ -333,6 +366,12 @@ static func look_for(gender: String, equipped: Array) -> Dictionary:
 				look.hair = str(cosmetic_def(id).dye)
 	if not ResourceLoader.exists(skin_path(str(look.skin))):
 		look.skin = "lani" if gender == "f" else "nilo"
+		skin_id = ""
+	# A skin may carry layers of its own (the Paladino's wings). They replace what the
+	# power slots would draw there and never change an attribute.
+	var layers: Dictionary = cosmetic_def(skin_id).get("layers", {}) if skin_id != "" else {}
+	if layers.has("wings"):
+		look.wings = str(layers.wings)
 	return look
 
 static func random_loadout(rng: RandomNumberGenerator, level: int, gender: String, skin: String) -> Dictionary:
@@ -351,6 +390,19 @@ static func random_loadout(rng: RandomNumberGenerator, level: int, gender: Strin
 				if def.slot == slot and not bool(def.get("premium", false)):
 					pool.append(def.id)
 			equipped.append({"id": pool[rng.randi() % pool.size()], "level": 0})
+	# 0.26: bots also wear a shirt, trousers, up to two rings and an amulet (attributes only;
+	# a bot's life comes from its level). Drawn after the older slots, so those rolls stay.
+	var worn_ids: Array = []
+	for slot: String in ["camisa", "calca", "anel", "anel", "amuleto"]:
+		if rng.randf() < 0.2 + level * 0.012:
+			var pool: Array = []
+			for def: Dictionary in data().cosmetics:
+				if def.slot == slot and not bool(def.get("premium", false)) and not bool(def.get("drop_only", false)) and not worn_ids.has(def.id):
+					pool.append(def.id)
+			if not pool.is_empty():
+				var chosen: String = pool[rng.randi() % pool.size()]
+				worn_ids.append(chosen)
+				equipped.append({"id": chosen, "level": 0})
 	var look: Dictionary = look_for(gender, equipped)
 	look.skin = skin if skin != "" else look.skin
 	if rng.randf() < 0.35:

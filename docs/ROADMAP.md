@@ -12,6 +12,7 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 5 | **Casa dos Mascotes** (ovos, choque, mascote em batalha) e **Caçada** automática com campo visto de cima nas 5 zonas | Sim (o servidor liquida a caçada) | 0.19–0.22 — **feito**; falta playtest e afinar capturas e ovos (`docs/PETS.md`, `docs/PET_HUNT.md`) |
 | 6 | Treino de artilharia, **liga ranqueada**, replays e espectador, Desafio do Dia, contratos diários e semanais, habilidade do mascote em batalha | Sim (liga, desafio e espectador) | 0.22 — **feito** (`docs/RANKED.md`, `docs/CHALLENGE.md`, `docs/MISSIONS.md`) |
 | 7 | **Celular e tablet**: modo toque, web no celular, APK e projeto Xcode (sem loja) | Não (só o cliente) | 0.23 — **feito**; o site já anuncia o jogo no navegador do celular, com vídeo para as redes (`docs/MOBILE.md`); falta jogar nos aparelhos; lojas, compras e probabilidades dos ovos ficam para depois |
+| 8 | **Skins, camisa, calça, anéis e amuleto**: skin sem atributos, 12 espaços de equipamento, opção "só a skin" e skins épicas (cabelo sai da loja premium) | Sim (perfil, loja e leilão) | 0.24–0.26 feitas (slots, camisa/calça, anéis e amuleto); 0.27–0.29 **planejadas**, ver `docs/SKINS.md` |
 
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).

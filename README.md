@@ -61,7 +61,7 @@ O Ferreiro ganhou cenário original do PixelLab, arma flutuante, interface de br
 
 ## Leilão e Correio (0.12)
 O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/screens/auction.png`, `auction_sell.png`, `auction_en.png`):
-- **Comprar**: busca com filtros de tipo (armas, roupas, chapéus, óculos, asas ou mapas), qualidade, nível do item ou do mapa, fortalecimento, bônus, preço máximo em Solares e em Estrelas, e ordem (mais recentes, menor preço, maior nível). O anúncio mostra os bônus (ou as ameaças e recompensas do mapa), o vendedor, quanto tempo falta e as **vendas recentes** de itens parecidos. **COMPRAR** é compra imediata (lances ficam para depois) e o item vai direto para a Mochila.
+- **Comprar**: busca com filtros de tipo (armas, camisas, calças, chapéus, óculos, asas, anéis, amuletos ou mapas), qualidade, nível do item ou do mapa, fortalecimento, bônus, preço máximo em Solares e em Estrelas, e ordem (mais recentes, menor preço, maior nível). O anúncio mostra os bônus (ou as ameaças e recompensas do mapa), o vendedor, quanto tempo falta e as **vendas recentes** de itens parecidos. **COMPRAR** é compra imediata (lances ficam para depois) e o item vai direto para a Mochila.
 - **Vender**: equipamentos que caíram nas instâncias e mapas, sem vínculo e sem estar equipados. Preço em Solares e/ou Estrelas, duração de 12, 24 ou 48 h. Anunciar custa uma **taxa em moedas de ouro** (30, 50 ou 80, pela duração) e a venda paga uma **comissão de 5%** de cada moeda (arredondada para baixo); a tela mostra quanto chega.
 - **Meus anúncios**: até 10 à venda ao mesmo tempo, com **CANCELAR** (o item volta; a taxa não), e os últimos encerrados (vendidos, cancelados ou vencidos).
 - **Correio** (barra de baixo, com o número de cartas; `mail.png`): chegam os Solares e Estrelas das vendas e os itens de anúncios cancelados ou vencidos. **RECEBER** ou **RECEBER TUDO**.
@@ -74,7 +74,7 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | **Cidade** (`docs/screens/city.png`) | Ilha com o Salão de Jogos (coliseu) no centro da praça e seis prédios nos lotes em volta: Ferreiro, Instância, Leilão, Casa de Câmbio, Centro Comercial e Casa dos Mascotes. Mar em movimento, fumaça da chaminé e brilho da forja, faíscas no coliseu, portal girando, brilhos nas lojas e gaivotas. Todos os prédios abrem (**Leilão** e **Casa de Câmbio** só online). Botões **CUPOM**, **MOCHILA** e **FOUNDER PACK**, alto-falante, canal, chat e a barra SHOP · MOCHILA · PET · CORREIO · MISSÃO · AJUDA · SAIR (CORREIO e MISSÃO com bolinha de contagem). A cidade avisa "Caçada pronta para coletar" no prédio dos mascotes. |
 | **Mochila** (`bag.png`, `bag_card.png`) | Informações Pessoais: o personagem num pedestal com holofote, vestindo tudo o que está equipado, com a aura da arma atrás da cabeça e dos ombros, e os espaços Chapéu, Óculos, Cabelo, Roupa, Asas, Arma e Auxiliar em volta (vazios mostram a silhueta do que vai ali). Ataque, Defesa, Agilidade, Sorte, Dano, Proteção, Vida e Força física com ícones. Inventário com Armas, Visual, Auxiliar, Materiais e **Mapas**: a qualidade é um brilho atrás do item; passar o mouse mostra o cartão do item (atributos, comparação com o equipado, bônus, nível, venda); arrastar organiza a mochila do seu jeito (**ORGANIZAR** volta à ordem padrão) e equipa soltando no personagem; clique duplo equipa; equipar, remover e vender. |
 | **Ferreiro** (`smith.png`, `smith_moedas.png`) | **Fortalecer** até +12 com Pedras de Fortalecimento, **Transferência** do nível entre dois itens do mesmo tipo e **Moedas**: usar Brasa, Coroa, Estrela, Tormenta, Solar, Eclipse e Espelho Celeste em equipamentos e mapas. |
-| **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); roupas, chapéus, óculos, asas, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
+| **Centro Comercial** (`shop.png`) | Armas em Normal e Excelente (a Verdadeira só cai nas instâncias); skins, camisas, calças, chapéus, óculos, asas, anéis, amuletos, cabelos, itens auxiliares e pedras; **provador** que veste o item antes de comprar. Super armas não são vendidas. |
 | **Salão de Jogos** (`hall.png`, online: `hall_online.png`) | Lista de salas, filtro, informações do usuário com o personagem equipado, lista de jogadores, **Equipe**, **Buscar** e **Jogar**. |
 | **Sala** (`room.png`, `pve.png`, online: `room_online.png`) | 4 vagas com cada jogador vestido (roupa, chapéu, asas e auras), VS, modos, mapa, tempo do turno, ferramentas Z/X/C, Convide, Local e Início. Na Instância, **Local** escolhe uma das 5 instâncias e o **espaço de mapa** recebe um mapa da mochila (nível, qualidade e atributos) ou fica na entrada livre. |
 | **Partida** (`battle.png`, `pve_battle.png`) | Personagens deitados, com a arma nas costas, asas, chapéu e óculos; as auras não aparecem em batalha. Habilidades **1–9**: +2, x3, +1, POW 50%, 40%, 30%, 20%, 10% e POW máx (enche a barra de POW). Cada arma tem projétil, rastro e especial (POW) próprios. Tudo da 0.4 continua: Delay, vento, Z/X/C, POW, avião, Confiar, terreno destrutível. Slot **V** para o item auxiliar. |
@@ -155,9 +155,9 @@ Integração pronta, à espera do App ID e da extensão GodotSteam (passo a pass
 ## Armas
 Nove armas clássicas em três qualidades, **Normal**, **Excelente** e **Verdadeira**: Tijolaço, Braseiro, Prisma, Cata-Vento, Pomar, Tônico, Bota-Fora, Para-Raios e Sugador. E três **Super Verdadeiras**, que só caem na Instância: Super Minotauro, Super Cupido e Super Lança de Jade (nomes da revisão de identidade de 25/09/2026; as ids internas e os saves não mudaram). Os especiais: tijolo que se parte, rajada tripla de fogo, raio prismático do céu, shuriken gigante que ignora o vento, chuva de frutas, cura em área, geladeira que cai do céu, três raios, ventosas que puxam, touro espectral que empurra, bumerangue que volta e cura, e chuva de lanças.
 
-**Fortalecimento** até +12: cada tentativa usa uma pedra do nível de destino e moedas. A chance vai de 100% no +1 a 20% no +12; a falha preserva o nível. Cada nível deixa o item mais forte: a arma ganha dano e todos os itens fortalecidos ganham +10% dos seus atributos por nível (Ataque, Defesa, Agilidade, Sorte); roupa e chapéu também dão Defesa e Vida. O ícone da arma evolui no +9, +10 e +12, e a **aura** atrás da cabeça e dos ombros muda de cor: +1–5 verde, +6–8 azul, +9–11 roxa, +12 vermelha. A roupa fortalecida ganha a própria aura: um brilho em volta do corpo e partículas subindo. As auras aparecem fora das lutas (Mochila, Sala, Salão, Loja, cidade); a arma nas costas aparece só nas lutas.
+**Fortalecimento** até +12: cada tentativa usa uma pedra do nível de destino e moedas. A chance vai de 100% no +1 a 20% no +12; a falha preserva o nível. Cada nível deixa o item mais forte: a arma ganha dano e todos os itens fortalecidos ganham +10% dos seus atributos por nível (Ataque, Defesa, Agilidade, Sorte); camisa, calça e chapéu também dão Defesa e Vida. O ícone da arma evolui no +9, +10 e +12, e a **aura** atrás da cabeça e dos ombros muda de cor: +1–5 verde, +6–8 azul, +9–11 roxa, +12 vermelha. A camisa fortalecida ganha a própria aura: um brilho em volta do corpo e partículas subindo. As auras aparecem fora das lutas (Mochila, Sala, Salão, Loja, cidade); a arma nas costas aparece só nas lutas.
 
-**Visual do personagem:** conta nova começa de camiseta e shorts. Roupa troca o corpo inteiro (Explorador, Samurai, Ninja, Capitão; Exploradora, Princesa, Maga, Marinheira), chapéu, óculos e asas vão por cima e o cabelo muda de cor.
+**Visual do personagem:** conta nova começa de camiseta e shorts. A **skin** troca o corpo inteiro (Explorador, Samurai, Ninja, Capitão; Exploradora, Princesa, Maga, Marinheira) e é só aparência, sem atributos; chapéu, óculos e asas vão por cima e o cabelo muda de cor. **Camisa e calça** dão os atributos e a Defesa, mas não aparecem no boneco. Dois **anéis** (os dois espaços aceitam o mesmo catálogo, nunca o mesmo anel duas vezes) e o **amuleto**, que sempre dá **vida** (150 a 300 conforme a qualidade) além de um atributo, completam os 12 espaços; anel e amuleto não vão ao Ferreiro (`docs/SKINS.md`).
 
 **Item auxiliar** (tecla V): Bálsamo e Grande Bálsamo curam; Broquel de Latão e Égide de Aço reduzem o próximo dano.
 
@@ -213,12 +213,14 @@ Entre as fases: tela de transição, +35% de vida, o POW continua e quem caiu vo
 **Grupo**: a escala por número de jogadores (vida 1,8×/2,5×/3,2×, dano, lacaios extras, recompensa e cartas; com 3–4 jogadores as magias do chefe caem em todos) está pronta e testada, e passa a valer quando houver grupos online; bots na sala não contam.
 
 ## Atributos aleatórios e moedas (0.10)
-Como no PoE 2, armas, roupas, chapéus, óculos e asas têm **atributos bônus aleatórios**: Normal 0, Excelente 1–2, Verdadeira 3–4 e Super Verdadeira sempre 4 (`bag_bonus.png`).
+Como no PoE 2, armas, camisas, calças, chapéus, óculos, asas, anéis e amuletos têm **atributos bônus aleatórios**: Normal 0, Excelente 1–2, Verdadeira 3–4 e Super Verdadeira sempre 4 (`bag_bonus.png`).
 
 | Peça | Bônus possíveis |
 |---|---|
 | Arma | +Ataque · +% dano · +% dano crítico · +% dano do POW · POW inicial · chance de não gastar a habilidade 1–9 |
-| Roupa, chapéu, óculos e asas | +Defesa · +vida máxima · +Agilidade · +Sorte · +energia por turno · −Delay · −% efeito do vento (até 50%) · +% cura recebida |
+| Anel | +Ataque · +Sorte · +% dano crítico · +% dano do POW |
+| Amuleto | +vida máxima · +Defesa · +energia por turno · −Delay |
+| Camisa, calça, chapéu, óculos e asas | +Defesa · +vida máxima · +Agilidade · +Sorte · +energia por turno · −Delay · −% efeito do vento (até 50%) · +% cura recebida |
 
 Cada bônus tem faixas **F1** (melhor) a **F5**. O **nível do item** é o nível do mapa onde ele caiu e libera as faixas: F5 no nível 1, F4 no 4, F3 no 7, F2 no 10 e F1 no 13. Por isso mapas altos dão itens melhores, e não só mais itens. Nenhum bônus muda o raio da explosão ou o hitbox, e o fortalecimento continua aumentando só os atributos base.
 
@@ -234,7 +236,7 @@ Cada bônus tem faixas **F1** (melhor) a **F5**. O **nível do item** é o níve
 | **Eclipse** | Remove 1 bônus | nível 2+ |
 | **Espelho Celeste** (Sky Mirror) | Duplica um equipamento; a cópia fica vinculada e não pode ser modificada | nível 10+, muito rara |
 
-Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (chapéus, óculos, asas e roupas do seu gênero, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não vão ao leilão.
+Cada fase vencida pode dar uma moeda (o chefão sempre dá) e o baú tem cartas de moeda e de equipamento (camisas, calças, chapéus, óculos, asas, anéis e amuletos, com nível do item). As moedas raras ficam mais comuns em mapas altos. As moedas de ouro continuam para NPC, Loja e Ferreiro. Itens da Loja e de cupons vêm sem bônus e **vinculados**: não vão ao leilão.
 
 ## Idiomas (português e inglês)
 O jogo inteiro está em **português e inglês** (`title_en.png`, `city_en.png`, `bag_en.png`): telas, mensagens da partida, chat simulado, nomes de armas, itens, moedas, inimigos, instâncias, mapas e atributos. O idioma é escolhido na tela de entrada e fica salvo; na primeira vez, segue o idioma do sistema (português para quem usa o sistema em português, inglês para os demais). Os nomes em inglês têm versão própria (Tijolaço → *Bricklayer*, Cata-Vento → *Pinwheel*, Instância → *Dungeon*, Brasa → *Ember*, Espelho Celeste → *Sky Mirror*), não tradução literal.
@@ -243,7 +245,7 @@ Como funciona: o português é o idioma-fonte e cada texto é a própria chave (
 
 ## Cupons para teste
 Na cidade (botão **CUPOM**), na Mochila ou na Loja (offline, ou num servidor com `TEST_COUPONS=1`):
-- `TESTARTUDO`: todas as armas em todas as qualidades, as três super armas, auxiliares, todas as roupas, chapéus, óculos, asas e cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.
+- `TESTARTUDO`: todas as armas em todas as qualidades, as três super armas, auxiliares, todas as skins, camisas, calças, chapéus, óculos, asas, anéis, amuletos e cabelos, 200 pedras de cada nível, 50 cristais e 99.999 moedas.
 - `AURAS`: quatro Tijolaços Verdadeiros em +3, +7, +10 e +12, para ver as quatro auras.
 - `PEDRAS`: 50 pedras de cada nível.
 - `MAPAS`: mapas de todas as instâncias nos níveis 1, 5, 10 e 16, de qualidades variadas (pode ser usado de novo).

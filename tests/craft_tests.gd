@@ -42,8 +42,9 @@ func run_tests() -> void:
 	check(Crafting.rules().tiers.size() == 5 and Crafting.allowed_tiers(1) == [5] and Crafting.allowed_tiers(16) == [1, 2, 3, 4, 5], "tiers F1–F5: level 1 items only roll F5, level 13+ can roll F1")
 	var weapon_ids: Array = Crafting.rules().weapon.map(func(d: Dictionary) -> String: return str(d.id))
 	var armor_ids: Array = Crafting.rules().armor.map(func(d: Dictionary) -> String: return str(d.id))
-	check(weapon_ids == ["ataque", "dano", "critico", "pow", "pow_inicial", "poupar"] and armor_ids == ["defesa", "vida", "agilidade", "sorte", "energia", "delay", "vento", "cura"], "bonus pools per kind of piece (weapon / outfit, hat, glasses, wings)")
+	check(weapon_ids == ["ataque", "dano", "critico", "pow", "pow_inicial", "poupar"] and armor_ids == ["defesa", "vida", "agilidade", "sorte", "energia", "delay", "vento", "cura"], "bonus pools per kind of piece (weapon / shirt, trousers, hat, glasses, wings)")
 	check(not (weapon_ids + armor_ids).any(func(id: String) -> bool: return id.contains("raio") or id.contains("radius") or id.contains("hit")), "no bonus changes the blast radius or the hitbox")
+	check(not Crafting.can_have_mods("roupa_samurai") and Crafting.can_have_mods("camisa_guerra") and Crafting.can_have_mods("calca_guerra"), "skins take no bonuses; shirts and trousers do")
 	check(Crafting.can_have_mods("trovao") and Crafting.can_have_mods("chapeu_kabuto") and Crafting.can_have_mods("asas_fada") and not Crafting.can_have_mods("cabelo_azul") and not Crafting.can_have_mods("dom_de_anjo"), "hair colours and auxiliary items take no bonuses")
 
 	# --- Rolling bonuses
@@ -54,7 +55,7 @@ func run_tests() -> void:
 	var best_high: int = 5
 	for quality: String in ["normal", "excelente", "verdadeira", "super"]:
 		for i in range(60):
-			var id: String = "cabeca_de_boi" if quality == "super" else ["trovao", "chapeu_coroa", "roupa_ninja"][i % 3]
+			var id: String = "cabeca_de_boi" if quality == "super" else ["trovao", "chapeu_coroa", "camisa_aventureiro"][i % 3]
 			var ilvl: int = 1 if i % 2 == 0 else 16
 			var mods: Array = Crafting.roll_mods({"id": id, "quality": quality, "ilvl": ilvl}, rng)
 			var span: Array = {"normal": [0, 0], "excelente": [1, 2], "verdadeira": [3, 4], "super": [4, 4]}[quality]
@@ -138,13 +139,13 @@ func run_tests() -> void:
 	sword.level = 5
 	plain.level = 5
 	check(int(Armory.item_attrs(sword).ataque) - int(Armory.item_attrs(plain).ataque) == 60, "strengthening raises only the base attributes, never the bonuses")
-	var coat: Dictionary = profile.add_instance("roupa_samurai", "verdadeira", 0, 16, [{"id": "vida", "tier": 1, "value": 200}, {"id": "energia", "tier": 1, "value": 30}, {"id": "vento", "tier": 1, "value": 20}, {"id": "cura", "tier": 1, "value": 30}])
-	check(coat.quality == "verdadeira" and coat.mods.size() == 4, "outfits keep their quality and bonuses")
+	var coat: Dictionary = profile.add_instance("camisa_guerra", "verdadeira", 0, 16, [{"id": "vida", "tier": 1, "value": 200}, {"id": "energia", "tier": 1, "value": 30}, {"id": "vento", "tier": 1, "value": 20}, {"id": "cura", "tier": 1, "value": 30}])
+	check(coat.quality == "verdadeira" and coat.mods.size() == 4, "shirts keep their quality and bonuses")
 	var loose: PlayerProfile = PlayerProfile.new()
 	var stats_before: Dictionary = loose.stats(balance)
 	var armed: Array = [sword, coat]
 	var stats_after: Dictionary = Armory.character_stats(loose.level(), armed, balance)
-	var plain_stats: Dictionary = Armory.character_stats(loose.level(), [plain, {"id": "roupa_samurai", "level": 0}], balance)
+	var plain_stats: Dictionary = Armory.character_stats(loose.level(), [plain, {"id": "camisa_guerra", "level": 0}], balance)
 	check(int(stats_after.vida) == int(plain_stats.vida) + 200 and int(stats_after.energia) == int(plain_stats.energia) + 30, "life and energy bonuses reach the character sheet")
 	check(int(stats_after.bonus.vento) == 20 and int(stats_after.bonus.cura) == 30 and int(stats_after.bonus.dano) == 15 and not stats_after.bonus.has("ataque"), "battle bonuses are summed apart from the four attributes")
 	check(stats_before.has("bonus") and (stats_before.bonus as Dictionary).is_empty(), "no gear bonuses, no battle bonuses")

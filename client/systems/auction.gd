@@ -13,7 +13,7 @@ extends RefCounted
 #   - The item bought and the seller's currencies arrive by mail (Correio).
 # Also the texts every screen shows: prices, names, time left and the mail lines.
 
-const SLOTS: Array[String] = ["arma", "roupa", "chapeu", "oculos", "asas", "mapa"]
+const SLOTS: Array[String] = ["arma", "camisa", "calca", "chapeu", "oculos", "asas", "anel", "amuleto", "mapa"]
 const QUALITIES: Array[String] = ["normal", "excelente", "verdadeira", "super"]
 const SORTS: Array[String] = ["recent", "price", "level"]
 

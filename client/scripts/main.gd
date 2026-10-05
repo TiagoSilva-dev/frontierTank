@@ -138,9 +138,9 @@ func demo_loadout(kind: String) -> void:
 		for id: String in FounderPack.ITEMS:
 			if not profile.has_item(id):
 				profile.add_instance(id, "normal", 0)
-	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "roupa": ["roupa_samurai" if profile.gender == "m" else "roupa_princesa", 7], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0]}
+	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "skin": ["roupa_samurai" if profile.gender == "m" else "roupa_princesa", 0], "camisa": ["camisa_guerra", 7], "calca": ["calca_guerra", 0], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0], "anel1": ["anel_esmeralda", 0], "anel2": ["anel_bronze", 0], "amuleto": ["amuleto_lobo", 0]}
 	if founder_demo:
-		wanted = {"arma": [FounderPack.WEAPON, int(args.get("wlevel", "12"))], "roupa": [FounderPack.SKIN, 0], "asas": [FounderPack.WINGS, 0], "auxiliar": ["dom_de_anjo_v", 0]}
+		wanted = {"arma": [FounderPack.WEAPON, int(args.get("wlevel", "12"))], "skin": [FounderPack.SKIN, 0], "auxiliar": ["dom_de_anjo_v", 0]}
 	for slot: String in wanted:
 		var id: String = wanted[slot][0]
 		for inst: Dictionary in profile.inventory:
@@ -162,7 +162,7 @@ func demo_loadout(kind: String) -> void:
 		if Crafting.can_have_mods(str(inst.id)):
 			inst.ilvl = 16
 			if inst.quality == "normal" and Armory.slot_of(str(inst.id)) != "arma":
-				inst.quality = "verdadeira" if Armory.slot_of(str(inst.id)) == "roupa" else "excelente"
+				inst.quality = "verdadeira" if Armory.slot_of(str(inst.id)) in ["camisa", "calca"] else "excelente"
 			inst.mods = Crafting.roll_mods(inst, profile.rng, 1.0)
 
 # Capture helper (--screen=pet --tab=Caçada --hunt=<seconds already hunted> --zone= --tier=
@@ -611,6 +611,7 @@ func shortcut(id: String) -> void:
 		"shop":
 			var shop: ShopScreen = ShopScreen.new()
 			shop.app = self
+			shop.tab = str(args.get("tab", "arma"))
 			shop.closed.connect(refresh_room)
 			ui.add_child(shop)
 		"smith":

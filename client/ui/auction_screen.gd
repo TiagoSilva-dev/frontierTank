@@ -15,7 +15,7 @@ extends Control
 signal closed
 
 const TABS: Array = [["Comprar", "buy"], ["Vender", "sell"], ["Meus anúncios", "mine"]]  # i18n
-const TYPES: Array = [["Todos", ""], ["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Mapas", "mapa"]]  # i18n
+const TYPES: Array = [["Todos", ""], ["Armas", "arma"], ["Camisas", "camisa"], ["Calças", "calca"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Anéis", "anel"], ["Amuletos", "amuleto"], ["Mapas", "mapa"]]  # i18n
 const QUALITY_FILTER: Array = [["Todas", ""], ["Normal", "normal"], ["Excelente", "excelente"], ["Verdadeira", "verdadeira"], ["Super Verdadeira", "super"]]  # i18n
 const SORT_OPTIONS: Array = [["Mais recentes", "recent"], ["Menor preço", "price"], ["Maior nível", "level"]]  # i18n
 const SELL_PER_PAGE: int = 36

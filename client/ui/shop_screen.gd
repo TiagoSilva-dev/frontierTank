@@ -1,7 +1,7 @@
 class_name ShopScreen
 extends Control
 
-# Centro Comercial / SHOP: Normal weapons, outfits, hats, glasses, wings and hair colours.
+# Centro Comercial / SHOP: Normal weapons, skins, shirts, trousers, hats, glasses, wings and hair colours.
 # Excelente/Verdadeira/Super weapons, auxiliary items and stones are drop or auction only
 # (0.21). Clicking an item tries it on the provador (preview) on the left.
 # Premium (launch checklist): products paid with the Steam Wallet (PremiumStore), only
@@ -9,7 +9,7 @@ extends Control
 
 signal closed
 
-const TABS: Array = [["Armas", "arma"], ["Roupas", "roupa"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Cabelos", "cabelo"], ["Premium", "premium"]]  # i18n
+const TABS: Array = [["Armas", "arma"], ["Skins", "skin"], ["Camisas", "camisa"], ["Calças", "calca"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Joias", "joia"], ["Cabelos", "cabelo"], ["Premium", "premium"]]  # i18n
 const PER_PAGE: int = 8
 
 var app: Node
@@ -35,7 +35,7 @@ func build() -> void:
 	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	build_preview()
 	for i in range(TABS.size()):
-		var tab_button: Button = UiKit.button(contents, tr(TABS[i][0]), Rect2(432 + i * 113, 84, 110, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
+		var tab_button: Button = UiKit.button(contents, tr(TABS[i][0]), Rect2(430 + i * 79, 84, 77, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
 		tab_button.name = "Tab_" + str(TABS[i][1])
 	UiKit.panel(contents, Rect2(430, 126, 794, 554), "paper")
 	var list: Array = items()
@@ -82,7 +82,7 @@ func items() -> Array:
 			list = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return PremiumStore.valid(entry))
 		_:
 			for def: Dictionary in Armory.data().cosmetics:
-				if def.slot == tab and (def.gender == "u" or def.gender == app.profile.gender) and not bool(def.get("premium", false)):
+				if (def.slot == tab or (tab == "joia" and def.slot in ["anel", "amuleto"])) and (def.gender == "u" or def.gender == app.profile.gender) and not bool(def.get("premium", false)) and not bool(def.get("drop_only", false)):
 					list.append(def)
 	return list
 
