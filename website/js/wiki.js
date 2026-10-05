@@ -222,7 +222,7 @@
       ] },
       { title: T("Mascotes", "Pets"), items: [
         ["mascotes", T("Casa dos Mascotes", "Pet House"), D.pets.species.find((x) => x.rarity === "lendario").art],
-        ["cacada", T("Caçada dos Mascotes", "Pet Hunt"), D.pets.eggs[0].icon],
+        ["cacada", T("Caçada dos Mascotes", "Pet Hunt"), D.pets.species.find((x) => x.rarity === "raro").art],
       ] },
       { title: T("Economia", "Economy"), items: [
         ["moedas", T("Moedas de criação", "Crafting currencies"), byId(D.currencies, "solar").icon],
@@ -695,9 +695,9 @@
 
   function store() {
     const body = `
-      <p class="intro">${T("Gustfire é grátis. A loja com dinheiro de verdade vende só aparência e conveniência (abas extras da Mochila e o Passe do Caçador): nada ali tem atributo, tudo chega vinculado pelo Correio e não vai ao Leilão. Não existem caixas de recompensa pagas.",
-        "Gustfire is free. The real-money shop only sells looks and convenience (extra Bag tabs and the Hunter Pass): nothing there has stats, everything arrives bound by Mail and cannot be auctioned. There are no paid loot boxes.")}</p>
-      ${table([T("Produto", "Product"), T("Inclui", "Includes"), ["BRL", "num"], ["USD", "num"], ["EUR", "num"]], D.store.filter((p) => !/^aba_mochila_[2-9]$/.test(p.sku)).map((p) => p.sku === "aba_mochila_1" ? { ...p, name: { pt: "Abas de Mochila (1 a 6)", en: "Bag tabs (1 to 6)" }, desc: { pt: "Cada aba soma 40 espaços à Mochila; são seis, vendidas uma a uma. Conveniência: não muda atributos.", en: "Each tab adds 40 Bag slots; there are six, sold one by one. Convenience: changes no stats." } } : p).map((p) => `<tr>${td(`<b>${esc(L(p.name))}</b><br><span class="muted">${esc(L(p.desc))}</span>`)}${td(p.items.map((i) => ref("cosmetic", i, true)).join("<br>"))}
+      <p class="intro">${T("Gustfire é grátis. A loja com dinheiro de verdade vende só aparência e conveniência (skins, mascotes, abas extras da Mochila e o Passe do Caçador): nada ali tem atributo, tudo chega vinculado pelo Correio e não vai ao Leilão. Não existem caixas de recompensa pagas.",
+        "Gustfire is free. The real-money shop only sells looks and convenience (skins, pets, extra Bag tabs and the Hunter Pass): nothing there has stats, everything arrives bound by Mail and cannot be auctioned. There are no paid loot boxes.")}</p>
+      ${table([T("Produto", "Product"), T("Inclui", "Includes"), ["BRL", "num"], ["USD", "num"], ["EUR", "num"]], D.store.filter((p) => !/^aba_mochila_[2-9]$/.test(p.sku)).map((p) => p.sku === "aba_mochila_1" ? { ...p, name: { pt: "Abas de Mochila (1 a 6)", en: "Bag tabs (1 to 6)" }, desc: { pt: "Cada aba soma 40 espaços à Mochila; são seis, vendidas uma a uma. Conveniência: não muda atributos.", en: "Each tab adds 40 Bag slots; there are six, sold one by one. Convenience: changes no stats." } } : p).map((p) => `<tr>${td(`<b>${esc(L(p.name))}</b><br><span class="muted">${esc(L(p.desc))}</span>`)}${td((p.items || []).map((i) => ref("cosmetic", i, true)).concat((p.pets || []).map((i) => ref("pet", i, true))).join("<br>"))}
         ${tdn(p.prices.BRL / 100, "R$ " + n(p.prices.BRL / 100, 2))}${tdn(p.prices.USD / 100, "US$ " + n(p.prices.USD / 100, 2))}${tdn(p.prices.EUR / 100, "€ " + n(p.prices.EUR / 100, 2))}</tr>`))}
       <p class="note">${T("Preços de referência; a Steam converte para a moeda da sua carteira. A loja de moedas de ouro do Centro Comercial vende armas Normais e Excelentes, visuais, auxiliares, ferramentas e pedras.",
         "Reference prices; Steam converts them to your wallet currency. The Shopping Center's gold shop sells Normal and Excellent weapons, cosmetics, support items, tools and stones.")}</p>`;
@@ -720,83 +720,63 @@
   const petElementById = (id) => byId(D.pets.elements, id);
   const petElement = (sp) => petElementById(sp.element);
   const petRarity = (id) => byId(D.pets.rarities, id);
-  const fmtTalent = (key, value) => L(D.pets.talent_text[key]).replace("%d%%", value + "%").replace("%d", value);
-
-  // The numbers of the Pets class (client/systems/pets.gd): level 1 is 30% of the power, level 30 is 100%.
-  function petPower(level) {
-    const P = D.pets;
-    return P.power.floor + (1 - P.power.floor) * (level - 1) / (P.max_level - 1);
-  }
-  function petStats(sp, level, stars) {
-    const P = D.pets;
-    const el = petElement(sp);
-    const r = petRarity(sp.rarity);
-    const attrs = {};
-    el.attrs.forEach(([key, weight]) => { attrs[key] = Math.max(1, Math.round(r.attr * weight * petPower(level) * (1 + P.power.attr_per_star * stars))); });
-    const talents = el.talents.slice(0, r.talents).map((key) => [key, Math.max(1, Math.round(P.talent_max[key] * r.talent * petPower(level) * (1 + P.power.talent_per_star * stars)))]);
-    return { attrs, talents };
-  }
+  const money = (cents, symbol) => { const text = (cents / 100).toFixed(2); return symbol + " " + T(text.replace(".", ","), text); };
+  const petPrice = (sp) => sp.price ? money(sp.price.BRL, "R$") : "";
   const rarityTag = (id) => { const r = petRarity(id); return `<span style="color:#${r.color}">${esc(L(r.label))}</span>`; };
   const elementTag = (id) => { const el = petElementById(id); return `<span class="el-tag" style="color:#${el.color}">${icon(el.icon, "inline-ico")}${esc(L(el.name))}</span>`; };
 
+  // Where a pet can come from: the shop always, the boss chest and the Hunt only for Common and Rare.
+  const freePet = (sp) => sp.rarity === "comum" || sp.rarity === "raro";
+
   function petCard(sp) {
     const r = petRarity(sp.rarity);
-    const st = petStats(sp, D.pets.max_level, D.pets.max_stars);
-    const lines = Object.keys(st.attrs).map((k) => `<div class="mod">+${n(st.attrs[k])} ${esc(attrName(k))}</div>`).join("")
-      + st.talents.map(([k, v]) => `<div class="mod">${esc(fmtTalent(k, v))}</div>`).join("");
     return `<div class="icard" style="--qc:#${r.color}">
       <div class="ih"><b>${esc(L(sp.name))}</b><small>${esc(L(r.label))} · ${esc(L(petElement(sp).name))}</small></div>
       <div class="art"><img src="${esc(img(sp.art))}" alt="" style="width:96px;height:96px"></div>
       <div class="sec"><div>${esc(L(sp.desc))}</div></div>
-      <div class="sec"><small>${T(`No nível ${D.pets.max_level} com ${D.pets.max_stars} estrelas:`, `At level ${D.pets.max_level} with ${D.pets.max_stars} stars:`)}</small>${lines}</div>
+      <div class="sec"><div class="mod">${T("Só aparência: sem atributos e sem poder em batalha.", "Looks only: no attributes and no power in battle.")}</div><div class="mod">${esc(petPrice(sp))}</div></div>
     </div>`;
   }
 
   function petsHome(filter) {
     const P = D.pets;
     const species = filter && petElementById(filter) ? P.species.filter((sp) => sp.element === filter) : P.species;
-    const odds = (arr) => arr.map((v, i) => `<span style="color:#${P.rarities[i].color}">${v}%</span>`).join(" · ");
+    const priceOf = (id) => { const sp = P.species.find((x) => x.rarity === id); return sp && sp.price ? sp.price : null; };
     const body = `
-      <p class="intro">${T(`Os ovos caem nas instâncias e se abrem na <b>Casa dos Mascotes</b> (prédio da cidade, botão PET). O mascote que nasce acompanha o seu personagem nas batalhas e dá <b>bônus de verdade</b>: atributos e talentos. Além disso, ele pode ser enviado à <a href="#/cacada">Caçada</a>, onde luta sozinho e rende moedas, XP, ovos e novos mascotes.`,
-        `Eggs drop in the dungeons and hatch at the <b>Pet House</b> (a city building, PET button). The pet that hatches follows your character into battle and gives <b>real bonuses</b>: attributes and talents. It can also be sent on the <a href="#/cacada">Hunt</a>, where it fights on its own and earns gold, XP, eggs and new pets.`)}</p>
+      <p class="intro">${T(`Os mascotes são <b>só aparência</b>: acompanham o seu personagem nas batalhas, mas não dão atributos nem poder e não têm habilidade. Todos estão à venda na aba <b>Mascotes</b> do Centro Comercial, e Comuns e Raros também podem ser achados de graça. Eles sobem de nível na <a href="#/cacada">Caçada</a>, onde lutam sozinhos e rendem moedas e XP. <b>Não existem ovos nem sorteios pagos</b>: você escolhe o mascote que quer.`,
+        `Pets are <b>looks only</b>: they follow your character into battle but give no attributes or power and have no skill. All of them are on sale in the <b>Pets</b> tab of the Shopping Center, and Commons and Rares can also be found for free. They level up on the <a href="#/cacada">Hunt</a>, where they fight on their own and earn gold and XP. <b>There are no eggs and no paid draws</b>: you pick the pet you want.`)}</p>
       <div class="kv">
         <div><span>${T("Espécies", "Species")}</span><b>${P.species.length}</b></div>
         <div><span>${T("Elementos", "Elements")}</span><b>${P.elements.length}</b></div>
         <div><span>${T("Nível máximo", "Max level")}</span><b>${P.max_level}</b></div>
-        <div><span>${T("Estrelas", "Stars")}</span><b>${P.max_stars}</b></div>
         <div><span>${T("Limite da Casa", "House limit")}</span><b>${n(P.max_pets)}</b></div>
       </div>
 
-      <h2>${T("Ovos", "Eggs")}</h2>
-      <p>${T("Cada instância solta o ovo do seu elemento. O chefe, ao ser vencido, tem " + pct(P.drops.boss_base) + " + " + pct(P.drops.boss_per_level) + " por nível de mapa (máximo " + pct(P.drops.boss_max) + ") de deixar o ovo no baú; elites e guardiões também podem soltar um. O Ovo de Mascote genérico sorteia o elemento e tem chances melhores.",
-        "Each dungeon drops the egg of its element. A defeated boss has " + pct(P.drops.boss_base) + " + " + pct(P.drops.boss_per_level) + " per map level (max " + pct(P.drops.boss_max) + ") to leave the egg in the chest; elites and guardians can drop one too. The generic Pet Egg rolls the element and has better odds.")}</p>
-      ${table(["", [T("Ovo", "Egg"), "text"], T("De onde vem", "Where from"), T("Chances (Comum · Raro · Épico · Lendário)", "Odds (Common · Rare · Epic · Legendary)")],
-        P.eggs.map((g) => `<tr>${td(icon(g.icon))}${td(`<b>${esc(L(g.name))}</b>`, L(g.name))}${td(g.element ? ref("instance", petElementById(g.element).instance, true) : T("Cartas de recompensa das instâncias", "Dungeon reward cards"))}${td(odds(g.odds))}</tr>`))}
-      <p class="note">${T(`<b>Garantia:</b> o ${P.pity.epico}º ovo sem Épico ou melhor sai Épico ou melhor, e o ${P.pity.lendario}º sem Lendário sai Lendário.`,
-        `<b>Pity:</b> the ${P.pity.epico}th egg without an Epic or better hatches an Epic or better, and the ${P.pity.lendario}th without a Legendary hatches a Legendary.`)}</p>
-
-      <h2>${T("Raridades", "Rarities")}</h2>
-      ${table([T("Raridade", "Rarity"), [T("Atributo base", "Base attribute"), "num"], [T("Talentos", "Talents"), "num"], [T("Força do talento", "Talent strength"), "num"], [T("Ao libertar", "On release"), "num"]],
-        P.rarities.map((r) => `<tr>${td(rarityTag(r.id))}${tdn(r.attr)}${tdn(r.talents)}${tdn(r.talent, pct(r.talent))}${tdn(r.release, n(r.release) + " " + T("moedas", "gold"))}</tr>`))}
+      <h2>${T("Preços e como conseguir", "Prices and how to get them")}</h2>
+      ${table([T("Raridade", "Rarity"), [T("Na loja (BRL)", "In the shop (BRL)"), "num"], [T("Na loja (USD)", "In the shop (USD)"), "num"], T("De graça", "For free"), [T("Ao libertar", "On release"), "num"]],
+        P.rarities.map((r) => { const price = priceOf(r.id); return `<tr>${td(rarityTag(r.id))}${tdn(price ? price.BRL : 0, price ? money(price.BRL, "R$") : "—")}${tdn(price ? price.USD : 0, price ? money(price.USD, "US$") : "—")}${td(r.id === "comum" || r.id === "raro" ? T("Baú do chefe e Caçada", "Boss chest and the Hunt") : T("Só na loja", "Shop only"))}${tdn(r.release, n(r.release) + " " + T("moedas", "gold"))}</tr>`; }))}
+      <ul>
+        <li>${T(`<b>Baú do chefe</b>: ao vencer o chefe de uma instância há ${pct(P.drops.boss_base)} + ${pct(P.drops.boss_per_level)} por nível de mapa (máximo ${pct(P.drops.boss_max)}) de achar o mascote Comum do elemento dela. Sem garantia.`,
+          `<b>Boss chest</b>: beating a dungeon boss has ${pct(P.drops.boss_base)} + ${pct(P.drops.boss_per_level)} per map level (max ${pct(P.drops.boss_max)}) to find the Common pet of its element. No guarantee.`)}</li>
+        <li>${T(`<b>Caçada</b>: só selvagens Comuns e Raros podem ser capturados, com pouca chance, e só nas primeiras duas horas de cada coleta (o Passe do Caçador não dá mais sorteios).`, `<b>Hunt</b>: only Common and Rare wild pets can be caught, with a low chance, and only in the first two hours of each collection (the Hunter Pass never adds draws).`)}</li>
+        <li>${T("A primeira Instância concluída dá um Escaravelho Solar de presente.", "The first dungeon you finish gives a Sun Scarab as a gift.")}</li>
+        <li>${T("Quem já tem uma espécie não a compra de novo. Mascotes não vão ao Leilão.", "You cannot buy a species you already own. Pets cannot be auctioned.")}</li>
+      </ul>
 
       <h2>${T("Elementos", "Elements")}</h2>
-      ${table(["", [T("Elemento", "Element"), "text"], T("Atributos", "Attributes"), T("Talentos possíveis (valor máximo)", "Possible talents (max value)"), T("Álbum completo", "Complete album")],
-        P.elements.map((el) => `<tr>${td(icon(el.icon))}${td(`<b style="color:#${el.color}">${esc(L(el.name))}</b>`, L(el.name))}${td(el.attrs.map(([k, w]) => `${esc(attrName(k))} ×${GF.num(w, 1)}`).join(" · "))}${td(el.talents.map((k) => esc(fmtTalent(k, D.pets.talent_max[k]))).join("<br>"))}${td(Object.keys(el.album).map((k) => k === "vida" ? `+${el.album[k]} ${T("de vida", "HP")}` : `+${el.album[k]} ${esc(attrName(k))}`).join(", "))}</tr>`))}
-      <p>${T(`Completar o álbum dos cinco elementos dá ainda +${P.album_all.dano}% de dano.`, `Completing the album of all five elements also gives +${P.album_all.dano}% damage.`)}</p>
+      ${table(["", [T("Elemento", "Element"), "text"], T("Zona da Caçada", "Hunt zone"), T("Instância (baú do chefe)", "Dungeon (boss chest)")],
+        P.elements.map((el) => { const zone = D.pets.hunt.zones.find((z) => z.element === el.id); return `<tr>${td(icon(el.icon))}${td(`<b style="color:#${el.color}">${esc(L(el.name))}</b>`, L(el.name))}${td(esc(L(zone.name)))}${td(ref("instance", el.instance, true))}</tr>`; }))}
 
-      <h2>${T("Níveis, estrelas e poder", "Levels, stars and power")}</h2>
+      <h2>${T("Níveis", "Levels")}</h2>
       <ul>
-        <li>${T(`Nível máximo ${P.base_cap} sem estrelas, +${P.cap_per_star} por estrela, até ${P.max_level} com ${P.max_stars}. O XP de cada nível é ${P.xp.per_level} × nível.`, `Max level ${P.base_cap} with no stars, +${P.cap_per_star} per star, up to ${P.max_level} with ${P.max_stars}. Each level takes ${P.xp.per_level} × level XP.`)}</li>
-        <li>${T(`<b>Ganhar estrela</b> consome uma duplicata da mesma espécie e moedas: ${P.evolve_coins.map(n).join(", ")}.`, `<b>Gaining a star</b> consumes a duplicate of the same species and gold: ${P.evolve_coins.map(n).join(", ")}.`)}</li>
-        <li>${T(`<b>Alimentar</b>: ${n(P.xp.feed_coins)} moedas = ${n(P.xp.feed_xp)} XP. Em batalha o mascote ativo ganha ${P.xp.battle_base} + ${pct(P.xp.battle_exp_share)} da EXP da partida (×${GF.num(P.xp.pve_scale, 1)} em instâncias).`, `<b>Feeding</b>: ${n(P.xp.feed_coins)} gold = ${n(P.xp.feed_xp)} XP. In battle the active pet earns ${P.xp.battle_base} + ${pct(P.xp.battle_exp_share)} of the match EXP (×${GF.num(P.xp.pve_scale, 1)} in dungeons).`)}</li>
-        <li>${T(`O poder vai de ${pct(P.power.floor)} no nível 1 a 100% no nível ${P.max_level}, e cada estrela soma ${pct(P.power.attr_per_star)} aos atributos e ${pct(P.power.talent_per_star)} aos talentos.`, `Power goes from ${pct(P.power.floor)} at level 1 to 100% at level ${P.max_level}, and each star adds ${pct(P.power.attr_per_star)} to attributes and ${pct(P.power.talent_per_star)} to talents.`)}</li>
-        <li>${T("Ovos e mascotes não vão ao Leilão.", "Eggs and pets cannot be auctioned.")}</li>
+        <li>${T(`Nível 1 ao ${P.max_level}; o XP de cada nível é ${P.xp.per_level} × nível. O mascote só ganha XP na Caçada (não há alimentar nem estrelas).`, `Level 1 to ${P.max_level}; each level takes ${P.xp.per_level} × level XP. A pet only earns XP on the Hunt (there is no feeding and no stars).`)}</li>
+        <li>${T("O nível só conta na Caçada: em batalha o mascote é só visual.", "Level only matters on the Hunt: in battle the pet is purely cosmetic.")}</li>
       </ul>
 
       <h2>${T("Espécies", "Species")}</h2>
       <p class="filters">${[["", T("Todas", "All")]].concat(P.elements.map((el) => [el.id, L(el.name)])).map(([id, label]) => `<a class="chip ${(filter || "") === id ? "on" : ""}" href="#/mascotes${id ? "/" + id : ""}">${esc(label)}</a>`).join("")}</p>
-      ${table(["", [T("Mascote", "Pet"), "text"], [T("Elemento", "Element"), "text"], [T("Raridade", "Rarity"), "num"], T("Descrição", "Description")],
-        species.map((sp) => `<tr id="row-${sp.id}">${td(icon(sp.art, "ico lg"))}${td(ref("pet", sp.id), L(sp.name))}${td(elementTag(sp.element), L(petElement(sp).name))}${td(rarityTag(sp.rarity), P.rarities.findIndex((r) => r.id === sp.rarity))}${td(esc(L(sp.desc)))}</tr>`), { sortable: true })}`;
+      ${table(["", [T("Mascote", "Pet"), "text"], [T("Elemento", "Element"), "text"], [T("Raridade", "Rarity"), "num"], [T("Preço", "Price"), "num"], T("Descrição", "Description")],
+        species.map((sp) => `<tr id="row-${sp.id}">${td(icon(sp.art, "ico lg"))}${td(ref("pet", sp.id), L(sp.name))}${td(elementTag(sp.element), L(petElement(sp).name))}${td(rarityTag(sp.rarity), P.rarities.findIndex((r) => r.id === sp.rarity))}${tdn(sp.price ? sp.price.BRL : 0, petPrice(sp))}${td(esc(L(sp.desc)))}</tr>`), { sortable: true })}`;
     return page(T("Casa dos Mascotes", "Pet House"), [], body, { icon: P.species.find((x) => x.rarity === "lendario").art });
   }
 
@@ -804,25 +784,18 @@
     const P = D.pets;
     const sp = byId(P.species, id);
     const el = petElement(sp);
-    const rows = [[1, 0], [10, 0], [14, 1], [22, 3], [P.max_level, P.max_stars]].map(([lv, stars]) => {
-      const st = petStats(sp, lv, stars);
-      const parts = Object.keys(st.attrs).map((k) => `+${n(st.attrs[k])} ${esc(attrName(k))}`).concat(st.talents.map(([k, v]) => esc(fmtTalent(k, v))));
-      return `<tr>${tdn(lv)}${tdn(stars, "★".repeat(stars) || "—")}${td(parts.join("<br>"))}</tr>`;
-    });
-    const eggs = P.eggs.filter((g) => g.element === sp.element || !g.element);
     const body = `
       <div class="entity">
         <div>${petCard(sp)}</div>
         <div>
           <h2 style="margin-top:0">${T("Elemento", "Element")}</h2>
-          <p>${elementTag(sp.element)} · ${T("vem das instâncias", "comes from the dungeons")}: ${ref("instance", el.instance, true)}</p>
+          <p>${elementTag(sp.element)}</p>
           <h2>${T("Como conseguir", "How to get it")}</h2>
-          <ul>${eggs.map((g) => { const chance = g.odds[P.rarities.findIndex((r) => r.id === sp.rarity)]; return `<li>${icon(g.icon, "inline-ico")} <b>${esc(L(g.name))}</b>: ${chance}% ${T("de chance de ser " + esc(L(petRarity(sp.rarity).label)), "chance of a " + esc(L(petRarity(sp.rarity).label)))}</li>`; }).join("")}
-          <li>${T("Na ", "On the ")}<a href="#/cacada">${T("Caçada", "Hunt")}</a>${T(`: mascotes selvagens de ${esc(L(el.name))} podem ser capturados.`, `: wild ${esc(L(el.name))} pets can be captured.`)}</li></ul>
+          <ul><li>${T(`<b>Na loja</b>: ${esc(petPrice(sp))} (aba Mascotes do Centro Comercial).`, `<b>In the shop</b>: ${esc(petPrice(sp))} (Pets tab of the Shopping Center).`)}</li>
+          ${freePet(sp) && sp.rarity === "comum" ? `<li>${T("Baú do chefe de ", "Boss chest of ")}${ref("instance", el.instance, true)}${T(", sem garantia.", ", no guarantee.")}</li>` : ""}
+          ${freePet(sp) ? `<li>${T("Na ", "On the ")}<a href="#/cacada">${T("Caçada", "Hunt")}</a>${T(`: selvagens de ${esc(L(el.name))} podem ser capturados, com pouca chance.`, `: wild ${esc(L(el.name))} pets can be caught, with a low chance.`)}</li>` : `<li>${T("Só se compra: Épicos e Lendários não caem de graça.", "Purchase only: Epics and Legendaries never drop for free.")}</li>`}</ul>
         </div>
-      </div>
-      <h2>${T("Poder por nível", "Power by level")}</h2>
-      ${table([[T("Nível", "Level"), "num"], [T("Estrelas", "Stars"), "num"], T("Bônus", "Bonus")], rows)}`;
+      </div>`;
     return page(L(sp.name), [{ label: () => T("Casa dos Mascotes", "Pet House"), href: "#/mascotes" }], body, { icon: sp.art });
   }
 
@@ -847,7 +820,7 @@
       <ol>
         <li>${T("Na aba <b>Caçada</b> escolha a <b>zona</b>, o <b>nível de caça</b> e o <b>time</b> (de 1 a " + H.team_max + " mascotes) e toque em <b>INICIAR CAÇADA</b>.", "On the <b>Hunt</b> tab pick the <b>zone</b>, the <b>hunt level</b> and the <b>team</b> (1 to " + H.team_max + " pets) and tap <b>START HUNT</b>.")}</li>
         <li>${T(`O tempo acumula até ${hours(H.cap_free)} (ou ${hours(H.cap_pass)} com o Passe do Caçador). O que passa disso se perde.`, `Time stores up to ${hours(H.cap_free)} (or ${hours(H.cap_pass)} with the Hunter Pass). Anything beyond that is lost.`)}</li>
-        <li>${T("<b>COLETAR</b> entrega moedas, XP para cada mascote do time, ovos do elemento da zona e os mascotes capturados.", "<b>COLLECT</b> hands over gold, XP for every pet in the team, eggs of the zone's element and the captured pets.")}</li>
+        <li>${T("<b>COLETAR</b> entrega moedas, XP para cada mascote do time e os mascotes capturados (só Comuns e Raros). A Caçada é o único lugar onde o mascote sobe de nível.", "<b>COLLECT</b> hands over gold, XP for every pet in the team and the captured pets (Commons and Rares only). The Hunt is the only place where a pet levels up.")}</li>
         <li>${T(`Cada nível de caça abre depois de ${H.unlock_wins} vitórias no nível anterior, por zona.`, `Each hunt level unlocks after ${H.unlock_wins} wins on the previous one, per zone.`)}</li>
       </ol>
 
@@ -868,17 +841,17 @@
       <h2>${T("Selvagens e o Lendário da zona", "Wild pets and the zone's Legendary")}</h2>
       <ul>
         <li>${T(`Cada encontro tem 1, 2 ou 3 selvagens (${H.group_weights.map((v) => v + "%").join(" / ")}). Raridade ${H.wild_rarity.map((v) => v + "%").join(" / ")} (Comum / Raro / Épico); o nível de caça empurra para Raros e Épicos.`, `Each encounter has 1, 2 or 3 wild pets (${H.group_weights.map((v) => v + "%").join(" / ")}). Rarity ${H.wild_rarity.map((v) => v + "%").join(" / ")} (Common / Rare / Epic); a higher hunt level pushes toward Rares and Epics.`)}</li>
-        <li>${T(`O <b>Lendário</b> da zona (vida ×${GF.num(H.boss.hp, 0)}, ataque ×${GF.num(H.boss.atk, 2)}) aparece sozinho com ${GF.num(H.boss.chance * 100, 2)}% por encontro e é <b>garantido após ${n(H.boss.forced_after)} encontros</b> sem ele. Se o time perder, ele volta mais tarde: nunca uma sequência de derrotas.`, `The zone's <b>Legendary</b> (HP ×${GF.num(H.boss.hp, 0)}, attack ×${GF.num(H.boss.atk, 2)}) shows up alone with ${GF.num(H.boss.chance * 100, 2)}% per encounter and is <b>guaranteed after ${n(H.boss.forced_after)} encounters</b> without one. If the team loses, it comes back later: never a streak of defeats.`)}</li>
+        <li>${T(`O <b>Lendário</b> da zona (vida ×${GF.num(H.boss.hp, 0)}, ataque ×${GF.num(H.boss.atk, 2)}) aparece sozinho com ${GF.num(H.boss.chance * 100, 2)}% por encontro, sem garantia. Vencê-lo rende bastante XP e moedas, mas ele <b>não é capturado</b>.`, `The zone's <b>Legendary</b> (HP ×${GF.num(H.boss.hp, 0)}, attack ×${GF.num(H.boss.atk, 2)}) shows up alone with ${GF.num(H.boss.chance * 100, 2)}% per encounter, with no guarantee. Beating it pays a lot of XP and gold, but it <b>cannot be caught</b>.`)}</li>
       </ul>
 
       <h2>${T("Recompensas", "Rewards")}</h2>
       ${table([T("Selvagem", "Wild pet"), [T("XP (nível 1)", "XP (level 1)"), "num"], [T("Moedas (nível 1)", "Gold (level 1)"), "num"], [T("Captura", "Capture"), "num"]],
-        [0, 1, 2, 3].map((i) => { const r = P.rarities[i]; const key = r.id; const cap = H.capture[key]; return `<tr>${td(rarityTag(key))}${tdn(R.xp_base * R.xp_rarity[i], "≈ " + GF.num((R.xp_base + R.xp_per_level) * R.xp_rarity[i], 1))}${tdn(R.coin_per_level * R.coin_rarity[i], "≈ " + GF.num(R.coin_per_level * R.coin_rarity[i], 2))}${tdn(cap, cap >= 1 ? "100%" : GF.num(cap * 100, 2) + "%")}</tr>`; }))}
-      <p>${T(`Ovo do elemento: ${GF.num(R.egg_chance * 100, 2)}% por vitória (+${pct(R.egg_per_tier)} por nível de caça). A captura também sobe ${pct(H.capture.per_tier)} por nível. Capturas entram no nível 1; com a Casa cheia viram moedas.`, `Element egg: ${GF.num(R.egg_chance * 100, 2)}% per win (+${pct(R.egg_per_tier)} per hunt level). Capture also rises ${pct(H.capture.per_tier)} per level. Captures arrive at level 1; with a full House they turn into gold.`)}</p>
+        [0, 1, 2, 3].map((i) => { const r = P.rarities[i]; const key = r.id; const cap = H.capture[key] || 0; return `<tr>${td(rarityTag(key))}${tdn(R.xp_base * R.xp_rarity[i], "≈ " + GF.num((R.xp_base + R.xp_per_level) * R.xp_rarity[i], 1))}${tdn(R.coin_per_level * R.coin_rarity[i], "≈ " + GF.num(R.coin_per_level * R.coin_rarity[i], 2))}${tdn(cap, cap > 0 ? GF.num(cap * 100, 2) + "%" : "—")}</tr>`; }))}
+      <p>${T(`Só Comuns e Raros são capturados (Épicos, Lendários e o chefe da zona nunca), e a chance sobe ${pct(H.capture.per_tier)} por nível de caça. Só as primeiras 2 horas de cada coleta rolam captura. Capturas entram no nível 1; com a Casa cheia viram moedas. Não há ovos.`, `Only Commons and Rares are caught (never Epics, Legendaries or the zone's boss), and the chance rises ${pct(H.capture.per_tier)} per hunt level. Only the first 2 hours of each collection roll for a catch. Catches arrive at level 1; with a full House they turn into gold. There are no eggs.`)}</p>
 
       <h2>${T("Passe do Caçador", "Hunter Pass")}</h2>
-      <p>${pass ? `${icon(pass.icon, "inline-ico")} ` : ""}${T(`Um item de conveniência da loja: a Caçada passa a acumular até ${hours(H.cap_pass)} parado, em vez de ${hours(H.cap_free)}. <b>Os mascotes não ficam mais fortes por isso</b>: só dá para coletar menos vezes.`, `A shop convenience item: the Hunt stores up to ${hours(H.cap_pass)} while idle instead of ${hours(H.cap_free)}. <b>Pets do not get stronger because of it</b>: you just collect less often.`)} <a href="#/loja">${T("Ver na loja", "See in the shop")}</a>.</p>`;
-    return page(T("Caçada dos Mascotes", "Pet Hunt"), [], body, { icon: P.eggs[0].icon });
+      <p>${pass ? `${icon(pass.icon, "inline-ico")} ` : ""}${T(`Um item de conveniência da loja: a Caçada passa a acumular até ${hours(H.cap_pass)} parado, em vez de ${hours(H.cap_free)}. <b>Os mascotes não ficam mais fortes por isso</b>: só dá para coletar menos vezes, e as horas extras rendem moedas e XP, nunca mais capturas.`, `A shop convenience item: the Hunt stores up to ${hours(H.cap_pass)} while idle instead of ${hours(H.cap_free)}. <b>Pets do not get stronger because of it</b>: you just collect less often, and the extra hours earn gold and XP, never more catches.`)} <a href="#/loja">${T("Ver na loja", "See in the shop")}</a>.</p>`;
+    return page(T("Caçada dos Mascotes", "Pet Hunt"), [], body, { icon: P.species.find((x) => x.rarity === "raro").art });
   }
 
   // ---------- router ----------
@@ -986,7 +959,6 @@
     });
     D.currencies.forEach((c) => add(L(c.name), T("Moeda de criação", "Crafting currency"), `#/moedas/${c.id}`, c.icon, c.name.pt + " " + c.name.en));
     D.pets.species.forEach((sp) => add(L(sp.name), T("Mascote · ", "Pet · ") + L(petElement(sp).name), `#/mascotes/${sp.id}`, sp.art, sp.name.pt + " " + sp.name.en));
-    D.pets.eggs.forEach((g) => add(L(g.name), T("Ovo de mascote", "Pet egg"), "#/mascotes", g.icon, g.name.pt + " " + g.name.en));
     D.pets.elements.forEach((el) => add(L(el.name), T("Elemento dos mascotes", "Pet element"), "#/mascotes", el.icon, el.name.pt + " " + el.name.en));
     D.pets.hunt.zones.forEach((z) => add(L(z.name), T("Zona da Caçada", "Hunt zone"), "#/cacada", petElementById(z.element).icon, z.name.pt + " " + z.name.en));
     D.cosmetics.forEach((c) => add(L(c.name), L(c.slot_name), `#/visual/${c.id}`, c.icon, c.name.pt + " " + c.name.en));

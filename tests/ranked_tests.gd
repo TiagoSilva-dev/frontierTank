@@ -148,7 +148,7 @@ func profile_checks() -> void:
 	# The save keeps it all (v10) and the entry carries the title.
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.load_data(JSON.parse_string(JSON.stringify(profile.to_data())))
-	check(int(profile.to_data().version) == 11 and copy.rating == profile.rating and copy.titles == profile.titles and copy.title == profile.title, "the rating and titles survive the save")
+	check(int(profile.to_data().version) == 12 and copy.rating == profile.rating and copy.titles == profile.titles and copy.title == profile.title, "the rating and titles survive the save")
 	var balance: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	check(str(profile.entry(balance).title) == profile.title, "the battle entry carries the title")
 	var old: Dictionary = profile.to_data()

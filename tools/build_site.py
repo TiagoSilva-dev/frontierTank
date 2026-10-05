@@ -299,9 +299,9 @@ def build_data():
                           "icon": art(f"store/steam/achievements/{a['id']}.png", f"achievements/{a['id']}.png")}
                          for a in achievements["achievements"]],
         "pets": pets,
-        "store": [{"sku": p["sku"], "name": T(p["name"]), "desc": T(p["desc"]), "items": p["items"],
+        "store": [{"sku": p["sku"], "name": T(p["name"]), "desc": T(p["desc"]), "items": p.get("items", []),
                    "founder": bool(p.get("founder", False)),
-                   "prices": {k: p["prices"][k] for k in ("BRL", "USD", "EUR")}} for p in store["products"]],
+                   "prices": {k: p["prices"][k] for k in ("BRL", "USD", "EUR")}} for p in store["products"] if not p.get("pets")],
         "icons": {
             "coin": art("res://assets/items/moeda.png", "items/moeda.png"),
             "plane": art("res://assets/ui/icons/plane.png", "ui/plane.png"),
@@ -325,11 +325,14 @@ def build_data():
 
 
 def build_pets():
-    """Pet House (0.19) and the Pet Hunt (0.20): species, eggs, elements and the hunt rules."""
+    """Pet House (0.19, collectibles since 0.30) and the Pet Hunt (0.20): species, prices, elements and the hunt rules."""
     raw = load("pets.json")
     hunt = raw["hunt"]
-    elements = [{"id": e["id"], "name": T(e["name"]), "color": e["color"], "instance": e["instance"], "egg": e["egg"],
-                 "attrs": e["attrs"], "talents": e["talents"], "album": e["album"],
+    prices = {}
+    for product in load("store.json")["products"]:
+        for species in product.get("pets", []):
+            prices[species] = {k: product["prices"][k] for k in ("BRL", "USD", "EUR")}
+    elements = [{"id": e["id"], "name": T(e["name"]), "color": e["color"], "instance": e["instance"],
                  "icon": art(e["icon"], f"pets/elements/{e['id']}.png")} for e in raw["elements"]]
     zones = []
     for e in raw["elements"]:
@@ -339,17 +342,12 @@ def build_pets():
     skills = {k: {"name": T(v["name"]), **{a: b for a, b in v.items() if a != "name"}}
               for k, v in hunt["skill"].items() if isinstance(v, dict)}
     return {
-        "max_pets": raw["max_pets"], "max_level": raw["max_level"], "base_cap": raw["base_cap"],
-        "cap_per_star": raw["cap_per_star"], "max_stars": raw["max_stars"], "xp": raw["xp"], "power": raw["power"],
-        "evolve_coins": raw["evolve_coins"], "talent_max": raw["talent_max"],
-        "talent_text": {k: T(v) for k, v in raw["talent_text"].items()},
-        "rarities": [{"id": r["id"], "label": T(r["label"]), "color": r["color"], "attr": r["attr"],
-                      "talent": r["talent"], "talents": r["talents"], "release": r["release"]} for r in raw["rarities"]],
-        "elements": elements, "album_all": raw["album_all"], "pity": raw["pity"], "drops": raw["drops"],
-        "eggs": [{"id": g["id"], "name": T(g["name"]), "element": g["element"], "odds": g["odds"],
-                  "icon": art(g["icon"], f"pets/eggs/{g['id']}.png")} for g in raw["eggs"]],
+        "max_pets": raw["max_pets"], "max_level": raw["max_level"], "xp": raw["xp"],
+        "rarities": [{"id": r["id"], "label": T(r["label"]), "color": r["color"], "release": r["release"]} for r in raw["rarities"]],
+        "elements": elements, "drops": raw["drops"],
         "species": [{"id": sp["id"], "name": T(sp["name"]), "element": sp["element"], "rarity": sp["rarity"],
-                     "desc": T(sp["desc"]), "art": art(sp["art"], f"pets/{sp['id']}.png")} for sp in raw["species"]],
+                     "desc": T(sp["desc"]), "art": art(sp["art"], f"pets/{sp['id']}.png"),
+                     "price": prices.get(sp["id"])} for sp in raw["species"]],
         "hunt": {
             "cycle": hunt["cycle"], "cap_free": hunt["cap_free"], "cap_pass": hunt["cap_pass"],
             "team_max": hunt["team_max"], "tiers": hunt["tiers"], "unlock_wins": hunt["unlock_wins"],
@@ -377,7 +375,7 @@ def copy_extras():
             "title_bg": webp("res://assets/title/title_bg.png", "img/game/title_bg.webp"),
             "city": webp("docs/screens/city.png", "img/shots/city.webp"),
             "pow_cutin": webp("docs/screens/pow_cutin.png", "img/shots/pow_cutin.webp"),
-            "pet_hatch": webp("docs/screens/pets_hatch.png", "img/shots/pets_hatch.webp"),
+            "pet_shop": webp("docs/screens/pets_shop.png", "img/shots/pets_shop.webp"),
             "pet_collection": webp("docs/screens/pets_pets.png", "img/shots/pets_pets.webp"),
             "pet_album": webp("docs/screens/pets_album.png", "img/shots/pets_album.webp"),
             "hunt_sol": webp("docs/screens/hunt_field_1.png", "img/shots/hunt_sol.webp"),

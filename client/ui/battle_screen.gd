@@ -361,8 +361,6 @@ func on_skill(fighter: TankFighter, info: Dictionary) -> void:
 		get_tree().create_timer(start - now).timeout.connect(spawn_skill.bind(fighter, info))
 	if str(info.get("kind", "")) == "pow":
 		show_pow_aura(fighter)
-	if str(info.get("kind", "")) == "pet" and is_instance_valid(fighter.companion):
-		fighter.companion.perk()
 
 func spawn_skill(fighter: TankFighter, info: Dictionary) -> void:
 	if not is_instance_valid(fighter) or not is_instance_valid(effects) or fighter.hp <= 0:
@@ -739,8 +737,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		game.toggle_fly()
 	elif key == KEY_V:
 		game.use_aux()
-	elif key == KEY_G:
-		game.use_pet()
 	elif key == KEY_P:
 		game.pass_turn()
 	elif key == KEY_Q:

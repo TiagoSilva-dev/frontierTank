@@ -1,6 +1,16 @@
 # Progresso
 
-## Atual — 0.23: celular e tablet (Android e iPhone, sem loja)
+## Atual — 0.30: mascotes cosméticos, vendidos na loja
+Decisão de negócio: os mascotes são vendidos por dinheiro, então não podem dar atributos e o "chocar ovo" (sorteio pago) deixa de existir. Detalhes em `docs/PETS.md`.
+- **Loja**: aba **Mascotes** no Centro Comercial com as 20 espécies: Comum R$ 14,90, Raro R$ 24,90, Épico R$ 39,90, Lendário R$ 59,90 (`store.json`, `section: "mascotes"`, `pets: [espécie]`, Steam 4001–4020). O pedido pago chega pelo Correio como `{"pet": espécie}` e `Auction.grant_mail` o põe na coleção (nunca recusado por falta de lugar). Provador com o mascote ao lado do personagem; quem já tem a espécie não compra de novo (cliente e servidor).
+- **Saiu**: ovos e a aba Chocar (`HatchOutcome`), garantia (pity), alimentar, estrelas e XP de batalha, atributos e talentos, bônus do álbum, a habilidade em batalha (tecla G, `apply_pet`) e as missões de chocar e alimentar. Um mascote é `{uid, species, level, xp}`.
+- **De graça, sem garantia**: o Comum do elemento no baú do chefe (2% + 0,25% por nível de mapa, máx. 6%) e, na Caçada, a captura de Comum (0,12%) e Raro (0,03%). Épico e Lendário só na loja; o Lendário da zona vira um chefe de moedas e XP. O **Passe do Caçador** rende mais moedas e XP, nunca mais capturas (só as 2 h grátis rolam captura). A Caçada é o único lugar onde o mascote sobe de nível (cap 30).
+- **Presente inicial**: a missão "Além da Ilha" dá um Escaravelho Solar (para a Caçada ser alcançável sem comprar); os ovos das missões, do tutorial e da sequência viraram Pedras de Fortalecimento.
+- **Save v12**: ovos viram moedas (150 / 220 o genérico), uma espécie por conta (o mais experiente fica, os repetidos viram moedas), estrelas e `pity` descartados. Cupom `OVOS` virou `MASCOTES` (um de cada).
+- **Testes**: `pet_shop_tests` (novo), `pet_tests` e `hunt_tests` reescritos, `pet_skill_tests` removido; missões, tutorial e ranked ajustados. Servidor e jogadores precisam do mesmo conteúdo (`combat`, `items`, `store`, `missions`, `pets` mudaram): **reimplantar o servidor**.
+- **Falta**: cadastrar os itens 4001–4020 na Steam, uma compra real de teste (cartão/Pix), reescrever a página de mascotes da wiki, e decidir se a luta da Caçada deve ignorar a raridade (hoje um Lendário comprado luta com o dobro de vida e ataque).
+
+## 0.23: celular e tablet (Android e iPhone, sem loja)
 - **Modo toque** (`TouchMode`, `TouchAssist`, `TouchControls`; `docs/MOBILE.md`): a batalha ganha direcionais, o botão FOGO (segurar enche a força) e a gaveta HAB. das habilidades 1–9; os botões **apertam as mesmas teclas** do teclado, então partida offline, intenções online e lockstep não mudam. O dedo vira mouse em `TouchAssist` (segundo dedo livre, toque no vão cai no botão mais próximo, toque longo mostra o tooltip, rolagem com inércia, três dedos ligam o FPS).
 - **Plataforma**: botão voltar do Android, reconexão automática (`connection_lost` no celular, a batalha em andamento reabre com o histórico), tela sempre acesa, orientação horizontal, texto do treino e da AJUDA sem teclas (`text_touch`), botões do `UiKit` com alvo mínimo de 48–56 px.
 - **Web no celular**: shell de celular injetado na exportação (viewport, tela cheia no Android, instalável no iPhone, tela de girar o aparelho, teclado virtual), `serve --lan` com os endereços e `Celular.cmd` (encaminha as portas do WSL2).
@@ -24,7 +34,7 @@
 ## 0.21: campo da Caçada visto de cima
 - A Caçada ganhou um campo visto de cima (Ruínas do Sol e Trilha Gelada): treinador que anda, selvagens que vagam, golpes por espécie com o efeito do elemento, sons e câmera adaptativa. Detalhes e a receita das próximas zonas em `docs/PET_HUNT.md`. Mascote animado ao lado do lutador e fantasma ao morrer (`PetMotion`, `PetActor`, `ghost_tests`).
 
-## Atual — 0.20: Caçada dos Mascotes (modo automático, tipo idle)
+## 0.20: Caçada dos Mascotes (modo automático, tipo idle)
 - **Módulo novo** (regras e números em `docs/PET_HUNT.md`): quarta aba da Casa dos Mascotes. O jogador escolhe uma **zona** (uma por elemento, com o cenário do mapa correspondente), um **nível de caça** (1–8) e um **time de até 5 mascotes**; o time luta sozinho contra selvagens do elemento da zona, um encontro a cada 12 s, e o jogador **coleta** moedas, XP, ovos e **mascotes capturados**. Derrotar o **Lendário** da zona o coloca no inventário (nível 1, conta no álbum). Capturas menores (Comum, Raro e Épico) também acontecem, com chances baixas.
 - **Limite de acúmulo**: 2 h parado no modo grátis; **8 h com o Passe do Caçador** (produto da loja Steam `passe_cacador`, US$ 4,99, item premium sem atributos que chega pelo Correio, não vende no Leilão nem na loja de moedas). O que passa do limite se perde; a sobra de um encontro é guardada.
 - **Simulação** (`PetHunt`, determinística): cada encontro é função da semente da caçada e do número do encontro; o servidor (ou o perfil offline) liquida o trecho inteiro na coleta com o mesmo código que a tela usa para mostrar o encontro em andamento, então o que aparece é o que a coleta entrega (2.400 encontros = 8 h em ~0,3 s). Roda por turnos (velocidade, roda de elementos Sol > Gelo > Céu > Máscara > Runa > Sol, uma habilidade por elemento a cada 3 ações).

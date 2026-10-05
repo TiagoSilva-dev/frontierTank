@@ -9,7 +9,7 @@ extends Control
 
 signal closed
 
-const TABS: Array = [["Armas", "arma"], ["Skins", "skin"], ["Camisas", "camisa"], ["Calças", "calca"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Joias", "joia"], ["Cabelos", "cabelo"], ["Premium", "premium"]]  # i18n
+const TABS: Array = [["Armas", "arma"], ["Skins", "skin"], ["Camisas", "camisa"], ["Calças", "calca"], ["Chapéus", "chapeu"], ["Óculos", "oculos"], ["Asas", "asas"], ["Joias", "joia"], ["Cabelos", "cabelo"], ["Mascotes", "pet"], ["Premium", "premium"]]  # i18n
 const PER_PAGE: int = 8
 
 var app: Node
@@ -26,6 +26,8 @@ var preview_mode: String = "stand"
 var preview_direction: String = "south"
 # The alternative colour tried on the skin in the fitting room ("" = the original).
 var preview_color: String = ""
+# The pet tried beside the character in the Mascotes tab ("" = the character's own).
+var trying_pet: String = ""
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -44,7 +46,7 @@ func build() -> void:
 	UiKit.button(contents, tr("FECHAR"), Rect2(1086, 34, 140, 42), close)
 	build_preview()
 	for i in range(TABS.size()):
-		var tab_button: Button = UiKit.button(contents, tr(TABS[i][0]), Rect2(430 + i * 79, 84, 77, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 14)
+		var tab_button: Button = UiKit.button(contents, tr(TABS[i][0]), Rect2(430 + i * 72, 84, 70, 38), select_tab.bind(str(TABS[i][1])), "tab_active" if tab == TABS[i][1] else "tab", 13)
 		tab_button.name = "Tab_" + str(TABS[i][1])
 	UiKit.panel(contents, Rect2(430, 126, 794, 554), "paper")
 	var list: Array = items()
@@ -74,6 +76,9 @@ func build_preview() -> void:
 	if not trying.is_empty() and Armory.slot_of(str(trying.id)) == "skin":
 		colors[str(trying.id)] = preview_color
 	var look: Dictionary = app.profile.look() if trying.is_empty() and preview_skin_only == app.profile.skin_only else Armory.look_for(app.profile.gender, equipped, preview_skin_only, colors)
+	if trying_pet != "":
+		look = look.duplicate()
+		look["pet"] = trying_pet
 	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 340), "dark")
 	stage.clip_contents = true
 	var fitting: Dictionary = app.profile.entry(app.balance).duplicate()
@@ -89,7 +94,7 @@ func build_preview() -> void:
 			build())
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 472, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 468, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
-	var hint: String = premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")
+	var hint: String = pet_hint() if tab == "pet" else (premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão."))
 	# The hint wraps inside its box (the text is long and the font never goes under 16).
 	UiKit.wrapped(contents, hint, Rect2(70, 514, 332, 124), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
@@ -108,7 +113,9 @@ func items() -> Array:
 			# Premium weapons (Solaris) live in the Premium tab, never in the gold shop.
 			list = Armory.data().weapons.filter(func(def: Dictionary) -> bool: return not bool(def.get("premium", false)))
 		"premium":
-			list = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return PremiumStore.valid(entry))
+			list = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return PremiumStore.valid(entry) and not PremiumStore.is_pet_product(entry))
+		"pet":
+			list = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return PremiumStore.valid(entry) and PremiumStore.is_pet_product(entry))
 		_:
 			for def: Dictionary in Armory.data().cosmetics:
 				if (def.slot == tab or (tab == "joia" and def.slot in ["anel", "amuleto"])) and (def.gender == "u" or def.gender == app.profile.gender) and not bool(def.get("premium", false)) and not bool(def.get("drop_only", false)):
@@ -116,7 +123,7 @@ func items() -> Array:
 	return list
 
 func card(def: Dictionary, rect: Rect2) -> void:
-	if tab == "premium":
+	if tab == "premium" or tab == "pet":
 		premium_card(def, rect)
 		return
 	var box: Button = UiKit.button(contents, "", rect, try_on.bind(def), "card")
@@ -147,18 +154,25 @@ func card(def: Dictionary, rect: Rect2) -> void:
 # A product of the Steam shop: its first item on the card, the reference price and the
 # purchase through the Steam overlay (only in the Steam build, online).
 func premium_card(entry: Dictionary, rect: Rect2) -> void:
-	var first: Dictionary = Armory.definition(str(entry.items[0]))
-	var box: Button = UiKit.button(contents, "", rect, try_on.bind(first), "card")
+	var pet_product: bool = PremiumStore.is_pet_product(entry)
+	var first: Dictionary = {} if pet_product else Armory.definition(str(entry.items[0]))
+	var box: Button = UiKit.button(contents, "", rect, try_on_pet.bind(str(PremiumStore.pet_species(entry)[0])) if pet_product else try_on.bind(first), "card")
 	box.name = "Premium_" + str(entry.sku)
-	var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
-	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 24, 100, 76))
-	picture.modulate = Armory.icon_tint(inst)
+	if pet_product:
+		UiKit.art(box, PetWidgets.species_texture(str(PremiumStore.pet_species(entry)[0])), Rect2(34, 18, 120, 82))
+	else:
+		var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
+		var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 24, 100, 76))
+		picture.modulate = Armory.icon_tint(inst)
 	# Long names ("Tempestade Viva — Skin Épica") wrap onto a second line inside the card.
 	UiKit.wrapped(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var count: int = (entry.items as Array).size()
+	var count: int = (entry.get("items", []) as Array).size()
 	var tag: String = PremiumStore.kind_label(entry)
-	UiKit.label(box, tag, Rect2(4, 2, 180, 20), 13, Color("c9a8ff") if tag == tr("ÉPICA") else (Color("ffd04a") if tag == tr("LENDÁRIA") else UiKit.INFO), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	UiKit.label(box, PremiumStore.price_label(entry, app.steam.available) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var tag_color: Color = Color("c9a8ff") if tag == tr("ÉPICA") else (Color("ffd04a") if tag == tr("LENDÁRIA") else UiKit.INFO)
+	if pet_product:
+		tag_color = Pets.rarity_color(str(Pets.species_def(str(PremiumStore.pet_species(entry)[0])).rarity)).lightened(0.15)
+	UiKit.label(box, tag, Rect2(4, 2, 180, 20), 13, tag_color, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(box, PremiumStore.price_label(entry, app.steam.available) + ("" if count <= 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var owned: bool = PremiumStore.owns_all(app.profile, entry)
 	var overlap: bool = PremiumStore.overlaps(app.profile, entry)
 	var ready: bool = PremiumStore.can_buy(app)
@@ -173,6 +187,10 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	if not ready and not owned:
 		buy.tooltip_text = tr("Entre com a sua conta para comprar.")
 		UiKit.label(box, tr("Só online"), Rect2(4, 170, 180, 20), 12, UiKit.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+
+func pet_hint() -> String:
+	var how: String = tr("Pagamento pela carteira Steam.") if app.steam.available else tr("Pagamento por cartão ou Pix, em reais.")
+	return tr("Mascotes são só aparência: não dão atributos nem poder. Clique num mascote para vê-lo ao lado do personagem.") + "\n" + how
 
 func premium_hint() -> String:
 	if app.steam.available:
@@ -192,6 +210,10 @@ func buy_premium(sku: String) -> void:
 	if is_inside_tree():
 		build()
 
+func try_on_pet(species: String) -> void:
+	trying_pet = species
+	build()
+
 func try_on(def: Dictionary) -> void:
 	preview_color = ""
 	trying = {"id": def.id, "quality": "super" if def.get("super", false) else "normal", "level": 0}
@@ -205,6 +227,7 @@ func buy_item(id: String, quality: String) -> void:
 
 func select_tab(value: String) -> void:
 	tab = value
+	trying_pet = "" if value != "pet" else trying_pet
 	page = 0
 	build()
 

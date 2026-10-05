@@ -138,12 +138,13 @@ func account_tests(alice: Node, bob: Node) -> void:
 	check((await alice.do_op("redeem", ["PEDRAS"])).error == "", "test coupons work on a test server")
 	check(int(server_profile(alice).items.get("pedra_fortalecimento", 0)) > 0 and alice.profile.items == server_profile(alice).items, "the coupon reached the server's profile")
 	check((await alice.do_op("redeem", ["PEDRAS"])).error != "", "a coupon is used once online too")
-	# Casa dos Mascotes (0.19): the server hatches the egg and the pet reaches the client.
-	check((await alice.do_op("pet_hatch", ["egg_sol"])).error != "" and server_profile(alice).pets.is_empty(), "the server refuses to hatch an egg the player does not have")
-	check((await alice.do_op("redeem", ["OVOS"])).error == "" and int(server_profile(alice).items.get("egg_sol", 0)) == 10, "the egg coupon reached the server")
-	check((await alice.do_op("pet_hatch", ["egg_sol"])).error == "" and server_profile(alice).pets.size() == 1 and alice.profile.pets.size() == 1, "an egg hatches on the server and the pet arrives on the client")
-	check(alice.profile.pet_active == server_profile(alice).pet_active and alice.profile.pet_active > 0 and alice.profile.egg_count("egg_sol") == 9, "the active pet and the egg count match the server's")
-	check(alice.profile.pets[0] == server_profile(alice).pets[0] and (await alice.do_op("pet_evolve", [alice.profile.pet_active, alice.profile.pet_active])).error != "", "a pet cannot consume itself online either")
+	# Casa dos Mascotes (0.30): no eggs any more; the pets arrive by coupon here (and by the shop
+	# in card_tests) and the server refuses the retired operations.
+	check((await alice.do_op("pet_hatch", ["egg_sol"])).error != "" and (await alice.do_op("pet_feed", [1])).error != "" and (await alice.do_op("pet_evolve", [1, 2])).error != "" and server_profile(alice).pets.is_empty(), "the server knows no hatch, feed or star any more")
+	check((await alice.do_op("redeem", ["MASCOTES"])).error == "" and server_profile(alice).pets.size() == 20 and alice.profile.pets.size() == 20, "the pet coupon reached the server and the client")
+	check(alice.profile.pet_active == server_profile(alice).pet_active and alice.profile.pet_active > 0 and not server_profile(alice).items.keys().any(func(id: String) -> bool: return id.begins_with("egg_")), "the active pet matches the server's and there are no eggs")
+	var released: int = int(alice.profile.pets[1].uid)
+	check(alice.profile.pets[0] == server_profile(alice).pets[0] and (await alice.do_op("pet_release", [released])).error == "" and alice.profile.pets.size() == 19, "a pet can be released online")
 	# Caçada dos Mascotes (0.20): the server settles the hunt with its own clock.
 	var pet_uid: int = int(alice.profile.pets[0].uid)
 	check((await alice.do_op("hunt_set", ["sol", 3, [pet_uid]])).error != "" and not bool(server_profile(alice).hunt.active), "the server refuses a hunt tier that is still locked")
@@ -157,7 +158,7 @@ func account_tests(alice: Node, bob: Node) -> void:
 	check((await alice.do_op("hunt_stop", [])).error == "" and not bool(alice.profile.hunt.active), "the hunt can be stopped online")
 	await wait_until(func() -> bool: return server.accounts.values().all(func(s: PlayerSession) -> bool: return not s.dirty and not s.saving), 5)
 	var stored: Dictionary = server.api.memory_profiles.get(alice.my_account(), {})
-	check(stored.get("data", {}).get("pets", []).size() == 1, "the pets are saved through the API")
+	check(stored.get("data", {}).get("pets", []).size() == 19, "the pets are saved through the API")
 	check(str(stored.get("name", "")) == "Alice" and int(stored.get("version", 0)) >= 1, "profiles are saved through the API")
 
 func chat_tests(alice: Node, bob: Node) -> void:
@@ -851,6 +852,16 @@ func card_tests() -> void:
 	check((listed.get("mail", []) as Array).all(func(letter: Dictionary) -> bool: return Auction.mail_title(letter).begins_with("Loja:")), "the letters say Loja, not Loja Steam")
 	var again: Dictionary = await dora.net.request("store_status", {"order_id": int(server.api.memory_orders.keys().back())})
 	check(again.ok and again.status == "paid" and dora.mail_count == 1, "asking again does not deliver twice")
+	# 0.30: a pet is sold like any product and arrives in the Casa dos Mascotes through the Correio.
+	var pet_answer: String = await dora.buy_premium("pet_fenix_dourada")
+	check(pet_answer.contains("Correio"), "a pet is ordered like any product: %s" % pet_answer)
+	check(await wait_until(func() -> bool: return dora.mail_count == 2, 15), "the pet's letter arrives in the Correio")
+	var pet_mail: Dictionary = await dora.trade("mail_list")
+	var letter: Dictionary = (pet_mail.mail as Array).filter(func(entry: Dictionary) -> bool: return (entry.get("item", {}) as Dictionary).has("pet"))[0]
+	check(Auction.item_name("item", letter.item) == Pets.species_name("fenix_dourada") and Auction.mail_title(letter).begins_with("Loja:"), "the letter names the pet")
+	var received: Dictionary = await dora.trade("mail_claim", {"ids": [int(letter.id)]})
+	check(received.ok and dora.profile.owns_species("fenix_dourada") and dora.profile.pets.size() == 1 and int(dora.profile.pets[0].level) == 1, "claiming it puts the pet in the Casa dos Mascotes")
+	check(not (await dora.net.request("store_checkout", {"sku": "pet_fenix_dourada"})).ok, "a pet already owned cannot be bought twice")
 	dora.net.disconnect_now()
 	dora.queue_free()
 	await process_frame

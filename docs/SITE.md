@@ -32,8 +32,8 @@ Página única com rotas no endereço (`wiki/#/armas/quebra_tijolos`, `wiki/#/mo
 ## Mascotes e Caçada (0.19–0.20)
 
 - **Página inicial**: dois cartões novos (`#mascotes` e a Caçada) depois do POW, e as capturas de mascotes e da Caçada na galeria (`extras.hero.pet_*` e `hunt_*`, de `docs/screens/`).
-- **Wiki**: grupo **Mascotes** com *Casa dos Mascotes* (`#/mascotes`: ovos e chances, garantia, raridades, elementos, níveis e estrelas, lista de espécies com filtro por elemento; `#/mascotes/<espécie>` com o poder por nível) e *Caçada dos Mascotes* (`#/cacada`: como se joga, zonas, regras da luta, roda de elementos, recompensas e o Passe do Caçador). Tudo sai de `shared/balance/pets.json` (bloco `pets` do `gamedata.js`) e entra na busca. A loja da wiki agrupa as seis Abas de Mochila numa linha.
-- As fórmulas de poder do mascote estão repetidas em `petStats` (`website/js/wiki.js`), de `client/systems/pets.gd`: se mudarem lá, mudam aqui.
+- **Wiki**: grupo **Mascotes** com *Casa dos Mascotes* (`#/mascotes`: desde a 0.30 só aparência vendida na loja (preço por raridade, de graça só Comum e Raro, níveis só na Caçada), elementos, lista de espécies com filtro por elemento; `#/mascotes/<espécie>` com o preço e como conseguir) e *Caçada dos Mascotes* (`#/cacada`: como se joga, zonas, regras da luta, roda de elementos, recompensas e o Passe do Caçador). Tudo sai de `shared/balance/pets.json` (bloco `pets` do `gamedata.js`) e entra na busca. A loja da wiki agrupa as seis Abas de Mochila numa linha.
+- **0.30**: a wiki e a página inicial deixaram de falar de ovos, garantia, estrelas e poder do mascote; os preços saem de `store.json` (`products` com `pets`, que ficam fora da tabela da Loja da wiki) e a captura da página inicial é `pets_shop.webp`.
 
 ## Os números vêm do jogo
 

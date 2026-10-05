@@ -125,9 +125,14 @@ static func put_back(profile: PlayerProfile, taken: Dictionary) -> void:
 
 # Puts what came by mail into the profile. Returns what `undo_mail` needs.
 static func grant_mail(profile: PlayerProfile, mail: Dictionary) -> Dictionary:
-	var undo: Dictionary = {"uids": [], "maps": [], "items": {}, "coins": 0}
+	var undo: Dictionary = {"uids": [], "maps": [], "pets": [], "items": {}, "coins": 0}
 	var item: Variant = mail.get("item")
-	if item is Dictionary:
+	if item is Dictionary and (item as Dictionary).has("pet"):
+		# A pet from the shop (0.30): it joins the Casa dos Mascotes, paid, so never refused.
+		var before: int = profile.next_uid
+		if profile.grant_pet(str(item.pet), true):
+			undo.pets.append(before)
+	elif item is Dictionary:
 		if str(mail.get("item_kind", "")) == "map":
 			var added_map: Dictionary = profile.receive_map(item)
 			if not added_map.is_empty():
@@ -153,6 +158,8 @@ static func undo_mail(profile: PlayerProfile, undo: Dictionary) -> void:
 		profile.remove_instance(int(uid))
 	for uid: Variant in undo.maps:
 		profile.remove_map(int(uid))
+	for uid: Variant in undo.get("pets", []):
+		profile.remove_pet(int(uid))
 	for id: String in undo.items:
 		profile.items[id] = maxi(0, profile.currency_count(id) - int(undo.items[id]))
 	profile.coins = maxi(0, profile.coins - int(undo.coins))
@@ -205,12 +212,18 @@ static func listing_price(listing: Dictionary) -> String:
 	return price_text(int(listing.get("price_solar", 0)), int(listing.get("price_estrela", 0)))
 
 static func item_name(kind: String, item: Dictionary) -> String:
+	if item.has("pet"):
+		return Pets.species_name(str(item.pet))
 	return InstanceRun.map_name(item) if kind == "map" else Armory.item_name(item)
 
 static func item_color(kind: String, item: Dictionary) -> Color:
+	if item.has("pet"):
+		return Pets.rarity_color(str(Pets.species_def(str(item.pet)).get("rarity", "comum")))
 	return InstanceRun.quality_color(str(item.get("quality", "normal"))) if kind == "map" else Armory.quality_color(item)
 
 static func item_icon(kind: String, item: Dictionary) -> Texture2D:
+	if item.has("pet"):
+		return PetWidgets.species_texture(str(item.pet))
 	return load(InstanceRun.map_icon(item)) if kind == "map" else Armory.load_icon(item)
 
 # Bonus lines (gear) or threat and reward lines (maps).

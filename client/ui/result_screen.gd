@@ -82,9 +82,6 @@ func show_results() -> void:
 	UiKit.label(panel, tr("total"), Rect2(20, 470, 200, 80), 54, Color("ffd04a"), Color("5a2408"))
 	total_row(panel, Rect2(250, 470, 380, 40), tr("exp. total"), int(summary.get("exp", 0)), Color("c0302a"))
 	total_row(panel, Rect2(250, 518, 380, 40), tr("valor de mérito total"), int(summary.get("merit", 0)), Color("2f8a1f"))
-	var pet_gain: Dictionary = summary.get("pet", {})
-	if not pet_gain.is_empty():
-		pet_row(panel, Rect2(20, 570, 610, 56), pet_gain)
 	if summary.has("ranked"):
 		ranked_row(panel, Rect2(20, 628, 610, 50), summary.ranked)
 	if int(summary.get("level_after", 1)) > int(summary.get("level_before", 1)):
@@ -109,17 +106,6 @@ func ranked_row(parent: Control, rect: Rect2, report: Dictionary) -> void:
 	elif placed and Ranked.label(int(report.before)) != Ranked.label(int(report.after)):
 		UiKit.label(box, tr("DESCEU"), Rect2(480, 12, 120, 26), 16, UiKit.BAD, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 
-# The active pet's share: its picture, the experience it earned and a level-up note.
-func pet_row(parent: Control, rect: Rect2, gain: Dictionary) -> void:
-	var box: Panel = UiKit.panel(parent, rect, "dark")
-	box.name = "PetGain"
-	PetWidgets.art(box, str(gain.species), Rect2(6, 2, 52, 52))
-	UiKit.label(box, Pets.species_name(str(gain.species)), Rect2(66, 4, 300, 24), 17, Pets.rarity_color(str(Pets.species_def(str(gain.species)).rarity)).lightened(0.2), UiKit.INK)
-	var leveled: bool = int(gain.level_after) > int(gain.level_before)
-	var detail: String = tr("Subiu para o nível %d!") % int(gain.level_after) if leveled else (tr("Nível máximo para as estrelas dele") if bool(gain.get("capped", false)) else tr("Nível %d") % int(gain.level_after))
-	UiKit.label(box, detail, Rect2(66, 28, 300, 24), 15, UiKit.GOOD if leveled else UiKit.TEXT_MUTED, UiKit.INK)
-	UiKit.label(box, tr("+%d XP do mascote") % int(gain.xp), Rect2(360, 4, 240, 48), 20, PremiumUi.GOLD, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
-
 func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
 	var box: Panel = UiKit.panel(parent, rect, "dark")
 	box.name = "InstanceBox"
@@ -143,6 +129,9 @@ func instance_box(parent: Control, rect: Rect2, info: Dictionary) -> void:
 		if entry.has("item"):
 			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
 			slot.tooltip_text = tr(str(entry.name))
+		elif entry.has("pet"):
+			UiKit.art(slot, str(entry.icon), Rect2(2, 2, 50, 50))
+			slot.tooltip_text = tr("Mascote encontrado: %s") % Pets.species_name(str(entry.pet))
 		elif entry.has("weapon"):
 			UiKit.art(slot, str(entry.icon), Rect2(4, 4, 46, 46))
 			slot.tooltip_text = tr("Baú do chefe: %s\n%s") % [tr(str(entry.name)), "\n".join(Crafting.describe(entry))]

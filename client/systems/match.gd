@@ -88,10 +88,6 @@ var auto_play: bool = false
 var turn_items: Array[String] = []
 var turn_fly: bool = false
 var turn_pow: bool = false
-# The pet's skill (0.22): used this turn, a damage multiplier for the shot, a sure critical.
-var turn_pet: bool = false
-var turn_pet_damage: float = 1.0
-var turn_pet_crit: bool = false
 var pow_uses: Dictionary = {}
 var tools_used: int = 0
 var moved_distance: float = 0.0
@@ -342,9 +338,6 @@ func begin_turn() -> void:
 	turn_items.clear()
 	turn_fly = false
 	turn_pow = false
-	turn_pet = false
-	turn_pet_damage = 1.0
-	turn_pet_crit = false
 	tools_used = 0
 	moved_distance = 0
 	passed = false
@@ -484,7 +477,6 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		if item.has("balls"):
 			balls = int(item.balls)
 			spread = 4.0
-	scale *= turn_pet_damage
 	if turn_pow and weapon.has("pow"):
 		var pow_rules: Dictionary = weapon.pow
 		pow_plan = pow_rules
@@ -626,48 +618,6 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 		# POW Máx (item 9): the bar fills now, so B can release the special this turn.
 		fighter.pow_gauge = float(balance.pow_max)
 	skill_used.emit(fighter, {"id": id, "name": tr(str(item.name)), "icon": str(item.icon), "kind": "multi" if multi else ("powmax" if fill else "power")})
-	changed.emit()
-	return true
-
-# ---------- the pet's skill (0.22) ----------
-
-func use_pet() -> bool:
-	if not can_act() or send_intent("pet"):
-		return false
-	return apply_pet(local())
-
-# One use per battle (pets.json -> battle), from the owner's second turn, not while sealed.
-# The effect depends on the pet's element; its strength on the pet's rarity and stars.
-func apply_pet(fighter: TankFighter) -> bool:
-	var rules: Dictionary = Pets.battle_rules()
-	if fighter.is_monster or fighter.pet_skill.is_empty() or fighter.pet_uses <= 0 or turn_pet or turn_fly or fighter.hp <= 0:
-		return false
-	if fighter.turns_started < int(rules.from_round) or fighter.has_status("selado"):
-		return false
-	var def: Dictionary = Pets.skill_def(str(fighter.pet_skill.element))
-	var value: float = Pets.skill_value(fighter.pet_skill)
-	match str(def.kind):
-		"damage":
-			turn_pet_damage = 1.0 + value
-		"crit":
-			turn_pet_crit = true
-			turn_pet_damage = 1.0 + value
-		"shield":
-			var recovered: int = mini(healing(fighter, roundi(float(fighter.max_hp) * value)), fighter.max_hp - fighter.hp)
-			fighter.hp += recovered
-			fighter.shield = minf(fighter.shield, 0.5)
-			if recovered > 0:
-				damage_text.emit(fighter.center(), "+%d" % recovered, Color("9aff7a"))
-		"wind":
-			wind = 0.0
-			energy = minf(float(fighter.max_energy), energy + float(fighter.max_energy) * value)
-		"pow":
-			fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(balance.pow_max) * value)
-	fighter.pet_uses -= 1
-	turn_pet = true
-	var species: Dictionary = Pets.species_def(str(fighter.pet_skill.species))
-	skill_used.emit(fighter, {"id": str(def.id), "name": tr(str(def.name)), "icon": str(species.get("art", "")), "kind": "pet", "color": str(def.color)})
-	announce.emit(tr("%s usou %s!") % [fighter.display_name, tr(str(def.name))], Color(str(def.color)))
 	changed.emit()
 	return true
 
@@ -917,7 +867,8 @@ func apply_input(id: int, action: String, data: Dictionary) -> void:
 		"aux":
 			apply_aux(fighter)
 		"pet":
-			apply_pet(fighter)
+			# Retired in 0.30 (pets are looks only): old replays still carry it, and it does nothing.
+			pass
 		"pass":
 			apply_pass()
 		"flip":
@@ -1058,7 +1009,7 @@ func hit_fighter(shooter: TankFighter, target: TankFighter, damage: int, point: 
 		# Marked prey (0.16) takes more damage from every enemy.
 		damage = roundi(damage * float(StatusRules.def("marcado").get("damage_taken", 1.3)))
 	var critical: bool = false
-	if target.team != shooter.team and ((turn_pet_crit and shooter.player_id == active_id) or (float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs))):
+	if target.team != shooter.team and ((float(shooter.attrs.get("sorte", 0)) > 0 and rng.randf() < Armory.crit_chance(shooter.attrs))):
 		# Critical hits deal x1.5, plus the "+% dano crítico" bonus (0.10).
 		damage = roundi(damage * (1.5 + float(shooter.bonus.get("critico", 0)) / 100.0))
 		critical = true

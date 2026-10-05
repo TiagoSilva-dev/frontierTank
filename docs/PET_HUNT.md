@@ -1,13 +1,13 @@
 # Caçada dos Mascotes (0.20)
 
-Modo automático da Casa dos Mascotes, no estilo de um jogo idle de monstros: o time luta sozinho, o jogador coleta. Código em `client/systems/pet_hunt.gd` (regras, simulação, liquidação), `client/ui/hunt_tab.gd` e `hunt_arena.gd` (tela); números em `shared/balance/pets.json`, bloco `hunt`.
+Modo automático da Casa dos Mascotes, no estilo de um jogo idle de monstros: o time luta sozinho, o jogador coleta. **Desde a 0.30 é o único lugar onde o mascote sobe de nível** (não há mais alimentar nem estrelas) e não solta ovos; ver `docs/PETS.md`. Código em `client/systems/pet_hunt.gd` (regras, simulação, liquidação), `client/ui/hunt_tab.gd` e `hunt_arena.gd` (tela); números em `shared/balance/pets.json`, bloco `hunt`.
 
 ## Como se joga
 
 1. Aba **Caçada**: escolha a **zona** (Ruínas do Sol, Portões de Brasa, Trilha Gelada, Ilhas Flutuantes, Praia dos Drakkar: uma por elemento), o **nível de caça** (1–8) e o **time** (1 a 5 mascotes), e toque em **INICIAR CAÇADA**.
 2. O time encara um grupo de selvagens do elemento da zona a cada **12 s**, mesmo com o jogo fechado.
-3. **COLETAR** recebe moedas, XP (cada mascote do time), ovos do elemento da zona e os mascotes capturados. Mudar zona, nível ou time (**APLICAR E CAÇAR**) recolhe antes o que já rendeu.
-4. O tempo só acumula até o limite: **2 h** (grátis) ou **8 h** com o **Passe do Caçador**. O que passa disso se perde; a sobra de um encontro em andamento é guardada.
+3. **COLETAR** recebe moedas, XP (cada mascote do time) e os mascotes capturados (só Comum e Raro). Mudar zona, nível ou time (**APLICAR E CAÇAR**) recolhe antes o que já rendeu.
+4. O tempo só acumula até o limite: **2 h** (grátis) ou **8 h** com o **Passe do Caçador**. O que passa disso se perde; a sobra de um encontro em andamento é guardada. **O Passe rende mais moedas e XP, nunca mais capturas**: só os primeiros 600 encontros (2 h) de cada coleta rolam captura (`PetHunt.capture_slots`).
 5. Cada nível abre depois de **60 vitórias** no nível abaixo, por zona.
 
 ## Regras
@@ -15,10 +15,10 @@ Modo automático da Casa dos Mascotes, no estilo de um jogo idle de monstros: o 
 - **Luta** (por turnos, automática): a velocidade define a ordem; cada ação ataca um inimigo vivo sorteado; a cada 3ª ação o mascote usa a habilidade do elemento; crítico 8% (Máscara 33%) ×1,6; no máximo 24 rodadas (empate conta como derrota). O time se cura entre encontros.
 - **Roda de elementos**: Sol > Gelo > Céu > Máscara > Runa > Sol; vantagem ×1,5, desvantagem ×0,7.
 - **Habilidades**: Sol, Rajada Solar (golpe ×2); Máscara, Dupla Trapaça (dois golpes ×0,9); Gelo, Muralha Glacial (cura 12% da vida de todos); Céu, Tempestade (todos os inimigos ×0,8); Runa, Grito de Guerra (+25% de ataque ao time por 3 rodadas). Crescem 12% por raridade.
-- **Atributos de luta**: raridade × nível × estrelas (`hunt.stats`): vida, ataque, defesa, velocidade; Sol +12% ataque, Máscara +12% velocidade, Gelo +18% vida, Céu +15% velocidade, Runa +15% defesa. Os selvagens usam a mesma fórmula, no nível da zona (2 + 4 por nível de caça) e +26% de vida, ataque e defesa por nível de caça.
-- **Encontros**: grupo de 1 a 3 selvagens (60/30/10); raridade 72/22/6 (Comum/Raro/Épico, o nível de caça empurra para raros e épicos). O **Lendário** da zona (vida ×2, ataque ×1,15, nível +2) aparece sozinho com 0,03% por encontro e **garantido após 2.000 encontros** sem ele (a barra "Próximo Lendário"). Se o time perder, ele foge e volta em ~1.000 encontros: nunca uma sequência de derrotas.
-- **Recompensas por vitória**: XP por selvagem `(1,2 + 0,14 × nível) × [1; 1,5; 2,5; 8]`, para cada mascote do time; moedas `0,15 × nível × [1; 1,6; 3; 12]`; ovo do elemento 0,35% (+8% por nível de caça); captura por selvagem: Comum 0,12%, Raro 0,3%, Épico 0,9% (+8% por nível de caça), **Lendário 100%**. Capturas entram no nível 1; com a Casa cheia (120) viram moedas.
-- **Determinismo**: o encontro `n` depende só da semente da caçada (`hunt.seed`) e de `n` (e do contador do Lendário), então a tela mostra o encontro em andamento e a coleta entrega exatamente o mesmo. Estado no perfil: `hunt {active, zone, tier, team, since, n, seed, legend, wins, report}`.
+- **Atributos de luta**: raridade × nível (`hunt.stats`; as estrelas saíram na 0.30): vida, ataque, defesa, velocidade; Sol +12% ataque, Máscara +12% velocidade, Gelo +18% vida, Céu +15% velocidade, Runa +15% defesa. Os selvagens usam a mesma fórmula, no nível da zona (2 + 4 por nível de caça) e +26% de vida, ataque e defesa por nível de caça.
+- **Encontros**: grupo de 1 a 3 selvagens (60/30/10); raridade 72/22/6 (Comum/Raro/Épico, o nível de caça empurra para raros e épicos). O **Lendário** da zona (vida ×2, ataque ×1,15, nível +2) aparece sozinho com 0,03% por encontro, **sem garantia nem contador**; vencê-lo rende só moedas e XP (raridade ×8 e ×12), nunca um mascote.
+- **Recompensas por vitória**: XP por selvagem `(1,2 + 0,14 × nível) × [1; 1,5; 2,5; 8]`, para cada mascote do time; moedas `0,15 × nível × [1; 1,6; 3; 12]`; **captura** por selvagem: Comum 0,12% e Raro 0,03% (+8% por nível de caça). **Épico, Lendário e o chefe nunca são capturados.** Capturas entram no nível 1; com a Casa cheia (120) viram moedas. Não há ovos.
+- **Determinismo**: o encontro `n` depende só da semente da caçada (`hunt.seed`) e de `n` então a tela mostra o encontro em andamento e a coleta entrega exatamente o mesmo. Estado no perfil: `hunt {active, zone, tier, team, since, n, seed, wins, report}` (o antigo `legend` é descartado ao ler).
 - **Servidor**: `hunt_set`, `hunt_collect` e `hunt_stop` são operações de `PlayerProfile.apply_op`; o servidor usa o relógio dele (o espelho do cliente corrige a diferença pelo campo `clock`). Relógio para trás não rende nada.
 
 ## Campo (0.21): a Caçada vista de cima
@@ -55,8 +55,8 @@ Item premium `passe_cacador` (slot "selo", sem atributos, vinculado, não vende)
 
 - Cadastrar o produto 3000 na Steam; ícone do Passe só em 64×64 (serve para a loja e a tela).
 - Na batalha de tanque o mascote ativo tem uma habilidade por partida (0.22, ver `docs/PETS.md`); a Caçada em si continua automática.
-- Ovos e mascotes não vão ao Leilão. Notificação fora do jogo (um e-mail ou Steam) quando a caçada enche não existe.
-- Sons não foram ouvidos por uma pessoa; a taxa de captura e a de ovos precisam de playtest.
+- Mascotes não vão ao Leilão. Notificação fora do jogo (um e-mail ou Steam) quando a caçada enche não existe.
+- Sons não foram ouvidos por uma pessoa; a taxa de captura precisa de playtest.
 
 ## Campo visto de cima nas cinco zonas (0.22)
 

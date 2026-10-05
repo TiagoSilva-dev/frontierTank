@@ -40,7 +40,6 @@ func capture() -> void:
 		app.profile.grant_pet(entry[0])
 		var pet: Dictionary = app.profile.pets[app.profile.pets.size() - 1]
 		pet.level = entry[1]
-		pet.stars = entry[2]
 	app.profile.add_instance(str(PetHunt.rules().pass_item))
 	var host: Control = Control.new()
 	host.size = Vector2(1280, 720)
@@ -63,8 +62,12 @@ func capture() -> void:
 		app.profile.hunt_set(tab.zone, 1, tab.team)
 		app.profile.hunt.since = app.profile.hunt_now() - 12 * 40 - (3 if mode == "boss" else (0 if mode in ["field", "fieldboss"] else 5))
 		if mode in ["boss", "fieldboss"]:
-			app.profile.hunt.legend = int(PetHunt.rules().boss.forced_after)
+			# A seed whose current encounter is the Lendário boss.
 			app.profile.hunt.since = app.profile.hunt_now() - 3
+			for candidate in range(2, 400000):
+				if PetHunt.slot_rng({"seed": candidate}, int(app.profile.hunt.n)).randf() < float(PetHunt.rules().boss.chance):
+					app.profile.hunt.seed = candidate
+					break
 		tab.rebuild()
 	else:
 		tab.rebuild()
@@ -77,16 +80,6 @@ func capture() -> void:
 			app.profile.hunt_collect()
 			var born: Array[Dictionary] = []
 			tab.show_report(app.profile.hunt.report, born)
-		"capture":
-			var moment: HatchOutcome = HatchOutcome.new()
-			moment.capture = true
-			moment.pet = {"uid": 91, "species": "lobo_boreal", "level": 1, "xp": 0, "stars": 0}
-			moment.is_new = true
-			moment.audio = app.audio
-			screen.add_child(moment)
-			moment.set_process(false)
-			moment.age = HatchOutcome.SHAKE_TIME + 1.2
-			moment.queue_redraw()
 	var frames: int = 300 if mode in ["fight"] else 40
 	if mode in ["field", "fieldboss"]:
 		# Six moments of the same encounter (seconds into it).

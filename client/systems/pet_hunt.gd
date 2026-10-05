@@ -9,11 +9,14 @@ extends RefCounted
 # `seed` and its number. The client replays the same encounter on screen while the
 # server (or the offline profile) settles the whole stretch at once when the player
 # collects, so a preview and the settlement always agree.
-# Time stops adding up after `cap_free` seconds (`cap_pass` with the Passe do Caçador).
-# A defeated Lendário joins the player's pets for good.
+# Time stops adding up after `cap_free` seconds (`cap_pass` with the Passe do Caçador); the
+# pass earns more coins and XP but never more captures: only the first `cap_free` seconds of
+# a stretch roll for a catch (paying must not buy more draws). Only Comum and Raro can be
+# captured, never an Épico or a Lendário (those are sold in the shop), and nothing is
+# guaranteed. This is the one place where the pets gain levels.
 #
 # Numbers are in shared/balance/pets.json ("hunt"); the state kept in the profile is
-# {active, zone, tier, team: [uid], since, n, seed, legend, wins: {"zone:tier": count},
+# {active, zone, tier, team: [uid], since, n, seed, wins: {"zone:tier": count},
 # report} (see `clean_state`).
 
 static func rules() -> Dictionary:
@@ -40,7 +43,7 @@ static func wild_level(tier: int) -> int:
 # ---------- state ----------
 
 static func empty_report() -> Dictionary:
-	return {"slots": 0, "wins": 0, "losses": 0, "coins": 0, "xp": 0, "eggs": {}, "captured": [], "boss_seen": 0, "boss_won": 0, "levelups": [], "full": false, "seconds": 0, "at": 0}
+	return {"slots": 0, "wins": 0, "losses": 0, "coins": 0, "xp": 0, "captured": [], "boss_seen": 0, "boss_won": 0, "levelups": [], "full": false, "seconds": 0, "at": 0}
 
 static func clean_report(raw: Variant) -> Dictionary:
 	var result: Dictionary = empty_report()
@@ -49,11 +52,6 @@ static func clean_report(raw: Variant) -> Dictionary:
 	for key: String in ["slots", "wins", "losses", "coins", "xp", "boss_seen", "boss_won", "seconds", "at"]:
 		result[key] = maxi(0, int(raw.get(key, 0)))
 	result.full = bool(raw.get("full", false))
-	var eggs: Variant = raw.get("eggs", {})
-	if eggs is Dictionary:
-		for id: String in eggs:
-			if Pets.is_egg(id):
-				result.eggs[id] = maxi(0, int(eggs[id]))
 	var caught: Variant = raw.get("captured", [])
 	if caught is Array:
 		for id: Variant in caught:
@@ -67,7 +65,7 @@ static func clean_report(raw: Variant) -> Dictionary:
 	return result
 
 static func clean_state(raw: Variant) -> Dictionary:
-	var state: Dictionary = {"active": false, "zone": str(zones()[0].id), "tier": 1, "team": [], "since": 0, "n": 0, "seed": 1, "legend": 0, "wins": {}, "report": empty_report()}
+	var state: Dictionary = {"active": false, "zone": str(zones()[0].id), "tier": 1, "team": [], "since": 0, "n": 0, "seed": 1, "wins": {}, "report": empty_report()}
 	if not raw is Dictionary:
 		return state
 	var zone: String = str(raw.get("zone", state.zone))
@@ -83,7 +81,6 @@ static func clean_state(raw: Variant) -> Dictionary:
 	state.since = maxi(0, int(raw.get("since", 0)))
 	state.n = maxi(0, int(raw.get("n", 0)))
 	state.seed = maxi(1, int(raw.get("seed", 1)))
-	state.legend = maxi(0, int(raw.get("legend", 0)))
 	var wins: Variant = raw.get("wins", {})
 	if wins is Dictionary:
 		for key: String in wins:
@@ -107,15 +104,15 @@ static func cap_seconds(profile: PlayerProfile) -> int:
 
 # ---------- units ----------
 
-static func make_unit(species: String, level: int, stars: int) -> Dictionary:
+static func make_unit(species: String, level: int) -> Dictionary:
 	var def: Dictionary = Pets.species_def(species)
 	var rarity: int = Pets.rarity_index(str(def.rarity))
 	var stats: Dictionary = rules().stats
 	var mod: Dictionary = rules().element_mod.get(str(def.element), {})
-	var scale: float = (1.0 + float(stats.level_scale) * (level - 1)) * (1.0 + float(stats.star_scale) * stars)
+	var scale: float = 1.0 + float(stats.level_scale) * (level - 1)
 	var hp: int = maxi(1, roundi(float(stats.hp[rarity]) * scale * float(mod.get("hp", 1.0))))
 	return {
-		"species": species, "element": str(def.element), "rarity": rarity, "level": level, "stars": stars,
+		"species": species, "element": str(def.element), "rarity": rarity, "level": level,
 		"hp": hp, "max": hp,
 		"atk": float(stats.atk[rarity]) * scale * float(mod.get("atk", 1.0)),
 		"def": float(stats.def[rarity]) * scale * float(mod.get("def", 1.0)),
@@ -135,7 +132,7 @@ static func team_pets(profile: PlayerProfile, state: Dictionary) -> Array[Dictio
 static func team_units(pets: Array) -> Array:
 	var units: Array = []
 	for pet: Dictionary in pets:
-		units.append(make_unit(str(pet.species), int(pet.level), int(pet.stars)))
+		units.append(make_unit(str(pet.species), int(pet.level)))
 	return units
 
 # ---------- the wild ----------
@@ -159,7 +156,7 @@ static func _toughen(unit: Dictionary, tier: int) -> Dictionary:
 static func roll_group(zone: String, tier: int, rng: RandomNumberGenerator, boss: bool) -> Array:
 	var level: int = wild_level(tier)
 	if boss:
-		var unit: Dictionary = make_unit(wild_species(zone, 3), level + int(rules().boss.level_bonus), 0)
+		var unit: Dictionary = make_unit(wild_species(zone, 3), level + int(rules().boss.level_bonus))
 		unit.hp = roundi(float(unit.hp) * float(rules().boss.hp))
 		unit.max = unit.hp
 		unit.atk = float(unit.atk) * float(rules().boss.atk)
@@ -185,7 +182,7 @@ static func roll_group(zone: String, tier: int, rng: RandomNumberGenerator, boss
 			if pick <= 0.0:
 				rarity = j
 				break
-		group.append(_toughen(make_unit(wild_species(zone, rarity), level, 0), tier))
+		group.append(_toughen(make_unit(wild_species(zone, rarity), level), tier))
 	return group
 
 static func _sum(list: Array) -> float:
@@ -317,27 +314,25 @@ static func slot_rng(state: Dictionary, n: int) -> RandomNumberGenerator:
 	rng.seed = (int(state.seed) * 1000003 + n * 7919 + 17) & 0x7fffffffffff
 	return rng
 
+# Only the rarities in the capture table (Comum, Raro) can be caught; the Lendário boss and
+# every Épico or Lendário are beaten for the coins and XP, never taken home.
 static func capture_chance(rarity: int, tier: int, boss: bool) -> float:
-	if boss:
-		return 1.0
 	var table: Dictionary = rules().capture
-	return float(table[str(Pets.rarities()[rarity].id)]) * (1.0 + float(table.per_tier) * (tier - 1))
+	var id: String = str(Pets.rarities()[rarity].id)
+	if boss or not table.has(id):
+		return 0.0
+	return float(table[id]) * (1.0 + float(table.per_tier) * (tier - 1))
 
 # The whole result of encounter `n`: who showed up, whether the team won, the rewards and
-# the log to replay. `legend` is the count of encounters since the last Lendário.
-static func slot(state: Dictionary, units: Array, n: int, legend: int) -> Dictionary:
+# the log to replay. `capture` is false past the free window (the Passe's extra hours): the
+# roll is still drawn, so the encounter stays the same either way, but nothing is caught.
+static func slot(state: Dictionary, units: Array, n: int, capture: bool = true) -> Dictionary:
 	var rng: RandomNumberGenerator = slot_rng(state, n)
-	var boss_rules: Dictionary = rules().boss
-	var roll: float = rng.randf()
-	var boss: bool = legend >= int(boss_rules.forced_after) or roll < float(boss_rules.chance)
+	var boss: bool = rng.randf() < float(rules().boss.chance)
 	var wilds: Array = roll_group(str(state.zone), int(state.tier), rng, boss)
 	var result: Dictionary = fight(units, wilds, rng)
-	var out: Dictionary = {"n": n, "boss": boss, "won": bool(result.won), "wilds": wilds, "rounds": int(result.rounds), "alive": int(result.alive), "log": result.log, "coins": 0, "xp": 0, "egg": "", "captured": [], "legend": legend + 1}
+	var out: Dictionary = {"n": n, "boss": boss, "won": bool(result.won), "wilds": wilds, "rounds": int(result.rounds), "alive": int(result.alive), "log": result.log, "coins": 0, "xp": 0, "captured": []}
 	if not out.won:
-		if boss:
-			# The Lendário fled: it comes back after half the wait, so a team that cannot
-			# beat it loses one encounter now and then, never a streak.
-			out.legend = int(boss_rules.forced_after) / 2
 		return out
 	var reward: Dictionary = rules().reward
 	var tier: int = int(state.tier)
@@ -347,14 +342,10 @@ static func slot(state: Dictionary, units: Array, n: int, legend: int) -> Dictio
 		var rarity: int = int(wild.rarity)
 		xp += (float(reward.xp_base) + float(reward.xp_per_level) * int(wild.level)) * float(reward.xp_rarity[rarity])
 		coins += float(reward.coin_per_level) * int(wild.level) * float(reward.coin_rarity[rarity])
-		if rng.randf() < capture_chance(rarity, tier, bool(wild.boss)):
+		if rng.randf() < capture_chance(rarity, tier, bool(wild.boss)) and capture:
 			out.captured.append(str(wild.species))
 	out.xp = roundi(xp)
 	out.coins = roundi(coins)
-	if rng.randf() < float(reward.egg_chance) * (1.0 + float(reward.egg_per_tier) * (tier - 1)):
-		out.egg = str(Pets.element_def(str(state.zone)).egg)
-	if boss:
-		out.legend = 0
 	return out
 
 # ---------- a stretch of encounters ----------
@@ -369,21 +360,21 @@ static func add_slot(report: Dictionary, result: Dictionary) -> void:
 	report.wins = int(report.wins) + 1
 	report.coins = int(report.coins) + int(result.coins)
 	report.xp = int(report.xp) + int(result.xp)
-	if result.egg != "":
-		report.eggs[result.egg] = int(report.eggs.get(result.egg, 0)) + 1
+	if bool(result.boss):
+		report.boss_won = int(report.boss_won) + 1
 	for species: Variant in result.captured:
 		report.captured.append(str(species))
-		if Pets.species_def(str(species)).rarity == "lendario":
-			report.boss_won = int(report.boss_won) + 1
 
-# Encounters first..first+count-1. Returns {report, legend}.
-static func run(state: Dictionary, units: Array, first: int, count: int, legend: int) -> Dictionary:
+# How many encounters of a stretch roll for a catch: the free window, whatever the Passe adds.
+static func capture_slots() -> int:
+	return int(rules().cap_free) / cycle()
+
+# Encounters first..first+count-1. Returns the report.
+static func run(state: Dictionary, units: Array, first: int, count: int) -> Dictionary:
 	var report: Dictionary = empty_report()
 	for i in range(count):
-		var result: Dictionary = slot(state, units, first + i, legend)
-		legend = int(result.legend)
-		add_slot(report, result)
-	return {"report": report, "legend": legend}
+		add_slot(report, slot(state, units, first + i, i < capture_slots()))
+	return report
 
 # How many encounters the time since the hunt started adds up to (limited by the cap).
 static func pending_slots(profile: PlayerProfile, now: int) -> int:
@@ -405,12 +396,8 @@ static func settle(profile: PlayerProfile, now: int) -> Dictionary:
 	var pets: Array[Dictionary] = team_pets(profile, state)
 	var report: Dictionary = empty_report()
 	if not pets.is_empty() and slots > 0:
-		var stretch: Dictionary = run(state, team_units(pets), int(state.n), slots, int(state.legend))
-		report = stretch.report
-		state.legend = int(stretch.legend)
+		report = run(state, team_units(pets), int(state.n), slots)
 		profile.coins += int(report.coins)
-		for id: String in report.eggs:
-			profile.add_item(id, int(report.eggs[id]))
 		for pet: Dictionary in pets:
 			var before: int = int(pet.level)
 			Pets.add_xp(pet, int(report.xp))
@@ -444,7 +431,7 @@ static func analyse(units: Array, zone: String, tier: int) -> Dictionary:
 	var xp: int = 0
 	var coins: int = 0
 	for i in range(trials):
-		var result: Dictionary = slot(state, units, i, 0)
+		var result: Dictionary = slot(state, units, i, false)
 		if bool(result.won):
 			wins += 1
 			xp += int(result.xp)
@@ -456,5 +443,4 @@ static func analyse(units: Array, zone: String, tier: int) -> Dictionary:
 			boss_wins += 1
 	var per_hour: float = 3600.0 / float(cycle()) / maxf(1.0, float(trials))
 	var win_rate: float = float(wins) / maxf(1.0, float(trials))
-	var egg_chance: float = float(rules().reward.egg_chance) * (1.0 + float(rules().reward.egg_per_tier) * (tier - 1))
-	return {"win": win_rate, "xp": roundi(xp * per_hour), "coins": roundi(coins * per_hour), "eggs": win_rate * egg_chance * 3600.0 / float(cycle()), "level": wild_level(tier), "boss": float(boss_wins) / 8.0}
+	return {"win": win_rate, "xp": roundi(xp * per_hour), "coins": roundi(coins * per_hour), "level": wild_level(tier), "boss": float(boss_wins) / 8.0}

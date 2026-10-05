@@ -33,7 +33,6 @@ var tool_buttons: Array[SkillSlot] = []
 var fly_button: SkillSlot
 var aux_button: SkillSlot
 # The active pet's skill (0.22), key G.
-var pet_button: SkillSlot
 var pow_button: PowOrb
 var trust_button: Button
 var gear_button: Button
@@ -147,13 +146,6 @@ func build() -> void:
 	var aux: Dictionary = Armory.aux_def(me.aux_id)
 	aux_button = SkillSlot.create(self, Rect2(142, 540, 50, 46), load(str(aux.icon)) if not aux.is_empty() else null, "V", game.use_aux)
 	aux_button.tooltip_text = tr("%s (V)\n%s") % [tr(str(aux.name)), tr(str(aux.desc))] if not aux.is_empty() else tr("Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo).")
-	if not me.pet_skill.is_empty():
-		var species: Dictionary = Pets.species_def(str(me.pet_skill.species))
-		pet_button = SkillSlot.create(self, Rect2(142, 490, 50, 46), load(str(species.get("art", ""))), "G", game.use_pet)
-		pet_button.accent = Color(str(Pets.skill_def(str(me.pet_skill.element)).color))
-		pet_button.name = "PetSkill"
-		var def: Dictionary = Pets.skill_def(str(me.pet_skill.element))
-		pet_button.tooltip_text = tr("%s (G)\n%s\nUm uso por batalha, a partir do seu segundo turno.") % [tr(str(def.name)), Pets.skill_text(me.pet_skill)]
 	# --- bottom-left: trust, angle dial
 	trust_button = UiKit.button(self, tr("Confiar"), Rect2(8, 546, 112, 34), toggle_trust, "button", 15)
 	trust_button.tooltip_text = tr("Confiar: a IA joga os seus turnos.")
@@ -375,7 +367,7 @@ func _process(delta: float) -> void:
 		turn_age = 0.0
 		last_second = -1
 	if acting and not was_mine:
-		var slots: Array = item_buttons + tool_buttons + [fly_button, aux_button] + ([pet_button] if is_instance_valid(pet_button) else [])
+		var slots: Array = item_buttons + tool_buttons + [fly_button, aux_button]
 		for i in range(slots.size()):
 			slots[i].play_shine(i * 0.03)
 	was_mine = acting
@@ -401,10 +393,6 @@ func _process(delta: float) -> void:
 	fly_button.count_text = str(me.fly_cooldown) if me.fly_cooldown > 0 else ""
 	if is_instance_valid(goal_label):
 		goal_label.text = phase_goal()
-	if is_instance_valid(pet_button):
-		pet_button.disabled = not acting or me.pet_uses <= 0 or me.turns_started < int(Pets.battle_rules().from_round) or game.turn_pet or game.turn_fly or sealed
-		pet_button.count_text = str(me.pet_uses)
-		pet_button.used = 1 if game.turn_pet and mine else 0
 	aux_button.disabled = not acting or me.aux_uses <= 0
 	aux_button.count_text = str(me.aux_uses) if me.aux_id != "" else ""
 	for i in range(tool_buttons.size()):

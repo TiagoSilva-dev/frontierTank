@@ -289,10 +289,6 @@ func all_entries() -> Array[Dictionary]:
 		var count: int = int(app.profile.items.get(stone.id, 0))
 		if count > 0:
 			list.append({"key": "item:" + str(stone.id), "name": tr(str(stone.name)), "icon": str(stone.icon), "count": count})
-	for egg: Dictionary in Pets.eggs():
-		var egg_count: int = app.profile.egg_count(str(egg.id))
-		if egg_count > 0:
-			list.append({"key": "item:" + str(egg.id), "name": Pets.egg_name(str(egg.id)), "icon": str(egg.icon), "count": egg_count})
 	for i in range(app.profile.tools.size()):
 		var tool_id: String = app.profile.tools[i]
 		for tool: Dictionary in app.balance.tools:
@@ -543,11 +539,7 @@ func refresh_selection() -> void:
 		selected_label.text = "%s  x%d" % [entry.name, int(entry.get("count", 1))]
 		var id: String = selected.substr(5)
 		var stone: Dictionary = Armory.stone_def(id)
-		if Pets.is_egg(id) and selected.begins_with("item:"):
-			selected_label.text += "\n%s" % tr("Abra na Casa dos Mascotes para revelar o mascote.")
-			equip_button.text = tr("CHOCAR")
-			equip_button.disabled = false
-		elif Crafting.is_currency(id) and selected.begins_with("item:"):
+		if Crafting.is_currency(id) and selected.begins_with("item:"):
 			selected_label.text += "\n%s\n%s" % [Crafting.currency_desc(id), tr("Use no Ferreiro, aba Moedas, em equipamentos e mapas.")]
 		elif not stone.is_empty():
 			selected_label.text += tr("\nUma pedra: +%d → +%d. Encontrada nas instâncias.") % [int(stone.level) - 1, int(stone.level)]
@@ -586,10 +578,7 @@ func equip_key(key: String, place: String = "") -> void:
 		equip_selected(place)
 
 func toggle_key(key: String) -> void:
-	if key.begins_with("item:") and Pets.is_egg(key.substr(5)):
-		select_item(key)
-		equip_selected()
-	elif key.begins_with("uid:"):
+	if key.begins_with("uid:"):
 		select_item(key)
 		equip_selected()
 
@@ -689,14 +678,11 @@ func turn_page(step: int) -> void:
 	if page != before:
 		refresh_grid()
 
-func open_pets(first_tab: String = "Chocar", egg: String = "") -> void:
-	var screen: PetScreen = PetScreen.open(self, app, first_tab, egg)
+func open_pets(first_tab: String = "Mascotes") -> void:
+	var screen: PetScreen = PetScreen.open(self, app, first_tab)
 	screen.closed.connect(build)
 
 func equip_selected(place: String = "") -> void:
-	if selected.begins_with("item:") and Pets.is_egg(selected.substr(5)):
-		open_pets("Chocar", selected.substr(5))
-		return
 	if not selected.begins_with("uid:"):
 		return
 	var uid: int = selected.substr(4).to_int()

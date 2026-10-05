@@ -50,10 +50,8 @@ static func reward_text(balance: Dictionary) -> String:
 		parts.append("%dx %s" % [int(items[id]), material_name(id)])
 	return ", ".join(parts)
 
-# Name of a counter item (stone, egg, currency) for reward lines.
+# Name of a counter item (stone, currency) for reward lines.
 static func material_name(id: String) -> String:
-	if Pets.is_egg(id):
-		return Pets.egg_name(id)
 	var stone: Dictionary = Armory.stone_def(id)
 	if not stone.is_empty():
 		return Lang.t(str(stone.name))

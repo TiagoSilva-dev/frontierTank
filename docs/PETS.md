@@ -1,69 +1,74 @@
-# Casa dos Mascotes (0.19)
+# Casa dos Mascotes (0.19, mascotes colecionáveis desde a 0.30)
 
-Os ovos caem nas instâncias, o jogador os abre na **Casa dos Mascotes** (prédio da cidade, botão PET da barra e o espaço "Mascote" da Mochila) e o mascote que nasce acompanha o personagem nas batalhas com bônus de verdade. A tela segue o layout da Forja Celeste: abas **Chocar**, **Mascotes** e **Álbum**, painéis de bronze com vidro escuro e o cenário de santuário no meio.
+Os mascotes são **só aparência**. Desde a 0.30 eles são vendidos na loja por dinheiro de verdade (aba **Mascotes** do Centro Comercial), não dão atributo nem poder, não têm habilidade em batalha e **não existem mais ovos nem "chocar"** (isso seria uma caixa de sorteio paga, que o Brasil não permite). Comuns e Raros também podem ser achados de graça (chefe de instância e Caçada), sempre com sorte e sem garantia.
 
-Tudo sai de `shared/balance/pets.json` e de `client/systems/pets.gd`; o perfil só guarda `{uid, species, level, xp, stars}`. Offline o `PlayerProfile` aplica as operações, online o servidor de jogo aplica as mesmas (`pet_hatch`, `pet_equip`, `pet_feed`, `pet_evolve`, `pet_release` estão em `PlayerProfile.OPS`), então não existe segunda cópia das regras.
+A **Casa dos Mascotes** (prédio da cidade, botão PET da barra e o espaço "Mascote" da Mochila) guarda a coleção. Abas: **Mascotes** (a coleção, o companheiro de batalha e Libertar), **Álbum** (as 20 espécies, as que faltam em silhueta) e **Caçada** (o único lugar onde o mascote sobe de nível, ver `docs/PET_HUNT.md`). O botão **LOJA DE MASCOTES** abre o Centro Comercial já na aba Mascotes.
 
-## O que o jogador vê
+Tudo sai de `shared/balance/pets.json` e de `client/systems/pets.gd`; o perfil só guarda `{uid, species, level, xp}`. Offline o `PlayerProfile` aplica as operações, online o servidor de jogo aplica as mesmas (`pet_equip`, `pet_release` e as da Caçada estão em `PlayerProfile.OPS`), então não existe segunda cópia das regras.
 
-| Aba | O que faz |
-|---|---|
-| **Chocar** | Seis tipos de ovo (cinco elementos + o Ovo de Mascote genérico), cada um com contagem, as **chances** de raridade, as **garantias** (quantos ovos faltam para um Épico e um Lendário), os mascotes que podem nascer (silhueta se ainda não descobertos) e o botão **CHOCAR OVO**. Embaixo, o progresso do álbum por elemento. |
-| **Mascotes** | Coleção (25 por página, ordenada por raridade, estrelas e nível), cartão do mascote com arte grande, nível e barra de XP, estrelas, o **poder** (atributos e talentos), **ATIVAR/DESATIVAR**, **ALIMENTAR**, **GANHAR ESTRELA** e **LIBERTAR**. |
-| **Álbum** | As 20 espécies por elemento; as que faltam aparecem como silhueta "???". Completar um elemento dá um bônus permanente; completar todos dá o final. |
+## Loja
 
-**A cena de chocar** (`HatchOutcome`): o ovo balança cada vez mais forte, racha, e estoura numa luz da cor da raridade; o mascote cresce no centro com o nome, a raridade, o elemento, os dois primeiros bônus e "NOVO NO ÁLBUM!" quando é uma espécie nova. Raridade maior = mais raios, anéis, faíscas, clarão e, de Épico para cima, a janela treme. Um clique depois da revelação fecha. Cada fase tem som próprio (`pet_shake`, `pet_crack`, `pet_hatch_<raridade>`).
+- **20 produtos** em `shared/balance/store.json` (`section: "mascotes"`, `pets: [espécie]`, `steam_item_id` 4001–4020, SKU `pet_<espécie>`), um por espécie, com preço por raridade:
 
-**Em batalha** (`PetCompanion`): o mascote ativo fica atrás do lutador, flutua, vira junto, pula quando o dono apanha e comemora na vitória. É só visual (vai no `look.pet`); os bônus vêm do perfil. Na tela de resultado há uma linha com o XP que o mascote ganhou.
-
-## Regras
-
-- **Ovos**: contadores em `profile.items` (`egg_sol`, `egg_mascara`, `egg_gelo`, `egg_ceu`, `egg_viking`, e `pet_egg`, o antigo Ovo de Mascote do baú, agora o "genérico": sorteia o elemento e tem chances melhores). Cada instância solta o ovo do seu elemento: Templo do Sol → Sol, Trono das Máscaras → Máscara, Picos Gelados → Gelo, Ilha Celeste → Céu, Fiorde dos Vikings → Runa.
-- **De onde caem**: o chefe, ao ser vencido, tem 14% + 2% por nível de mapa (máx. 45%; 10% na entrada livre) de soltar o ovo no baú; elites, guardiões e o golpe final do chefe têm 6% dos "drops de monstro" para ovo (antes: 75% pedra, 20% moeda, 5% arma; agora 69/20/6/5); o ovo genérico continua entre as cartas de recompensa.
-- **Chances** (`odds`, por ovo): elemento 58 / 28 / 11 / 3 (Comum / Raro / Épico / Lendário); genérico 40 / 36 / 18 / 6. **Garantia**: o 10º ovo sem Épico ou melhor é um Épico+; o 40º sem Lendário é Lendário (`profile.pity["egg_epico"/"egg_lendario"]`, zeram ao sair a raridade).
-- **Espécies**: 20 (5 elementos × 4 raridades), uma por raridade em cada elemento.
-- **Níveis e estrelas**: nível máximo 10 sem estrelas, +4 por estrela (até 30 com 5). XP por nível = 50 × nível. **Ganhar estrela** consome 1 duplicata da mesma espécie (nunca a ativa) e moedas (150, 300, 600, 1.200, 2.400) e passa metade do XP total da duplicata. **Alimentar**: 100 moedas = 100 XP. **Batalha**: o mascote ativo ganha 20 + 20% da EXP da partida (×1,5 em instâncias). **Libertar** devolve moedas (40 / 120 / 400 / 1.500) e não vale para o ativo.
-- **Poder** (`Pets.attrs/talents`): atributos = valor da raridade (14 / 26 / 42 / 64) × peso do elemento × `power(nível)` (30% no nível 1 → 100% no 30) × (1 + 0,15 por estrela). Talentos (Raro 1, Épico 2, Lendário 3, na ordem do elemento) usam os mesmos bônus de combate do Crafting (dano %, dano do POW, POW inicial, crítico, poupar habilidade, vida, cura, vento, energia, delay) com valor máximo × fator da raridade (0,35 / 0,65 / 1,0) × poder × (1 + 0,10 por estrela). Um Lendário no nível 30 com 5 estrelas dá cerca de +112 de atributo principal e +21% de dano: comparável a duas boas afixações de item, não mais.
-- **Elementos**: Sol (Ataque e Sorte; dano, POW, POW inicial), Máscara (Sorte e Ataque; crítico, poupar, dano), Gelo (Defesa e Agilidade; vida, cura, vento), Céu (Agilidade e Sorte; vento, energia, delay), Runa (Defesa e Ataque; vida, POW inicial, crítico).
-- **Álbum**: elemento completo = +24 de um atributo (Ataque, Sorte, Defesa, Agilidade) ou +150 de vida (Runa); os cinco = +5% de dano.
-- **Limites**: 120 mascotes por conta. Ovos e mascotes não vão ao Leilão.
-
-O bônus entra por `Armory.character_stats(..., pet_bonus)`: atributos somam aos do equipamento e os talentos aos "bônus de batalha", então servidor, bots e a tela de atributos usam o mesmo número.
-
-## Habilidade em batalha (0.22)
-
-O mascote **ativo** dá ao dono uma habilidade por partida, escolhida pelo **elemento**. Botão ao lado das habilidades (ícone do mascote) ou tecla **G**, **uma vez por batalha**, **a partir do segundo turno do dono** (`battle.from_round`), nunca selado, voando de avião ou com o personagem caído; só um uso por turno. Contra monstros de instância ela não existe (eles não têm mascote).
-
-| Elemento | Habilidade | Efeito (comum, sem estrelas) |
+| Raridade | BRL | USD |
 |---|---|---|
-| Sol | Rajada Solar | O próximo tiro causa +25% de dano |
-| Máscara | Truque da Máscara | O tiro do turno é crítico garantido e causa +10% |
-| Gelo | Muralha Glacial | Cura 18% da vida e corta à metade o próximo golpe recebido |
-| Céu | Corrente de Ar | Zera o vento no turno e devolve 40% da energia |
-| Runa | Selo de Runa | Enche 35% da barra de POW |
+| Comum | R$ 14,90 | 2,99 |
+| Raro | R$ 24,90 | 4,99 |
+| Épico | R$ 39,90 | 7,99 |
+| Lendário | R$ 59,90 | 11,99 |
 
-A força é `value × escala da raridade (1,0 / 1,15 / 1,3 / 1,5) × (1 + 0,04 por estrela)`; tudo em `shared/balance/pets.json → battle`. O perfil só leva `{species, element, rarity, stars}` para a partida (`PlayerProfile.entry → pet_skill`); a conta é feita por `Pets.skill_value`, então todas as cópias da partida concordam.
+  Os outros preços (EUR, GBP, CAD, AUD, MXN, PLN) seguem a mesma proporção das skins. Cartão e Pix cobram em reais (Stripe), a Steam na moeda da carteira.
+- **Entrega**: o pedido pago vira uma carta do Correio com `{"pet": espécie, "bound": true}` (`PremiumStore.mail_items`). `Auction.grant_mail` entrega o mascote na coleção (`grant_pet(espécie, paid: true)`, que **nunca é recusado por falta de lugar**) e `undo_mail` o devolve se a transação do servidor precisar voltar. A API em Go guarda o item como JSON opaco, então nada mudou lá.
+- **Regras**: só espécies que existem (`PremiumStore.valid`), nada além do mascote na entrega, e quem já tem a espécie vê "VOCÊ TEM" e não consegue comprar de novo (`PremiumStore.owns_all` → `PlayerProfile.owns_species`), tanto na tela quanto no servidor (`store_buy` e `store_checkout`).
+- **Provador**: clicar num mascote o põe ao lado do personagem (`ShopScreen.trying_pet`, `SkinStage.add_pet`); no modo Batalha ele aparece como companheiro. Captura: `--screen=shop --tab=pet --pet=<espécie>`.
 
-**Lockstep**: usar a habilidade é uma **intenção** (`"pet"`, em `Replay.ACTIONS` e `MatchHost.ACTIONS`), como mover ou disparar. Ela entra no mesmo fluxo de comandos do servidor, por isso vale também nos replays e para espectadores. Não há `randf()` nela (o crítico garantido não sorteia nada). `tests/pet_skill_tests.gd` (38 verificações) cobre as regras de uso, cada um dos cinco efeitos, o teto de cura/energia/POW, a gravação como intenção e que um replay sem a intenção termina diferente.
+## O que existe
+
+| Coisa | Regra |
+|---|---|
+| **Espécies** | 20 (5 elementos × 4 raridades: Comum, Raro, Épico, Lendário). |
+| **Nível** | Só sobe na Caçada (`PetHunt.settle`). Nível 1 ao 30, XP por nível = 50 × nível. |
+| **Companheiro** | Um mascote ativo vai atrás do lutador em batalha (`PetCompanion`, `look.pet`). **Só visual**: sem bônus, sem habilidade, sem tecla. |
+| **Libertar** | Devolve moedas pela raridade (40 / 120 / 400 / 1.500); não vale para o companheiro. |
+| **Limite** | 120 mascotes por conta; um mascote **pago** nunca é recusado por isso. Mascotes não vão ao Leilão. |
+| **Álbum** | Mostra as espécies que o jogador já teve. Não dá bônus. |
+
+## De graça: só Comum e Raro, sem garantia
+
+- **Chefe de instância**: chance de soltar o **Comum do elemento da instância** no baú: 2% + 0,25% por nível de mapa (máx. 6%; 1% na entrada livre) (`Pets.boss_pet_chance`, números em `pets.json → drops`). Sem garantia, sem contador. Monstros comuns, elites e guardiões **não** soltam mascote.
+- **Caçada**: captura por selvagem derrotado, só **Comum (0,12%)** e **Raro (0,03%)**, +8% por nível de caça. Épico, Lendário e o chefe da zona nunca são capturados; só as primeiras 2 h de cada coleta rolam captura (o Passe do Caçador não dá mais sorteios).
+- **Presente inicial**: a missão "Além da Ilha" (primeira Instância) dá um Escaravelho Solar, igual para todos, para quem não comprou nenhum poder usar a Caçada (`missions.json → s_instance.reward.pet`).
+- Épico e Lendário só se compram.
+
+## Migração (save v12)
+
+Um save até a v11 é lido assim (`PlayerProfile.load_data`):
+
+- cada ovo no inventário (`egg_*`) vira moedas: **150** o de elemento, **220** o genérico `pet_egg` (`pets.json → egg_refund`);
+- uma espécie por conta: do que estiver repetido fica o de mais experiência, os outros viram as moedas de libertar;
+- estrelas, contadores de garantia (`pity`) e ovos da Caçada são descartados; o nível limite passa a 30 para todos.
 
 ## Arquivos
 
-`shared/balance/pets.json` (catálogo e números) · `client/systems/pets.gd` · `client/systems/profile.gd` (campos, operações, `pet_bonus`, cupom `OVOS`) · `client/systems/instance_run.gd` (drops) · `client/systems/rewards.gd` (XP de batalha) · `client/ui/pet_screen.gd`, `pet_stage.gd`, `pet_widgets.gd`, `hatch_outcome.gd` · `client/components/pet_companion.gd` · `tools/make_pet_audio.py` · `tests/pet_tests.gd` (65) e `tests/pet_visual_check.gd`.
+`shared/balance/pets.json` (catálogo e drops) · `shared/balance/store.json` (os 20 produtos) · `client/systems/pets.gd` · `client/systems/premium_store.gd` · `client/systems/auction.gd` (`grant_mail`, `undo_mail`) · `client/systems/profile.gd` (campos, operações, migração, cupom `MASCOTES`) · `client/systems/instance_run.gd` (drop do baú) · `client/ui/shop_screen.gd` (aba Mascotes) · `client/ui/pet_screen.gd`, `pet_stage.gd`, `pet_widgets.gd` · `client/components/pet_companion.gd` · `tests/pet_tests.gd` e `tests/pet_shop_tests.gd`.
 
-Salvamento versão 7 (`pets`, `pet_active`, `pet_album`); saves antigos carregam sem mascotes. `GAME_VERSION` 0.19 e `pets.json` entra no hash de conteúdo: o servidor precisa ser reimplantado. Cupons de teste: `OVOS` (10 de cada ovo) e o `TESTARTUDO` agora dá 20 de cada; `--demo=1` já traz cinco mascotes.
+Cupons de teste: `MASCOTES` (um de cada espécie) e o `TESTARTUDO` (também dá os 20). `--demo=1` já traz cinco mascotes.
 
-## Arte (PixelLab, 139 gerações; sobraram 2.003 até 24/10/2026)
+## O que saiu na 0.30
 
-- **20 espécies** em `assets/pets/<id>.png`, 128×128: `create_image_pro_flash` (6 gerações cada), descrição "cute chibi … collectible monster-game pet sprite, three-quarter side view facing right, clean dark outline" + o que a espécie tem de característico; sementes 11–38. As três artes antigas de 64 px (Fênix, Raposa Glacial, Rei Máscara) foram refeitas no mesmo estilo. A Raposa Glacial falhou na primeira tentativa (job 52cfb88b) e foi repetida com a semente 129.
-- **6 ovos** em `assets/pets/eggs/` (pixen 64×64, 1 geração): sol, máscara, gelo, céu, runa + o genérico que já existia. Gelo e céu foram refeitos com "smooth oval egg … plain egg shape, no face" (a primeira versão do céu saiu como uma criatura e a do gelo como uma bola de espinhos).
-- **5 ícones de elemento** em `assets/pets/elements/` (pixen 32×32 "bold simple icon").
-- **Santuário** `assets/ui/pets/sanctuary.png` (pixen 580×392, 1 geração): arcos de pedra, feixe de luz e um altar de ninho embaixo, onde o ovo/mascote pousa (`PetStage`).
-- **Sons** gerados por `tools/make_pet_audio.py` (numpy + scipy + ffmpeg): `pet_shake`, `pet_crack`, `pet_hatch_comum/raro/epico/lendario`, `pet_levelup`. Não foram ouvidos por uma pessoa.
+Ovos (seis tipos, `Pets.eggs/odds/roll_*`), a aba **Chocar** e a cena `HatchOutcome`, a garantia (pity) de Épico e Lendário, **alimentar** e **ganhar estrela** (e o XP de batalha), os atributos e talentos do mascote ativo (`Pets.attrs/talents/bonus`, `Armory.character_stats(…, pet_bonus)`), o bônus do álbum, a **habilidade em batalha** (tecla G, intenção `"pet"`, `battle` em `pets.json`) e as missões de chocar/alimentar. Os replays antigos que têm a intenção `"pet"` continuam abrindo: ela é aceita e não faz nada.
 
-Capturas: `docs/screens/pets_hatch.png`, `pets_pets.png`, `pets_album.png`, `pets_shake.png`, `pets_common.png`, `pets_legend.png`.
+Os sons `pet_shake`, `pet_crack` e `pet_hatch_*` (de `tools/make_pet_audio.py`) e as artes dos ovos em `assets/pets/eggs/` ficaram no repositório sem uso.
+
+## Arte (PixelLab, 139 gerações na 0.19)
+
+- **20 espécies** em `assets/pets/<id>.png`, 128×128 (`create_image_pro_flash`, descrição "cute chibi … collectible monster-game pet sprite, three-quarter side view facing right, clean dark outline").
+- **5 ícones de elemento** em `assets/pets/elements/` e o santuário `assets/ui/pets/sanctuary.png` (`PetStage`).
+- Capturas: `docs/screens/pets_shop.png`, `pets_pets.png` e `pets_album.png`.
 
 ## Em aberto
 
-- Os números (chances, bônus, custos) são pontos de partida: falta jogar e ver se o ovo cai com a frequência certa e se um Lendário não desequilibra.
-- A habilidade do mascote em batalha (0.22) usa uma vez por partida e ainda não foi sentida por ninguém: falta ver, com jogadores, se o +25% de dano ou a cura da Muralha Glacial desequilibram o PvP, e se a tecla G é descoberta sem tutorial.
-- Troca e venda de ovos no Leilão, e uma página de mascotes na wiki do site (`tools/build_site.py`).
+- **A Caçada ainda usa a raridade nos números de luta** (`hunt.stats`): um Lendário comprado luta com o dobro de vida e ataque de um Comum. Isso rende mais moedas e XP na Caçada, então vale decidir se a luta deve ignorar a raridade (só nível e elemento).
+- Cadastrar na Steam os itens 4001–4020 e conferir os preços; fazer uma compra real (cartão ou Pix) de um mascote.
+- Playtest dos 2% de drop de chefe e das capturas da Caçada (`tests/hunt_balance.gd`).
+- Uma página de mascotes (e dos preços) na wiki do site.

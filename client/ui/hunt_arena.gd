@@ -337,8 +337,6 @@ func _draw_hud(boss: bool) -> void:
 	if ended and bool(encounter.won) and banner_age < 99.0:
 		var loot: String = "+%d %s   +%d XP" % [int(encounter.coins), tr("moedas"), int(encounter.xp)]
 		HudPaint.outlined(self, Vector2(0, 124), loot, 20, Color(HudPaint.CREAM, clampf(banner_age * 3.0, 0.0, 1.0)), HudPaint.INK, size.x, HORIZONTAL_ALIGNMENT_CENTER)
-		if str(encounter.egg) != "":
-			HudPaint.outlined(self, Vector2(0, 150), tr("Achou um ovo: %s!") % Pets.egg_name(str(encounter.egg)), 20, Color("9fe6b5", clampf(banner_age * 3.0, 0.0, 1.0)), HudPaint.INK, size.x, HORIZONTAL_ALIGNMENT_CENTER)
 		for i in range((encounter.captured as Array).size()):
 			var species: String = str(encounter.captured[i])
 			HudPaint.outlined(self, Vector2(0, 176 + i * 26), tr("Capturou %s!") % Pets.species_name(species), 22, Color(Pets.rarity_color(str(Pets.species_def(species).rarity)).lightened(0.2), clampf(banner_age * 3.0, 0.0, 1.0)), HudPaint.INK, size.x, HORIZONTAL_ALIGNMENT_CENTER)

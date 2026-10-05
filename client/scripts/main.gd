@@ -154,8 +154,8 @@ func demo_loadout(kind: String) -> void:
 		profile.pick_skin_color(kind, str(args.color))
 	# 0.19 showcase: a few pets of every rarity, the Fênix Dourada by your side.
 	if profile.pets.is_empty():
-		for entry: Array in [["fenix_dourada", 12, 2], ["leao_dourado", 9, 1], ["raposa_glacial", 6, 0], ["chacal_ambar", 4, 0], ["escaravelho_solar", 2, 0]]:
-			profile.pets.append({"uid": profile.next_uid, "species": entry[0], "level": entry[1], "xp": 0, "stars": entry[2]})
+		for entry: Array in [["fenix_dourada", 12], ["leao_dourado", 9], ["raposa_glacial", 6], ["chacal_ambar", 4], ["escaravelho_solar", 2]]:
+			profile.pets.append({"uid": profile.next_uid, "species": entry[0], "level": entry[1], "xp": 0})
 			profile.next_uid += 1
 			profile.pet_album.append(entry[0])
 		profile.pet_active = int(profile.pets[0].uid)
@@ -177,7 +177,12 @@ func demo_hunt(seconds: int) -> void:
 	profile.hunt_set(str(args.get("zone", "sol")), int(args.get("tier", "1")), team)
 	profile.hunt.since = profile.hunt_now() - seconds
 	if args.has("boss"):
-		profile.hunt.legend = int(PetHunt.rules().boss.forced_after)
+		# Looks for a seed whose current encounter is the Lendário boss.
+		var current: int = int(profile.hunt.n) + PetHunt.pending_slots(profile, profile.hunt_now())
+		for candidate in range(2, 400000):
+			if PetHunt.slot_rng({"seed": candidate}, current).randf() < float(PetHunt.rules().boss.chance):
+				profile.hunt.seed = candidate
+				break
 
 func parse_args() -> Dictionary:
 	var result: Dictionary = {}
@@ -307,9 +312,9 @@ func open_named(target: String) -> void:
 			show_city()
 			shortcut(target)
 		"pet":
-			# Capture helper: the Casa dos Mascotes over the city (--tab=Mascotes|Álbum).
+			# Capture helper: the Casa dos Mascotes over the city (--tab=Mascotes|Álbum|Caçada).
 			show_city()
-			PetScreen.open(ui, self, str(args.get("tab", "Chocar")), str(args.get("egg", "")))
+			PetScreen.open(ui, self, str(args.get("tab", "Mascotes")))
 		"smith":
 			show_city()
 			shortcut("smith")
@@ -594,6 +599,14 @@ func refresh_room() -> void:
 				room.members[i] = player_entry()
 		screen.call_deferred("rebuild")
 
+# The shop on its Mascotes tab (the Casa dos Mascotes links here).
+func open_pet_shop() -> void:
+	var shop: ShopScreen = ShopScreen.new()
+	shop.app = self
+	shop.tab = "pet"
+	shop.closed.connect(refresh_room)
+	ui.add_child(shop)
+
 func shortcut(id: String) -> void:
 	audio.play("ui_click")
 	match id:
@@ -615,10 +628,12 @@ func shortcut(id: String) -> void:
 			var shop: ShopScreen = ShopScreen.new()
 			shop.app = self
 			shop.tab = str(args.get("tab", "arma"))
-			# Capture helpers: --try=<item> on the fitting stage, --view=battle, --dir=east.
+			# Capture helpers: --try=<item> on the fitting stage, --pet=<species> (tab pet), --view=battle, --dir=east.
 			if args.has("try"):
 				shop.trying = {"id": str(args.try), "quality": "normal", "level": 0}
 				shop.preview_color = str(args.get("color", ""))
+			if args.has("pet"):
+				shop.trying_pet = str(args.pet)
 			shop.preview_mode = str(args.get("view", "stand"))
 			shop.preview_direction = str(args.get("dir", "south"))
 			shop.closed.connect(refresh_room)

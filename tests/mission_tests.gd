@@ -144,13 +144,14 @@ func progress_checks() -> void:
 	MissionsBoard.progress_match(profile, game, fighter_for(0, 0, 0), other)
 	check(int(profile.missions.progress.boss_any) == 1 and int(profile.missions.weekly.progress.w_bosses) == 1, "a boss of any instance counts for the generic boss contracts")
 	# Profile operations.
-	force(profile, ["hatch", "hunt_collect", "pet_feed", "strengthen", "craft", "buy"], ["w_hatch", "w_hunt", "w_forge"])
-	for op: String in ["pet_hatch", "hunt_collect", "pet_feed", "strengthen", "craft", "craft_map", "buy_stone", "buy_tool", "buy"]:
+	force(profile, ["hunt_collect", "strengthen", "craft", "buy"], ["w_hunt", "w_forge"])
+	for op: String in ["hunt_collect", "strengthen", "craft", "craft_map", "buy_stone", "buy_tool", "buy"]:
 		check(MissionsBoard.note_op(profile, op), "'%s' is an event for the contracts" % op)
 	var after: Dictionary = profile.missions.progress
-	check(int(after.hatch) == 1 and int(after.hunt_collect) == 1 and int(after.pet_feed) == 1 and int(after.strengthen) == 1 and int(after.craft) == int(MissionsBoard.definition("craft").target) and int(after.buy) == int(MissionsBoard.definition("buy").target), "operations move their contracts up to their targets")
+	check(not MissionsBoard.note_op(profile, "pet_hatch") and not MissionsBoard.note_op(profile, "pet_feed"), "hatching and feeding are gone, so they are no events")
+	check(int(after.hunt_collect) == 1 and int(after.strengthen) == 1 and int(after.craft) == int(MissionsBoard.definition("craft").target) and int(after.buy) == int(MissionsBoard.definition("buy").target), "operations move their contracts up to their targets")
 	check(not MissionsBoard.note_op(profile, "toggle_equip") and not MissionsBoard.note_op(profile, "sell"), "other operations are not events")
-	check(int(profile.missions.weekly.progress.w_hatch) == 1 and int(profile.missions.weekly.progress.w_hunt) == 1 and int(profile.missions.weekly.progress.w_forge) == 1, "the weekly ones follow")
+	check(int(profile.missions.weekly.progress.w_hunt) == 1 and int(profile.missions.weekly.progress.w_forge) == 1, "the weekly ones follow")
 	# The operation that really ran through apply_op.
 	var real: PlayerProfile = PlayerProfile.new()
 	force(real, ["strengthen", "buy"], ["w_forge"])
@@ -192,10 +193,9 @@ func claim_checks() -> void:
 	for id: String in ["w_pvp_wins", "w_damage", "w_expedition"]:
 		week.progress[id] = int(MissionsBoard.definition(id).target)
 	var stones: int = int(profile.items.get("pedra_fortalecimento", 0))
-	var egg: int = int(profile.items.get("egg_sol", 0))
 	for id: String in ["w_pvp_wins", "w_damage", "w_expedition"]:
 		profile.apply_op("mission_claim", [id], balance)
-	check(int(profile.items.get("pedra_fortalecimento", 0)) == stones + 3 and int(profile.items.get("egg_sol", 0)) == egg + 1, "weekly rewards can carry items")
+	check(int(profile.items.get("pedra_fortalecimento", 0)) == stones + 4 and not profile.items.has("egg_sol"), "weekly rewards can carry items (and no egg)")
 	check(week.bonus and int(profile.items.get("strength_stone_ii", 0)) == 1, "the weekly bonus pays once, with its item")
 
 func renewal_checks() -> void:
@@ -246,7 +246,7 @@ func streak_checks() -> void:
 		var before: int = profile.coins
 		profile.apply_op("streak_claim", [], {})
 		check(profile.coins == before + int(ladder[day].coins), "day %d pays rung %d" % [day + 1, day + 1])
-	check(profile.missions.streak.count == 7 and int(profile.items.get("pet_egg", 0)) == 1, "the seventh day gives the egg")
+	check(profile.missions.streak.count == 7 and int(profile.items.get("pedra_fortalecimento", 0)) >= 2 and not profile.items.has("pet_egg"), "the seventh day gives stones, no egg")
 	# The ladder repeats.
 	MissionsBoard.clock_offset = at_day(MONDAY + 7) - int(Time.get_unix_time_from_system())
 	var again: int = profile.coins

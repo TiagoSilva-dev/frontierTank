@@ -1,41 +1,35 @@
 class_name PetScreen
 extends Control
 
-# Casa dos Mascotes (0.19), in the layout of the Forja Celeste: four tabs (the Caçada, 0.20,
-# is HuntTab). "Chocar" opens
-# the eggs (chances, guarantees and a cinematic reveal), "Mascotes" is the collection with
-# level, stars, the active pet and its bonuses, and "Álbum" lists every species with a
-# permanent bonus for each completed element. Offline the profile applies the operations,
-# online the game server does (`app.do_op`).
+# Casa dos Mascotes, in the layout of the Forja Celeste. Since 0.30 the pets are collectibles
+# sold in the shop: "Mascotes" is the collection (the companion that follows the character in
+# battle, release), "Álbum" lists every species and the Caçada (HuntTab) is where a pet gains
+# levels. Offline the profile applies the operations, online the game server does
+# (`app.do_op`).
 
 signal closed
 
-const TABS: Array[String] = ["Chocar", "Mascotes", "Álbum", "Caçada"]  # i18n
+const TABS: Array[String] = ["Mascotes", "Álbum", "Caçada"]  # i18n
 const PER_PAGE: int = 25
 
 var app: Node
-var tab: String = "Chocar"
-var egg_id: String = ""
+var tab: String = "Mascotes"
 var pet_uid: int = -1
 var page: int = 0
 var contents: Control
 var stage: PetStage
 var hunt_tab: HuntTab
-var busy: bool = false
 var message: String = ""
 
-static func open(host: Node, game: Node, first_tab: String = "Chocar", first_egg: String = "") -> PetScreen:
+static func open(host: Node, game: Node, first_tab: String = "Mascotes") -> PetScreen:
 	var screen: PetScreen = PetScreen.new()
 	screen.app = game
 	screen.tab = first_tab
-	screen.egg_id = first_egg
 	host.add_child(screen)
 	return screen
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
-	if not Pets.is_egg(egg_id):
-		egg_id = first_egg_owned()
 	var chosen: Dictionary = app.profile.find_pet(pet_uid)
 	if chosen.is_empty():
 		var list: Array[Dictionary] = sorted_pets()
@@ -46,12 +40,6 @@ func _ready() -> void:
 	hunt_tab.setup(app)
 	hunt_tab.changed.connect(build.bind(false))
 	build()
-
-func first_egg_owned() -> String:
-	for def: Dictionary in Pets.eggs():
-		if app.profile.egg_count(str(def.id)) > 0:
-			return str(def.id)
-	return str(Pets.eggs()[0].id)
 
 func sorted_pets() -> Array[Dictionary]:
 	var list: Array[Dictionary] = app.profile.pets.duplicate()
@@ -66,9 +54,12 @@ func build(rebuild_hunt: bool = true) -> void:
 	contents.size = size
 	add_child(contents)
 	move_child(contents, 0)
-	PremiumUi.window(contents, Rect2(24, 16, 1232, 688), tr("CASA DOS MASCOTES"), tr("MASCOTES  /  Do ovo ao companheiro lendário"))
+	PremiumUi.window(contents, Rect2(24, 16, 1232, 688), tr("CASA DOS MASCOTES"), tr("MASCOTES  /  Coleção e Caçada"))
 	var close_button: Button = UiKit.button(contents, tr("FECHAR"), Rect2(1110, 38, 120, 40), close)
 	close_button.name = "PetClose"
+	var shop_button: Button = UiKit.button(contents, tr("LOJA DE MASCOTES"), Rect2(1000, 98, 230, 38), open_shop, "button_blue", 16)
+	shop_button.name = "PetShop"
+	shop_button.tooltip_text = tr("Todos os mascotes estão à venda na aba Mascotes da Loja.")
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(860, 39, 30, 30))
 	UiKit.label(contents, str(app.profile.coins), Rect2(900, 35, 190, 38), 24, HudPaint.GOLD)
 	for i in range(TABS.size()):
@@ -78,8 +69,6 @@ func build(rebuild_hunt: bool = true) -> void:
 	stage = null
 	hunt_tab.visible = tab == "Caçada"
 	match tab:
-		"Chocar":
-			build_hatch()
 		"Mascotes":
 			build_pets()
 		"Caçada":
@@ -89,7 +78,7 @@ func build(rebuild_hunt: bool = true) -> void:
 		_:
 			build_album()
 	if message != "":
-		var note: Label = UiKit.label(contents, message, Rect2(620, 99, 604, 36), 16, HudPaint.GOLD_HOT, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
+		var note: Label = UiKit.label(contents, message, Rect2(640, 99, 350, 36), 16, HudPaint.GOLD_HOT, UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
 		note.name = "PetMessage"
 		note.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		note.tooltip_text = message
@@ -103,167 +92,6 @@ func note(text: String, rect: Rect2, font_size: int, color: Color) -> Label:
 	var node: Label = UiKit.label(contents, text, rect, font_size, color)
 	node.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	return UiKit.wrap(node, rect.size)
-
-# ---------- Chocar ----------
-
-func build_hatch() -> void:
-	panel(Rect2(40, 148, 282, 394))
-	panel(Rect2(930, 148, 310, 394))
-	panel(Rect2(40, 556, 1200, 130))
-	UiKit.label(contents, tr("SEUS OVOS"), Rect2(56, 157, 246, 28), 20, HudPaint.GOLD)
-	var eggs: Array = Pets.eggs()
-	for i in range(eggs.size()):
-		var def: Dictionary = eggs[i]
-		var id: String = str(def.id)
-		var count: int = app.profile.egg_count(id)
-		var tint: Color = Pets.element_color(str(def.element)) if str(def.element) != "" else HudPaint.GOLD
-		var card: Button = UiKit.button(contents, "", Rect2(52 + (i % 2) * 134, 196 + (i / 2 as int) * 112, 128, 106), pick_egg.bind(id), "card_hover" if id == egg_id else "slot")
-		card.name = "Egg_" + id
-		card.tooltip_text = Pets.egg_name(id)
-		if count > 0:
-			card.add_child(BagSlot.glow_node(Rect2(4, 4, 120, 98), tint))
-		var picture: TextureRect = PetWidgets.egg_art(card, id, Rect2(32, 4, 64, 64))
-		picture.modulate.a = 1.0 if count > 0 else 0.35
-		UiKit.clipped(card, Pets.egg_name(id), Rect2(0, 68, 128, 20), 14, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		UiKit.label(card, "x%d" % count, Rect2(0, 86, 128, 20), 15, UiKit.GOOD if count > 0 else PremiumUi.DISABLED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var def: Dictionary = Pets.egg_def(egg_id)
-	var element: String = str(def.element)
-	var tint: Color = Pets.element_color(element) if element != "" else HudPaint.GOLD
-	stage = PetStage.new()
-	stage.position = Vector2(336, 148)
-	stage.size = Vector2(580, 394)
-	stage.show_picture(PetWidgets.egg_texture(egg_id), tint, true)
-	stage.caption = Pets.egg_name(egg_id)
-	stage.sub_caption = tr("%d em estoque") % app.profile.egg_count(egg_id)
-	contents.add_child(stage)
-	# Right: chances, guarantees and what can hatch.
-	UiKit.label(contents, tr("CHANCES"), Rect2(946, 157, 278, 28), 20, HudPaint.GOLD)
-	var odds: Array = Pets.odds(egg_id)
-	var total: float = 0.0
-	for value in odds:
-		total += float(value)
-	for i in range(odds.size()):
-		var id: String = str(Pets.rarities()[i].id)
-		var fraction: float = float(odds[i]) / total
-		var y: float = 192 + i * 30
-		UiKit.label(contents, Pets.rarity_label(id), Rect2(946, y, 100, 26), 16, Pets.rarity_color(id))
-		var gauge: Control = Control.new()
-		gauge.position = Vector2(1040, y + 3)
-		var hue: Color = Pets.rarity_color(id)
-		gauge.draw.connect(func() -> void: HudPaint.gauge(gauge, Rect2(0, 0, 130, 16), fraction, hue.lightened(0.2), hue.darkened(0.35)))
-		contents.add_child(gauge)
-		UiKit.label(contents, "%d%%" % roundi(fraction * 100.0), Rect2(1176, y, 48, 26), 16, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
-	UiKit.label(contents, tr("GARANTIAS"), Rect2(946, 318, 278, 26), 18, HudPaint.GOLD)
-	for i in range(2):
-		var key: String = ["epico", "lendario"][i]
-		var left: int = Pets.pity_left(app.profile.pity, key)
-		var text: String = tr("%s: garantido no próximo ovo") % Pets.rarity_label(key) if left <= 1 else tr("%s: garantido em %d ovos") % [Pets.rarity_label(key), left]
-		var line: Label = UiKit.label(contents, text, Rect2(946, 346 + i * 24, 280, 24), 15, Pets.rarity_color(key).lightened(0.2))
-		line.tooltip_text = tr("A cada ovo sem esta raridade, a garantia chega mais perto.")
-	UiKit.label(contents, tr("PODE NASCER"), Rect2(946, 398, 278, 24), 18, HudPaint.GOLD)
-	if element == "":
-		UiKit.label(contents, tr("Qualquer elemento"), Rect2(946, 426, 278, 22), 16, HudPaint.CREAM)
-		for i in range(Pets.elements().size()):
-			var entry: Dictionary = Pets.elements()[i]
-			var icon: TextureRect = UiKit.art(contents, str(entry.icon), Rect2(948 + i * 54, 452, 46, 46))
-			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			icon.tooltip_text = Pets.element_name(str(entry.id))
-	else:
-		var list: Array[Dictionary] = Pets.species_of_element(element)
-		for i in range(list.size()):
-			var found: bool = app.profile.pet_album.has(list[i].id)
-			var box: Control = panel(Rect2(948 + i * 70, 430, 64, 64))
-			box.mouse_filter = Control.MOUSE_FILTER_PASS
-			box.tooltip_text = Pets.species_name(str(list[i].id)) + "  (" + Pets.rarity_label(str(list[i].rarity)) + ")" if found else Pets.rarity_label(str(list[i].rarity)) + "  ???"
-			if found:
-				box.add_child(BagSlot.glow_node(Rect2(2, 2, 60, 60), Pets.rarity_color(str(list[i].rarity))))
-			PetWidgets.art(box, str(list[i].id), Rect2(2, 2, 60, 60), found)
-	var count: int = app.profile.egg_count(egg_id)
-	var button: Button = UiKit.button(contents, tr("CHOCAR OVO"), Rect2(948, 498, 274, 36), do_hatch, "button_green", 22)
-	button.name = "HatchButton"
-	button.set_meta("active", true)
-	button.disabled = count <= 0 or busy
-	button.tooltip_text = tr("Ovos caem das instâncias: chefes, elites e guardiões, e nos baús de recompensa.") if count <= 0 else tr("Abre um ovo e revela o mascote.")
-	# Bottom: the album by element.
-	UiKit.label(contents, tr("ÁLBUM DE ELEMENTOS"), Rect2(56, 562, 420, 24), 16, HudPaint.GOLD)
-	UiKit.label(contents, tr("Complete os 4 mascotes de um elemento para um bônus permanente"), Rect2(480, 562, 740, 24), 16, Color("afbed1"), UiKit.INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	for i in range(Pets.elements().size()):
-		element_box(Rect2(54 + i * 238, 594, 230, 82), Pets.elements()[i])
-
-func element_box(rect: Rect2, entry: Dictionary) -> void:
-	var box: Control = panel(rect)
-	box.mouse_filter = Control.MOUSE_FILTER_PASS
-	var id: String = str(entry.id)
-	var list: Array[Dictionary] = Pets.species_of_element(id)
-	var found: int = 0
-	for species: Dictionary in list:
-		if app.profile.pet_album.has(species.id):
-			found += 1
-	var complete: bool = found == list.size()
-	var tint: Color = Pets.element_color(id)
-	if complete:
-		box.add_child(BagSlot.glow_node(Rect2(4, 4, rect.size.x - 8, rect.size.y - 8), tint))
-	var icon: TextureRect = UiKit.art(box, str(entry.icon), Rect2(8, 14, 52, 52))
-	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	UiKit.label(box, Pets.element_name(id), Rect2(68, 6, 156, 24), 18, tint.lightened(0.25))
-	UiKit.label(box, "%d / %d" % [found, list.size()], Rect2(68, 30, 156, 22), 16, HudPaint.CREAM)
-	var bonus: String = ", ".join(bonus_lines(entry.album))
-	var line: Label = UiKit.clipped(box, bonus, Rect2(68, 54, 156, 22), 15, UiKit.GOOD if complete else Color("7d8ca1"))
-	line.tooltip_text = (tr("Bônus ativo: %s") if complete else tr("Ao completar: %s")) % bonus
-
-# "+24 Ataque", "+150 de vida máxima" for an album bonus.
-func bonus_lines(bonus: Dictionary) -> Array[String]:
-	var lines: Array[String] = []
-	for key: String in bonus:
-		if Armory.ATTRS.has(key):
-			lines.append("+%d %s" % [int(bonus[key]), Armory.attr_name(key)])
-		else:
-			lines.append(Pets.talent_text(key, int(bonus[key])))
-	return lines
-
-func pick_egg(id: String) -> void:
-	egg_id = id
-	message = ""
-	build()
-
-func do_hatch() -> void:
-	if busy or app.profile.egg_count(egg_id) <= 0:
-		return
-	busy = true
-	var chosen_egg: String = egg_id
-	var first_uid: int = app.profile.next_uid
-	var album_before: Array[String] = app.profile.pet_album.duplicate()
-	var blocker: Control = Control.new()
-	blocker.size = size
-	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(blocker)
-	var error: String = (await app.do_op("pet_hatch", [chosen_egg])).error
-	if not is_inside_tree():
-		return
-	blocker.queue_free()
-	if error != "":
-		busy = false
-		report(error, "")
-		return
-	var born: Dictionary = {}
-	for pet: Dictionary in app.profile.pets:
-		if int(pet.uid) >= first_uid:
-			born = pet
-	if born.is_empty():
-		busy = false
-		build()
-		return
-	var moment: HatchOutcome = HatchOutcome.new()
-	moment.egg_id = chosen_egg
-	moment.pet = born.duplicate(true)
-	moment.is_new = not album_before.has(str(born.species))
-	moment.audio = app.audio
-	add_child(moment)
-	await moment.completed
-	busy = false
-	pet_uid = int(born.uid)
-	message = tr("Nasceu %s!") % Pets.species_name(str(born.species))
-	build()
 
 # ---------- Mascotes ----------
 
@@ -288,9 +116,9 @@ func build_pets() -> void:
 	var pet: Dictionary = app.profile.find_pet(pet_uid)
 	if pet.is_empty():
 		UiKit.label(contents, tr("Você ainda não tem mascotes."), Rect2(604, 270, 604, 40), 24, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-		var hint: Label = note(tr("Ovos caem das instâncias. Abra-os na aba Chocar para ganhar um companheiro de batalha."), Rect2(660, 322, 504, 70), 18, Color("afbed1"))
+		var hint: Label = note(tr("Os mascotes são vendidos na Loja. Comuns e Raros também podem cair de chefes e ser capturados na Caçada."), Rect2(660, 322, 504, 90), 18, Color("afbed1"))
 		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		UiKit.button(contents, tr("IR CHOCAR"), Rect2(850, 420, 200, 42), select_tab.bind("Chocar"), "button_green", 20)
+		UiKit.button(contents, tr("IR À LOJA"), Rect2(850, 430, 200, 42), open_shop, "button_green", 20)
 		return
 	build_detail(pet)
 
@@ -303,8 +131,6 @@ func pet_slot(pet: Dictionary, rect: Rect2) -> void:
 	slot.add_child(BagSlot.glow_node(Rect2(4, 3, rect.size.x - 8, rect.size.y - 6), Pets.rarity_color(str(def.rarity))))
 	PetWidgets.art(slot, str(pet.species), Rect2(12, 0, 70, 70))
 	UiKit.label(slot, tr("Nv %d") % int(pet.level), Rect2(4, 0, 60, 20), 14, HudPaint.CREAM, UiKit.INK)
-	if int(pet.stars) > 0:
-		PetWidgets.stars(slot, Vector2(6, 62), int(pet.stars), int(pet.stars), 5.0)
 	if uid == int(app.profile.pet_active):
 		UiKit.label(slot, "E", Rect2(76, 58, 16, 20), 13, Color("9aff7a"), UiKit.INK)
 
@@ -314,8 +140,7 @@ func build_detail(pet: Dictionary) -> void:
 	var def: Dictionary = Pets.species_def(species)
 	var rarity: String = str(def.rarity)
 	var color: Color = Pets.rarity_color(rarity)
-	var stars: int = int(pet.stars)
-	var cap: int = Pets.cap(stars)
+	var cap: int = Pets.cap()
 	var active: bool = uid == int(app.profile.pet_active)
 	stage = PetStage.new()
 	stage.position = Vector2(602, 158)
@@ -335,54 +160,18 @@ func build_detail(pet: Dictionary) -> void:
 	var fraction: float = 1.0 if capped else float(pet.xp) / float(need)
 	gauge.draw.connect(func() -> void: HudPaint.gauge(gauge, Rect2(0, 0, 306, 16), fraction, Color("9fe6b5"), Color("2d8a5a")))
 	contents.add_child(gauge)
-	var star_box: Control = PetWidgets.stars(contents, Vector2(906, 278), stars, int(Pets.data().max_stars), 11.0)
-	star_box.name = "PetStars"
-	star_box.tooltip_text = tr("Cada estrela aumenta os bônus e o nível máximo do mascote.")
-	var spare: Array[Dictionary] = duplicates_of(pet)
-	UiKit.label(contents, tr("Duplicatas: %d") % spare.size(), Rect2(1056, 278, 156, 24), 15, UiKit.GOOD if not spare.is_empty() else Color("7d8ca1"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)
-	UiKit.label(contents, tr("PODER"), Rect2(906, 312, 306, 24), 17, HudPaint.GOLD)
-	var lines: Array[String] = Pets.describe(pet)
-	for i in range(mini(lines.size(), 6)):
-		var is_attr: bool = i < Pets.attrs(pet).size()
-		UiKit.label(contents, lines[i], Rect2(906, 338 + i * 20, 306, 22), 15, HudPaint.CREAM if is_attr else Color("9ae8ff"))
+	UiKit.label(contents, tr("SÓ APARÊNCIA"), Rect2(906, 290, 306, 24), 17, HudPaint.GOLD)
+	note(tr("Mascotes não dão atributos nem poder em batalha: ele só acompanha o seu personagem."), Rect2(906, 316, 306, 64), 15, HudPaint.CREAM)
 	note(tr(str(def.desc)), Rect2(606, 468, 280, 60), 16, Color("c8d4e4"))
-	# 0.22: the skill it lends its owner in battle (one use per battle, key G).
-	var battle_skill: Dictionary = Pets.skill_entry(pet)
-	if not battle_skill.is_empty():
-		UiKit.label(contents, tr("HABILIDADE EM BATALHA (G)"), Rect2(606, 528, 280, 22), 15, HudPaint.GOLD)
-		var skill_def: Dictionary = Pets.skill_def(str(battle_skill.element))
-		note("%s: %s" % [tr(str(skill_def.name)), Pets.skill_text(battle_skill)], Rect2(606, 552, 280, 70), 14, Color(str(skill_def.color)).lightened(0.3))
-	UiKit.label(contents, tr("COMO EVOLUIR"), Rect2(906, 462, 306, 24), 17, HudPaint.GOLD)
-	note(tr("Alimentar: +%d XP por %d moedas.") % [int(Pets.data().xp.feed_xp), int(Pets.data().xp.feed_coins)], Rect2(906, 488, 306, 40), 15, HudPaint.CREAM)
-	if stars < int(Pets.data().max_stars):
-		note(tr("Estrela: 1 duplicata + %d moedas. O nível máximo sobe para %d.") % [int(Pets.data().evolve_coins[stars]), Pets.cap(stars + 1)], Rect2(906, 532, 306, 60), 15, HudPaint.CREAM)
-	else:
-		UiKit.label(contents, tr("Estrelas no máximo."), Rect2(906, 532, 306, 24), 15, HudPaint.GOLD)
+	UiKit.label(contents, tr("COMO SUBIR DE NÍVEL"), Rect2(906, 396, 306, 24), 17, HudPaint.GOLD)
+	note(tr("Só na Caçada: coloque o mascote no time e colete a experiência que ele ganhar."), Rect2(906, 422, 306, 64), 15, HudPaint.CREAM)
+	UiKit.button(contents, tr("IR PARA A CAÇADA"), Rect2(906, 494, 306, 38), select_tab.bind("Caçada"), "button_green", 16)
 	var equip: Button = UiKit.button(contents, tr("DESATIVAR") if active else tr("ATIVAR"), Rect2(604, 632, 140, 38), do_equip, "button_blue", 18)
 	equip.name = "PetEquip"
-	var feed: Button = UiKit.button(contents, tr("ALIMENTAR"), Rect2(752, 632, 150, 38), do_feed, "button_green", 18)
-	feed.name = "PetFeed"
-	feed.disabled = capped or app.profile.coins < int(Pets.data().xp.feed_coins)
-	feed.tooltip_text = tr("Nível máximo para %d estrelas. Evolua o mascote para subir mais.") % stars if capped else tr("Gasta moedas e dá experiência ao mascote.")
-	var evolve: Button = UiKit.button(contents, tr("GANHAR ESTRELA"), Rect2(910, 632, 150, 38), do_evolve.bind(spare), "button_green", 16)
-	evolve.name = "PetEvolve"
-	evolve.set_meta("active", true)
-	var price: int = int(Pets.data().evolve_coins[stars]) if stars < int(Pets.data().max_stars) else 0
-	evolve.disabled = stars >= int(Pets.data().max_stars) or spare.is_empty() or app.profile.coins < price
-	evolve.tooltip_text = tr("Consome uma duplicata da mesma espécie. A metade da experiência dela passa para este mascote.")
-	var release: Button = UiKit.button(contents, tr("LIBERTAR"), Rect2(1068, 632, 144, 38), do_release, "button_red", 18)
+	var release: Button = UiKit.button(contents, tr("LIBERTAR"), Rect2(752, 632, 144, 38), do_release, "button_red", 18)
 	release.name = "PetRelease"
 	release.disabled = active
 	release.tooltip_text = tr("Tire o mascote ativo antes de libertá-lo.") if active else tr("Liberta o mascote e devolve %d moedas.") % int(Pets.rarity_def(rarity).release)
-
-# Other pets of the same species that can be consumed (never the active one).
-func duplicates_of(pet: Dictionary) -> Array[Dictionary]:
-	var list: Array[Dictionary] = []
-	for other: Dictionary in app.profile.pets:
-		if int(other.uid) != int(pet.uid) and other.species == pet.species and int(other.uid) != int(app.profile.pet_active):
-			list.append(other)
-	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return Pets.total_xp(a) < Pets.total_xp(b))
-	return list
 
 func pick_pet(uid: int) -> void:
 	pet_uid = uid
@@ -397,24 +186,6 @@ func do_equip() -> void:
 	var was_active: bool = pet_uid == int(app.profile.pet_active)
 	var error: String = (await app.do_op("pet_equip", [pet_uid])).error
 	report(error, tr("Mascote guardado.") if was_active else tr("%s agora acompanha você nas batalhas.") % Pets.species_name(str(app.profile.find_pet(pet_uid).get("species", ""))))
-
-func do_feed() -> void:
-	var before: int = int(app.profile.find_pet(pet_uid).get("level", 1))
-	var error: String = (await app.do_op("pet_feed", [pet_uid])).error
-	var after: int = int(app.profile.find_pet(pet_uid).get("level", 1))
-	if error == "" and after > before:
-		app.audio.play("pet_levelup")
-		report("", tr("Subiu para o nível %d!") % after)
-	else:
-		report(error, tr("+%d XP") % int(Pets.data().xp.feed_xp))
-
-func do_evolve(spare: Array[Dictionary]) -> void:
-	if spare.is_empty():
-		return
-	var error: String = (await app.do_op("pet_evolve", [pet_uid, int(spare[0].uid)])).error
-	if error == "":
-		app.audio.play("pet_levelup")
-	report(error, tr("Nova estrela! Os bônus do mascote aumentaram."))
 
 func do_release() -> void:
 	var pet: Dictionary = app.profile.find_pet(pet_uid)
@@ -450,9 +221,25 @@ func build_album() -> void:
 		var list: Array[Dictionary] = Pets.species_of_element(str(entry.id))
 		for row in range(list.size()):
 			species_card(Rect2(x, 280 + row * 94, 222, 88), list[row])
-	var all_bonus: String = ", ".join(bonus_lines(Pets.data().album_all))
-	var done: bool = app.profile.pet_album.size() >= total
-	UiKit.label(contents, (tr("Álbum completo: %s") if done else tr("Todos os elementos completos: %s")) % all_bonus, Rect2(72, 654, 1136, 22), 16, UiKit.GOOD if done else Color("afbed1"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+	UiKit.label(contents, tr("Todos os mascotes estão à venda na Loja. Comuns e Raros também aparecem na Caçada."), Rect2(72, 654, 1136, 22), 16, Color("afbed1"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
+
+# One element: its icon, the name and how many of its species the player has found.
+func element_box(rect: Rect2, entry: Dictionary) -> void:
+	var box: Control = panel(rect)
+	box.mouse_filter = Control.MOUSE_FILTER_PASS
+	var id: String = str(entry.id)
+	var list: Array[Dictionary] = Pets.species_of_element(id)
+	var found: int = 0
+	for species: Dictionary in list:
+		if app.profile.pet_album.has(species.id):
+			found += 1
+	var tint: Color = Pets.element_color(id)
+	if found == list.size():
+		box.add_child(BagSlot.glow_node(Rect2(4, 4, rect.size.x - 8, rect.size.y - 8), tint))
+	var icon: TextureRect = UiKit.art(box, str(entry.icon), Rect2(8, 14, 52, 52))
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	UiKit.label(box, Pets.element_name(id), Rect2(68, 12, 156, 24), 18, tint.lightened(0.25))
+	UiKit.label(box, "%d / %d" % [found, list.size()], Rect2(68, 42, 156, 22), 16, HudPaint.CREAM)
 
 func species_card(rect: Rect2, def: Dictionary) -> void:
 	var id: String = str(def.id)
@@ -467,15 +254,9 @@ func species_card(rect: Rect2, def: Dictionary) -> void:
 	UiKit.clipped(card, Pets.species_name(id) if found else "???", Rect2(82, 10, 138, 24), 15, color.lightened(0.2) if found else PremiumUi.DISABLED)
 	UiKit.label(card, Pets.rarity_label(str(def.rarity)), Rect2(82, 36, 138, 22), 15, color if found else PremiumUi.DISABLED)
 	if found:
-		var best: int = 0
-		for pet: Dictionary in app.profile.pets:
-			if pet.species == id:
-				best = maxi(best, int(pet.stars))
-		PetWidgets.stars(card, Vector2(84, 62), best, int(Pets.data().max_stars), 7.0)
-		var sample: Dictionary = {"species": id, "level": int(Pets.data().max_level), "stars": 0, "xp": 0, "uid": 0}
-		card.tooltip_text = "%s\n%s\n\n%s\n%s" % [Pets.species_name(id), tr(str(def.desc)), tr("No nível máximo, sem estrelas:"), "\n".join(Pets.describe(sample))]
+		card.tooltip_text = "%s\n%s" % [Pets.species_name(id), tr(str(def.desc))]
 	else:
-		card.tooltip_text = tr("Ainda não encontrado. Choque ovos do elemento %s.") % Pets.element_name(str(def.element))
+		card.tooltip_text = tr("Ainda não encontrado. Está à venda na Loja, aba Mascotes.")
 
 # ---------- shared ----------
 
@@ -485,13 +266,14 @@ func select_tab(value: String) -> void:
 	message = ""
 	build()
 
+func open_shop() -> void:
+	app.open_pet_shop()
+
 func report(error: String, success: String) -> void:
 	message = error if error != "" else success
 	app.audio.play("ui_error" if error != "" else "ui_confirm")
 	build()
 
 func close() -> void:
-	if busy:
-		return
 	closed.emit()
 	queue_free()

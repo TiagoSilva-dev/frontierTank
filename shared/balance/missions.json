@@ -47,19 +47,9 @@
         "coins": 200,
         "exp": 150,
         "items": {
-          "egg_sol": 1
-        }
-      }
-    },
-    {
-      "id": "s_hatch",
-      "name": "Vida Nova",
-      "description": "Choque um ovo na Casa dos Mascotes.",
-      "event": "hatch",
-      "target": 1,
-      "reward": {
-        "coins": 150,
-        "exp": 100
+          "pedra_fortalecimento": 1
+        },
+        "pet": "escaravelho_solar"
       }
     },
     {
@@ -177,18 +167,6 @@
       }
     },
     {
-      "id": "hatch",
-      "name": "Berço de Mascotes",
-      "description": "Choque um ovo na Casa dos Mascotes.",
-      "event": "hatch",
-      "target": 1,
-      "category": "pets",
-      "reward": {
-        "coins": 110,
-        "exp": 100
-      }
-    },
-    {
       "id": "hunt_collect",
       "name": "Colheita da Caçada",
       "description": "Colete o que a sua Caçada rendeu.",
@@ -198,18 +176,6 @@
       "reward": {
         "coins": 100,
         "exp": 90
-      }
-    },
-    {
-      "id": "pet_feed",
-      "name": "Mascote Bem Alimentado",
-      "description": "Alimente um mascote.",
-      "event": "pet_feed",
-      "target": 1,
-      "category": "pets",
-      "reward": {
-        "coins": 80,
-        "exp": 70
       }
     },
     {
@@ -306,7 +272,7 @@
         "coins": 600,
         "exp": 500,
         "items": {
-          "egg_sol": 1
+          "pedra_fortalecimento": 1
         }
       }
     },
@@ -332,21 +298,6 @@
       "reward": {
         "coins": 450,
         "exp": 400
-      }
-    },
-    {
-      "id": "w_hatch",
-      "name": "Criador de Mascotes",
-      "description": "Choque 3 ovos.",
-      "event": "hatch",
-      "target": 3,
-      "category": "pets",
-      "reward": {
-        "coins": 450,
-        "exp": 400,
-        "items": {
-          "pet_egg": 1
-        }
       }
     },
     {
@@ -446,7 +397,7 @@
         "coins": 400,
         "exp": 300,
         "items": {
-          "pet_egg": 1
+          "pedra_fortalecimento": 2
         }
       }
     ]

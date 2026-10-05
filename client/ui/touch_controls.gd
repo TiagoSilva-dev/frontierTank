@@ -214,11 +214,9 @@ func arrange_hud() -> void:
 		for state: String in ["normal", "hover", "pressed"]:
 			button.add_theme_stylebox_override(state, UiKit.frame("dark" if state != "hover" else "slot_hover"))
 		button.flat = false
-	# The row, left to right: tools Z X C, then pet G, auxiliary V, plane F, then the drawer.
+	# The row, left to right: tools Z X C, then auxiliary V, plane F, then the drawer.
 	var row: Array[SkillSlot] = []
 	row.append_array(hud.tool_buttons)
-	if is_instance_valid(hud.pet_button):
-		row.append(hud.pet_button)
 	row.append(hud.aux_button)
 	row.append(hud.fly_button)
 	var count: int = row.size()

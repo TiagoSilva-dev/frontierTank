@@ -43,14 +43,13 @@ func profile() -> PlayerProfile:
 	p.hunt_clock = 1000000
 	return p
 
-# Gives the profile one pet of each wanted species at the level/stars and returns uids.
-func add_pets(p: PlayerProfile, species: Array, level: int = 10, stars: int = 0) -> Array:
+# Gives the profile one pet of each wanted species at the level and returns uids.
+func add_pets(p: PlayerProfile, species: Array, level: int = 10) -> Array:
 	var uids: Array = []
 	for id: String in species:
 		p.grant_pet(id)
 		var pet: Dictionary = p.pets[p.pets.size() - 1]
 		pet.level = level
-		pet.stars = stars
 		uids.append(int(pet.uid))
 	return uids
 
@@ -87,25 +86,25 @@ func rules_tests() -> void:
 	check(wins, "every element beats one and loses to one, symmetrically")
 	check(PetHunt.cycle() == 12 and int(rules.cap_free) == 7200 and int(rules.cap_pass) == 28800, "12 s encounters, 2 h free cap, 8 h with the pass")
 	check(Pets.species_of_element("sol").any(func(s: Dictionary) -> bool: return PetHunt.wild_species("sol", 3) == s.id and s.rarity == "lendario"), "the boss of a zone is its Lendário")
-	var unit: Dictionary = PetHunt.make_unit("leao_dourado", 10, 0)
-	var stronger: Dictionary = PetHunt.make_unit("leao_dourado", 20, 2)
-	check(float(stronger.atk) > float(unit.atk) * 1.8 and int(stronger.hp) > int(unit.hp) * 1.8, "levels and stars make the unit stronger")
-	check(PetHunt.make_unit("fenix_dourada", 10, 0).hp > PetHunt.make_unit("escaravelho_solar", 10, 0).hp, "a Lendário has more life than a Comum at the same level")
+	var unit: Dictionary = PetHunt.make_unit("leao_dourado", 10)
+	var stronger: Dictionary = PetHunt.make_unit("leao_dourado", 20)
+	check(float(stronger.atk) > float(unit.atk) * 1.5 and int(stronger.hp) > int(unit.hp) * 1.5 and not unit.has("stars"), "levels make the unit stronger (there are no stars)")
+	check(PetHunt.make_unit("fenix_dourada", 10).hp > PetHunt.make_unit("escaravelho_solar", 10).hp, "a Lendário has more life than a Comum at the same level")
 	check(PetHunt.wild_level(8) > PetHunt.wild_level(1), "the wild is stronger in higher tiers")
 
 func fight_tests() -> void:
-	var team: Array = PetHunt.team_units([{"species": "leao_dourado", "level": 14, "stars": 1}, {"species": "raposa_glacial", "level": 14, "stars": 1}])
+	var team: Array = PetHunt.team_units([{"species": "leao_dourado", "level": 14}, {"species": "raposa_glacial", "level": 14}])
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 7
-	var weak: Array = [PetHunt.make_unit("escaravelho_solar", 2, 0)]
+	var weak: Array = [PetHunt.make_unit("escaravelho_solar", 2)]
 	var easy: Dictionary = PetHunt.fight(team, weak, rng)
 	check(easy.won and int(easy.alive) == 2, "a strong team crushes a level 2 Comum")
 	check((easy.log as Array).any(func(e: Dictionary) -> bool: return e.k == "hit") and (easy.log as Array).any(func(e: Dictionary) -> bool: return e.k == "down"), "the log records hits and knock-outs")
-	var giant: Array = [PetHunt.make_unit("fenix_dourada", 30, 5), PetHunt.make_unit("fenix_dourada", 30, 5)]
+	var giant: Array = [PetHunt.make_unit("fenix_dourada", 30), PetHunt.make_unit("fenix_dourada", 30)]
 	rng.seed = 7
-	var lost: Dictionary = PetHunt.fight(PetHunt.team_units([{"species": "brasinha", "level": 1, "stars": 0}]), giant, rng)
+	var lost: Dictionary = PetHunt.fight(PetHunt.team_units([{"species": "brasinha", "level": 1}]), giant, rng)
 	check(not lost.won and int(lost.alive) == 0, "a level 1 Comum loses to two maxed Lendários")
-	var capped: Dictionary = PetHunt.fight(PetHunt.team_units([{"species": "pinguim_cristal", "level": 30, "stars": 5}]), [PetHunt.make_unit("pinguim_cristal", 30, 5)], rng)
+	var capped: Dictionary = PetHunt.fight(PetHunt.team_units([{"species": "pinguim_cristal", "level": 30}]), [PetHunt.make_unit("pinguim_cristal", 30)], rng)
 	check(int(capped.rounds) <= int(PetHunt.rules().rounds_max), "a fight never goes past the round limit")
 	# Wheel: Sol hits Gelo harder than Gelo hits Sol.
 	var hits: Array = []
@@ -118,13 +117,13 @@ func fight_tests() -> void:
 		hits.append(int(log[0].dmg))
 	check(hits[0] > hits[2] and hits[2] > hits[1], "the element wheel changes the damage (%s)" % str(hits))
 	# Skills: Gelo heals, Runa buffs.
-	var healer: Dictionary = PetHunt.make_unit("pinguim_cristal", 10, 0)
+	var healer: Dictionary = PetHunt.make_unit("pinguim_cristal", 10)
 	healer.id = 0
 	healer.acts = 2
-	var hurt: Dictionary = PetHunt.make_unit("brasinha", 10, 0)
+	var hurt: Dictionary = PetHunt.make_unit("brasinha", 10)
 	hurt.id = 1
 	hurt.hp = 10
-	var enemy: Dictionary = PetHunt.make_unit("brasinha", 10, 0)
+	var enemy: Dictionary = PetHunt.make_unit("brasinha", 10)
 	enemy.id = 100
 	for u: Dictionary in [healer, hurt, enemy]:
 		u.buff = 0.0
@@ -132,7 +131,7 @@ func fight_tests() -> void:
 	var healed_log: Array = []
 	PetHunt._act(healer, [healer, hurt], [enemy], rng, healed_log)
 	check(int(hurt.hp) > 10 and healed_log.any(func(e: Dictionary) -> bool: return e.k == "heal"), "the Gelo skill heals the allies")
-	var warrior: Dictionary = PetHunt.make_unit("corvo_runico", 10, 0)
+	var warrior: Dictionary = PetHunt.make_unit("corvo_runico", 10)
 	warrior.id = 0
 	warrior.acts = 2
 	warrior.buff = 0.0
@@ -142,33 +141,33 @@ func fight_tests() -> void:
 
 func determinism_tests() -> void:
 	var state: Dictionary = {"zone": "gelo", "tier": 3, "seed": 31337}
-	var units: Array = PetHunt.team_units([{"species": "leao_dourado", "level": 12, "stars": 1}, {"species": "grifinho", "level": 12, "stars": 1}, {"species": "urso_berserker", "level": 12, "stars": 1}])
-	var a: Dictionary = PetHunt.slot(state, units, 55, 0)
-	var b: Dictionary = PetHunt.slot(state, units, 55, 0)
+	var units: Array = PetHunt.team_units([{"species": "leao_dourado", "level": 12}, {"species": "grifinho", "level": 12}, {"species": "urso_berserker", "level": 12}])
+	var a: Dictionary = PetHunt.slot(state, units, 55)
+	var b: Dictionary = PetHunt.slot(state, units, 55)
 	check(JSON.stringify(a) == JSON.stringify(b), "the same encounter always plays out the same way")
-	var c: Dictionary = PetHunt.slot(state, units, 56, 0)
+	var c: Dictionary = PetHunt.slot(state, units, 56)
 	check(JSON.stringify(a.wilds) != JSON.stringify(c.wilds) or a.rounds != c.rounds, "different encounters differ")
-	var whole: Dictionary = PetHunt.run(state, units, 0, 120, 0)
-	var first: Dictionary = PetHunt.run(state, units, 0, 50, 0)
-	var second: Dictionary = PetHunt.run(state, units, 50, 70, int(first.legend))
-	var sum_wins: int = int(first.report.wins) + int(second.report.wins)
-	check(sum_wins == int(whole.report.wins) and int(first.report.coins) + int(second.report.coins) == int(whole.report.coins) and int(first.report.xp) + int(second.report.xp) == int(whole.report.xp), "settling in pieces earns exactly what settling at once earns")
+	var whole: Dictionary = PetHunt.run(state, units, 0, 120)
+	var first: Dictionary = PetHunt.run(state, units, 0, 50)
+	var second: Dictionary = PetHunt.run(state, units, 50, 70)
+	var sum_wins: int = int(first.wins) + int(second.wins)
+	check(sum_wins == int(whole.wins) and int(first.coins) + int(second.coins) == int(whole.coins) and int(first.xp) + int(second.xp) == int(whole.xp), "settling in pieces earns exactly what settling at once earns")
 	var other: Dictionary = {"zone": "gelo", "tier": 3, "seed": 99}
-	check(int(PetHunt.run(other, units, 0, 120, 0).report.coins) != int(whole.report.coins), "another seed gives another hunt")
+	check(int(PetHunt.run(other, units, 0, 120).coins) != int(whole.coins), "another seed gives another hunt")
 	var started: int = Time.get_ticks_msec()
-	PetHunt.run(state, units, 0, 2400, 0)
+	PetHunt.run(state, units, 0, 2400)
 	var took: int = Time.get_ticks_msec() - started
 	check(took < 4000, "8 hours of encounters settle fast (%d ms)" % took)
-	var weak: Array = PetHunt.team_units([{"species": "escaravelho_solar", "level": 3, "stars": 0}])
-	var strong: Array = PetHunt.team_units([{"species": "fenix_dourada", "level": 30, "stars": 5}, {"species": "lobo_fenrir", "level": 30, "stars": 5}])
+	var weak: Array = PetHunt.team_units([{"species": "escaravelho_solar", "level": 3}])
+	var strong: Array = PetHunt.team_units([{"species": "fenix_dourada", "level": 30}, {"species": "lobo_fenrir", "level": 30}])
 	var weak_view: Dictionary = PetHunt.analyse(weak, "sol", 4)
 	var strong_view: Dictionary = PetHunt.analyse(strong, "sol", 4)
 	check(float(strong_view.win) > float(weak_view.win) and float(strong_view.win) > 0.9, "the analyser sees a strong team winning more (%.2f vs %.2f)" % [strong_view.win, weak_view.win])
-	check(int(strong_view.xp) > 0 and int(strong_view.coins) > 0 and float(strong_view.eggs) > 0.0 and float(strong_view.boss) >= 0.0, "the analyser gives hourly numbers")
+	check(int(strong_view.xp) > 0 and int(strong_view.coins) > 0 and not strong_view.has("eggs") and float(strong_view.boss) >= 0.0, "the analyser gives hourly numbers")
 
 func settle_tests() -> void:
 	var p: PlayerProfile = profile()
-	var uids: Array = add_pets(p, ["leao_dourado", "raposa_glacial", "grifinho"], 5, 0)
+	var uids: Array = add_pets(p, ["leao_dourado", "raposa_glacial", "grifinho"], 5)
 	check(p.hunt_set("sol", 1, uids) == "", "starting a hunt works")
 	var coins_before: int = p.coins
 	check(PetHunt.pending_slots(p, p.hunt_now()) == 0, "nothing is pending the moment it starts")
@@ -182,7 +181,7 @@ func settle_tests() -> void:
 	check(p.coins == coins_before + int(report.coins) and int(report.coins) > 0, "the coins go to the profile")
 	check(int(p.hunt.n) == 600 and int(p.hunt.since) == p.hunt_now(), "past the cap the clock restarts now")
 	check(int(p.find_pet(int(uids[0])).level) > 5, "the team earns experience")
-	var capped_level: bool = int(p.find_pet(int(uids[0])).level) <= Pets.cap(0)
+	var capped_level: bool = int(p.find_pet(int(uids[0])).level) <= Pets.cap()
 	check(capped_level, "experience never passes the level cap")
 	# Under the cap the unfinished encounter carries over.
 	var start: int = p.hunt_now()
@@ -199,68 +198,86 @@ func settle_tests() -> void:
 	# A clock that went backwards never earns or crashes.
 	p.hunt_clock -= 99999
 	check(PetHunt.pending_slots(p, p.hunt_now()) == 0 and p.hunt_collect() == "", "a clock set back earns nothing")
-	# Eggs and the tier unlock come from wins.
+	# The tier unlock comes from wins.
 	var q: PlayerProfile = profile()
-	var strong: Array = add_pets(q, STRONG, 30, 5)
+	var strong: Array = add_pets(q, STRONG, 30)
 	q.hunt_set("viking", 1, strong)
 	q.hunt_clock += 28800
 	q.add_instance(str(PetHunt.rules().pass_item))
 	q.hunt_collect()
-	var eggs: int = 0
-	for id: String in q.hunt.report.eggs:
-		eggs += int(q.hunt.report.eggs[id])
-	check(eggs > 0 and q.egg_count("egg_viking") == eggs, "a long hunt drops eggs of the zone's element (%d)" % eggs)
+	check(not q.hunt.report.has("eggs") and not q.items.keys().any(func(id: String) -> bool: return id.begins_with("egg_")), "a long hunt drops no eggs")
 	check(PetHunt.wins_at(q.hunt, "viking", 1) >= int(PetHunt.rules().unlock_wins) and PetHunt.unlocked_tier(q.hunt, "viking") >= 2, "winning opens the next tier")
 	check(PetHunt.unlocked_tier(q.hunt, "sol") == 1, "other zones stay at their own tier")
 
 func capture_tests() -> void:
+	# Only Comum and Raro can be caught; no Épico, no Lendário and never the boss.
+	check(PetHunt.capture_chance(0, 1, false) > 0.0 and PetHunt.capture_chance(1, 1, false) > 0.0, "a Comum and a Raro can be caught")
+	check(PetHunt.capture_chance(2, 8, false) == 0.0 and PetHunt.capture_chance(3, 8, false) == 0.0 and PetHunt.capture_chance(3, 1, true) == 0.0, "an Épico, a Lendário and the boss never can")
+	check(PetHunt.capture_chance(0, 1, false) < 0.01 and PetHunt.capture_chance(1, 1, false) < PetHunt.capture_chance(0, 1, false), "catches are rare, the Raro rarer than the Comum")
+	check(PetHunt.capture_chance(0, 8, false) > PetHunt.capture_chance(0, 1, false), "a higher tier catches a little more")
+	check(not PetHunt.rules().boss.has("forced_after") and not PetHunt.empty_report().has("eggs"), "nothing in the hunt is guaranteed or an egg")
+	# The boss: a seed whose first encounter is the Lendário. It is fought and beaten, never caught.
+	var boss_seed: int = 0
+	for candidate in range(2, 400000):
+		if PetHunt.slot_rng({"seed": candidate}, 0).randf() < float(PetHunt.rules().boss.chance):
+			boss_seed = candidate
+			break
+	check(boss_seed > 0, "a seed with a boss on the first encounter exists")
+	var saved: Dictionary = (PetHunt.rules().capture as Dictionary).duplicate()
+	(PetHunt.rules().capture as Dictionary)["comum"] = 1.0
+	(PetHunt.rules().capture as Dictionary)["raro"] = 1.0
+	var strong_units: Array = PetHunt.team_units(STRONG.map(func(id: String) -> Dictionary: return {"species": id, "level": 30}))
+	var boss_state: Dictionary = {"seed": boss_seed, "zone": "gelo", "tier": 1}
+	var boss_slot: Dictionary = PetHunt.slot(boss_state, strong_units, 0)
+	check(bool(boss_slot.boss) and bool(boss_slot.won) and (boss_slot.captured as Array).is_empty() and int(boss_slot.coins) > 0, "the boss falls to a strong team, pays coins and is not caught")
+	# With the odds forced to 100%: Comum and Raro join, Épico and Lendário wilds do not.
 	var p: PlayerProfile = profile()
-	var uids: Array = add_pets(p, STRONG, 30, 5)
-	p.hunt_set("gelo", 1, uids)
-	p.hunt.legend = int(PetHunt.rules().boss.forced_after)
-	p.hunt_clock += PetHunt.cycle() + 1
-	var album_before: int = p.pet_album.size()
+	var uids: Array = add_pets(p, STRONG, 30)
+	p.hunt_set("gelo", 8 if PetHunt.unlocked_tier(p.hunt, "gelo") >= 8 else 1, uids)
+	p.hunt.tier = 8
+	p.hunt_clock += PetHunt.cycle() * 120
 	var count_before: int = p.pets.size()
 	p.hunt_collect()
-	var report: Dictionary = p.hunt.report
-	check(int(report.boss_seen) == 1 and int(report.boss_won) == 1, "the guaranteed Lendário showed up and fell")
-	check(report.captured.has("lobo_boreal") and p.pets.size() == count_before + 1, "the defeated Lendário joins the pets")
-	check(int(p.pets[p.pets.size() - 1].level) == 1 and p.pet_album.has("lobo_boreal") and p.pet_album.size() == album_before, "it arrives at level 1 and counts for the album")
-	check(int(p.hunt.legend) == 0, "the Lendário counter restarts after a capture")
-	# Lost fight: the boss flees and the counter is cut in half, no streak of losses.
-	var weak: PlayerProfile = profile()
-	var weak_uids: Array = add_pets(weak, ["brasinha"], 1, 0)
-	weak.hunt_set("sol", 1, weak_uids)
-	weak.hunt.legend = int(PetHunt.rules().boss.forced_after)
-	weak.hunt_clock += PetHunt.cycle() * 3 + 1
-	weak.hunt_collect()
-	check(int(weak.hunt.report.boss_seen) == 1 and int(weak.hunt.report.boss_won) == 0 and weak.pets.size() == 1, "a weak team does not catch it")
-	check(int(weak.hunt.report.losses) >= 1 and int(weak.hunt.report.boss_seen) == 1, "and the Lendário does not come back at once")
-	# A full Casa dos Mascotes turns the capture into coins.
+	var caught: Array = p.hunt.report.captured
+	check(not caught.is_empty() and p.pets.size() == count_before + caught.size(), "with the odds forced, wins bring pets home (%d)" % caught.size())
+	check(caught.all(func(id: String) -> bool: return Pets.species_def(id).rarity in ["comum", "raro"]), "and every one is a Comum or a Raro")
+	check(int(p.pets[p.pets.size() - 1].level) == 1 and p.pet_album.has(caught[0]), "a catch arrives at level 1 and counts for the album")
+	# A full Casa dos Mascotes turns the catch into coins.
 	var full: PlayerProfile = profile()
-	var team: Array = add_pets(full, STRONG, 30, 5)
+	var team: Array = add_pets(full, STRONG, 30)
 	while full.pets.size() < int(Pets.data().max_pets):
 		full.grant_pet("brasinha")
 	full.hunt_set("sol", 1, team)
-	full.hunt.legend = int(PetHunt.rules().boss.forced_after)
 	var coins: int = full.coins
-	full.hunt_clock += PetHunt.cycle() + 1
+	full.hunt_clock += PetHunt.cycle() * 120
 	full.hunt_collect()
-	check(full.pets.size() == int(Pets.data().max_pets) and bool(full.hunt.report.full) and full.coins >= coins + int(Pets.rarity_def("lendario").release), "with the house full the capture is turned into coins")
+	check(full.pets.size() == int(Pets.data().max_pets) and bool(full.hunt.report.full) and full.coins > coins + int(full.hunt.report.coins) - 1, "with the house full the catches are turned into coins")
 	check(full.hunt.report.captured.is_empty(), "and nothing is kept")
-	# Rates of common captures stay low: a long hunt does not flood the house.
+	# The Passe: more coins and XP, never more catches. Only the free window rolls for them.
+	var squad: Array = STRONG.map(func(id: String) -> Dictionary: return {"species": id, "level": 30})
+	var state: Dictionary = {"seed": 8, "zone": "sol", "tier": 1}
+	var units: Array = PetHunt.team_units(squad)
+	var free_report: Dictionary = PetHunt.run(state, units, 0, PetHunt.capture_slots())
+	var long_report: Dictionary = PetHunt.run(state, units, 0, int(PetHunt.rules().cap_pass) / PetHunt.cycle())
+	check(PetHunt.capture_slots() == 600 and (free_report.captured as Array).size() > 0, "the free window is 600 encounters and rolled catches (%d)" % (free_report.captured as Array).size())
+	check(long_report.captured == free_report.captured and int(long_report.coins) > int(free_report.coins) * 3 and int(long_report.xp) > int(free_report.xp) * 3, "the 8 h of the Passe catch exactly the same pets but earn 4x the coins and XP")
+	var late: Dictionary = PetHunt.slot(state, units, 700, false)
+	var late_on: Dictionary = PetHunt.slot(state, units, 700, true)
+	check((late.captured as Array).is_empty() and JSON.stringify(late.wilds) == JSON.stringify(late_on.wilds) and int(late.coins) == int(late_on.coins), "past the window the encounter is the same, only the catch is off")
+	(PetHunt.rules() as Dictionary)["capture"] = saved
+	# Real odds: 8 hours catch a handful of common pets, not a flood.
 	var flood: PlayerProfile = profile()
-	var squad: Array = add_pets(flood, STRONG, 30, 5)
+	var many: Array = add_pets(flood, STRONG, 30)
 	flood.add_instance(str(PetHunt.rules().pass_item))
-	flood.hunt_set("sol", 5, squad) if PetHunt.unlocked_tier(flood.hunt, "sol") >= 5 else flood.hunt_set("sol", 1, squad)
+	flood.hunt_set("sol", 1, many)
 	flood.hunt_clock += 28800
 	flood.hunt_collect()
-	var common: int = (flood.hunt.report.captured as Array).filter(func(id: String) -> bool: return Pets.species_def(id).rarity != "lendario").size()
-	check(common <= 14, "8 hours catch a handful of common pets, not a flood (%d)" % common)
+	var found: int = (flood.hunt.report.captured as Array).size()
+	check(found <= 10 and (flood.hunt.report.captured as Array).all(func(id: String) -> bool: return Pets.species_def(id).rarity in ["comum", "raro"]), "8 hours with the Passe catch a handful at most, and only Comuns and Raros (%d)" % found)
 
 func op_tests() -> void:
 	var p: PlayerProfile = profile()
-	var uids: Array = add_pets(p, ["leao_dourado", "raposa_glacial", "grifinho", "cao_de_lava", "urso_berserker", "brasinha"], 5, 0)
+	var uids: Array = add_pets(p, ["leao_dourado", "raposa_glacial", "grifinho", "cao_de_lava", "urso_berserker", "brasinha"], 5)
 	check(p.apply_op("hunt_set", ["zona_x", 1, uids], {}).error != "", "an unknown zone is refused")
 	check(p.apply_op("hunt_set", ["sol", 2, uids], {}).error != "", "a locked tier is refused")
 	check(p.apply_op("hunt_set", ["sol", 1, []], {}).error != "", "an empty team is refused")
@@ -277,7 +294,7 @@ func op_tests() -> void:
 	check("hunt_set" in PlayerProfile.OPS and "hunt_collect" in PlayerProfile.OPS and "hunt_stop" in PlayerProfile.OPS, "the server knows the hunt operations")
 	# The released pet leaves the team on its own.
 	var q: PlayerProfile = profile()
-	var team: Array = add_pets(q, ["leao_dourado", "raposa_glacial"], 5, 0)
+	var team: Array = add_pets(q, ["leao_dourado", "raposa_glacial"], 5)
 	q.hunt_set("sol", 1, team)
 	q.pets.erase(q.find_pet(int(team[0])))
 	q.hunt_clock += 240
@@ -293,7 +310,7 @@ func op_tests() -> void:
 
 func save_tests() -> void:
 	var p: PlayerProfile = profile()
-	var uids: Array = add_pets(p, ["leao_dourado", "grifinho"], 8, 1)
+	var uids: Array = add_pets(p, ["leao_dourado", "grifinho"], 8)
 	p.hunt_set("ceu", 1, uids)
 	p.hunt_clock += 1200
 	p.hunt_collect()
@@ -301,7 +318,7 @@ func save_tests() -> void:
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.on_save = func() -> void: pass
 	copy.load_data(data)
-	check(int(data.version) == 11 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
+	check(int(data.version) == 12 and copy.hunt.zone == "ceu" and bool(copy.hunt.active) and (copy.hunt.team as Array).size() == 2, "the hunt survives the save")
 	check(int(copy.hunt.n) == int(p.hunt.n) and int(copy.hunt.seed) == int(p.hunt.seed) and int(copy.hunt.report.slots) == int(p.hunt.report.slots), "its counters and report survive too")
 	var old: Dictionary = data.duplicate(true)
 	old.erase("hunt")
@@ -310,9 +327,9 @@ func save_tests() -> void:
 	plain.on_save = func() -> void: pass
 	plain.load_data(old)
 	check(not bool(plain.hunt.active) and (plain.hunt.team as Array).is_empty(), "a v7 save loads without a hunt")
-	var bad: Dictionary = PetHunt.clean_state({"zone": "??", "tier": 99, "team": [1, 1, 2, 3, 4, 5, 6, 7], "since": -5, "n": "x", "wins": {"sol:1": -4}, "report": {"eggs": {"bogus": 3}, "captured": ["nope"]}})
+	var bad: Dictionary = PetHunt.clean_state({"zone": "??", "tier": 99, "team": [1, 1, 2, 3, 4, 5, 6, 7], "since": -5, "n": "x", "wins": {"sol:1": -4}, "report": {"eggs": {"bogus": 3}, "captured": ["nope"]}, "legend": 9})
 	check(bad.zone == "sol" and int(bad.tier) == PetHunt.tiers() and (bad.team as Array).size() == 5 and int(bad.since) == 0 and int(bad.wins["sol:1"]) == 0, "damaged hunt data is cleaned")
-	check((bad.report.eggs as Dictionary).is_empty() and (bad.report.captured as Array).is_empty(), "and so is a damaged report")
+	check(not bad.report.has("eggs") and (bad.report.captured as Array).is_empty() and not bad.has("legend"), "and so is a damaged report")
 
 # The top-down field (0.21 pilot): the ground, the sprite sheets and a whole encounter
 # replayed in it.
@@ -352,9 +369,9 @@ func field_tests() -> void:
 	root.add_child(host)
 	host.add_child(field)
 	field.set_zone("sol")
-	var units: Array = PetHunt.team_units([{"species": "fenix_dourada", "level": 12, "stars": 1}, {"species": "leao_dourado", "level": 10, "stars": 0}, {"species": "chacal_ambar", "level": 9, "stars": 0}, {"species": "pinguim_cristal", "level": 8, "stars": 0}])
-	var state: Dictionary = {"seed": 7, "zone": "sol", "tier": 3, "n": 0, "legend": 0}
-	var result: Dictionary = PetHunt.slot(state, units, 5, 0)
+	var units: Array = PetHunt.team_units([{"species": "fenix_dourada", "level": 12}, {"species": "leao_dourado", "level": 10}, {"species": "chacal_ambar", "level": 9}, {"species": "pinguim_cristal", "level": 8}])
+	var state: Dictionary = {"seed": 7, "zone": "sol", "tier": 3, "n": 0}
+	var result: Dictionary = PetHunt.slot(state, units, 5)
 	field.show_encounter(units, result, 0.0)
 	check(field.allies.size() == 4 and field.foes.size() == (result.wilds as Array).size(), "the field stages the team and the wild group")
 	check(field.allies.all(func(u: Dictionary) -> bool: return (u.home as Vector2).x < FieldMap.world_size().x * 0.5) and field.foes.all(func(u: Dictionary) -> bool: return (u.home as Vector2).x > FieldMap.world_size().x * 0.5), "the team stands on the left, the wild on the right")
@@ -414,7 +431,7 @@ func find(node: Node, name: String) -> Node:
 func screen_tests() -> void:
 	var app: FakeApp = FakeApp.new()
 	app.profile = profile()
-	var uids: Array = add_pets(app.profile, ["leao_dourado", "raposa_glacial", "grifinho", "brasinha"], 6, 0)
+	var uids: Array = add_pets(app.profile, ["leao_dourado", "raposa_glacial", "grifinho", "brasinha"], 6)
 	root.add_child(app)
 	var host: Control = Control.new()
 	host.size = Vector2(1280, 720)
@@ -465,26 +482,11 @@ func screen_tests() -> void:
 		var close: Button = find(summary, "ReportClose") as Button
 		close.pressed.emit()
 		await process_frame
-	# Caught Lendário: the cinematic comes first, then the summary.
-	app.profile.hunt.legend = int(PetHunt.rules().boss.forced_after)
-	var strong: Array = add_pets(app.profile, STRONG, 30, 5)
+	var strong: Array = add_pets(app.profile, STRONG, 30)
 	app.profile.hunt_set("gelo", 1, strong)
-	app.profile.hunt_clock += PetHunt.cycle() + 1
-	var seen: Array = [false]
-	screen.child_entered_tree.connect(func(node: Node) -> void:
-		if node is HatchOutcome and (node as HatchOutcome).capture:
-			seen[0] = true
-			await process_frame
-			(node as HatchOutcome).age = HatchOutcome.SHAKE_TIME + 2.0
-			await process_frame
-			var click: InputEventMouseButton = InputEventMouseButton.new()
-			click.pressed = true
-			click.button_index = MOUSE_BUTTON_LEFT
-			(node as HatchOutcome)._gui_input(click))
+	app.profile.hunt_clock += PetHunt.cycle() * 20
 	tab.adopt()
 	await tab.do_collect()
-	check(seen[0], "a caught Lendário gets its own reveal")
-	check(app.profile.pet_album.has("lobo_boreal"), "and the album records it")
 	var late: Node = find(screen, "HuntReport")
 	if late != null:
 		late.queue_free()

@@ -28,11 +28,21 @@ static func product(sku: String) -> Dictionary:
 	return {}
 
 # What the letters of a paid order carry: each item plain and bound.
+# A pet product (0.30) delivers `{"pet": species}`: the Correio turns it into a pet of the
+# Casa dos Mascotes (Auction.grant_mail), never into a bag item.
 static func mail_items(entry: Dictionary) -> Array:
 	var list: Array = []
 	for id: Variant in entry.get("items", []):
 		list.append({"id": str(id), "quality": "normal", "level": 0, "bound": true})
+	for species: Variant in entry.get("pets", []):
+		list.append({"pet": str(species), "bound": true})
 	return list
+
+static func pet_species(entry: Dictionary) -> Array:
+	return entry.get("pets", []) if entry.get("pets") is Array else []
+
+static func is_pet_product(entry: Dictionary) -> bool:
+	return not pet_species(entry).is_empty()
 
 # The rule of gold (0.24): the shop sells appearance, never power. Only the skin and the
 # hair (appearance slots) and keepsakes ("selo": the seal, the pass, the bag tabs, the
@@ -47,9 +57,13 @@ static func sellable_slot(def: Dictionary) -> bool:
 
 # Only premium cosmetics the game knows can be sold, and nothing with attributes.
 static func valid(entry: Dictionary) -> bool:
-	if entry.is_empty() or (entry.get("items", []) as Array).is_empty() or int(entry.get("steam_item_id", 0)) <= 0 or not entry.get("prices") is Dictionary:
+	if entry.is_empty() or ((entry.get("items", []) as Array).is_empty() and pet_species(entry).is_empty()) or int(entry.get("steam_item_id", 0)) <= 0 or not entry.get("prices") is Dictionary:
 		return false
-	for id: Variant in entry.items:
+	# Pets (0.30) are collectibles: the species must exist and nothing else rides along.
+	for species: Variant in pet_species(entry):
+		if Pets.species_def(str(species)).is_empty():
+			return false
+	for id: Variant in entry.get("items", []):
 		var def: Dictionary = Armory.definition(str(id))
 		if def.is_empty() or not bool(def.get("premium", false)) or not (def.get("attrs", {}) as Dictionary).is_empty() or not sellable_slot(def):
 			return false
@@ -68,6 +82,9 @@ static func owns_all(profile: PlayerProfile, entry: Dictionary) -> bool:
 	for id: Variant in entry.get("items", []):
 		if not profile.has_item(str(id)):
 			return false
+	for species: Variant in pet_species(entry):
+		if not profile.owns_species(str(species)):
+			return false
 	return true
 
 # A bundle (the season pack) is not sold on top of what the player already has: they buy the
@@ -82,6 +99,8 @@ static func overlaps(profile: PlayerProfile, entry: Dictionary) -> bool:
 
 # The small tag on a card: what kind of product it is.
 static func kind_label(entry: Dictionary) -> String:
+	if is_pet_product(entry):
+		return Pets.rarity_label(str(Pets.species_def(str(pet_species(entry)[0])).get("rarity", "comum"))).to_upper()
 	if str(entry.get("section", "")) != "skins":
 		return Lang.t("CONVENIÊNCIA")
 	var first: Dictionary = Armory.definition(str((entry.get("items", [""]) as Array)[0]))

@@ -42,10 +42,10 @@ func run_tests() -> void:
 	var products_ok: bool = true
 	for entry: Dictionary in PremiumStore.products():
 		products_ok = products_ok and PremiumStore.valid(entry)
-		for id: Variant in entry.items:
+		for id: Variant in entry.get("items", []):
 			var def: Dictionary = Armory.definition(str(id))
 			products_ok = products_ok and (str(def.get("slot", "")) in Armory.COSMETIC_SLOTS or str(def.get("slot", "")) == "selo" or str(id) in PremiumStore.LEGACY_POWER)
-	check(products_ok, "the store sells only skins, hair, keepsakes and the Solaris of the Founder Pack")
+	check(products_ok, "the store sells only skins, keepsakes, pets and the Solaris of the Founder Pack")
 	check(not PremiumStore.valid({"sku": "x", "steam_item_id": 9, "items": ["camisa_guerra"], "prices": {"USD": 99}}), "a shirt can never be sold for money")
 	check(not PremiumStore.valid({"sku": "x", "steam_item_id": 9, "items": ["chapeu_coroa"], "prices": {"USD": 99}}), "a hat can never be sold for money")
 	# --- shirts and trousers
@@ -102,7 +102,7 @@ func run_tests() -> void:
 	check(new_shirt.id == "camisa_guerra" and int(new_shirt.level) == 7 and new_shirt.quality == "verdadeira" and int(new_shirt.ilvl) == 12 and new_shirt.mods.size() == 1, "the shirt takes the level, quality and bonuses of the old outfit")
 	check(new_trousers.id == "calca_guerra" and new_trousers.quality == "verdadeira" and int(new_trousers.level) == 0, "the trousers come with the same quality")
 	check(migrated.has_item("camisa_aventureiro") and migrated.has_item("calca_aventureiro"), "an unworn outfit also leaves a shirt and trousers in the bag")
-	check(int(migrated.to_data().version) == 11, "saves are written as v11")
+	check(int(migrated.to_data().version) == 12, "saves are written as v12")
 	var again: PlayerProfile = PlayerProfile.new()
 	again.load_data(migrated.to_data())
 	check(again.inventory.size() == migrated.inventory.size() and int(again.equipped.get("camisa", -1)) == int(new_shirt.uid), "a v11 save is read as it is, nothing is granted twice")
@@ -193,7 +193,7 @@ func run_tests() -> void:
 	var old_save: PlayerProfile = PlayerProfile.new()
 	old_save.load_data({"version": 11, "gender": "m", "coins": 5})
 	check(not old_save.skin_only, "a save from before the option reads as off")
-	var hair_skus: Array = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return (entry.items as Array).any(func(id: Variant) -> bool: return Armory.slot_of(str(id)) == "cabelo"))
+	var hair_skus: Array = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return (entry.get("items", []) as Array).any(func(id: Variant) -> bool: return Armory.slot_of(str(id)) == "cabelo"))
 	check(hair_skus.is_empty(), "the premium shop sells no hair")
 	var gold_hair: bool = true
 	for id: String in ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"]:

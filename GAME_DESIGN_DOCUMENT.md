@@ -6,7 +6,7 @@
 Quem cria um personagem faz um **treino de artilharia** guiado (andar, mirar, vento, força, habilidades e POW contra um Boneco de Treino) e segue um roteiro de seis **Primeiros passos** com recompensas, na aba nova da MISSÃO. A ideia é que ninguém precise ler a wiki para jogar a primeira partida. Regras e números em `shared/balance/tutorial.json`, `missions.json` e `combat.json` (`tutorial`, `boneco_treino`).
 
 ## Entregas 0.19 a 0.21 — mascotes e Caçada
-Ovos caem das instâncias, a **Casa dos Mascotes** os choca e o mascote acompanha o lutador com bônus (20 espécies, 5 elementos). A **Caçada** é um modo automático, tipo idle, em que um time de até 5 mascotes luta sozinho (até 2 h acumuladas, 8 h com o Passe do Caçador) e o jogador coleta moedas, XP, ovos e capturas. Regras em `docs/PETS.md` e `docs/PET_HUNT.md`.
+A **Casa dos Mascotes** guarda uma coleção de 20 espécies (5 elementos × 4 raridades) que acompanham o lutador **só como aparência**: desde a 0.30 os mascotes são vendidos na loja por dinheiro (de R$ 14,90 a R$ 59,90 pela raridade), não dão atributos nem habilidade e não há ovos nem sorteio pago. Comuns e Raros também podem cair de chefes e ser capturados na **Caçada**, um modo automático, tipo idle, em que um time de até 5 mascotes luta sozinho (até 2 h acumuladas, 8 h com o Passe do Caçador) e o jogador coleta moedas, XP e capturas; é o único lugar onde o mascote sobe de nível. Regras em `docs/PETS.md` e `docs/PET_HUNT.md`.
 
 ## Idiomas (roadmap 4.3)
 Português e inglês desde já, com versão própria dos nomes em cada idioma. O português é o idioma-fonte; o inglês fica em `locale/en.po`. Detalhes no `README.md` (seção Idiomas).

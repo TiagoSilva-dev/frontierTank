@@ -43,7 +43,7 @@
     {"id": "cleanse", "name": "Elixir Purificador", "icon": "res://assets/expansion/combat/tool_cleanse.png", "price": 60, "cleanse": true, "desc": "Remove todos os efeitos negativos: queimação, veneno, selo, raízes, exaustão, marca e ofuscamento."}
   ],
   "pve": {"think_seconds": 1.6, "power_error": 3.0, "minion_power_error": 7.0, "turn_seconds": 20, "phase_heal": 0.35, "ability_damage": 1.08, "revive_hp": 0.2, "phase_gold": [20, 30, 60], "exp": 60},
-  "tutorial": {"map": "ilha_celeste", "dummy": "boneco_treino", "turn_seconds": 60, "dummy_hp": 900, "player_x": 330, "dummy_x": 980, "reward": {"coins": 200, "exp": 150, "items": {"pedra_fortalecimento": 3, "pet_egg": 1}}},
+  "tutorial": {"map": "ilha_celeste", "dummy": "boneco_treino", "turn_seconds": 60, "dummy_hp": 900, "player_x": 330, "dummy_x": 980, "reward": {"coins": 200, "exp": 150, "items": {"pedra_fortalecimento": 5}}},
   "statuses": [
     {"id": "queimacao", "name": "Queimação", "label": "QUEIMANDO!", "desc": "Perde vida no início de cada turno.", "color": "ff8a3a", "turns": 2, "power": 0.12, "icon": "res://assets/ui/status/queimacao.png"},
     {"id": "veneno", "name": "Envenenamento", "label": "ENVENENADO!", "desc": "Perde 2% da vida máxima por dose no início de cada turno (até 3 doses) e recebe só metade da cura.", "color": "8aff4a", "turns": 3, "per_stack": 0.02, "max_stacks": 3, "heal_scale": 0.5, "icon": "res://assets/ui/status/veneno.png"},
@@ -313,7 +313,6 @@
       {"id": "stone_1", "name": "Pedra de Fortalecimento nível 1", "item": "pedra_fortalecimento", "weight": 18, "rarity": "common", "icon": "res://assets/items/forge/stone_01.png"},
       {"id": "stone_2", "name": "Pedra de Fortalecimento nível 2", "item": "strength_stone_ii", "weight": 10, "rarity": "rare", "icon": "res://assets/items/forge/stone_02.png"},
       {"id": "stone_3", "name": "Pedra de Fortalecimento nível 3", "item": "strength_stone_iii", "weight": 5, "rarity": "epic", "icon": "res://assets/items/forge/stone_03.png"},
-      {"id": "egg", "name": "Ovo de Mascote", "item": "pet_egg", "weight": 2, "rarity": "legendary", "icon": "res://assets/expansion/items/pet_egg.png"},
       {"id": "potion", "name": "Poção de Vida", "tool": "hp", "weight": 14, "rarity": "common", "icon": "res://assets/expansion/combat/tool_hp.png"}
     ],
     "pvp_cards": [

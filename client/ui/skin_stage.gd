@@ -54,10 +54,25 @@ func build() -> void:
 	avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(avatar)
 	avatar.show_look(look)
+	add_pet()
 	var turn_left: Button = UiKit.button(self, "<", Rect2(228, 296, 44, 34), request.bind("direction", step(-1)), "tab", 16)
 	turn_left.name = "Turn_left"
 	var turn_right: Button = UiKit.button(self, ">", Rect2(280, 296, 44, 34), request.bind("direction", step(1)), "tab", 16)
 	turn_right.name = "Turn_right"
+
+# The look's pet stands on the floor beside the character (the Mascotes tab of the shop).
+func add_pet() -> void:
+	var species: String = str(look.get("pet", ""))
+	if species == "":
+		return
+	var actor: PetActor = PetActor.new()
+	if not actor.setup(species, 84.0):
+		actor.free()
+		return
+	actor.name = "Pet"
+	actor.facing = -1
+	actor.position = Vector2(size.x - actor.width * 0.5 - 12.0, 282.0)
+	add_child(actor)
 
 func step(change: int) -> String:
 	return DIRECTIONS[posmod(DIRECTIONS.find(direction) + change, DIRECTIONS.size())]

@@ -51,10 +51,7 @@ var hp: int = 1000
 var max_hp: int = 1000
 # Training dummy (0.21): it cannot drop below this life until the coach lets it fall.
 var hp_floor: int = 0
-# The active pet's skill for this battle (0.22): {species, element, rarity, stars} and how
-# many uses are left.
-var pet_skill: Dictionary = {}
-var pet_uses: int = 0
+# The pet that follows the character (a look only since 0.30).
 var companion: PetCompanion
 var agility: int = 120
 var max_energy: int = 240
@@ -141,10 +138,6 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	facing = 1 if team == 0 else -1
 	attrs = entry.get("attrs", {})
 	aux_id = str(entry.get("aux", ""))
-	var skill: Variant = entry.get("pet_skill", {})
-	if skill is Dictionary and not (skill as Dictionary).is_empty() and not Pets.skill_def(str(skill.get("element", ""))).is_empty():
-		pet_skill = (skill as Dictionary).duplicate()
-		pet_uses = int(Pets.battle_rules().uses)
 	aux_uses = int(Armory.aux_def(aux_id).get("uses", 0)) if aux_id != "" else 0
 	look = entry.get("look", {}).duplicate()
 	if look.is_empty():

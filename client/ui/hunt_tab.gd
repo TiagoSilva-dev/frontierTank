@@ -33,9 +33,6 @@ var clock: float = 0.0
 var timer_label: Label
 var gauge_box: Control
 var gauge_fraction: float = 0.0
-var legend_box: Control
-var legend_fraction: float = 0.0
-var legend_label: Label
 var tally: Dictionary = {}
 
 func setup(host_app: Node) -> void:
@@ -87,7 +84,7 @@ func rebuild() -> void:
 
 func reset_cache() -> void:
 	var pets: Array[Dictionary] = PetHunt.team_pets(profile(), hunt())
-	cache = {"slots": 0, "report": PetHunt.empty_report(), "legend": int(hunt().legend), "units": PetHunt.team_units(pets), "n": int(hunt().n), "since": int(hunt().since)}
+	cache = {"slots": 0, "report": PetHunt.empty_report(), "units": PetHunt.team_units(pets), "n": int(hunt().n), "since": int(hunt().since)}
 
 func catch_up(limit: int) -> void:
 	if not running():
@@ -95,8 +92,7 @@ func catch_up(limit: int) -> void:
 	var pending: int = PetHunt.pending_slots(profile(), profile().hunt_now())
 	var done: int = 0
 	while int(cache.slots) < pending and done < limit:
-		var result: Dictionary = PetHunt.slot(hunt(), cache.units, int(hunt().n) + int(cache.slots), int(cache.legend))
-		cache.legend = int(result.legend)
+		var result: Dictionary = PetHunt.slot(hunt(), cache.units, int(hunt().n) + int(cache.slots), int(cache.slots) < PetHunt.capture_slots())
 		PetHunt.add_slot(cache.report, result)
 		cache.slots = int(cache.slots) + 1
 		done += 1
@@ -128,7 +124,7 @@ func follow_arena() -> void:
 		return
 	if int(cache.slots) < pending or shown_slot == pending:
 		return
-	var result: Dictionary = PetHunt.slot(hunt(), cache.units, int(hunt().n) + pending, int(cache.legend))
+	var result: Dictionary = PetHunt.slot(hunt(), cache.units, int(hunt().n) + pending, pending < PetHunt.capture_slots())
 	result.tier = int(hunt().tier)
 	shown_slot = pending
 	var inside: float = float(elapsed() - pending * PetHunt.cycle())
@@ -144,18 +140,10 @@ func refresh_live() -> void:
 	timer_label.text = "%s / %s" % [format_time(gone), format_time(cap)] if running() else tr("parado")
 	gauge_box.queue_redraw()
 	var report: Dictionary = cache.report
-	var eggs: int = 0
-	for id: String in report.eggs:
-		eggs += int(report.eggs[id])
-	var values: Dictionary = {"slots": str(report.slots), "wins": "%d / %d" % [int(report.wins), int(report.slots)], "coins": str(report.coins), "xp": str(report.xp), "eggs": str(eggs), "caught": str((report.captured as Array).size())}
+	var values: Dictionary = {"slots": str(report.slots), "wins": "%d / %d" % [int(report.wins), int(report.slots)], "coins": str(report.coins), "xp": str(report.xp), "caught": str((report.captured as Array).size())}
 	for key: String in values:
 		if tally.has(key):
 			(tally[key] as Label).text = values[key]
-	var forced: int = int(PetHunt.rules().boss.forced_after)
-	var counter: int = int(cache.legend) if running() else int(hunt().legend)
-	legend_fraction = clampf(float(counter) / float(forced), 0.0, 1.0)
-	legend_label.text = tr("Aparece em até %d encontros") % maxi(0, forced - counter) if counter < forced else tr("Um Lendário vai aparecer!")
-	legend_box.queue_redraw()
 
 static func format_time(seconds: int) -> String:
 	return "%d:%02d:%02d" % [seconds / 3600, (seconds / 60) % 60, seconds % 60]
@@ -232,7 +220,6 @@ func build_zones() -> void:
 	var lines: Array = [
 		[tr("Selvagens nv %d  •  Vitórias: %d%%") % [int(view.level), roundi(win * 100.0)], win_color],
 		[tr("Por hora: %d XP  •  %d moedas") % [int(view.xp), int(view.coins)], HudPaint.CREAM],
-		[tr("Ovos por hora: %.1f") % float(view.eggs), HudPaint.CREAM],
 		[tr("Contra o Lendário: ") + (tr("forte") if float(view.boss) >= 0.75 else (tr("equilibrado") if float(view.boss) >= 0.25 else tr("difícil"))), Color("9aff7a") if float(view.boss) >= 0.75 else (Color("ffd34d") if float(view.boss) >= 0.25 else Color("ff8f7e"))],
 	]
 	for i in range(lines.size()):
@@ -296,18 +283,14 @@ func build_team() -> void:
 	choose.disabled = profile().pets.is_empty()
 	label(tr("O QUE JÁ RENDEU"), Rect2(946, 306, 280, 24), 18, HudPaint.GOLD)
 	tally = {}
-	var rows: Array = [["slots", tr("Encontros")], ["wins", tr("Vitórias")], ["coins", tr("Moedas")], ["xp", tr("XP por mascote")], ["eggs", tr("Ovos")], ["caught", tr("Mascotes capturados")]]
+	var rows: Array = [["slots", tr("Encontros")], ["wins", tr("Vitórias")], ["coins", tr("Moedas")], ["xp", tr("XP por mascote")], ["caught", tr("Mascotes capturados")]]
 	for i in range(rows.size()):
 		label(str(rows[i][1]), Rect2(946, 334 + i * 24, 180, 22), 15, Color("c8d4e4"))
 		tally[rows[i][0]] = label("0", Rect2(1110, 334 + i * 24, 116, 22), 16, HudPaint.CREAM, HORIZONTAL_ALIGNMENT_RIGHT)
-	label(tr("PRÓXIMO LENDÁRIO"), Rect2(946, 484, 280, 22), 15, Pets.rarity_color("lendario"))
-	legend_box = Control.new()
-	legend_box.position = Vector2(946, 508)
-	legend_box.size = Vector2(278, 16)
-	legend_box.draw.connect(func() -> void: HudPaint.gauge(legend_box, Rect2(0, 0, 278, 14), legend_fraction, Pets.rarity_color("lendario").lightened(0.2), Pets.rarity_color("lendario").darkened(0.4)))
-	holder.add_child(legend_box)
-	legend_label = label("", Rect2(946, 523, 284, 18), 12, Color("afbed1"))
-	legend_label.tooltip_text = tr("Cada encontro aproxima o Lendário da zona. Derrote-o e ele entra para os seus mascotes.")
+	label(tr("CAPTURAS"), Rect2(946, 468, 280, 22), 15, HudPaint.GOLD)
+	var catch_note: Label = label(tr("Só Comuns e Raros, e só com sorte. O Passe do Caçador rende mais moedas e XP, nunca mais capturas."), Rect2(946, 490, 284, 52), 13, Color("afbed1"))
+	catch_note.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	UiKit.wrap(catch_note, Vector2(284, 52))
 
 func build_bottom() -> void:
 	panel(Rect2(40, 556, 1200, 130))
@@ -430,8 +413,6 @@ func picker_card(pet: Dictionary, rect: Rect2) -> void:
 	var icon: TextureRect = UiKit.art(card, str(Pets.element_def(str(def.element)).icon), Rect2(4, 4, 24, 24))
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	UiKit.label(card, tr("Nv %d") % int(pet.level), Rect2(0, 106, 118, 20), 14, HudPaint.CREAM, UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
-	if int(pet.stars) > 0:
-		PetWidgets.stars(card, Vector2(6, 92), int(pet.stars), int(pet.stars), 5.0)
 	if chosen:
 		UiKit.label(card, str(team.find(uid) + 1), Rect2(90, 4, 24, 24), 18, Color("9aff7a"), UiKit.INK, HORIZONTAL_ALIGNMENT_CENTER)
 
@@ -517,8 +498,7 @@ func report_message(error: String, success: String) -> void:
 	changed.emit()
 	rebuild()
 
-# After an operation that settled the hunt: the summary, with a reveal for every pet the
-# hunt caught that is epic or better.
+# After an operation that settled the hunt: the summary of what it earned.
 func present(report_before: int, first_uid: int, album_before: Array, note: String) -> void:
 	var report: Dictionary = hunt().report
 	var settled: bool = int(report.at) != report_before and int(report.slots) > 0
@@ -532,18 +512,6 @@ func present(report_before: int, first_uid: int, album_before: Array, note: Stri
 	for pet: Dictionary in profile().pets:
 		if int(pet.uid) >= first_uid:
 			born.append(pet.duplicate(true))
-	for pet: Dictionary in born:
-		var rarity: String = str(Pets.species_def(str(pet.species)).rarity)
-		if rarity == "lendario" or rarity == "epico":
-			var moment: HatchOutcome = HatchOutcome.new()
-			moment.capture = true
-			moment.pet = pet
-			moment.is_new = not album_before.has(str(pet.species))
-			moment.audio = app.audio
-			get_parent().add_child(moment)
-			await moment.completed
-			if not is_inside_tree():
-				return
 	show_report(report, born)
 
 func show_report(report: Dictionary, born: Array[Dictionary]) -> void:
@@ -562,10 +530,6 @@ func show_report(report: Dictionary, born: Array[Dictionary]) -> void:
 		[tr("Moedas"), "+%d" % int(report.coins)],
 		[tr("XP por mascote"), "+%d" % int(report.xp)],
 	]
-	var eggs: Array[String] = []
-	for id: String in report.eggs:
-		eggs.append("%dx %s" % [int(report.eggs[id]), Pets.egg_name(id)])
-	rows.append([tr("Ovos"), ", ".join(eggs) if not eggs.is_empty() else tr("nenhum")])
 	for i in range(rows.size()):
 		UiKit.label(box, str(rows[i][0]), Rect2(390, 236 + i * 28, 200, 26), 17, Color("c8d4e4"))
 		var value: Label = UiKit.clipped(box, str(rows[i][1]), Rect2(580, 236 + i * 28, 330, 26), 17, HudPaint.CREAM, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_RIGHT)

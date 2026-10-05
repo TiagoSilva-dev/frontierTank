@@ -286,7 +286,7 @@ static func progress_match(profile: PlayerProfile, game: LocalMatch, fighter: Ta
 # A profile operation that went through (Ferreiro, Loja, Casa dos Mascotes, Caçada). Returns
 # whether a mission moved, so the caller saves the profile again.
 static func note_op(profile: PlayerProfile, op: String) -> bool:
-	var events: Dictionary = {"strengthen": "strengthen", "pet_hatch": "hatch", "hunt_set": "hunt", "hunt_collect": "hunt_collect", "pet_feed": "pet_feed", "craft": "craft", "craft_map": "craft", "buy": "buy", "buy_stone": "buy", "buy_tool": "buy"}
+	var events: Dictionary = {"strengthen": "strengthen", "hunt_set": "hunt", "hunt_collect": "hunt_collect", "craft": "craft", "craft_map": "craft", "buy": "buy", "buy_stone": "buy", "buy_tool": "buy"}
 	if not events.has(op):
 		return false
 	note(profile, str(events[op]))
@@ -308,8 +308,6 @@ static func credit_history(profile: PlayerProfile) -> void:
 		note(profile, "pvp_played")
 	if profile.victories > 0:
 		note(profile, "pvp_win")
-	if not profile.pets.is_empty():
-		note(profile, "hatch")
 	if bool(profile.hunt.get("active", false)) or int(profile.hunt.get("n", 0)) > 0:
 		note(profile, "hunt")
 	if profile.inventory.any(func(inst: Dictionary) -> bool: return int(inst.get("level", 0)) > 0):
@@ -382,6 +380,8 @@ static func reward_text(reward: Dictionary) -> String:
 	var items: Dictionary = reward.get("items", {})
 	for id: String in items:
 		parts.append("%dx %s" % [int(items[id]), Tutorial.material_name(id)])
+	if str(reward.get("pet", "")) != "":
+		parts.append(Pets.species_name(str(reward.pet)))
 	return ", ".join(parts)
 
 static func grant(profile: PlayerProfile, reward: Dictionary) -> void:
@@ -390,6 +390,9 @@ static func grant(profile: PlayerProfile, reward: Dictionary) -> void:
 	var items: Dictionary = reward.get("items", {})
 	for id: String in items:
 		profile.add_item(id, int(items[id]))
+	# A pet as a gift (the first one, from the starter list): a Comum, the same for everyone.
+	if str(reward.get("pet", "")) != "":
+		profile.receive_pet_drop(str(reward.pet))
 
 static func claim(profile: PlayerProfile, id: String) -> Dictionary:
 	var state: Dictionary = ensure(profile)

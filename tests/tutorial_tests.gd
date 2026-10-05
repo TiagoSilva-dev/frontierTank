@@ -58,9 +58,9 @@ func data_checks() -> void:
 	check(not map.is_empty() and float(rules.dummy_x) - float(rules.player_x) > 300, "the dummy stands well away from the player")
 	var reward_ok: bool = true
 	for id: String in rules.reward.items:
-		reward_ok = reward_ok and (Pets.is_egg(id) or not Armory.stone_def(id).is_empty())
+		reward_ok = reward_ok and not Armory.stone_def(id).is_empty()
 	check(reward_ok, "the reward items exist")
-	check(Tutorial.reward_text(balance).contains("200") and Tutorial.reward_text(balance).contains("3x"), "the reward line names coins, EXP and items")
+	check(Tutorial.reward_text(balance).contains("200") and Tutorial.reward_text(balance).contains("5x"), "the reward line names coins, EXP and items")
 
 func profile_checks() -> void:
 	fresh("user://tutorial_test_profile.json")
@@ -75,12 +75,12 @@ func profile_checks() -> void:
 	check(profile.apply_op("tutorial", ["fly"], balance).error != "" and profile.apply_op("tutorial", [], balance).error != "", "unknown actions are refused")
 	check(profile.apply_op("tutorial", ["done"], balance).error == "" and profile.tutorial == "done", "finishing marks the training done (even after skipping)")
 	var rules: Dictionary = Tutorial.settings(balance).reward
-	check(profile.coins == coins + int(rules.coins) and profile.experience == int(rules.exp) and int(profile.items.get("pedra_fortalecimento", 0)) == 3 and int(profile.items.get("pet_egg", 0)) == 1, "the reward arrives")
+	check(profile.coins == coins + int(rules.coins) and profile.experience == int(rules.exp) and int(profile.items.get("pedra_fortalecimento", 0)) == 5 and not profile.items.has("pet_egg"), "the reward arrives (stones, no egg)")
 	profile.apply_op("tutorial", ["done"], balance)
-	check(profile.coins == coins + int(rules.coins) and int(profile.items.get("pet_egg", 0)) == 1, "the reward is paid once")
+	check(profile.coins == coins + int(rules.coins) and int(profile.items.get("pedra_fortalecimento", 0)) == 5, "the reward is paid once")
 	var copy: PlayerProfile = PlayerProfile.new()
 	copy.load_data(JSON.parse_string(JSON.stringify(profile.to_data())))
-	check(copy.tutorial == "done" and int(profile.to_data().version) == 11, "the state survives the save (version 11)")
+	check(copy.tutorial == "done" and int(profile.to_data().version) == 12, "the state survives the save (version 12)")
 	# Saves from before 0.21: veterans are not offered the training, newcomers are.
 	var old: Dictionary = profile.to_data()
 	old.erase("tutorial")
@@ -128,8 +128,9 @@ func starter_checks() -> void:
 	profile.add_item("pedra_fortalecimento", 1)
 	var weapon: Dictionary = profile.equipped_instance("arma")
 	check(profile.apply_op("strengthen", [int(weapon.uid)], balance).error == "" and int(profile.missions.starter.progress.s_strengthen) == 1, "trying the Ferreiro advances its mission")
-	profile.add_item("egg_sol", 1)
-	check(profile.apply_op("pet_hatch", ["egg_sol"], balance).error == "" and int(profile.missions.starter.progress.s_hatch) == 1, "hatching an egg advances its mission")
+	check(not profile.missions.starter.progress.has("s_hatch") and MissionsBoard.definition("s_hatch").is_empty(), "the hatch mission is gone")
+	profile.grant_pet("brasinha")
+	check(profile.pets.size() == 1, "the profile has a pet to hunt with")
 	var pets: Array = profile.pets.duplicate(true)
 	check(profile.apply_op("hunt_set", ["sol", 1, [int(pets[0].uid)]], balance).error == "" and int(profile.missions.starter.progress.s_hunt) == 1, "starting a hunt advances its mission")
 	# Claiming.
@@ -140,6 +141,7 @@ func starter_checks() -> void:
 	for mission: Dictionary in MissionsBoard.starter_defs():
 		profile.apply_op("mission_claim", [str(mission.id)], balance)
 	check(MissionsBoard.starter_finished(profile) and profile.missions.starter.claimed.size() == MissionsBoard.starter_defs().size(), "claiming every step ends the checklist with its bonus")
+	check(profile.owns_species("escaravelho_solar") and MissionsBoard.reward_text(MissionsBoard.definition("s_instance").reward).contains(Pets.species_name("escaravelho_solar")), "the first expedition mission gives a Comum pet as a gift")
 	var bonus_coins: int = profile.coins
 	profile.apply_op("mission_claim", ["s_pvp"], balance)
 	check(profile.coins == bonus_coins, "the bonus is paid once")
@@ -155,7 +157,7 @@ func starter_checks() -> void:
 	var old: Dictionary = {"version": 8, "created": true, "matches": 6, "victories": 3, "experience": 900, "missions": {"day": 1, "progress": {}, "claimed": [], "daily_bonus": false}}
 	var veteran: PlayerProfile = PlayerProfile.new()
 	veteran.load_data(old)
-	check(int(veteran.missions.starter.progress.s_pvp) == 1 and int(veteran.missions.starter.progress.s_win) == 1 and int(veteran.missions.starter.progress.s_hatch) == 0, "a veteran's past matches and wins are credited")
+	check(int(veteran.missions.starter.progress.s_pvp) == 1 and int(veteran.missions.starter.progress.s_win) == 1, "a veteran's past matches and wins are credited")
 
 func press_enter(coach: TutorialCoach) -> void:
 	var event: InputEventKey = InputEventKey.new()
