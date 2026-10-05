@@ -274,7 +274,7 @@ msgstr "The Auction House only works online."
 msgid "Conquista: %s"
 msgstr "Achievement: %s"
 
-#: client/scripts/main.gd:836 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:139
+#: client/scripts/main.gd:836 client/ui/hunt_tab.gd:362 client/ui/shop_screen.gd:140
 msgid "Entre com a sua conta para comprar."
 msgstr "Log in to your account to buy."
 
@@ -1934,7 +1934,7 @@ msgstr "PARTY"
 msgid "MISSÃO"
 msgstr "QUESTS"
 
-#: client/ui/bottom_bar.gd:21 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:190
+#: client/ui/bottom_bar.gd:21 client/ui/character_screen.gd:77 client/ui/character_screen.gd:677 client/ui/city_screen.gd:192
 msgid "MOCHILA"
 msgstr "BAG"
 
@@ -2238,7 +2238,7 @@ msgstr "STRENGTHEN"
 msgid "%d/%d itens"
 msgstr "%d/%d items"
 
-#: client/ui/character_screen.gd:449 client/ui/shop_screen.gd:129 client/ui/smith_screen.gd:305
+#: client/ui/character_screen.gd:449 client/ui/shop_screen.gd:130 client/ui/smith_screen.gd:305
 msgid "%d itens"
 msgstr "%d items"
 
@@ -2306,7 +2306,7 @@ msgstr "BLACKSMITH"
 msgid "LOJA"
 msgstr "SHOP"
 
-#: client/ui/character_screen.gd:81 client/ui/city_screen.gd:187 client/ui/shop_screen.gd:71
+#: client/ui/character_screen.gd:81 client/ui/city_screen.gd:189 client/ui/shop_screen.gd:72
 msgid "CUPOM"
 msgstr "COUPON"
 
@@ -2370,7 +2370,7 @@ msgstr "Write to %s and press Enter"
 msgid "Escolha um jogador na lista (clique no nome) para enviar uma mensagem privada."
 msgstr "Pick a player from the list (click the name) to send a private message."
 
-#: client/ui/chat_box.gd:37 client/ui/city_screen.gd:112
+#: client/ui/chat_box.gd:37 client/ui/city_screen.gd:114
 msgid "Canal"
 msgstr "Channel"
 
@@ -2422,11 +2422,11 @@ msgstr "Game Hall"
 msgid "Salão de Jogos! Clique para entrar"
 msgstr "Game Hall! Click to enter"
 
-#: client/ui/city_screen.gd:102
+#: client/ui/city_screen.gd:103
 msgid "Caçada cheia! Colete"
 msgstr "Hunt full! Collect"
 
-#: client/ui/city_screen.gd:102
+#: client/ui/city_screen.gd:103
 msgid "Caçada pronta para coletar"
 msgstr "Hunt ready to collect"
 
@@ -2438,7 +2438,7 @@ msgstr "Dungeon"
 msgid "Instância: 4 masmorras de 3 fases e mapas de nível 1 a 16"
 msgstr "Dungeon: 4 dungeons of 3 stages and maps of level 1 to 16"
 
-#: client/ui/city_screen.gd:115
+#: client/ui/city_screen.gd:117
 msgid "Canal %d"
 msgstr "Channel %d"
 
@@ -2450,7 +2450,7 @@ msgstr "Blacksmith"
 msgid "Ferreiro: fortaleça suas armas"
 msgstr "Blacksmith: strengthen your weapons"
 
-#: client/ui/city_screen.gd:120
+#: client/ui/city_screen.gd:122
 msgid "Você entrou no Canal %d."
 msgstr "You joined Channel %d."
 
@@ -2462,14 +2462,6 @@ msgstr "Auction House"
 msgid "Leilão: compre e venda itens"
 msgstr "Auction House: buy and sell items"
 
-#: client/ui/city_screen.gd:139
-msgid "BEM-VINDO AO GUSTFIRE!"
-msgstr "WELCOME TO GUSTFIRE!"
-
-#: client/ui/city_screen.gd:139
-msgid "Quer fazer um treino rápido de artilharia? Em poucos minutos você aprende a andar, mirar, usar o vento e soltar o POW num Boneco de Treino, e ganha uma recompensa: %s."
-msgstr "Want a quick artillery training? In a few minutes you learn to move, aim, use the wind and fire the POW on a Training Dummy, and you get a reward: %s."
-
 #: client/ui/city_screen.gd:14 client/ui/city_screen.gd:28
 msgid "Centro Comercial"
 msgstr "Market"
@@ -2478,11 +2470,19 @@ msgstr "Market"
 msgid "Centro Comercial: roupas e armas"
 msgstr "Market: outfits and weapons"
 
-#: client/ui/city_screen.gd:142
+#: client/ui/city_screen.gd:141
+msgid "BEM-VINDO AO GUSTFIRE!"
+msgstr "WELCOME TO GUSTFIRE!"
+
+#: client/ui/city_screen.gd:141
+msgid "Quer fazer um treino rápido de artilharia? Em poucos minutos você aprende a andar, mirar, usar o vento e soltar o POW num Boneco de Treino, e ganha uma recompensa: %s."
+msgstr "Want a quick artillery training? In a few minutes you learn to move, aim, use the wind and fire the POW on a Training Dummy, and you get a reward: %s."
+
+#: client/ui/city_screen.gd:144
 msgid "COMEÇAR O TREINO"
 msgstr "START TRAINING"
 
-#: client/ui/city_screen.gd:145
+#: client/ui/city_screen.gd:147
 msgid "AGORA NÃO"
 msgstr "NOT NOW"
 
@@ -2494,15 +2494,15 @@ msgstr "Currency Exchange"
 msgid "Câmbio: troque moedas e pedras com jogadores"
 msgstr "Exchange: trade currencies and stones with players"
 
-#: client/ui/city_screen.gd:189
-msgid "Resgatar cupom (TESTARTUDO libera tudo para testes)"
-msgstr "Redeem a coupon (TESTARTUDO unlocks everything for testing)"
+#: client/ui/city_screen.gd:191
+msgid "Resgatar cupom"
+msgstr "Redeem a coupon"
 
-#: client/ui/city_screen.gd:194 client/ui/founder_screen.gd:95
+#: client/ui/city_screen.gd:196 client/ui/founder_screen.gd:95
 msgid "FOUNDER PACK"
 msgstr "FOUNDER PACK"
 
-#: client/ui/city_screen.gd:196
+#: client/ui/city_screen.gd:198
 msgid "Edição Paladino do Sol"
 msgstr "Sun Paladin Edition"
 
@@ -2510,35 +2510,35 @@ msgstr "Sun Paladin Edition"
 msgid "Casa dos Mascotes"
 msgstr "Pet House"
 
-#: client/ui/city_screen.gd:347
+#: client/ui/city_screen.gd:354
 msgid "CRIE SEU PERSONAGEM"
 msgstr "CREATE YOUR CHARACTER"
 
-#: client/ui/city_screen.gd:348
+#: client/ui/city_screen.gd:355
 msgid "Uma conta, um personagem. Escolha a aparência e o nome."
 msgstr "One account, one character. Choose the look and the name."
 
-#: client/ui/city_screen.gd:354
+#: client/ui/city_screen.gd:361
 msgid "Feminino"
 msgstr "Female"
 
-#: client/ui/city_screen.gd:354
+#: client/ui/city_screen.gd:361
 msgid "Masculino"
 msgstr "Male"
 
-#: client/ui/city_screen.gd:355
+#: client/ui/city_screen.gd:362
 msgid "Nome:"
 msgstr "Name:"
 
-#: client/ui/city_screen.gd:364
+#: client/ui/city_screen.gd:371
 msgid "CRIAR PERSONAGEM"
 msgstr "CREATE CHARACTER"
 
-#: client/ui/city_screen.gd:376 client/ui/city_screen.gd:380
+#: client/ui/city_screen.gd:383 client/ui/city_screen.gd:387
 msgid "NOME"
 msgstr "NAME"
 
-#: client/ui/city_screen.gd:376
+#: client/ui/city_screen.gd:383
 msgid "O nome precisa ter pelo menos 3 letras."
 msgstr "The name needs at least 3 letters."
 
@@ -2586,19 +2586,11 @@ msgstr "ACCEPT AND CREATE"
 msgid "Digite o código do cupom:"
 msgstr "Type the coupon code:"
 
-#: client/ui/coupon_dialog.gd:16
-msgid "Ex.: TESTARTUDO"
-msgstr "E.g. TESTARTUDO"
-
-#: client/ui/coupon_dialog.gd:20
-msgid "Para testes: TESTARTUDO libera todas as armas e cosméticos; AURAS mostra as quatro auras."
-msgstr "For testing: TESTARTUDO unlocks every weapon and cosmetic; AURAS shows the four auras."
-
-#: client/ui/coupon_dialog.gd:27
+#: client/ui/coupon_dialog.gd:25
 msgid "Cupom resgatado! "
 msgstr "Coupon redeemed! "
 
-#: client/ui/coupon_dialog.gd:33 client/ui/mission_screen.gd:136
+#: client/ui/coupon_dialog.gd:31 client/ui/mission_screen.gd:136
 msgid "RESGATAR"
 msgstr "REDEEM"
 
@@ -3318,7 +3310,7 @@ msgstr "The hunt piles up for up to 8 hours instead of 2: sleep, work, and colle
 msgid "Passe ativo: sua caçada acumula até 8 horas. Obrigado por apoiar o jogo!"
 msgstr "Pass active: your hunt piles up for up to 8 hours. Thanks for supporting the game!"
 
-#: client/ui/hunt_tab.gd:355 client/ui/shop_screen.gd:134
+#: client/ui/hunt_tab.gd:355 client/ui/shop_screen.gd:135
 msgid "VOCÊ TEM"
 msgstr "OWNED"
 
@@ -3342,11 +3334,11 @@ msgstr "Hunt started! The team is already fighting."
 msgid "Caçada parada."
 msgstr "Hunt stopped."
 
-#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:154
+#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:155
 msgid "Abrindo a página de pagamento…"
 msgstr "Opening the payment page…"
 
-#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:154
+#: client/ui/hunt_tab.gd:506 client/ui/shop_screen.gd:155
 msgid "Aprove a compra na janela da Steam…"
 msgstr "Approve the purchase in the Steam window…"
 
@@ -4510,19 +4502,19 @@ msgstr "Ready"
 msgid "Remover da sala"
 msgstr "Remove from the room"
 
-#: client/ui/shop_screen.gd:101
+#: client/ui/shop_screen.gd:102
 msgid "SUPER VERDADEIRA\nSó no baú do chefe"
 msgstr "SUPER TRUE\nBoss chest only"
 
-#: client/ui/shop_screen.gd:102
+#: client/ui/shop_screen.gd:103
 msgid "Você tem"
 msgstr "Owned"
 
-#: client/ui/shop_screen.gd:109
+#: client/ui/shop_screen.gd:110
 msgid "Excelente e Verdadeira:\ninstâncias e leilão"
 msgstr "Excellent and True:\ninstances and auction"
 
-#: client/ui/shop_screen.gd:114
+#: client/ui/shop_screen.gd:115
 msgid "COMPRADO"
 msgstr "OWNED"
 
@@ -4534,27 +4526,27 @@ msgstr "Hair"
 msgid "Premium"
 msgstr "Premium"
 
-#: client/ui/shop_screen.gd:134
+#: client/ui/shop_screen.gd:135
 msgid "ABRIR PAGAMENTO"
 msgstr "OPEN PAYMENT"
 
-#: client/ui/shop_screen.gd:140
+#: client/ui/shop_screen.gd:141
 msgid "Só online"
 msgstr "Online only"
 
-#: client/ui/shop_screen.gd:144
+#: client/ui/shop_screen.gd:145
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam."
 msgstr "Looks and convenience only: no attributes, and it arrives by mail.\nThe price in your currency shows on Steam."
 
-#: client/ui/shop_screen.gd:145
+#: client/ui/shop_screen.gd:146
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nPagamento por cartão ou Pix, em reais."
 msgstr "Looks and convenience only: no stats, and it arrives in the Mail.\nPay by card or Pix, in reais (BRL)."
 
-#: client/ui/shop_screen.gd:150
+#: client/ui/shop_screen.gd:151
 msgid "Página de pagamento aberta no navegador."
 msgstr "Payment page opened in your browser."
 
-#: client/ui/shop_screen.gd:166
+#: client/ui/shop_screen.gd:167
 msgid "Comprado! Veja na Mochila."
 msgstr "Bought! Check your Bag."
 

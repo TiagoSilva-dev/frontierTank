@@ -13,12 +13,10 @@ static func open(parent: Node, app: Node, on_done: Callable = Callable()) -> Con
 	field.position = rect.position + Vector2(40, 94)
 	field.size = Vector2(480, 42)
 	field.max_length = 24
-	field.placeholder_text = Lang.t("Ex.: TESTARTUDO")
 	field.add_theme_font_override("font", UiKit.reading_font())
 	field.add_theme_font_size_override("font_size", UiKit.fs(22))
 	root.add_child(field)
-	var hint: String = Lang.t("Para testes: TESTARTUDO libera todas as armas e cosméticos; AURAS mostra as quatro auras.") if app.test_coupons() else ""
-	var result: Label = UiKit.label(root, hint, Rect2(rect.position.x + 40, rect.position.y + 142, 480, 104), 14, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	var result: Label = UiKit.label(root, "", Rect2(rect.position.x + 40, rect.position.y + 142, 480, 104), 14, UiKit.TEXT_MUTED, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	result.name = "CouponResult"
 	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var redeem: Callable = func() -> void:

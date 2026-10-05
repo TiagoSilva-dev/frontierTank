@@ -188,7 +188,7 @@ func build_player_card() -> void:
 	UiKit.label(card, str(app.profile.coins), Rect2(112, 58, 140, 22), 15, Color("ffd46b"), UiKit.INK)
 	var coupon: Button = UiKit.button(self, tr("CUPOM"), Rect2(1016, 126, 124, 34), func() -> void: CouponDialog.open(self, app, app.show_city), "button", 15)
 	coupon.name = "CouponButton"
-	coupon.tooltip_text = tr("Resgatar cupom (TESTARTUDO libera tudo para testes)")
+	coupon.tooltip_text = tr("Resgatar cupom")
 	UiKit.button(self, tr("MOCHILA"), Rect2(1146, 126, 126, 34), app.open_bag, "button_green", 15)
 	# Founder Pack: the limited shop window (or, for a Founder, the set and its switches).
 	var entry: Dictionary = PremiumStore.product(FounderPack.SKU)
