@@ -338,7 +338,9 @@ static func crit_chance(extra: Dictionary) -> float:
 
 # ---------- looks ----------
 
-static func look_for(gender: String, equipped: Array) -> Dictionary:
+# `skin_only` (0.27) draws the skin as it was made: hat, glasses, wings and hair dye are
+# left out of the look, and the stats never notice (they read the equipment, not the look).
+static func look_for(gender: String, equipped: Array, skin_only: bool = false) -> Dictionary:
 	var look: Dictionary = {"skin": "lani" if gender == "f" else "base_m", "hair": "", "hat": "", "glasses": "", "wings": "", "weapon": LEGACY_ORDER[0], "weapon_level": 0, "clothes_level": 0}
 	var skin_id: String = ""
 	for inst: Dictionary in equipped:
@@ -370,6 +372,11 @@ static func look_for(gender: String, equipped: Array) -> Dictionary:
 	# A skin may carry layers of its own (the Paladino's wings). They replace what the
 	# power slots would draw there and never change an attribute.
 	var layers: Dictionary = cosmetic_def(skin_id).get("layers", {}) if skin_id != "" else {}
+	if skin_only:
+		look.hair = ""
+		look.hat = ""
+		look.glasses = ""
+		look.wings = ""
 	if layers.has("wings"):
 		look.wings = str(layers.wings)
 	return look

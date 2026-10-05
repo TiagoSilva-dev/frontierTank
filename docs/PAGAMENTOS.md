@@ -1,6 +1,6 @@
 # Pagamentos por dinheiro real (web e celular)
 
-A loja Premium (`shared/balance/store.json`: tinturas, pacote, Passe do Caçador, abas da Mochila, Pacote Fundador) vende de dois jeitos, com o **mesmo catálogo, o mesmo pedido e a mesma entrega pelo Correio**:
+A loja Premium (`shared/balance/store.json`: Passe do Caçador, abas da Mochila, Pacote Fundador e, na 0.28, as skins épicas) vende de dois jeitos, com o **mesmo catálogo, o mesmo pedido e a mesma entrega pelo Correio**:
 
 | Onde | Como paga | Quem confirma |
 |---|---|---|

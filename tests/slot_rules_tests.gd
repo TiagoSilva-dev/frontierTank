@@ -168,5 +168,37 @@ func run_tests() -> void:
 		var loadout: Dictionary = Armory.random_loadout(rolls, 30, "m", "")
 		worn_by_bots += 1 if int(loadout.attrs.ataque) + int(loadout.attrs.defesa) > 0 else 0
 	check(worn_by_bots > 40, "high level bots wear gear with attributes")
+	# --- 0.27: the skin alone, and no hair sold for money
+	var dressed_up: Array = [{"id": "roupa_samurai", "quality": "normal", "level": 0}, {"id": "chapeu_coroa", "quality": "normal", "level": 0}, {"id": "oculos_redondos", "quality": "normal", "level": 0}, {"id": "asas_anjo", "quality": "normal", "level": 0}, {"id": "cabelo_azul", "quality": "normal", "level": 0}, {"id": "fogo_intenso", "quality": "normal", "level": 4}]
+	var full_look: Dictionary = Armory.look_for("m", dressed_up)
+	var clean_look: Dictionary = Armory.look_for("m", dressed_up, true)
+	check(str(full_look.hat) != "" and str(full_look.glasses) != "" and str(full_look.wings) != "" and str(full_look.hair) != "", "by default hat, glasses, wings and hair are drawn")
+	check(clean_look.hat == "" and clean_look.glasses == "" and clean_look.wings == "" and clean_look.hair == "", "skin only hides hat, glasses, wings and hair dye")
+	check(clean_look.skin == full_look.skin and clean_look.weapon == full_look.weapon and int(clean_look.weapon_level) == 4, "skin only keeps the skin and the weapon")
+	var paladin_clean: Dictionary = Armory.look_for("m", [{"id": "roupa_paladino_sol", "quality": "normal", "level": 0}, {"id": "asas_anjo", "quality": "normal", "level": 0}], true)
+	check(str(paladin_clean.wings) == "asas_aurora", "skin only keeps what the skin itself carries (the Paladino's wings)")
+	var toggled: PlayerProfile = PlayerProfile.new()
+	for id: String in ["chapeu_coroa", "asas_anjo"]:
+		toggled.equip(int(toggled.add_instance(id).uid))
+	var with_hat: Dictionary = toggled.stats(balance)
+	check("skin_only" in PlayerProfile.OPS and not toggled.skin_only and str(toggled.look().hat) != "", "the profile starts drawing everything")
+	check(toggled.apply_op("skin_only", [true], balance).error == "" and toggled.skin_only and toggled.look().hat == "" and toggled.look().wings == "", "the skin_only operation hides the extras in the look")
+	var without_hat: Dictionary = toggled.stats(balance)
+	check(var_to_str(with_hat) == var_to_str(without_hat), "skin only never changes an attribute")
+	check(toggled.entry(balance).look.hat == "", "the battle roster and the other players get the same look")
+	var kept_choice: PlayerProfile = PlayerProfile.new()
+	kept_choice.load_data(toggled.to_data())
+	check(kept_choice.skin_only and kept_choice.look().hat == "", "the choice survives a save")
+	check(toggled.apply_op("skin_only", ["sim"], balance).error == "" and not toggled.skin_only, "anything but true turns it off")
+	var old_save: PlayerProfile = PlayerProfile.new()
+	old_save.load_data({"version": 11, "gender": "m", "coins": 5})
+	check(not old_save.skin_only, "a save from before the option reads as off")
+	var hair_skus: Array = PremiumStore.products().filter(func(entry: Dictionary) -> bool: return (entry.items as Array).any(func(id: Variant) -> bool: return Armory.slot_of(str(id)) == "cabelo"))
+	check(hair_skus.is_empty(), "the premium shop sells no hair")
+	var gold_hair: bool = true
+	for id: String in ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"]:
+		var def: Dictionary = Armory.definition(id)
+		gold_hair = gold_hair and not bool(def.get("premium", false)) and int(def.price) > 0 and (def.attrs as Dictionary).is_empty()
+	check(gold_hair, "the four old premium dyes are now sold in gold and still have no attributes")
 	print("SLOT RULES RESULT: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)

@@ -169,6 +169,14 @@ func build_equipment() -> void:
 	pet_hit.pressed.connect(open_pets.bind("Mascotes"))
 	profile_root.add_child(pet_hit)
 	UiKit.label(profile_root, tr("Mascote"), Rect2(PET_POSITION.x - 12, PET_POSITION.y + SLOT_SIZE - 2, 72, 18), 12, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
+	# 0.27: draw the skin alone (hat, glasses, wings and hair dye hidden; attributes kept).
+	var only: CheckBox = UiKit.check_box(profile_root, tr("Só a skin"), Rect2(128, 214, 140, 30), app.profile.skin_only, 16)
+	only.name = "SkinOnly"
+	only.tooltip_text = tr("Mostra só a skin, sem chapéu, óculos, asas nem cabelo por cima. Os atributos continuam valendo.")
+	only.toggled.connect(func(on: bool) -> void:
+		await app.do_op("skin_only", [on])
+		if is_inside_tree():
+			stage.avatar.show_look(app.profile.look()))
 	build_stats(Rect2(48, 544, 564, 144))
 
 func equipment_slot(slot: String, rect: Rect2) -> void:

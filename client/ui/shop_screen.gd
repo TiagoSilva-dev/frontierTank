@@ -18,9 +18,13 @@ var page: int = 0
 var trying: Dictionary = {}
 var contents: Control
 var message: String = ""
+# The provador can show the skin alone; it starts as the character's own choice and never
+# changes it (that lives on the Mochila).
+var preview_skin_only: bool = false
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
+	preview_skin_only = app.profile.skin_only
 	build()
 
 func build() -> void:
@@ -57,14 +61,19 @@ func build() -> void:
 func build_preview() -> void:
 	UiKit.panel(contents, Rect2(56, 84, 360, 596), "paper")
 	UiKit.label(contents, tr("PROVADOR"), Rect2(56, 90, 360, 30), 20, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	var look: Dictionary = app.profile.look()
+	var equipped: Array = app.profile.equipped_list()
 	if not trying.is_empty():
-		var equipped: Array = app.profile.equipped_list().filter(func(inst: Dictionary) -> bool: return Armory.slot_of(str(inst.id)) != Armory.slot_of(str(trying.id)))
+		equipped = equipped.filter(func(inst: Dictionary) -> bool: return Armory.slot_of(str(inst.id)) != Armory.slot_of(str(trying.id)))
 		equipped.append(trying)
-		look = Armory.look_for(app.profile.gender, equipped)
+	var look: Dictionary = app.profile.look() if trying.is_empty() and preview_skin_only == app.profile.skin_only else Armory.look_for(app.profile.gender, equipped, preview_skin_only)
 	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 340), "dark")
 	stage.clip_contents = true
 	AvatarView.create(stage, look, Rect2(0, 10, 332, 320))
+	var only: CheckBox = UiKit.check_box(stage, tr("Só a skin"), Rect2(8, 298, 200, 34), preview_skin_only, 16)
+	only.name = "PreviewSkinOnly"
+	only.toggled.connect(func(on: bool) -> void:
+		preview_skin_only = on
+		build())
 	UiKit.art(contents, "res://assets/items/moeda.png", Rect2(90, 472, 34, 34))
 	UiKit.label(contents, str(app.profile.coins), Rect2(130, 468, 250, 40), 24, UiKit.GOLD, Color.TRANSPARENT)
 	var hint: String = premium_hint() if tab == "premium" else tr("Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão.")

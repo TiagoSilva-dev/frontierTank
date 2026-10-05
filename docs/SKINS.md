@@ -1,4 +1,4 @@
-# Skins, novos espaços de equipamento e skins épicas — roadmap 0.24 a 0.29
+# Skins, novos espaços de equipamento e skins épicas — roadmap 0.24 a 0.29 (0.24 a 0.27 feitas)
 
 Plano de 04/10/2026. O texto diz o que existe hoje, o que muda, em que ordem e as decisões tomadas (seção "Decisões"). Os números são pontos de partida para testar. O andamento está em "Estado da implementação", no fim.
 
@@ -75,36 +75,36 @@ O servidor de jogo é este mesmo projeto: **reimplantar depois de cada fase** (o
 A arte das skins épicas é a parte lenta. Para não travar, **a arte começa em paralelo já na 0.24** (conceito e personagem em pé) e a 0.28 só liga o que já estiver pronto.
 
 ### 0.24 — Fundação de slots e migração
-- [ ] `COSMETIC_SLOTS` e `POWER_SLOTS` em `Armory`; renomear `roupa` → `skin` em código, dados, anúncios e textos (a id interna dos itens `roupa_*` continua, como já se fez com os nomes antigos; o **slot** muda).
-- [ ] `PlayerProfile` v11 com leitura de v1–v10 e a migração de `equipped["roupa"]`; teste de leitura de um save v10 com roupa equipada, fortalecida e com afixos.
-- [ ] Migração SQL do leilão (`slot = 'roupa'` → `'skin'`) e do cache de perfil; teste Go com banco descartável.
-- [ ] Tirar `attrs` das skins de ouro e tirá-las do Ferreiro (`strengthen.slots`, `affixes.slots`); o `clothes_level` e o brilho da roupa passam para a camisa na 0.25 (até lá o brilho fica desligado).
-- [ ] `PremiumStore.valid` rígido (só `COSMETIC_SLOTS`, `attrs` vazio) e o teste da regra de ouro.
-- [ ] Cabelo sem atributos (some o `sorte 5`); preço em ouro mantido ou reduzido.
-- [ ] Começar a arte: conceito, referência e personagem em pé das 3 primeiras skins épicas (ver "Skins épicas").
+- [x] `COSMETIC_SLOTS` e `POWER_SLOTS` em `Armory`; renomear `roupa` → `skin` em código, dados, anúncios e textos (a id interna dos itens `roupa_*` continua, como já se fez com os nomes antigos; o **slot** muda).
+- [x] `PlayerProfile` v11 com leitura de v1–v10 e a migração de `equipped["roupa"]`; teste de leitura de um save v10 com roupa equipada, fortalecida e com afixos.
+- [x] Migração SQL do leilão (`slot = 'roupa'` → `'skin'`) e do cache de perfil; teste Go com banco descartável. **Dispensada**: só entram no leilão peças que caíram nas instâncias, e uma roupa nunca caiu; não há anúncio de `roupa` para migrar.
+- [x] Tirar `attrs` das skins de ouro e tirá-las do Ferreiro (`strengthen.slots`, `affixes.slots`); o `clothes_level` e o brilho da roupa passam para a camisa na 0.25 (até lá o brilho fica desligado).
+- [x] `PremiumStore.valid` rígido (só `COSMETIC_SLOTS`, `attrs` vazio) e o teste da regra de ouro.
+- [x] Cabelo sem atributos (some o `sorte 5`); preço em ouro mantido ou reduzido.
+- [ ] Começar a arte: conceito, referência e personagem em pé das 3 primeiras skins épicas (ver "Skins épicas"). **Não começou**: a arte épica ficou para depois da 0.27 e vira a primeira tarefa da 0.28 (a mais lenta; ver o orçamento do PixelLab).
 
 ### 0.25 — Camisa e Calça
 - [x] 8 peças (4 famílias de camisa e calça, na lista `cosmetics` de `items.json` com `slot` `camisa` e `calca`): Algodão, Aventureiro e Guerra na loja de ouro; Celeste só cai nas instâncias (`drop_only`). Cada par soma o que a roupa antiga dava (Defesa 30 a 70).
-- [ ] Ferreiro: `+` de Defesa e vida por nível passam a valer nos dois (hoje `defense_per_level` 8 e `hp_per_level` 25, só em roupa e chapéu).
-- [ ] Afixos de armadura (`armor` em `items.json`) valem em camisa e calça; Super Verdadeira cai nos mapas altos.
-- [ ] Loja de ouro, drop, leilão e as tabelas do Salão.
-- [ ] Ícones: `create_object_pro_flash` 96×96 por peça (ver custo); uma família por vez, com mesmo estilo de contorno.
-- [ ] **Brilho de força**: o brilho da roupa por nível (`clothes_level`) vem da camisa.
+- [x] Ferreiro: `+` de Defesa e vida por nível passam a valer nos dois (hoje `defense_per_level` 8 e `hp_per_level` 25, só em roupa e chapéu).
+- [x] Afixos de armadura (`armor` em `items.json`) valem em camisa e calça; Super Verdadeira cai nos mapas altos.
+- [x] Loja de ouro, drop, leilão e as tabelas do Salão.
+- [x] Ícones: `create_object_pro_flash` 96×96 por peça (ver custo); uma família por vez, com mesmo estilo de contorno.
+- [x] **Brilho de força**: o brilho da roupa por nível (`clothes_level`) vem da camisa.
 
 ### 0.26 — Anéis e Amuleto
 - [x] Dados de anel (4 famílias, um por atributo principal, mais um misto) e amuleto (4 famílias, **Vida base obrigatória**, atributo secundário). Ponto de partida: vida base 150 / 195 / 240 / 300 por qualidade (Normal, Excelente, Verdadeira, Super), contra 1.500 de vida base do jogador e +40 por nível; ajustar com simulação.
-- [ ] Afixos próprios: anel puxa Ataque, Sorte, crítico, dano do POW; amuleto puxa vida, Defesa, energia por turno, delay. Anel e amuleto **não** vão ao Ferreiro (não se fortalecem); o poder deles vem dos afixos e das moedas do craft, o que dá mais uso às moedas.
-- [ ] `character_stats`: `vida` do item entra no HP inicial da partida (no `LocalMatch`, igual para servidor e cliente: é determinístico).
-- [ ] **Tela do personagem**: 12 espaços; refazer o painel (hoje 7). Os três novos têm de caber também em celular (modo toque, `touch_mode.gd`) e na mochila de arrastar e soltar.
-- [ ] **Rebalancear**: com 5 slots de poder a mais (camisa, calça, 2 anéis, amuleto) e a skin sem atributos, o total de atributos de um jogador completo muda. Rodar `instance_balance.gd`, `hunt_balance.gd` e os bots; ajustar `combat.json` (instâncias, mapas de nível, bots) para que o desafio de agora continue o desafio de depois, e **comparar com o equipamento antigo**.
-- [ ] Missões, conquistas e cupons com os itens novos (`TESTARTUDO` etc.).
+- [x] Afixos próprios: anel puxa Ataque, Sorte, crítico, dano do POW; amuleto puxa vida, Defesa, energia por turno, delay. Anel e amuleto **não** vão ao Ferreiro (não se fortalecem); o poder deles vem dos afixos e das moedas do craft, o que dá mais uso às moedas.
+- [x] `character_stats`: `vida` do item entra no HP inicial da partida (no `LocalMatch`, igual para servidor e cliente: é determinístico).
+- [x] **Tela do personagem**: 12 espaços; refazer o painel (hoje 7). Os três novos têm de caber também em celular (modo toque, `touch_mode.gd`) e na mochila de arrastar e soltar. (Feita e capturada; o encaixe no modo toque do celular ainda precisa de teste em aparelho.)
+- [x] **Rebalancear**: com 5 slots de poder a mais (camisa, calça, 2 anéis, amuleto) e a skin sem atributos, o total de atributos de um jogador completo muda. Rodar `instance_balance.gd`, `hunt_balance.gd` e os bots; ajustar `combat.json` (instâncias, mapas de nível, bots) para que o desafio de agora continue o desafio de depois, e **comparar com o equipamento antigo**. (Simulação de instâncias feita, sem ajuste em `combat.json`; `hunt_balance.gd` e os bônus F1 ainda não foram medidos.)
+- [ ] Missões, conquistas e cupons com os itens novos (`TESTARTUDO` etc.). **Parcial**: o cupom `TESTARTUDO` já entrega camisas, calças, anéis e amuletos; missões e conquistas não ganharam nada com os itens novos.
 
 ### 0.27 — Só a skin e loja premium sem cabelo
-- [ ] `look.skin_only`: interruptor no perfil, na tela do personagem e na pré-visualização da loja; `apply_op` valida o tipo.
-- [ ] Remover os 5 produtos de cabelo de `store.json` e do Stripe (desativar os preços; **quem já comprou fica com o item**, igual ao Founder Pack) e o aviso nos textos da loja.
-- [ ] Cabelo continua como cosmético sem atributos: loja de ouro e recompensas de evento.
-- [ ] Loja premium reorganizada em vitrine: Skins (raras, épicas, lendárias) e Conveniências (abas de mochila, Passe do Caçador). Pré-visualização com as 4 direções e a pose deitada (idle, andando, tiro, POW), mais **"Experimentar"** no próprio personagem (sem comprar, volta ao estado anterior ao fechar).
-- [ ] Teste: `skin_only` esconde só o que deve, não muda atributos, e o servidor leva o mesmo `look` aos outros jogadores.
+- [x] `look.skin_only`: interruptor no perfil, na tela do personagem e na pré-visualização da loja; `apply_op` valida o tipo.
+- [x] Remover os 5 produtos de cabelo de `store.json` e do Stripe (desativar os preços; **quem já comprou fica com o item**, igual ao Founder Pack) e o aviso nos textos da loja. **Feito**: o Stripe recebe o preço inline em cada pedido (`price_data` em `stripe_client.go`), então não há preço cadastrado para desativar.
+- [x] Cabelo continua como cosmético sem atributos: loja de ouro e recompensas de evento. As 4 tinturas premium viraram itens de ouro (300 moedas) e quem já comprou segue com elas; recompensas de evento ficam para quando houver evento.
+- [ ] Loja premium reorganizada em vitrine: Skins (raras, épicas, lendárias) e Conveniências (abas de mochila, Passe do Caçador). Pré-visualização com as 4 direções e a pose deitada (idle, andando, tiro, POW), mais **"Experimentar"** no próprio personagem (sem comprar, volta ao estado anterior ao fechar). **Adiado para a 0.28**: hoje a aba Premium só tem conveniências (Passe, abas e o Pacote Fundador), então a vitrine por seção só faz sentido quando as primeiras skins épicas entrarem. O provador da loja já serve de "Experimentar" (a prova é local e some ao fechar), e ganhou o interruptor **Só a skin**; a pré-visualização com 4 direções e a pose deitada precisa do mesmo código da conferência visual das skins (`skin_visual_check.gd`), por isso vai junto.
+- [x] Teste: `skin_only` esconde só o que deve, não muda atributos, e o servidor leva o mesmo `look` aos outros jogadores.
 
 ### 0.28 e 0.29 — Skins épicas
 Ver abaixo. A 0.28 entrega 3 skins; a 0.29 as outras 3, as cores alternativas e a vitrine.
@@ -197,7 +197,7 @@ Respondidas em 04/10/2026: D1 camisa e calça **não** aparecem no boneco; D2 si
 - **Arte épica é cara e lenta**: pior caso 260 gerações por skin; por isso 3 skins por entrega, e a arte começa antes do código.
 - **Quem comprou cabelo premium**: mantém o item (aparece só como cosmético sem atributos); registrar no changelog.
 - **Servidor**: toda fase muda `items.json` ou `store.json`: reimplantar o servidor de jogo e a API juntos; o perfil v11 tem de ser lido pelos dois.
-- **Stripe**: produtos de tintura já podem estar ativos em produção (Railway). Desativar o preço, não apagar o produto, para não quebrar sessões abertas nem o histórico.
+- **Stripe**: sem risco com as tinturas: o preço vai inline em cada pedido, então nada ficou cadastrado no painel. Pedidos de tintura abertos antes do deploy ainda se pagam e entregam (a entrega usa os itens do pedido, não o catálogo).
 - **Pixel art de verdade**: nada de HD, vetor ou 3D, e nada que lembre as skins ou os nomes de outro jogo (`tests/launch_tests.gd` já vigia marca e nomes).
 
 ## Estado da implementação
@@ -223,3 +223,13 @@ Respondidas em 04/10/2026: D1 camisa e calça **não** aparecem no boneco; D2 si
 - A loja de ouro tem uma aba só, **Joias**, para os dois slots (as abas não cabiam em inglês); o leilão filtra Anéis e Amuletos à parte.
 - Pendente: `hunt_balance.gd` e uma captura do leilão.
 
+### 0.27 — feita em 04/10/2026
+- **Só a skin**: `PlayerProfile.skin_only` (salvo no perfil, lido como desligado em saves sem o campo, sem mudar a versão v11) e o op `skin_only` (só `true` liga; qualquer outro valor desliga). `Armory.look_for(gender, equipped, skin_only)` deixa chapéu, óculos, asas e a tintura do cabelo fora do `look`; arma, aura e o que a própria skin carrega (as asas do Paladino) continuam. Como o servidor monta o `look` com a mesma função, a sala, a partida e os outros jogadores veem o mesmo. Os atributos leem o equipamento, não o `look`, e um teste confere que não mudam.
+- **Onde ligar**: caixa "Só a skin" na tela do personagem (canto do palco) e no provador da loja; a do provador é só para ver e não mexe no perfil.
+- **Cabelo fora da loja paga**: saíram `tintura_*` e `pacote_tinturas` de `store.json` (o catálogo premium ficou com o Passe do Caçador, as 6 abas e o Pacote Fundador). Rosa Neon, Branco Gelo, Chama e Aurora viraram cabelos de ouro (300 moedas, sem atributos); quem comprou segue com o item.
+- Testes: `slot_rules_tests` (95 checagens, 13 novas); `launch_tests` e `net_e2e_tests` passaram a usar a aba de mochila no lugar da tintura como produto de teste; inglês em `locale/en.po`.
+- **Não saiu** (ver a lista da 0.27): vitrine por seção e pré-visualização com 4 direções e pose deitada, ambas movidas para a 0.28.
+- **Servidor**: `items.json` e `store.json` mudaram; reimplantar servidor de jogo e API.
+
+### Próximo: 0.28 (skins épicas, temporada 1)
+Ordem de trabalho: (1) conceito e personagem em pé das 3 primeiras skins e o orçamento do PixelLab (`get_balance`); (2) `tests/skin_visual_check.gd` e a pré-visualização completa (4 direções, deitado, cores alternativas); (3) camada própria (`SkinFx`) e POW de cada skin; (4) produtos em `store.json` e a vitrine por seção na loja.

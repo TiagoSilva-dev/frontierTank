@@ -71,6 +71,9 @@ var hunt_skew: int = 0
 var bag: Array[String] = []
 # Founder Pack: which of the Founder effects are on (FounderPack.FX_KEYS).
 var founder_fx: Dictionary = FounderPack.clean_fx({})
+# 0.27: show the skin as drawn. Hat, glasses, wings and hair dye stay on the character
+# (attributes untouched) but are not drawn; what the skin itself carries still is.
+var skin_only: bool = false
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var remote: bool = false
 var on_save: Callable = Callable()
@@ -193,6 +196,7 @@ func load_data(data: Dictionary) -> bool:
 		hunt_skew = int(data.clock) - int(Time.get_unix_time_from_system())
 	bag = fit_bag(clean_bag(data.get("bag", [])))
 	founder_fx = FounderPack.clean_fx(data.get("founder_fx", {}))
+	skin_only = bool(data.get("skin_only", false))
 	var saved_coupons: Variant = data.get("coupons", [])
 	coupons.clear()
 	if saved_coupons is Array:
@@ -267,7 +271,7 @@ func ensure_starter() -> void:
 		equipped["arma"] = weapon.uid
 
 func to_data() -> Dictionary:
-	return {"version": 11, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx}
+	return {"version": 11, "tutorial": tutorial, "rating": rating, "titles": titles, "title": title, "challenge": challenge, "pets": pets, "pet_active": pet_active, "pet_album": pet_album, "hunt": hunt, "clock": hunt_now(), "created": created, "name": player_name, "gender": gender, "experience": experience, "victories": victories, "matches": matches, "coins": coins, "merits": merits, "tools": tools, "items": items, "inventory": inventory, "equipped": equipped, "next_uid": next_uid, "coupons": coupons, "maps": maps, "pity": pity, "missions": missions, "bag": bag, "founder_fx": founder_fx, "skin_only": skin_only}
 
 func save_profile() -> void:
 	# Online: the server's copy is persisted through `on_save`; the client's copy is a
@@ -665,7 +669,7 @@ func stats(balance: Dictionary) -> Dictionary:
 	return Armory.character_stats(level(), equipped_list(), balance, pet_bonus())
 
 func look() -> Dictionary:
-	var result: Dictionary = Armory.look_for(gender, equipped_list())
+	var result: Dictionary = Armory.look_for(gender, equipped_list(), skin_only)
 	if not active_pet().is_empty():
 		result["pet"] = str(active_pet().species)
 	if is_founder():
@@ -1095,7 +1099,7 @@ func pet_battle_xp(exp_gain: int, pve: bool) -> Dictionary:
 # Everything a player can change in the profile goes through here. Offline the client
 # calls it directly; online the server calls it for the player and sends the new profile
 # back. Arguments come from the network, so their types are checked.
-const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "streak_claim", "tutorial", "title_set", "season_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop"]
+const OPS: Array[String] = ["toggle_equip", "sell", "buy", "buy_stone", "strengthen", "transfer", "craft", "craft_map", "redeem", "buy_tool", "sell_tool", "create", "bag_layout", "mission_claim", "streak_claim", "tutorial", "title_set", "season_claim", "founder_fx", "pet_hatch", "pet_equip", "pet_feed", "pet_evolve", "pet_release", "hunt_set", "hunt_collect", "hunt_stop", "skin_only"]
 
 static func arg_int(args: Array, index: int) -> int:
 	if index >= args.size() or not (args[index] is int or args[index] is float):
@@ -1173,6 +1177,10 @@ func apply_op(op: String, args: Array, balance: Dictionary, test_coupons: bool =
 			else:
 				founder_fx[key] = args.size() > 1 and args[1] == true
 				save_profile()
+		"skin_only":
+			# Cosmetic only: draw the skin alone (no hat, glasses, wings or hair dye).
+			skin_only = not args.is_empty() and typeof(args[0]) == TYPE_BOOL and args[0]
+			save_profile()
 		"pet_hatch":
 			error = hatch(arg_str(args, 0))
 		"pet_equip":

@@ -69,5 +69,5 @@ As cápsulas saem da arte da entrada (`assets/title`) em escala inteira, para os
 - **Nome**: o jogo passou a se chamar **Gustfire** em 26/09/2026 (o subtítulo “Nova Era” saiu; ver `docs/SITE.md`). Falta a busca de marca antes de publicar a página.
 - **Revisão jurídica** dos Termos, da Política e das exigências do ECA Digital (verificação de idade, ferramentas para responsáveis) para um jogo com chat e compras.
 - **Estornos**: a Steam informa reembolsos e chargebacks por `ISteamMicroTxn/GetReport`. Falta a rotina que lê o relatório e retira os itens (o pedido já guarda tudo o que ela precisa).
-- **Catálogo**: 4 tinturas são o começo; a arte dos cosméticos exclusivos (e o passe de temporada) vem depois. Nenhum item com atributo pode entrar.
+- **Catálogo**: sem cabelo desde a 0.27 (só skins, o Passe do Caçador e as abas da Mochila); as skins épicas vêm na 0.28 (`docs/SKINS.md`). Nenhum item com atributo pode entrar.
 - **Capturas em 1920×1080**: as de agora são 1280×720 (o mínimo). Para a página definitiva, capturar em 1080p quando houver arte em escala para isso.

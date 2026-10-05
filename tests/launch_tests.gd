@@ -324,9 +324,10 @@ func test_steam_client() -> void:
 	check(not PremiumStore.valid({"sku": "x", "steam_item_id": 9, "items": ["roupa_samurai"], "prices": {"USD": 99}}), "an item with attributes can never be sold for money")
 	var buyer: PlayerProfile = PlayerProfile.new()
 	buyer.coins = 999999
-	check(buyer.buy("cabelo_aurora") != "" and not buyer.has_item("cabelo_aurora"), "premium cosmetics are not sold for gold")
+	check(buyer.buy("roupa_paladino_sol") != "" and not buyer.has_item("roupa_paladino_sol"), "premium cosmetics are not sold for gold")
+	check(buyer.buy("cabelo_aurora") == "" and buyer.has_item("cabelo_aurora"), "0.27: the old premium dyes are gold hair now")
 	buyer.redeem("TESTARTUDO")
-	check(not buyer.has_item("cabelo_aurora") and buyer.has_item("cabelo_preto"), "the test coupon does not give premium cosmetics")
+	check(buyer.has_item("cabelo_preto") and buyer.has_item("cabelo_aurora"), "the test coupon gives every hair colour")
 	# The title offers the Steam login.
 	AuthClient.config_path = "user://launch_test_online.cfg"
 	var app: Node = load("res://client/scenes/main.tscn").instantiate()
@@ -345,10 +346,12 @@ func test_steam_client() -> void:
 	app.ui.add_child(shop)
 	shop.select_tab("premium")
 	await process_frame
-	var card: Button = shop.find_child("Buy_pacote_tinturas", true, false)
+	var card: Button = shop.find_child("Buy_aba_mochila_1", true, false)
 	check(card != null and card.disabled, "offline the Premium tab shows the products but does not sell")
 	shop.select_tab("cabelo")
-	check(shop.find_child("Shop_cabelo_aurora", true, false) == null and shop.find_child("Shop_cabelo_preto", true, false) != null, "the gold shop does not list premium cosmetics")
+	check(shop.items().any(func(def: Dictionary) -> bool: return def.id == "cabelo_aurora") and shop.find_child("Shop_cabelo_preto", true, false) != null, "0.27: every hair colour is in the gold shop (no hair is sold for money)")
+	shop.select_tab("skin")
+	check(shop.find_child("Shop_roupa_paladino_sol", true, false) == null, "the gold shop does not list premium skins")
 	app.queue_free()
 	service.queue_free()
 	await process_frame

@@ -204,6 +204,17 @@ func run_tests() -> void:
 				bag.equip_selected()
 	var look: Dictionary = app.profile.look()
 	check(look.wings == "asas_anjo" and look.hat == "chapeu_coroa" and look.hair != "" and look.skin == "roupa_princesa", "equipped cosmetics change the character look")
+	var only: CheckBox = bag.find_child("SkinOnly", true, false)
+	check(only != null and not only.button_pressed, "the Mochila has the Skin only box, off at first")
+	only.button_pressed = true
+	await process_frame
+	check(app.profile.skin_only and app.profile.look().hat == "" and app.profile.look().wings == "", "ticking Skin only hides the hat and wings from the look")
+	bag.build()
+	await process_frame
+	only = bag.find_child("SkinOnly", true, false)
+	only.button_pressed = false
+	await process_frame
+	check(not app.profile.skin_only and app.profile.look().hat == "chapeu_coroa", "unticking it brings them back")
 	bag.open_smith()
 	await process_frame
 	var smith: SmithScreen = bag.get_children().filter(func(n: Node) -> bool: return n is SmithScreen).front()

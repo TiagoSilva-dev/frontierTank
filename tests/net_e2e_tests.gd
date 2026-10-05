@@ -788,12 +788,12 @@ func steam_tests() -> void:
 	carol.ui.add_child(shop)
 	shop.select_tab("premium")
 	await process_frame
-	check(not shop.find_child("Buy_pacote_tinturas", true, false).disabled, "online with Steam, the Premium tab sells")
+	check(not shop.find_child("Buy_aba_mochila_1", true, false).disabled, "online with Steam, the Premium tab sells")
 	check(not (await carol.net.request("store_buy", {"sku": "roupa_samurai"})).ok, "only catalog products can be ordered")
 	# The overlay refuses: the order is cancelled and nothing arrives.
 	var answer: Array = [""]
 	var buy: Callable = func(sku: String) -> void: answer[0] = await carol.buy_premium(sku)
-	buy.call("tintura_chama")
+	buy.call("aba_mochila_1")
 	check(await wait_until(func() -> bool: return server.api.memory_orders.size() == 1, 5), "the server opens the order with the API")
 	var first: int = server.api.memory_orders.keys()[0]
 	fake.approve(first, false)
@@ -801,21 +801,21 @@ func steam_tests() -> void:
 	check(await wait_until(func() -> bool: return str(server.api.memory_orders[first].status) == "cancelled", 5) and carol.mail_count == 0, "a refused order is closed and delivers nothing")
 	# The overlay approves: the items arrive in the Correio.
 	answer[0] = ""
-	buy.call("pacote_tinturas")
+	buy.call("aba_mochila_2")
 	check(await wait_until(func() -> bool: return server.api.memory_orders.size() == 2, 5), "a second order")
 	var second: int = server.api.memory_orders.keys()[1]
 	fake.approve(second, true)
 	check(await wait_until(func() -> bool: return answer[0] != "", 5) and answer[0].contains("Correio"), "approved in the overlay: %s" % answer[0])
-	check(await wait_until(func() -> bool: return carol.mail_count == 4, 5), "the four dyes wait in the Correio")
+	check(await wait_until(func() -> bool: return carol.mail_count == 1, 5), "the bag tab waits in the Correio")
 	var claim: Dictionary = await carol.trade("mail_list")
 	var ids: Array = (claim.get("mail", []) as Array).map(func(letter: Dictionary) -> int: return int(letter.id))
 	check((claim.get("mail", []) as Array).all(func(letter: Dictionary) -> bool: return Auction.mail_title(letter).begins_with("Loja Steam")), "the letters say they come from the Steam shop")
 	var claimed: Dictionary = await carol.trade("mail_claim", {"ids": ids})
-	check(claimed.ok and ["cabelo_rosa_neon", "cabelo_branco_gelo", "cabelo_chama", "cabelo_aurora"].all(func(id: String) -> bool: return carol.profile.has_item(id)), "the dyes are in the Mochila")
-	var dye: Dictionary = carol.profile.inventory.filter(func(inst: Dictionary) -> bool: return str(inst.id) == "cabelo_aurora").front()
+	check(claimed.ok and carol.profile.has_item("aba_mochila_2"), "the bag tab is in the Mochila")
+	var dye: Dictionary = carol.profile.inventory.filter(func(inst: Dictionary) -> bool: return str(inst.id) == "aba_mochila_2").front()
 	check(bool(dye.get("bound", false)) and (dye.get("mods", []) as Array).is_empty(), "bought items are bound and have no bonuses")
 	check(Auction.item_reason(carol.profile, dye) != "", "bought items never go to the auction")
-	check(not (await carol.net.request("store_buy", {"sku": "pacote_tinturas"})).ok, "what the player has is not sold again")
+	check(not (await carol.net.request("store_buy", {"sku": "aba_mochila_2"})).ok, "what the player has is not sold again")
 	# Achievements come from the server's profile.
 	server.accounts[carol.my_account()].profile.victories = 1
 	await carol.do_op("redeem", ["PEDRAS"])
@@ -838,14 +838,14 @@ func card_tests() -> void:
 	dora.ui.add_child(shop)
 	shop.select_tab("premium")
 	await process_frame
-	var card: Button = shop.find_child("Buy_tintura_chama", true, false)
+	var card: Button = shop.find_child("Buy_aba_mochila_1", true, false)
 	check(card != null and not card.disabled and card.text == "COMPRAR", "online without Steam, the Premium tab sells (COMPRAR)")
-	var box: Node = shop.find_child("Premium_tintura_chama", true, false)
-	check(box != null and box.get_children().any(func(node: Node) -> bool: return node is Label and (node as Label).text.contains("R$ 4,99")), "the price is in reais")
+	var box: Node = shop.find_child("Premium_aba_mochila_1", true, false)
+	check(box != null and box.get_children().any(func(node: Node) -> bool: return node is Label and (node as Label).text.contains("R$ 9,90")), "the price is in reais")
 	check(not (await dora.net.request("store_checkout", {"sku": "roupa_samurai"})).ok, "only catalog products can be ordered")
-	var answer: String = await dora.buy_premium("tintura_chama")
+	var answer: String = await dora.buy_premium("aba_mochila_1")
 	check(answer.contains("Correio") and int(dora.pending_checkout.get("order_id", 0)) > 0, "the checkout page is opened and the order is pending: %s" % answer)
-	check(await wait_until(func() -> bool: return dora.mail_count == 1, 15), "the dye arrives in the Correio once the order is paid")
+	check(await wait_until(func() -> bool: return dora.mail_count == 1, 15), "the item arrives in the Correio once the order is paid")
 	check(await wait_until(func() -> bool: return dora.pending_checkout.is_empty(), 5), "the pending checkout is cleared when paid")
 	var listed: Dictionary = await dora.trade("mail_list")
 	check((listed.get("mail", []) as Array).all(func(letter: Dictionary) -> bool: return Auction.mail_title(letter).begins_with("Loja:")), "the letters say Loja, not Loja Steam")
