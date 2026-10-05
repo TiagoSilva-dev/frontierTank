@@ -450,17 +450,10 @@ func super_chance() -> float:
 	return base * (1.0 + mods.get("super_chance", 0) / 100.0)
 
 func roll_super() -> Dictionary:
-	# Super Verdadeira: only the boss drops it. A per-instance counter guarantees one
-	# after `pity` boss kills without it.
-	var id: String = str(instance.id)
-	var counter: int = int(profile.pity.get(id, 0)) if profile != null else 0
-	var limit: int = int(balance.map_items.loot.pity)
-	if rng.randf() >= super_chance() and counter + 1 < limit:
-		if profile != null:
-			profile.pity[id] = counter + 1
+	# Super Verdadeira: only the boss drops it, and only by chance. The rarest items of the game
+	# have no guarantee: no counter, no "after N kills".
+	if rng.randf() >= super_chance():
 		return {}
-	if profile != null:
-		profile.pity[id] = 0
 	var weapon: String = str(instance.loot.super)
 	if rng.randf() < 0.5:
 		var supers: Array = Armory.data().weapons.filter(func(def: Dictionary) -> bool: return def.get("super", false))

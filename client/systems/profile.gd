@@ -176,7 +176,10 @@ func load_data(data: Dictionary) -> bool:
 	pity = {}
 	if saved_pity is Dictionary:
 		for key: String in saved_pity:
-			pity[key] = maxi(0, int(saved_pity[key]))
+			# Only the egg counters remain: the old per-instance Super Verdadeira counters
+			# are dropped (the Super has no guarantee).
+			if key.begins_with("egg_"):
+				pity[key] = maxi(0, int(saved_pity[key]))
 	var saved_missions: Variant = data.get("missions", {})
 	var had_starter: bool = saved_missions is Dictionary and saved_missions.has("starter")
 	missions = MissionsBoard.clean_state(saved_missions)

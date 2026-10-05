@@ -125,8 +125,7 @@ func card(def: Dictionary, rect: Rect2) -> void:
 	var icon: Texture2D = Armory.load_icon(inst)
 	var picture: TextureRect = UiKit.art(box, icon, Rect2(44, 8, 100, 92))
 	picture.modulate = Armory.icon_tint(inst)
-	var title: Label = UiKit.label(box, tr(str(def.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiKit.wrapped(box, tr(str(def.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	if tab == "arma":
 		if def.get("super", false):
 			UiKit.label(box, tr("SUPER VERDADEIRA\nSó no baú do chefe"), Rect2(4, 146, 180, 60), 13, Color("ffb066"), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
@@ -154,8 +153,8 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
 	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 24, 100, 76))
 	picture.modulate = Armory.icon_tint(inst)
-	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# Long names ("Tempestade Viva — Skin Épica") wrap onto a second line inside the card.
+	UiKit.wrapped(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var count: int = (entry.items as Array).size()
 	var tag: String = PremiumStore.kind_label(entry)
 	UiKit.label(box, tag, Rect2(4, 2, 180, 20), 13, Color("c9a8ff") if tag == tr("ÉPICA") else (Color("ffd04a") if tag == tr("LENDÁRIA") else UiKit.INFO), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)

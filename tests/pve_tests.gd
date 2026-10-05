@@ -317,18 +317,28 @@ func run_tests() -> void:
 	check(kinds.has("map") and qualities.has("verdadeira"), "cards include maps (own rarity) and Verdadeira weapons")
 	check(ilvl_ok, "instance weapons carry the item level of the map")
 	check(not make_run("templo_sol", {}, 1, profile).finish(false).has("chest") or make_run("templo_sol", {}, 1, profile).finish(false).chest.is_empty(), "no chest when the party falls")
-	profile.pity["picos_gelados"] = int(balance.map_items.loot.pity) - 1
-	var guaranteed: InstanceRun = make_run("picos_gelados", {}, 1, profile)
-	guaranteed.mods = {}
-	var chest_loot: Dictionary = guaranteed.finish(true)
-	check(chest_loot.chest.size() == 1 and chest_loot.chest[0].quality == "super" and int(profile.pity.picos_gelados) == 0, "the Super Verdadeira is guaranteed after %d boss kills without one" % int(balance.map_items.loot.pity))
-	check(profile.inventory.any(func(i: Dictionary) -> bool: return i.quality == "super" and int(i.get("ilvl", 0)) == 1), "the chest's Super Verdadeira goes to the bag")
+	# The Super Verdadeira has no guarantee: no counter in the data, none in the profile, and the
+	# rate over many boss kills is the chance itself, however many came before without one.
+	check(not balance.map_items.loot.has("pity"), "the loot data has no Super Verdadeira guarantee")
+	var supers: Array[int] = []
+	for streak: int in [0, 999]:
+		var rolling: InstanceRun = make_run("picos_gelados", {}, 1, profile)
+		rolling.rng.seed = 4242
+		profile.pity["picos_gelados"] = streak
+		var rolled: int = 0
+		for i in range(20000):
+			if not rolling.roll_super().is_empty():
+				rolled += 1
+		supers.append(rolled)
+	var expected: float = 20000.0 * make_run("picos_gelados", {}, 1, profile).super_chance()
+	check(supers[0] == supers[1] and absf(float(supers[0]) - expected) < expected * 0.25, "the Super Verdadeira drops at its plain chance (%d of 20000, expected ~%d), with or without a streak" % [supers[0], roundi(expected)])
+	check(not profile.pity.has("picos_gelados") or int(profile.pity.picos_gelados) == 999, "rolling the Super never touches a counter")
 	# Maps live in the profile and survive a save
 	var stored: Dictionary = profile.add_map(InstanceRun.make_map("ilha_ruinas", 12, rng, 0.0, "excelente"))
 	profile.save_profile()
 	var reloaded: PlayerProfile = PlayerProfile.new()
 	reloaded.load_profile()
-	check(reloaded.find_map(int(stored.uid)).level == 12 and reloaded.maps_for("ilha_ruinas").size() >= 1 and reloaded.pity.has("picos_gelados"), "maps and the guarantee counter are saved")
+	check(reloaded.find_map(int(stored.uid)).level == 12 and reloaded.maps_for("ilha_ruinas").size() >= 1, "maps are saved")
 	check(reloaded.remove_map(int(stored.uid)) and reloaded.find_map(int(stored.uid)).is_empty(), "a map can be consumed")
 
 	game.queue_free()

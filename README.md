@@ -81,7 +81,7 @@ O prédio do **Leilão** na cidade abre a casa de leilões (só online; `docs/sc
 | **Som** | Música épica em loop para a entrada/cidade/salas, outra para as batalhas e outra para a Instância. Cada arma tem som de disparo e de impacto próprios; explosões em três tamanhos, POW, habilidades, ferramentas, contagem final do turno, "sua vez", vitória e derrota. **M** liga/desliga a música em qualquer tela; a pausa da partida liga/desliga música e efeitos. |
 | **Leilão** (`auction.png`, `auction_sell.png`) | Online: abas Comprar (filtros, detalhes, vendas recentes e compra imediata), Vender (preço, duração, taxa e o que chega no Correio) e Meus anúncios. Botão do Correio com as cartas esperando. |
 | **Correio** (`mail.png`) | Online: vendas do Leilão e itens que voltam; RECEBER e RECEBER TUDO. O ícone CORREIO da barra mostra quantas cartas esperam. |
-| **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira com garantia). |
+| **Resultado e cartas** (`result.png`, `cards.png`) | Resultado com o personagem equipado; cartas de recompensa. Depois de uma instância: nível, fases vencidas, mapas encontrados e o **baú do chefe** (3 cartas ou mais, cartas de mapa, armas Verdadeiras e a Super Verdadeira, só por sorte). |
 
 ## Tudo no seu computador, no navegador
 Um comando sobe o banco (PostgreSQL), a API, o servidor de jogo e o jogo web com o Docker, e o site oficial abre em **http://localhost:8000** (o jogo fica em **/jogar/**, no botão JOGAR do site):

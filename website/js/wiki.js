@@ -332,7 +332,7 @@
           </div>
           <h2>${T("Onde conseguir", "Where to get it")}</h2>
           <ul>
-            ${w.super ? `<li>${T("Só no baú do chefe destas instâncias", "Only in the boss chest of these dungeons")}: ${drops}. ${T(`Chance de ${pct(D.map_items.loot.super_chance)} + ${pct(D.map_items.loot.super_per_level)} por nível do mapa, garantida depois de ${D.map_items.loot.pity} chefes sem nenhuma.`, `${pct(D.map_items.loot.super_chance)} + ${pct(D.map_items.loot.super_per_level)} per map level, guaranteed after ${D.map_items.loot.pity} bosses without one.`)} <a href="#/instancias">${T("Mais sobre o baú", "More about the chest")}</a></li>`
+            ${w.super ? `<li>${T("Só no baú do chefe destas instâncias", "Only in the boss chest of these dungeons")}: ${drops}. ${T(`Chance de ${pct(D.map_items.loot.super_chance)} + ${pct(D.map_items.loot.super_per_level)} por nível do mapa. Sem garantia: cada chefe é um novo sorteio.`, `${pct(D.map_items.loot.super_chance)} + ${pct(D.map_items.loot.super_per_level)} per map level. No guarantee: every boss is a fresh roll.`)} <a href="#/instancias">${T("Mais sobre o baú", "More about the chest")}</a></li>`
               : `<li>${T("Centro Comercial", "Shopping Center")} (${shop} ${T("moedas", "gold")})</li><li>${T("Verdadeira: baú do chefe de", "True: boss chest of")} ${drops || "—"}</li>`}
           </ul>
           <h2>${T("Evolução da arte", "Art by level")}</h2>
@@ -503,8 +503,8 @@
       <ul>
         <li>${T(`Você escolhe <b>${lo.boss_picks}</b> de 8 cartas (mais cartas com grupo, com o modificador “+1 carta” e com quantidade de itens).`, `You pick <b>${lo.boss_picks}</b> of 8 cards (more with a party, the “+1 card” modifier and item quantity).`)}</li>
         <li>${T(`Arma Verdadeira: ${pct(lo.true_chance)} + ${pct(lo.true_per_level)} por nível do mapa; Excelente: ${pct(lo.excellent_chance)}.`, `True weapon: ${pct(lo.true_chance)} + ${pct(lo.true_per_level)} per map level; Excellent: ${pct(lo.excellent_chance)}.`)}</li>
-        <li>${T(`Super Verdadeira: ${pct(lo.super_chance)} + ${pct(lo.super_per_level)} por nível (${pct(lo.free_super_chance)} na entrada livre), garantida depois de ${lo.pity} chefes da mesma instância sem nenhuma. Metade das vezes é a Super da instância; na outra metade, qualquer uma.`,
-          `Super True: ${pct(lo.super_chance)} + ${pct(lo.super_per_level)} per level (${pct(lo.free_super_chance)} at the free entrance), guaranteed after ${lo.pity} kills of the same dungeon's boss without one. Half the time it is the dungeon's own Super; otherwise any of them.`)}</li>
+        <li>${T(`Super Verdadeira: ${pct(lo.super_chance)} + ${pct(lo.super_per_level)} por nível (${pct(lo.free_super_chance)} na entrada livre). Sem garantia: nenhuma quantidade de chefes derrotados a faz cair. Metade das vezes é a Super da instância; na outra metade, qualquer uma.`,
+          `Super True: ${pct(lo.super_chance)} + ${pct(lo.super_per_level)} per level (${pct(lo.free_super_chance)} at the free entrance), no guarantee: no number of boss kills makes it drop. Half the time it is the dungeon's own Super; otherwise any of them.`)}</li>
         <li>${T(`Moedas de criação: ${lo.currency_chance.map((c) => pct(c)).join(" / ")} de chance nas fases 1, 2 e 3 (o chefe sempre dá).`, `Crafting currencies: ${lo.currency_chance.map((c) => pct(c)).join(" / ")} chance in phases 1, 2 and 3 (the boss always gives one).`)}</li>
         <li>${T(`Mapas: ${M.drop_chance.map((c) => pct(c)).join(" / ")} de chance por fase. <a href="#/mapas">Mais sobre mapas</a>.`, `Maps: ${M.drop_chance.map((c) => pct(c)).join(" / ")} chance per phase. <a href="#/mapas">More about maps</a>.`)}</li>
         <li>${T("O loot é pessoal: cada jogador do grupo tem seus drops, seu baú e suas cartas.", "Loot is personal: every player in the party gets their own drops, chest and cards.")}</li>

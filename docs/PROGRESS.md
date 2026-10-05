@@ -133,7 +133,7 @@
 - **Quatro instâncias** com 3 fases e o chefão na última: Templo do Sol, Trono das Máscaras, Picos Gelados e Ilha Celeste em Ruínas. Fase 1 com ondas de lacaios (a segunda onda cai do céu), fase 2 com guardião ou objetivo (destruir cristais, sobreviver 5 turnos), fase 3 com o chefe e mecânica própria (fúria, invocar máscaras, congelar a vez, trocar de posição).
 - Entre as fases: tela de transição, +30% de vida, POW mantido e quem caiu volta com 20%. Moedas e mapas das fases ficam mesmo se a equipe cair.
 - **Mapas no lugar das dificuldades**: itens de nível 1 a 16 com qualidade (Normal, Excelente, Verdadeira) e atributos de ameaça e recompensa, consumidos ao entrar. Caem das fases (cerca de 0,9 por partida sem atributos). Espaço de mapa na sala, aba Mapas na Mochila, cupom `MAPAS`.
-- **Loot**: baú do chefe com 3+ cartas, armas da instância em Normal/Excelente/Verdadeira com nível do item, cartas de mapa (carta esmeralda) e a Super Verdadeira com garantia depois de 20 chefões. A Loja agora vende só Normal e Excelente.
+- **Loot**: baú do chefe com 3+ cartas, armas da instância em Normal/Excelente/Verdadeira com nível do item, cartas de mapa (carta esmeralda) e a Super Verdadeira (só por sorte; a garantia de 20 chefões foi removida em 05/10/2026). A Loja agora vende só Normal e Excelente.
 - Escala por grupo pronta e testada (vale quando houver grupos online).
 - Arte PixelLab: 9 inimigos com repouso e ataque, animação do Guardião do Templo, 7 mapas novos e ícones de mapa (`PIXELLAB_0_9.md`).
 

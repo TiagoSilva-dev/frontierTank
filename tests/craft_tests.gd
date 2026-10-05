@@ -249,8 +249,14 @@ func run_tests() -> void:
 		elif card.has("gear"):
 			kinds["gear"] = true
 	check(kinds.has("currency") and kinds.has("gear"), "reward cards include currencies and gear")
-	female.pity["picos_gelados"] = 100
-	var super_drop: Dictionary = gear_run.roll_super()
+	# The Super Verdadeira has no guarantee: roll until the chance lets one fall (bounded, seeded).
+	gear_run.rng.seed = 77
+	var super_drop: Dictionary = {}
+	for attempt in range(5000):
+		super_drop = gear_run.roll_super()
+		if not super_drop.is_empty():
+			break
+	check(not super_drop.is_empty(), "the Super Verdadeira does drop by chance")
 	check(super_drop.mods.size() == 4, "the Super Verdadeira drops with 4 bonuses")
 	check((balance.rewards.pvp_cards as Array).any(func(c: Dictionary) -> bool: return c.get("currency", "") == "brasa"), "a little currency drops in PvP")
 

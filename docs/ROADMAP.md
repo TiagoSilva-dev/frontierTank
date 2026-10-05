@@ -162,7 +162,7 @@ Com 3 ou 4 jogadores o chefe também ganha um ataque em área extra por rodada. 
 
 ### 2.4 Loot
 - [x] Armas Verdadeiras e as Super Verdadeiras no loot das instâncias (com nível do item = nível do mapa); os **atributos bônus aleatórios** entraram na 0.10. Uma Verdadeira com bons bônus é o item mais cobiçado.
-- [x] **Garantia** de Super Verdadeira: um contador por instância que garante uma depois de N vitórias de chefão sem ela.
+- [x] ~~Garantia de Super Verdadeira~~ **removida em 05/10/2026**: a arma mais rara do jogo não tem garantia por contador; cai só por sorte.
 - [x] Mapas no loot; moedas no loot desde a 0.10.
 - [x] As cartas de recompensa ganham uma raridade nova para mapas (carta esmeralda); moedas raras desde a 0.10.
 - [x] Proposta: a Loja passa a vender só Normal e Excelente, sem bônus. A Verdadeira vem de drop ou da Coroa; se não, o ouro compra o que deveria vir das instâncias.

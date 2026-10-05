@@ -3,7 +3,7 @@ extends RefCounted
 
 # An instance played by a group on the game server. The phases, the enemies and what the
 # party carries between phases are shared; the loot is personal: every player has their
-# own InstanceRun with their own profile, dice, map drops, chest, Super guarantee and
+# own InstanceRun with their own profile, dice, map drops, chest and
 # reward cards, so nobody has to split a drop.
 
 var runs: Dictionary = {}
