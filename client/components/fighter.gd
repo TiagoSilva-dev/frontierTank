@@ -8,6 +8,8 @@ var team: int = 0
 var display_name: String = "Nilo"
 var rank_title: String = "Recruta"
 var level: int = 1
+# False on the shop's fitting stage: the character without the name plate and the life bar.
+var plate: bool = true
 var gender: String = "m"
 var human: bool = false
 # "Confiar": the AI plays this fighter. `left`: the player quit (online), the AI plays
@@ -261,6 +263,18 @@ func play_clip(name: String, seconds: float = 0.4) -> bool:
 	clip_hold = seconds
 	show_animation(clip)
 	return true
+
+# An epic skin's POW (0.28): the skin's own pow clip and the flourish of its layer, for as long
+# as the cut-in holds the shot. The clip and the layer are only drawing.
+func skin_pow(seconds: float = 1.1) -> void:
+	if not is_instance_valid(rig) or rig.skin_fx == null or hp <= 0:
+		return
+	fx_lock = "pow"
+	play_clip("pow", seconds)
+	rig.fx_event("pow")
+	get_tree().create_timer(seconds).timeout.connect(func() -> void:
+		if is_instance_valid(self) and fx_lock == "pow":
+			fx_lock = "")
 
 # The match is won: Founder skins take the victory pose, everyone's effects swell.
 func celebrate() -> void:
@@ -636,6 +650,8 @@ func _draw() -> void:
 		draw_set_transform(Vector2(0, -2), 0, Vector2(1.0, 0.3))
 		draw_arc(Vector2.ZERO, body_size.x * 0.6 + 10.0 + beat * 4.0, 0, TAU, 32, Color(1.0, 0.3, 0.2, 0.8), 4.0)
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	if not plate:
+		return
 	var y: float = 6.0
 	draw_rect(Rect2(-26, y, 52, 6), Color("1a0f08"))
 	draw_rect(Rect2(-25, y + 1, 50.0 * hp / maxf(1, max_hp), 4), color)

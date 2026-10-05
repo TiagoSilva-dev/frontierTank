@@ -159,6 +159,8 @@ Nove armas clássicas em três qualidades, **Normal**, **Excelente** e **Verdade
 
 **Visual do personagem:** conta nova começa de camiseta e shorts. A **skin** troca o corpo inteiro (Explorador, Samurai, Ninja, Capitão; Exploradora, Princesa, Maga, Marinheira) e é só aparência, sem atributos; chapéu, óculos e asas vão por cima e o cabelo muda de cor; a opção **Só a skin** (na Mochila e no provador da loja) esconde tudo isso sem mexer nos atributos. **Camisa e calça** dão os atributos e a Defesa, mas não aparecem no boneco. Dois **anéis** (os dois espaços aceitam o mesmo catálogo, nunca o mesmo anel duas vezes) e o **amuleto**, que sempre dá **vida** (150 a 300 conforme a qualidade) além de um atributo, completam os 12 espaços; anel e amuleto não vão ao Ferreiro (`docs/SKINS.md`).
 
+**Skins épicas (0.28):** a loja Premium vende **Tempestade Viva**, **Coroa de Gelo** e **Coração de Magma** (R$ 44,90 cada, ou as três no **Pacote da Temporada 1** por R$ 109,90). Cada uma é um item e um produto para os dois gêneros (uma pasta de arte por gênero), com as quatro direções em pé, a pose deitada e os 7 clipes de batalha (parado, andar, tiro, dano, vitória, derrota e POW), mais uma **camada própria** viva (`SkinFx`: arcos de raio, flocos de gelo, brasas) que reage ao que o personagem faz e tem um floreio no POW. Só aparência, sem atributos e sem caixa aleatória. O provador da loja ganhou **Em pé** (gira nas quatro direções) e **Batalha** (andar, atirar, POW e vitória). O cupom `TESTARTUDO` entrega as três.
+
 **Item auxiliar** (tecla V): Bálsamo e Grande Bálsamo curam; Broquel de Latão e Égide de Aço reduzem o próximo dano.
 
 ## POW, habilidades e tracejado (0.7)

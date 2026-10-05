@@ -37,7 +37,10 @@ static var path_override: String = ""
 var save_path: String = SAVE_PATH
 var created: bool = false
 var player_name: String = "Explorador"
-var gender: String = "m"
+var gender: String = "m":
+	set(value):
+		gender = value
+		Armory.viewer_gender = value
 var experience: int = 0
 var victories: int = 0
 var matches: int = 0
@@ -858,6 +861,11 @@ func redeem(code: String) -> String:
 				add_instance(def.id)
 	if bool(coupon.get("hunt_pass", false)) and not has_item(str(PetHunt.rules().pass_item)):
 		add_instance(str(PetHunt.rules().pass_item))
+	if bool(coupon.get("epicas", false)):
+		# The epic skins of the shop (0.28), for testing: premium cosmetics of rarity "epica".
+		for def: Dictionary in Armory.data().cosmetics:
+			if str(def.get("rarity", "")) == "epica" and not has_item(def.id):
+				add_instance(def.id)
 	if bool(coupon.get("founder", false)):
 		# The whole Founder Pack for testing; Solaris comes at +12 to show every form.
 		for id: String in FounderPack.ITEMS:

@@ -188,6 +188,17 @@ static func projectile_path(weapon_id: String, key: String, level: int = 0) -> S
 static func skin_path(skin: String, direction: String = "south") -> String:
 	return "res://assets/characters/%s/%s.png" % [skin, direction]
 
+# The gender of the person at this screen (the profile sets it): a skin sold to both genders
+# (the epic ones, 0.28) shows the version they would wear in the bag and the shop.
+static var viewer_gender: String = "m"
+
+# An epic skin has one folder per gender (`skin` for him, `skin_f` for her); the product and
+# the item are the same. Plain skins have a single `skin`.
+static func skin_folder(def: Dictionary, gender: String) -> String:
+	if gender == "f" and str(def.get("skin_f", "")) != "":
+		return str(def.skin_f)
+	return str(def.skin)
+
 static func cosmetic_art(art: String, view: String) -> String:
 	# view: "front" (menus) or "side" (prone battle pose).
 	return "res://assets/cosmetics/%s/%s.png" % [art, view]
@@ -203,7 +214,7 @@ static func icon_path(inst: Dictionary) -> String:
 			var def: Dictionary = cosmetic_def(id)
 			match str(def.slot):
 				"skin":
-					return skin_path(str(def.skin))
+					return skin_path(skin_folder(def, viewer_gender))
 				"cabelo":
 					return "res://assets/cosmetics/cabelo/icon.png"
 				_:
@@ -351,7 +362,7 @@ static func look_for(gender: String, equipped: Array, skin_only: bool = false) -
 				look.weapon = id
 				look.weapon_level = level
 			"skin":
-				var skin: String = str(cosmetic_def(id).skin)
+				var skin: String = skin_folder(cosmetic_def(id), gender)
 				if ResourceLoader.exists(skin_path(skin)):
 					look.skin = skin
 					skin_id = id
@@ -379,6 +390,10 @@ static func look_for(gender: String, equipped: Array, skin_only: bool = false) -
 		look.wings = ""
 	if layers.has("wings"):
 		look.wings = str(layers.wings)
+	# An epic skin brings a living layer of its own (SkinFx: arcs, flakes, embers). It belongs
+	# to the skin, so "only the skin" keeps it.
+	if skin_id != "" and str(cosmetic_def(skin_id).get("fx", "")) != "":
+		look["skin_fx"] = str(cosmetic_def(skin_id).fx)
 	return look
 
 static func random_loadout(rng: RandomNumberGenerator, level: int, gender: String, skin: String) -> Dictionary:

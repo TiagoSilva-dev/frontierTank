@@ -1604,6 +1604,9 @@ func store_buy(session: PlayerSession, message: Dictionary) -> void:
 	if PremiumStore.owns_all(session.profile, entry):
 		reply(session, message, {"error": Lang.t("Você já tem estes itens.")})
 		return
+	if PremiumStore.overlaps(session.profile, entry):
+		reply(session, message, {"error": Lang.t("Você já tem parte deste pacote: compre as skins que faltam, uma a uma.")})
+		return
 	var result: Dictionary = await api.store_init(session.account_id, entry, session.locale)
 	audit(session, "store.init", {"sku": str(entry.sku), "order_id": result.get("order_id", 0), "error": result.get("error", "")})
 	if result.has("error"):
@@ -1642,6 +1645,9 @@ func store_checkout(session: PlayerSession, message: Dictionary) -> void:
 		return
 	if PremiumStore.owns_all(session.profile, entry):
 		reply(session, message, {"error": Lang.t("Você já tem estes itens.")})
+		return
+	if PremiumStore.overlaps(session.profile, entry):
+		reply(session, message, {"error": Lang.t("Você já tem parte deste pacote: compre as skins que faltam, uma a uma.")})
 		return
 	var result: Dictionary = await api.store_checkout(session.account_id, entry, session.locale)
 	audit(session, "store.checkout", {"sku": str(entry.sku), "order_id": result.get("order_id", 0), "error": result.get("error", "")})

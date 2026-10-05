@@ -138,7 +138,7 @@ func demo_loadout(kind: String) -> void:
 		for id: String in FounderPack.ITEMS:
 			if not profile.has_item(id):
 				profile.add_instance(id, "normal", 0)
-	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "skin": ["roupa_samurai" if profile.gender == "m" else "roupa_princesa", 0], "camisa": ["camisa_guerra", 7], "calca": ["calca_guerra", 0], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0], "anel1": ["anel_esmeralda", 0], "anel2": ["anel_bronze", 0], "amuleto": ["amuleto_lobo", 0]}
+	var wanted: Dictionary = {"arma": ["lanca_antiga", 12], "skin": [kind if kind.begins_with("epica_") else ("roupa_samurai" if profile.gender == "m" else "roupa_princesa"), 0], "camisa": ["camisa_guerra", 7], "calca": ["calca_guerra", 0], "chapeu": ["chapeu_kabuto" if kind == "1" else "chapeu_coroa", 0], "asas": ["asas_anjo", 0], "oculos": ["oculos_escuros" if kind == "1" else "", 0], "cabelo": ["cabelo_dourado" if kind == "2" else "", 0], "auxiliar": ["dom_de_anjo_v", 0], "anel1": ["anel_esmeralda", 0], "anel2": ["anel_bronze", 0], "amuleto": ["amuleto_lobo", 0]}
 	if founder_demo:
 		wanted = {"arma": [FounderPack.WEAPON, int(args.get("wlevel", "12"))], "skin": [FounderPack.SKIN, 0], "auxiliar": ["dom_de_anjo_v", 0]}
 	for slot: String in wanted:
@@ -612,6 +612,11 @@ func shortcut(id: String) -> void:
 			var shop: ShopScreen = ShopScreen.new()
 			shop.app = self
 			shop.tab = str(args.get("tab", "arma"))
+			# Capture helpers: --try=<item> on the fitting stage, --view=battle, --dir=east.
+			if args.has("try"):
+				shop.trying = {"id": str(args.try), "quality": "normal", "level": 0}
+			shop.preview_mode = str(args.get("view", "stand"))
+			shop.preview_direction = str(args.get("dir", "south"))
 			shop.closed.connect(refresh_room)
 			ui.add_child(shop)
 		"smith":

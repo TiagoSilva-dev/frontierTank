@@ -422,6 +422,8 @@ func show_special(point: Vector2, _path: String) -> void:
 		show_founder_pow(shooter)
 		return
 	var tint: Color = Color(str(shooter.weapon.get("color", "ffd04a"))).lerp(Color("ffd04a"), 0.35)
+	if not shooter.is_monster:
+		shooter.skin_pow(maxf(0.6, game.hitstop))
 	app.audio.play("pow_fire")
 	# 0.15: the cut-in with the shooter's portrait; the match holds the shot while it
 	# plays (LocalMatch.hitstop), and the band closes with a slash as the shot leaves.

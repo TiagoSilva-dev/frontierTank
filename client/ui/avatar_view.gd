@@ -6,6 +6,9 @@ extends Control
 # the back, glasses, hat, hair dye and the clothes aura glow.
 
 var look: Dictionary = {}
+# Which way the character faces: "south" (the menus' front view, with all the layers) or
+# east / north / west (the shop's turntable, where only the body and the skin's own layer show).
+var direction: String = "south"
 # Fixed art scale (the POW cut-in draws the avatar at 1x and enlarges it); 0 = fit.
 var pixel_scale: float = 0.0
 var body: Sprite2D
@@ -24,7 +27,7 @@ func show_look(look_data: Dictionary) -> void:
 	for child in get_children():
 		child.queue_free()
 	look = look_data
-	var path: String = Armory.skin_path(str(look.get("skin", "base_m")))
+	var path: String = Armory.skin_path(str(look.get("skin", "base_m")), direction)
 	if not ResourceLoader.exists(path):
 		return
 	var stage: Node2D = Node2D.new()
@@ -42,7 +45,13 @@ func show_look(look_data: Dictionary) -> void:
 	body.scale = Vector2(k, k)
 	body.position = Vector2(size.x / 2.0 - (used.get_center().x - tex.x / 2.0) * k, size.y * 0.97 - (used.end.y - tex.y / 2.0) * k)
 	rig = LookRig.new()
-	rig.setup(look, "south")
+	var shown: Dictionary = look
+	if direction != "south":
+		# The hat, glasses and wings are drawn for the front view only.
+		shown = look.duplicate()
+		for key: String in ["hat", "glasses", "wings"]:
+			shown[key] = ""
+	rig.setup(shown, "south")
 	stage.add_child(rig.back)
 	stage.add_child(body)
 	stage.add_child(rig)

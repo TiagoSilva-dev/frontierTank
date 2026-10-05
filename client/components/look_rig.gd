@@ -52,6 +52,8 @@ var body_rect: Rect2 = Rect2()
 # Founder Pack (FounderFx): where the head is this frame, where the feet are and what the
 # owner is doing ("idle", "walk", "aim", "attack", "hit", "victory", "defeat", "pow").
 var founder_fx: FounderFx
+# Epic skins (SkinFx): the living layer of the Tempestade Viva, the Coroa de Gelo, the Coração de Magma.
+var skin_fx: SkinFx
 var fx_state: String = "idle"
 var head_center: Vector2 = Vector2.ZERO
 var head_dims: Vector2 = Vector2.ZERO
@@ -134,10 +136,16 @@ func setup(look_data: Dictionary, pose: String) -> void:
 		back.add_child(founder_fx)
 		# Behind the wings and the weapon, but in front of the weapon aura of the menus.
 		back.move_child(founder_fx, 1 if aura != null else 0)
+	if str(look.get("skin_fx", "")) != "":
+		skin_fx = SkinFx.new()
+		skin_fx.rig = self
+		add_child(skin_fx)
 
 func fx_event(kind: String) -> void:
 	if founder_fx != null:
 		founder_fx.event(kind)
+	if skin_fx != null:
+		skin_fx.event(kind)
 
 func make_layer(parent: Node2D, path: String) -> Sprite2D:
 	if not ResourceLoader.exists(path):

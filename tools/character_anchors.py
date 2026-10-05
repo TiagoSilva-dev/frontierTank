@@ -20,7 +20,13 @@ import numpy as np
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "assets", "characters")
+# Skins whose hair or helmet is part of the art: the hair dye never paints them (the Paladino's
+# helmet and every epic skin, whose hair belongs to the design).
 NO_DYE = {"roupa_paladino_sol"}
+
+
+def no_dye(skin):
+    return skin in NO_DYE or skin.startswith("epica_")
 
 
 def load(path):
@@ -158,7 +164,7 @@ def analyse(skin):
     south = load(os.path.join(folder, "south.png"))
     result["south"] = south_anchors(south)
     # Skins whose "hair" is part of a helm (gold crown-helm) must ignore the hair dye.
-    result["hair"] = [] if skin in NO_DYE else hair_palette(south, result["south"]["head"])
+    result["hair"] = [] if no_dye(skin) else hair_palette(south, result["south"]["head"])
     prone_path = os.path.join(folder, "prone", "east.png")
     if os.path.exists(prone_path):
         prone = load(prone_path)

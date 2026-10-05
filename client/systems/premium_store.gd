@@ -70,6 +70,28 @@ static func owns_all(profile: PlayerProfile, entry: Dictionary) -> bool:
 			return false
 	return true
 
+# A bundle (the season pack) is not sold on top of what the player already has: they buy the
+# missing skins one by one, so nobody pays twice for the same skin.
+static func overlaps(profile: PlayerProfile, entry: Dictionary) -> bool:
+	if not bool(entry.get("bundle", false)):
+		return false
+	for id: Variant in entry.get("items", []):
+		if profile.has_item(str(id)):
+			return true
+	return false
+
+# The small tag on a card: what kind of product it is.
+static func kind_label(entry: Dictionary) -> String:
+	if str(entry.get("section", "")) != "skins":
+		return Lang.t("CONVENIÊNCIA")
+	var first: Dictionary = Armory.definition(str((entry.get("items", [""]) as Array)[0]))
+	match str(first.get("rarity", "")):
+		"lendaria":
+			return Lang.t("LENDÁRIA")
+		"epica":
+			return Lang.t("ÉPICA")
+	return Lang.t("SKIN")
+
 # The reference price shown in the game (US dollars); Steam shows the final price in the
 # player's currency before the purchase.
 static func price_text(entry: Dictionary) -> String:

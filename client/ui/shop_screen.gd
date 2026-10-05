@@ -21,6 +21,9 @@ var message: String = ""
 # The provador can show the skin alone; it starts as the character's own choice and never
 # changes it (that lives on the Mochila).
 var preview_skin_only: bool = false
+# The fitting stage (SkinStage): standing (turning to the four directions) or in the battle pose.
+var preview_mode: String = "stand"
+var preview_direction: String = "south"
 
 func _ready() -> void:
 	size = Vector2(1280, 720)
@@ -68,7 +71,8 @@ func build_preview() -> void:
 	var look: Dictionary = app.profile.look() if trying.is_empty() and preview_skin_only == app.profile.skin_only else Armory.look_for(app.profile.gender, equipped, preview_skin_only)
 	var stage: Panel = UiKit.panel(contents, Rect2(70, 124, 332, 340), "dark")
 	stage.clip_contents = true
-	AvatarView.create(stage, look, Rect2(0, 10, 332, 320))
+	var fitting: Dictionary = app.profile.entry(app.balance).duplicate()
+	SkinStage.mount(stage, look, fitting, app.balance, preview_mode, preview_direction, change_stage)
 	var only: CheckBox = UiKit.check_box(stage, tr("Só a skin"), Rect2(8, 298, 200, 34), preview_skin_only, 16)
 	only.name = "PreviewSkinOnly"
 	only.toggled.connect(func(on: bool) -> void:
@@ -80,6 +84,13 @@ func build_preview() -> void:
 	# The hint wraps inside its box (the text is long and the font never goes under 16).
 	UiKit.wrapped(contents, hint, Rect2(70, 514, 332, 124), 14, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.button(contents, tr("CUPOM"), Rect2(160, 644, 150, 32), func() -> void: CouponDialog.open(self, app, build), "button", 14)
+
+func change_stage(key: String, value: String) -> void:
+	if key == "mode":
+		preview_mode = value
+	else:
+		preview_direction = value
+	build()
 
 func items() -> Array:
 	var list: Array = []
@@ -132,20 +143,25 @@ func premium_card(entry: Dictionary, rect: Rect2) -> void:
 	var box: Button = UiKit.button(contents, "", rect, try_on.bind(first), "card")
 	box.name = "Premium_" + str(entry.sku)
 	var inst: Dictionary = {"id": first.id, "quality": "normal", "level": 0}
-	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 8, 100, 92))
+	var picture: TextureRect = UiKit.art(box, Armory.load_icon(inst), Rect2(44, 24, 100, 76))
 	picture.modulate = Armory.icon_tint(inst)
 	var title: Label = UiKit.label(box, tr(str(entry.name)), Rect2(4, 100, 180, 44), 15, UiKit.TEXT, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var count: int = (entry.items as Array).size()
+	var tag: String = PremiumStore.kind_label(entry)
+	UiKit.label(box, tag, Rect2(4, 2, 180, 20), 13, Color("c9a8ff") if tag == tr("ÉPICA") else (Color("ffd04a") if tag == tr("LENDÁRIA") else UiKit.INFO), Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	UiKit.label(box, PremiumStore.price_label(entry, app.steam.available) + ("" if count == 1 else "  •  " + tr("%d itens") % count), Rect2(4, 146, 180, 28), 15, UiKit.INFO, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)
 	var owned: bool = PremiumStore.owns_all(app.profile, entry)
+	var overlap: bool = PremiumStore.overlaps(app.profile, entry)
 	var ready: bool = PremiumStore.can_buy(app)
 	var pending: Variant = app.get("pending_checkout")
 	var waiting: bool = pending is Dictionary and str(pending.get("sku", "")) == str(entry.sku)
 	var label: String = tr("VOCÊ TEM") if owned else (tr("ABRIR PAGAMENTO") if waiting else PremiumStore.buy_label(app.steam.available))
 	var buy: Button = UiKit.button(box, label, Rect2(14, 190, 160, 38), (reopen_payment if waiting else buy_premium.bind(str(entry.sku))), "button_blue", 14)
 	buy.name = "Buy_" + str(entry.sku)
-	buy.disabled = owned or not ready
+	buy.disabled = owned or overlap or not ready
+	if overlap and not owned:
+		buy.tooltip_text = tr("Você já tem parte deste pacote: compre as skins que faltam, uma a uma.")
 	if not ready and not owned:
 		buy.tooltip_text = tr("Entre com a sua conta para comprar.")
 		UiKit.label(box, tr("Só online"), Rect2(4, 170, 180, 20), 12, UiKit.GOLD, Color.TRANSPARENT, HORIZONTAL_ALIGNMENT_CENTER)

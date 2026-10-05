@@ -1,4 +1,4 @@
-# Skins, novos espaços de equipamento e skins épicas — roadmap 0.24 a 0.29 (0.24 a 0.27 feitas)
+# Skins, novos espaços de equipamento e skins épicas — roadmap 0.24 a 0.29 (0.24 a 0.28 feitas)
 
 Plano de 04/10/2026. O texto diz o que existe hoje, o que muda, em que ordem e as decisões tomadas (seção "Decisões"). Os números são pontos de partida para testar. O andamento está em "Estado da implementação", no fim.
 
@@ -69,7 +69,7 @@ O servidor de jogo é este mesmo projeto: **reimplantar depois de cada fase** (o
 | 0.25 | **Camisa e Calça** | sim | ícones |
 | 0.26 | **Anéis (2) e Amuleto (Vida)** e a nova tela do personagem | sim | ícones |
 | 0.27 | **Opção "só a skin"**, limpeza da loja premium, pré-visualização | sim | pouca |
-| 0.28 | **Skins épicas — temporada 1** (3 skins) | sim | **muita** |
+| 0.28 | **Skins épicas — temporada 1** (3 skins) — **feita** | sim | **muita** |
 | 0.29 | **Skins épicas — temporada 1 (restante), cores alternativas e vitrine** | sim | média |
 
 A arte das skins épicas é a parte lenta. Para não travar, **a arte começa em paralelo já na 0.24** (conceito e personagem em pé) e a 0.28 só liga o que já estiver pronto.
@@ -81,7 +81,7 @@ A arte das skins épicas é a parte lenta. Para não travar, **a arte começa em
 - [x] Tirar `attrs` das skins de ouro e tirá-las do Ferreiro (`strengthen.slots`, `affixes.slots`); o `clothes_level` e o brilho da roupa passam para a camisa na 0.25 (até lá o brilho fica desligado).
 - [x] `PremiumStore.valid` rígido (só `COSMETIC_SLOTS`, `attrs` vazio) e o teste da regra de ouro.
 - [x] Cabelo sem atributos (some o `sorte 5`); preço em ouro mantido ou reduzido.
-- [ ] Começar a arte: conceito, referência e personagem em pé das 3 primeiras skins épicas (ver "Skins épicas"). **Não começou**: a arte épica ficou para depois da 0.27 e vira a primeira tarefa da 0.28 (a mais lenta; ver o orçamento do PixelLab).
+- [x] Começar a arte: conceito, referência e personagem em pé das 3 primeiras skins épicas. **Feito na 0.28**, junto com a arte completa (ver `docs/PIXELLAB_SKINS.md`).
 
 ### 0.25 — Camisa e Calça
 - [x] 8 peças (4 famílias de camisa e calça, na lista `cosmetics` de `items.json` com `slot` `camisa` e `calca`): Algodão, Aventureiro e Guerra na loja de ouro; Celeste só cai nas instâncias (`drop_only`). Cada par soma o que a roupa antiga dava (Defesa 30 a 70).
@@ -103,11 +103,11 @@ A arte das skins épicas é a parte lenta. Para não travar, **a arte começa em
 - [x] `look.skin_only`: interruptor no perfil, na tela do personagem e na pré-visualização da loja; `apply_op` valida o tipo.
 - [x] Remover os 5 produtos de cabelo de `store.json` e do Stripe (desativar os preços; **quem já comprou fica com o item**, igual ao Founder Pack) e o aviso nos textos da loja. **Feito**: o Stripe recebe o preço inline em cada pedido (`price_data` em `stripe_client.go`), então não há preço cadastrado para desativar.
 - [x] Cabelo continua como cosmético sem atributos: loja de ouro e recompensas de evento. As 4 tinturas premium viraram itens de ouro (300 moedas) e quem já comprou segue com elas; recompensas de evento ficam para quando houver evento.
-- [ ] Loja premium reorganizada em vitrine: Skins (raras, épicas, lendárias) e Conveniências (abas de mochila, Passe do Caçador). Pré-visualização com as 4 direções e a pose deitada (idle, andando, tiro, POW), mais **"Experimentar"** no próprio personagem (sem comprar, volta ao estado anterior ao fechar). **Adiado para a 0.28**: hoje a aba Premium só tem conveniências (Passe, abas e o Pacote Fundador), então a vitrine por seção só faz sentido quando as primeiras skins épicas entrarem. O provador da loja já serve de "Experimentar" (a prova é local e some ao fechar), e ganhou o interruptor **Só a skin**; a pré-visualização com 4 direções e a pose deitada precisa do mesmo código da conferência visual das skins (`skin_visual_check.gd`), por isso vai junto.
+- [x] Loja premium reorganizada em vitrine (skins primeiro, etiqueta ÉPICA/LENDÁRIA/CONVENIÊNCIA, campo `section`) e pré-visualização com as 4 direções e a pose deitada (andar, atirar, POW, vitória). **Feito na 0.28**: o provador ganhou **Em pé** e **Batalha** (`client/ui/skin_stage.gd`). Não há sub-abas por seção: a lista só ordena as skins antes das conveniências.
 - [x] Teste: `skin_only` esconde só o que deve, não muda atributos, e o servidor leva o mesmo `look` aos outros jogadores.
 
 ### 0.28 e 0.29 — Skins épicas
-Ver abaixo. A 0.28 entrega 3 skins; a 0.29 as outras 3, as cores alternativas e a vitrine.
+Ver abaixo. A 0.28 entregou 3 skins (feita em 05/10/2026, ver "Estado da implementação"); a 0.29 traz as outras 3, as cores alternativas e a Épica Deluxe.
 
 ## Skins épicas
 
@@ -231,5 +231,17 @@ Respondidas em 04/10/2026: D1 camisa e calça **não** aparecem no boneco; D2 si
 - **Não saiu** (ver a lista da 0.27): vitrine por seção e pré-visualização com 4 direções e pose deitada, ambas movidas para a 0.28.
 - **Servidor**: `items.json` e `store.json` mudaram; reimplantar servidor de jogo e API.
 
-### Próximo: 0.28 (skins épicas, temporada 1)
-Ordem de trabalho: (1) conceito e personagem em pé das 3 primeiras skins e o orçamento do PixelLab (`get_balance`); (2) `tests/skin_visual_check.gd` e a pré-visualização completa (4 direções, deitado, cores alternativas); (3) camada própria (`SkinFx`) e POW de cada skin; (4) produtos em `store.json` e a vitrine por seção na loja.
+### 0.28 — feita em 05/10/2026 (skins épicas, temporada 1)
+- **Três skins, para os dois gêneros**: Tempestade Viva (`epica_tempestade`), Coroa de Gelo (`epica_gelo`) e Coração de Magma (`epica_magma`). Cada uma é **um item e um produto** (`slot` skin, `gender` u, `rarity` epica, `premium`, sem atributos), com `skin` (masculina) e `skin_f` (feminina); `Armory.skin_folder(def, gender)` escolhe a pasta, `look_for` e o ícone da Mochila e da loja (`Armory.viewer_gender`, posto pelo perfil) também. **Os nomes viraram neutros** (Tempestade Viva, Coroa de Gelo, Coração de Magma), porque o mesmo nome serve ao Senhor e à Senhora da Tempestade, ao Rei e à Rainha do Gelo, ao Lorde e à Lady do Magma.
+- **Arte** (`assets/characters/epica_<tema>_<m|f>/`): 4 direções em pé, `prone/` com as 4 direções e os 7 clipes (idle 6, crawl 8, shoot 6, hit 4, victory 6, defeat 6, pow 4), `anchors.json` sem tintura de cabelo (`tools/character_anchors.py` trata `epica_*` como `NO_DYE`). Gerada no PixelLab; o registro (ids, custos, descartes) está em `docs/PIXELLAB_SKINS.md`. As skins deitam **de mãos vazias**: a arma equipada vai nas costas, como em todas as outras.
+- **Camada própria** (`client/components/skin_fx.gd`, `SkinFx`): `look.skin_fx` (`storm`, `ice` ou `magma`, do campo `fx` do item) faz o `LookRig` criar uma `SkinFx`. Células de 2 px opacas (a grade do sprite; nos avatares maiores a célula cresce com a cabeça), `CanvasItem._draw`, sem partículas de GPU, sem `randf()` (ruído puro por `sin`): cabe na web e no celular e nada volta para a partida. Tempestade: arcos que correm nos ombros e um raio fino do céu no POW; Gelo: flocos que caem, geada que brilha no chão ao andar, brilho na coroa e um anel de estilhaços no POW; Magma: brasas que sobem, rachaduras que pulsam (mais ao mirar) e uma erupção de brasas no POW. O que a camada faz fica sobre o personagem e acima da cabeça: nunca cobre a linha do tiro nem a área de dano. "Só a skin" **mantém** a camada (ela é a skin).
+- **POW da skin**: `battle_screen.show_special` chama `TankFighter.skin_pow`, que toca o clipe `pow` da skin e o floreio da camada enquanto o *cut-in* segura o tiro; não muda dano, alcance nem projétil (o determinismo não é tocado).
+- **Loja** (`store.json`): `skin_tempestade` 2101, `skin_gelo` 2102, `skin_magma` 2103 (R$ 44,90 / US$ 8,99) e `pacote_temporada_1` 2110 (R$ 109,90 / US$ 21,99, 18% abaixo das três), todos com `section` ("skins" ou "conveniencias"; as skins vêm primeiro) e uma etiqueta no cartão (ÉPICA, LENDÁRIA ou CONVENIÊNCIA). O pacote é `bundle`: **não se vende por cima de skins que o jogador já tem** (`PremiumStore.overlaps`, checado no servidor em `store_buy` e `store_checkout`); quem já tem uma compra as outras avulsas.
+- **Provador** (`client/ui/skin_stage.gd`): **Em pé** (setas giram nas 4 direções) e **Batalha** (o boneco deitado, sem a placa, com ANDAR, ATIRAR, POW e VITÓRIA). Vale para toda skin da loja, não só as épicas. A prova continua local e some ao fechar.
+- **Cupom** `TESTARTUDO` ganhou `epicas` (as três skins). Capturas: `--screen=shop --tab=premium --try=epica_magma --view=battle`, `--demo=epica_gelo`, e `tests/skin_visual_check.gd` (seis skins lado a lado em três fundos).
+- **Testes**: `tests/epic_skin_tests.gd` (96 checagens): itens, arte e quadros, silhuetas diferentes, gênero e `look`, atributos que não se mexem, produtos, pacote que não se vende duas vezes, camada em cada estado. Inglês em `locale/en.po`.
+- **Servidor**: `items.json` e `store.json` mudaram (e `PremiumStore`/`game_server.gd`): reimplantar servidor de jogo e API juntos.
+- **Não saiu / ficou para a 0.29**: cores alternativas e "Cor extra", a Épica Deluxe (Capitã Fantasma, Guardião de Jade e Caçador do Eclipse), o emote da skin, a skin de conquista da liga e o som de cada POW (nenhum som foi ouvido; só medido). A **entrada no Salão** só para lendárias continua como estava. (O POW do Gelo foi refeito uma vez, com "chest arches up, arms thrown wide, glowing white-blue", e agora tem clarão e redemoinho de gelo.)
+
+### Próximo: 0.29 (skins épicas, temporada 1: o resto)
+Capitã Fantasma, Guardião de Jade e Caçador do Eclipse (Épica Deluxe), as cores alternativas (`recolor`, deslocamento de paleta no *shader*) e a "Cor extra". Saldo do PixelLab depois da 0.28: **953 gerações até 24/10/2026**; três skins para os dois gêneros custam cerca de 320 se nada for refeito.

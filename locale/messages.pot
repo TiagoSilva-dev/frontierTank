@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: client/components/fighter.gd:293
+#: client/components/fighter.gd:307
 msgid "Chefe"
 msgstr ""
 
-#: client/components/fighter.gd:293
+#: client/components/fighter.gd:307
 msgid "Guardião"
 msgstr ""
 
-#: client/components/fighter.gd:293
+#: client/components/fighter.gd:307
 msgid "Inimigo"
 msgstr ""
 
-#: client/components/fighter.gd:293
+#: client/components/fighter.gd:307
 msgid "Lacaio"
 msgstr ""
 
-#: client/components/fighter.gd:293
+#: client/components/fighter.gd:307
 msgid "Objetivo"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Capitão"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Coronel"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "General"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Major"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Marechal"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Recruta"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Sargento"
 msgstr ""
 
-#: client/components/fighter.gd:357
+#: client/components/fighter.gd:371
 msgid "Soldado"
 msgstr ""
 
-#: client/components/fighter.gd:357 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:371 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr ""
 
@@ -154,31 +154,35 @@ msgstr ""
 msgid "Erro do servidor: %s"
 msgstr ""
 
-#: client/scripts/main.gd:1008
+#: client/scripts/main.gd:1003
+msgid "CONEXÃO"
+msgstr ""
+
+#: client/scripts/main.gd:1013
 msgid "AVISO"
 msgstr ""
 
-#: client/scripts/main.gd:1021
+#: client/scripts/main.gd:1026
 msgid "Você foi removido da sala."
 msgstr ""
 
-#: client/scripts/main.gd:1118
+#: client/scripts/main.gd:1123
 msgid "Música desligada"
 msgstr ""
 
-#: client/scripts/main.gd:1118
+#: client/scripts/main.gd:1123
 msgid "Música ligada"
 msgstr ""
 
-#: client/scripts/main.gd:1134
+#: client/scripts/main.gd:1139
 msgid "Mensagem privada de %s"
 msgstr ""
 
-#: client/scripts/main.gd:1155 client/ui/exchange_screen.gd:48
+#: client/scripts/main.gd:1160 client/ui/exchange_screen.gd:48
 msgid "CASA DE CÂMBIO"
 msgstr ""
 
-#: client/scripts/main.gd:1155
+#: client/scripts/main.gd:1160
 msgid "Entre em um servidor online para trocar moedas e pedras com outros jogadores."
 msgstr ""
 
@@ -194,7 +198,7 @@ msgstr ""
 msgid "Expedição: %s"
 msgstr ""
 
-#: client/scripts/main.gd:404 client/scripts/main.gd:415 client/scripts/main.gd:474 client/scripts/main.gd:1021
+#: client/scripts/main.gd:404 client/scripts/main.gd:415 client/scripts/main.gd:474 client/scripts/main.gd:1026
 msgid "SALA"
 msgstr ""
 
@@ -214,104 +218,100 @@ msgstr ""
 msgid "FICAR"
 msgstr ""
 
-#: client/scripts/main.gd:680 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
+#: client/scripts/main.gd:685 client/ui/challenge_result.gd:51 client/ui/challenge_screen.gd:155 client/ui/challenge_screen.gd:200
 msgid "ASSISTIR"
 msgstr ""
 
-#: client/scripts/main.gd:712
+#: client/scripts/main.gd:717
 msgid "Treino concluído!"
 msgstr ""
 
-#: client/scripts/main.gd:717 client/ui/bottom_bar.gd:26
+#: client/scripts/main.gd:722 client/ui/bottom_bar.gd:26
 msgid "AJUDA"
 msgstr ""
 
-#: client/scripts/main.gd:723 client/ui/title_screen.gd:80
+#: client/scripts/main.gd:728 client/ui/title_screen.gd:80
 msgid "Privacidade"
 msgstr ""
 
-#: client/scripts/main.gd:725 client/ui/title_screen.gd:128
+#: client/scripts/main.gd:730 client/ui/title_screen.gd:128
 msgid "Minha conta"
 msgstr ""
 
-#: client/scripts/main.gd:730
+#: client/scripts/main.gd:735
 msgid "TREINO"
 msgstr ""
 
-#: client/scripts/main.gd:734 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
+#: client/scripts/main.gd:739 client/ui/account_screen.gd:86 client/ui/auction_screen.gd:70 client/ui/challenge_screen.gd:35
 msgid "FECHAR"
 msgstr ""
 
-#: client/scripts/main.gd:740
+#: client/scripts/main.gd:745
 msgid "◀ ▶ andar (gasta energia)   ↑ ↓ ângulo\nSegure FOGO e solte: força (a barra reinicia uma vez no máximo)\nHAB. abre as habilidades 1–9 (+2, x3, +1, POW 50%…10%, POW máx)\nPOW: com a barra cheia   Ferramentas, avião, item auxiliar e mascote: botões em fila\nPASS: passar a vez   Confiar: a IA joga por você\nSegure um botão para ver o que ele faz"
 msgstr ""
 
-#: client/scripts/main.gd:741
+#: client/scripts/main.gd:746
 msgid "← → mover (gasta energia)   ↑ ↓ ângulo\nSegure e solte ESPAÇO: força (a barra reinicia uma vez no máximo)\n1–9 habilidades (+2, x3, +1, POW 50%…10%, POW máx)   Z X C ferramentas\nB: POW com a barra cheia   F: avião de papel   V: item auxiliar\nP: passar a vez   Confiar: a IA joga por você   M: liga/desliga a música"
 msgstr ""
 
-#: client/scripts/main.gd:753 client/ui/auction_screen.gd:69
+#: client/scripts/main.gd:758 client/ui/auction_screen.gd:69
 msgid "LEILÃO"
 msgstr ""
 
-#: client/scripts/main.gd:753
+#: client/scripts/main.gd:758
 msgid "O Leilão só funciona online: os itens à venda ficam guardados no servidor.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:763 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
+#: client/scripts/main.gd:768 client/ui/auction_screen.gd:71 client/ui/bottom_bar.gd:21 client/ui/exchange_screen.gd:73
 msgid "CORREIO"
 msgstr ""
 
-#: client/scripts/main.gd:763
+#: client/scripts/main.gd:768
 msgid "O Correio só funciona online: ele entrega o que você compra e vende no Leilão.\nEscolha um servidor na tela de entrada."
 msgstr ""
 
-#: client/scripts/main.gd:774
+#: client/scripts/main.gd:779
 msgid "O Leilão só funciona online."
 msgstr ""
 
-#: client/scripts/main.gd:828
+#: client/scripts/main.gd:833
 msgid "Conquista: %s"
 msgstr ""
 
-#: client/scripts/main.gd:837 client/ui/hunt_tab.gd:364 client/ui/shop_screen.gd:150
+#: client/scripts/main.gd:842 client/ui/hunt_tab.gd:364 client/ui/shop_screen.gd:166
 msgid "Entre com a sua conta para comprar."
 msgstr ""
 
-#: client/scripts/main.gd:848
+#: client/scripts/main.gd:853
 msgid "A Steam ainda não confirmou a compra. Se você aprovar, os itens chegam ao Correio."
 msgstr ""
 
-#: client/scripts/main.gd:851
+#: client/scripts/main.gd:856
 msgid "Compra cancelada."
 msgstr ""
 
-#: client/scripts/main.gd:856
+#: client/scripts/main.gd:861
 msgid "Compra concluída! Os itens chegaram ao Correio."
 msgstr ""
 
-#: client/scripts/main.gd:873
+#: client/scripts/main.gd:878
 msgid "Página de pagamento aberta no navegador (cartão ou Pix). Os itens chegam ao Correio quando o pagamento for confirmado."
 msgstr ""
 
-#: client/scripts/main.gd:900
+#: client/scripts/main.gd:905
 msgid "Compra confirmada! Os itens chegaram ao Correio."
 msgstr ""
 
-#: client/scripts/main.gd:904
+#: client/scripts/main.gd:909
 msgid "O pagamento não foi concluído."
 msgstr ""
 
-#: client/scripts/main.gd:930
+#: client/scripts/main.gd:935
 msgid "Bem-vindo ao servidor %s!"
 msgstr ""
 
-#: client/scripts/main.gd:958
+#: client/scripts/main.gd:963
 msgid "Reconectando…"
-msgstr ""
-
-#: client/scripts/main.gd:998
-msgid "CONEXÃO"
 msgstr ""
 
 #: client/systems/armory.gd:15
@@ -498,7 +498,7 @@ msgstr ""
 msgid "Esta carta já foi recebida."
 msgstr ""
 
-#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:478 client/systems/profile.gd:917
+#: client/systems/auction.gd:52 client/systems/auction.gd:84 client/systems/profile.gd:481 client/systems/profile.gd:925
 msgid "Item não encontrado."
 msgstr ""
 
@@ -606,7 +606,7 @@ msgstr ""
 msgid "Este item não tem bônus."
 msgstr ""
 
-#: client/systems/crafting.gd:186 client/systems/crafting.gd:242 client/systems/profile.gd:773 client/systems/profile.gd:797
+#: client/systems/crafting.gd:186 client/systems/crafting.gd:242 client/systems/profile.gd:776 client/systems/profile.gd:800
 msgid "Moeda desconhecida."
 msgstr ""
 
@@ -654,7 +654,7 @@ msgstr ""
 msgid "Escolha duas moedas ou pedras diferentes."
 msgstr ""
 
-#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1744
+#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1750
 msgid "Use quantidades inteiras entre 1 e 1.000.000."
 msgstr ""
 
@@ -1018,207 +1018,223 @@ msgstr ""
 msgid "Teste de desempenho: medindo… %d s"
 msgstr ""
 
-#: client/systems/premium_store.gd:94 client/ui/auction_screen.gd:323 client/ui/auction_screen.gd:410 client/ui/auction_screen.gd:413
+#: client/systems/premium_store.gd:116 client/ui/auction_screen.gd:323 client/ui/auction_screen.gd:410 client/ui/auction_screen.gd:413
 msgid "COMPRAR"
 msgstr ""
 
-#: client/systems/premium_store.gd:94
+#: client/systems/premium_store.gd:116
 msgid "COMPRAR NA STEAM"
 msgstr ""
 
-#: client/systems/premium_store.gd:97
+#: client/systems/premium_store.gd:119
 msgid "Abre a janela de compra da Steam. O Passe chega pelo Correio."
 msgstr ""
 
-#: client/systems/premium_store.gd:97
+#: client/systems/premium_store.gd:119
 msgid "Abre a página de pagamento (cartão ou Pix). O Passe chega pelo Correio."
 msgstr ""
 
-#: client/systems/profile.gd:1008
+#: client/systems/premium_store.gd:86
+msgid "CONVENIÊNCIA"
+msgstr ""
+
+#: client/systems/premium_store.gd:90 client/ui/shop_screen.gd:152
+msgid "LENDÁRIA"
+msgstr ""
+
+#: client/systems/premium_store.gd:92 client/ui/shop_screen.gd:152
+msgid "ÉPICA"
+msgstr ""
+
+#: client/systems/premium_store.gd:93
+msgid "SKIN"
+msgstr ""
+
+#: client/systems/profile.gd:1016
 msgid "O mascote consumido precisa ser da mesma espécie."
 msgstr ""
 
-#: client/systems/profile.gd:1010
+#: client/systems/profile.gd:1018
 msgid "Este mascote já está com 5 estrelas."
 msgstr ""
 
-#: client/systems/profile.gd:1012
+#: client/systems/profile.gd:1020
 msgid "Tire o mascote ativo antes de consumi-lo."
 msgstr ""
 
-#: client/systems/profile.gd:1029 client/ui/pet_screen.gd:376
+#: client/systems/profile.gd:1037 client/ui/pet_screen.gd:376
 msgid "Tire o mascote ativo antes de libertá-lo."
 msgstr ""
 
-#: client/systems/profile.gd:1044
+#: client/systems/profile.gd:1052
 msgid "Zona desconhecida."
 msgstr ""
 
-#: client/systems/profile.gd:1046
+#: client/systems/profile.gd:1054
 msgid "Este nível de caça ainda está bloqueado."
 msgstr ""
 
-#: client/systems/profile.gd:1052
+#: client/systems/profile.gd:1060
 msgid "Escolha pelo menos um mascote para o time."
 msgstr ""
 
-#: client/systems/profile.gd:1054
+#: client/systems/profile.gd:1062
 msgid "O time tem no máximo %d mascotes."
 msgstr ""
 
-#: client/systems/profile.gd:1071
+#: client/systems/profile.gd:1079
 msgid "Nenhuma caçada em andamento."
 msgstr ""
 
-#: client/systems/profile.gd:1137
+#: client/systems/profile.gd:1145
 msgid "Este item é a prova de uma compra e não pode ser vendido."
 msgstr ""
 
-#: client/systems/profile.gd:1141 client/ui/mission_screen.gd:145 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:128
+#: client/systems/profile.gd:1149 client/ui/mission_screen.gd:145 client/ui/phase_transition.gd:55 client/ui/result_screen.gd:128
 msgid "+%d moedas"
 msgstr ""
 
-#: client/systems/profile.gd:1174
+#: client/systems/profile.gd:1182
 msgid "Só Fundadores têm efeitos do Founder Pack."
 msgstr ""
 
-#: client/systems/profile.gd:1176
+#: client/systems/profile.gd:1184
 msgid "Efeito desconhecido."
 msgstr ""
 
-#: client/systems/profile.gd:1217
+#: client/systems/profile.gd:1225
 msgid "Título conquistado: %s"
 msgstr ""
 
-#: client/systems/profile.gd:1227
+#: client/systems/profile.gd:1235
 msgid "O personagem já foi criado."
 msgstr ""
 
-#: client/systems/profile.gd:1229
+#: client/systems/profile.gd:1237
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr ""
 
-#: client/systems/profile.gd:1236 client/systems/tutorial.gd:70 server/game/game_server.gd:488
+#: client/systems/profile.gd:1244 client/systems/tutorial.gd:70 server/game/game_server.gd:488
 msgid "Operação desconhecida."
 msgstr ""
 
-#: client/systems/profile.gd:339
+#: client/systems/profile.gd:342
 msgid "Você ainda não tem este título."
 msgstr ""
 
-#: client/systems/profile.gd:350
+#: client/systems/profile.gd:353
 msgid "Esta recompensa já foi resgatada."
 msgstr ""
 
-#: client/systems/profile.gd:359
+#: client/systems/profile.gd:362
 msgid "Não há recompensa para esta temporada."
 msgstr ""
 
-#: client/systems/profile.gd:482
+#: client/systems/profile.gd:485
 msgid "Este item não se equipa."
 msgstr ""
 
-#: client/systems/profile.gd:486
+#: client/systems/profile.gd:489
 msgid "Esta skin é do outro gênero."
 msgstr ""
 
-#: client/systems/profile.gd:495
+#: client/systems/profile.gd:498
 msgid "Este item não vai nesse espaço."
 msgstr ""
 
-#: client/systems/profile.gd:500
+#: client/systems/profile.gd:503
 msgid "Você já usa um anel igual a este."
 msgstr ""
 
-#: client/systems/profile.gd:509
+#: client/systems/profile.gd:512
 msgid "Você precisa ter uma arma equipada."
 msgstr ""
 
-#: client/systems/profile.gd:581
+#: client/systems/profile.gd:584
 msgid "Mochila cheia! Venda itens ou compre mais abas na loja Premium."
 msgstr ""
 
-#: client/systems/profile.gd:629 client/systems/profile.gd:637 client/systems/profile.gd:642 client/systems/profile.gd:657
+#: client/systems/profile.gd:632 client/systems/profile.gd:640 client/systems/profile.gd:645 client/systems/profile.gd:660
 msgid "Item desconhecido."
 msgstr ""
 
-#: client/systems/profile.gd:631
+#: client/systems/profile.gd:634
 msgid "Super armas só caem do chefe das instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:633
+#: client/systems/profile.gd:636
 msgid "Armas Verdadeiras só caem nas instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:635
+#: client/systems/profile.gd:638
 msgid "Armas Excelentes só caem nas instâncias ou vêm do leilão."
 msgstr ""
 
-#: client/systems/profile.gd:639
+#: client/systems/profile.gd:642
 msgid "Itens auxiliares só vêm de drops ou do leilão."
 msgstr ""
 
-#: client/systems/profile.gd:644 client/systems/profile.gd:662 client/systems/profile.gd:738 client/systems/profile.gd:756
+#: client/systems/profile.gd:647 client/systems/profile.gd:665 client/systems/profile.gd:741 client/systems/profile.gd:759
 msgid "Moedas insuficientes."
 msgstr ""
 
-#: client/systems/profile.gd:659
+#: client/systems/profile.gd:662
 msgid "Pedras de fortalecimento são encontradas nas instâncias."
 msgstr ""
 
-#: client/systems/profile.gd:731
+#: client/systems/profile.gd:734
 msgid "Só armas, camisas, calças e chapéus podem ser fortalecidos."
 msgstr ""
 
-#: client/systems/profile.gd:734
+#: client/systems/profile.gd:737
 msgid "Este item já está no +12."
 msgstr ""
 
-#: client/systems/profile.gd:736 client/ui/smith_screen.gd:220
+#: client/systems/profile.gd:739 client/ui/smith_screen.gd:220
 msgid "Você precisa de uma Pedra de Fortalecimento nível %d."
 msgstr ""
 
-#: client/systems/profile.gd:751
+#: client/systems/profile.gd:754
 msgid "Escolha dois itens diferentes."
 msgstr ""
 
-#: client/systems/profile.gd:753
+#: client/systems/profile.gd:756
 msgid "A transferência só funciona entre itens do mesmo tipo."
 msgstr ""
 
-#: client/systems/profile.gd:778 client/systems/profile.gd:802 client/ui/smith_screen.gd:372
+#: client/systems/profile.gd:781 client/systems/profile.gd:805 client/ui/smith_screen.gd:372
 msgid "Você não tem %s."
 msgstr ""
 
-#: client/systems/profile.gd:836 client/systems/profile.gd:1161
+#: client/systems/profile.gd:839 client/systems/profile.gd:1169
 msgid "Cupom inválido."
 msgstr ""
 
-#: client/systems/profile.gd:838 client/systems/profile.gd:1163
+#: client/systems/profile.gd:841 client/systems/profile.gd:1171
 msgid "Este cupom já foi usado nesta conta."
 msgstr ""
 
-#: client/systems/profile.gd:908 client/ui/room_screen.gd:326
+#: client/systems/profile.gd:916 client/ui/room_screen.gd:326
 msgid "%s custa %d moedas."
 msgstr ""
 
-#: client/systems/profile.gd:910
+#: client/systems/profile.gd:918
 msgid "Seus 3 espaços (Z, X, C) estão ocupados. Clique numa ferramenta para devolvê-la."
 msgstr ""
 
-#: client/systems/profile.gd:951
+#: client/systems/profile.gd:959
 msgid "Você não tem este ovo."
 msgstr ""
 
-#: client/systems/profile.gd:953
+#: client/systems/profile.gd:961
 msgid "A Casa dos Mascotes está cheia. Liberte algum mascote."
 msgstr ""
 
-#: client/systems/profile.gd:982 client/systems/profile.gd:989 client/systems/profile.gd:1006 client/systems/profile.gd:1027
+#: client/systems/profile.gd:990 client/systems/profile.gd:997 client/systems/profile.gd:1014 client/systems/profile.gd:1035
 msgid "Mascote não encontrado."
 msgstr ""
 
-#: client/systems/profile.gd:991 client/ui/pet_screen.gd:366
+#: client/systems/profile.gd:999 client/ui/pet_screen.gd:366
 msgid "Nível máximo para %d estrelas. Evolua o mascote para subir mais."
 msgstr ""
 
@@ -1938,35 +1954,35 @@ msgstr ""
 msgid "%s caiu!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:539
+#: client/ui/battle_screen.gd:541
 msgid "CRÍTICO"
 msgstr ""
 
-#: client/ui/battle_screen.gd:564 shared/balance/combat.json:statuses[2].label
+#: client/ui/battle_screen.gd:566 shared/balance/combat.json:statuses[2].label
 msgid "CONGELADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:564
+#: client/ui/battle_screen.gd:566
 msgid "Você perde este turno."
 msgstr ""
 
-#: client/ui/battle_screen.gd:571
+#: client/ui/battle_screen.gd:573
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:603 client/ui/battle_screen.gd:838
+#: client/ui/battle_screen.gd:605 client/ui/battle_screen.gd:840
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:892
+#: client/ui/battle_screen.gd:894
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/battle_screen.gd:906 client/ui/result_screen.gd:137
+#: client/ui/battle_screen.gd:908 client/ui/result_screen.gd:137
 msgid "GOLPE FINAL"
 msgstr ""
 
-#: client/ui/battle_screen.gd:906 client/ui/result_screen.gd:137
+#: client/ui/battle_screen.gd:908 client/ui/result_screen.gd:137
 msgid "GRUPO"
 msgstr ""
 
@@ -2178,7 +2194,7 @@ msgstr ""
 msgid "Mascote"
 msgstr ""
 
-#: client/ui/character_screen.gd:173 client/ui/shop_screen.gd:72
+#: client/ui/character_screen.gd:173 client/ui/shop_screen.gd:76
 msgid "Só a skin"
 msgstr ""
 
@@ -2286,7 +2302,7 @@ msgstr ""
 msgid "%d/%d itens"
 msgstr ""
 
-#: client/ui/character_screen.gd:468 client/ui/shop_screen.gd:140 client/ui/smith_screen.gd:305
+#: client/ui/character_screen.gd:468 client/ui/shop_screen.gd:153 client/ui/smith_screen.gd:305
 msgid "%d itens"
 msgstr ""
 
@@ -2354,7 +2370,7 @@ msgstr ""
 msgid "LOJA"
 msgstr ""
 
-#: client/ui/character_screen.gd:92 client/ui/city_screen.gd:189 client/ui/shop_screen.gd:82
+#: client/ui/character_screen.gd:92 client/ui/city_screen.gd:189 client/ui/shop_screen.gd:86
 msgid "CUPOM"
 msgstr ""
 
@@ -2870,7 +2886,7 @@ msgstr ""
 msgid "Skin de arma Solaris"
 msgstr ""
 
-#: client/ui/founder_screen.gd:16 client/ui/founder_screen.gd:116 shared/balance/items.json:cosmetics[50].name
+#: client/ui/founder_screen.gd:16 client/ui/founder_screen.gd:116 shared/balance/items.json:cosmetics[53].name
 msgid "Asas da Aurora"
 msgstr ""
 
@@ -3354,7 +3370,7 @@ msgstr ""
 msgid "Passe ativo: sua caçada acumula até 8 horas. Obrigado por apoiar o jogo!"
 msgstr ""
 
-#: client/ui/hunt_tab.gd:357 client/ui/shop_screen.gd:145
+#: client/ui/hunt_tab.gd:357 client/ui/shop_screen.gd:159
 msgid "VOCÊ TEM"
 msgstr ""
 
@@ -3378,11 +3394,11 @@ msgstr ""
 msgid "Caçada parada."
 msgstr ""
 
-#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:165
+#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:181
 msgid "Abrindo a página de pagamento…"
 msgstr ""
 
-#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:165
+#: client/ui/hunt_tab.gd:508 client/ui/shop_screen.gd:181
 msgid "Aprove a compra na janela da Steam…"
 msgstr ""
 
@@ -3978,7 +3994,7 @@ msgstr ""
 msgid "POW!"
 msgstr ""
 
-#: client/ui/pow_orb.gd:96 shared/balance/tutorial.json:steps[6].name
+#: client/ui/pow_orb.gd:96 client/ui/skin_stage.gd:10 shared/balance/tutorial.json:steps[6].name
 msgid "POW"
 msgstr ""
 
@@ -4546,14 +4562,6 @@ msgstr ""
 msgid "Remover da sala"
 msgstr ""
 
-#: client/ui/shop_screen.gd:112
-msgid "SUPER VERDADEIRA\nSó no baú do chefe"
-msgstr ""
-
-#: client/ui/shop_screen.gd:113
-msgid "Você tem"
-msgstr ""
-
 #: client/ui/shop_screen.gd:12
 msgid "Cabelos"
 msgstr ""
@@ -4570,48 +4578,80 @@ msgstr ""
 msgid "Skins"
 msgstr ""
 
-#: client/ui/shop_screen.gd:120
+#: client/ui/shop_screen.gd:123
+msgid "SUPER VERDADEIRA\nSó no baú do chefe"
+msgstr ""
+
+#: client/ui/shop_screen.gd:124
+msgid "Você tem"
+msgstr ""
+
+#: client/ui/shop_screen.gd:131
 msgid "Excelente e Verdadeira:\ninstâncias e leilão"
 msgstr ""
 
-#: client/ui/shop_screen.gd:125
+#: client/ui/shop_screen.gd:136
 msgid "COMPRADO"
 msgstr ""
 
-#: client/ui/shop_screen.gd:145
+#: client/ui/shop_screen.gd:159
 msgid "ABRIR PAGAMENTO"
 msgstr ""
 
-#: client/ui/shop_screen.gd:151
+#: client/ui/shop_screen.gd:164 server/game/game_server.gd:1608 server/game/game_server.gd:1650
+msgid "Você já tem parte deste pacote: compre as skins que faltam, uma a uma."
+msgstr ""
+
+#: client/ui/shop_screen.gd:167
 msgid "Só online"
 msgstr ""
 
-#: client/ui/shop_screen.gd:155
+#: client/ui/shop_screen.gd:171
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nO preço na sua moeda aparece na Steam."
 msgstr ""
 
-#: client/ui/shop_screen.gd:156
+#: client/ui/shop_screen.gd:172
 msgid "Só aparência e conveniência: não muda atributos e chega pelo Correio.\nPagamento por cartão ou Pix, em reais."
 msgstr ""
 
-#: client/ui/shop_screen.gd:161
+#: client/ui/shop_screen.gd:177
 msgid "Página de pagamento aberta no navegador."
 msgstr ""
 
-#: client/ui/shop_screen.gd:177
+#: client/ui/shop_screen.gd:193
 msgid "Comprado! Veja na Mochila."
 msgstr ""
 
-#: client/ui/shop_screen.gd:38
+#: client/ui/shop_screen.gd:41
 msgid "CENTRO COMERCIAL"
 msgstr ""
 
-#: client/ui/shop_screen.gd:63
+#: client/ui/shop_screen.gd:66
 msgid "PROVADOR"
 msgstr ""
 
-#: client/ui/shop_screen.gd:79
+#: client/ui/shop_screen.gd:83
 msgid "Clique num item para provar.\nArmas melhores só caem nas instâncias ou vêm do leilão."
+msgstr ""
+
+#: client/ui/skin_stage.gd:10 shared/balance/tutorial.json:steps[1].name
+msgid "ANDAR"
+msgstr ""
+
+#: client/ui/skin_stage.gd:10
+msgid "ATIRAR"
+msgstr ""
+
+#: client/ui/skin_stage.gd:10
+msgid "VITÓRIA"
+msgstr ""
+
+#: client/ui/skin_stage.gd:43
+msgid "EM PÉ"
+msgstr ""
+
+#: client/ui/skin_stage.gd:45
+msgid "BATALHA"
 msgstr ""
 
 #: client/ui/smith_screen.gd:106
@@ -4950,7 +4990,7 @@ msgstr ""
 msgid "Carta indisponível."
 msgstr ""
 
-#: server/game/game_server.gd:1364 server/game/game_server.gd:1752
+#: server/game/game_server.gd:1364 server/game/game_server.gd:1758
 msgid "Aguarde um instante para buscar de novo."
 msgstr ""
 
@@ -4970,51 +5010,51 @@ msgstr ""
 msgid "Senha incorreta."
 msgstr ""
 
-#: server/game/game_server.gd:1596 server/game/game_server.gd:1635
+#: server/game/game_server.gd:1596 server/game/game_server.gd:1638
 msgid "Produto desconhecido."
 msgstr ""
 
-#: server/game/game_server.gd:1599 server/game/game_server.gd:1638
+#: server/game/game_server.gd:1599 server/game/game_server.gd:1641
 msgid "Este pacote não está mais à venda."
 msgstr ""
 
-#: server/game/game_server.gd:1605 server/game/game_server.gd:1644
+#: server/game/game_server.gd:1605 server/game/game_server.gd:1647
 msgid "Você já tem estes itens."
 msgstr ""
 
-#: server/game/game_server.gd:1668
+#: server/game/game_server.gd:1674
 msgid "O pagamento não está disponível agora. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1670
+#: server/game/game_server.gd:1676
 msgid "Muitos pedidos abertos. Conclua ou aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:1672
+#: server/game/game_server.gd:1678
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1674
+#: server/game/game_server.gd:1680
 msgid "A Steam não respondeu. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1676
+#: server/game/game_server.gd:1682
 msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1678
+#: server/game/game_server.gd:1684
 msgid "Este pedido já foi encerrado."
 msgstr ""
 
-#: server/game/game_server.gd:1680
+#: server/game/game_server.gd:1686
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:1681
+#: server/game/game_server.gd:1687
 msgid "Não foi possível concluir a compra agora."
 msgstr ""
 
-#: server/game/game_server.gd:1757
+#: server/game/game_server.gd:1763
 msgid "Não foi possível consultar o câmbio. Tente novamente."
 msgstr ""
 
@@ -6322,40 +6362,52 @@ msgstr ""
 msgid "Roupa de Exploradora"
 msgstr ""
 
+#: shared/balance/items.json:cosmetics[50].name
+msgid "Tempestade Viva"
+msgstr ""
+
 #: shared/balance/items.json:cosmetics[51].name
+msgid "Coroa de Gelo"
+msgstr ""
+
+#: shared/balance/items.json:cosmetics[52].name
+msgid "Coração de Magma"
+msgstr ""
+
+#: shared/balance/items.json:cosmetics[54].name
 msgid "Selo de Fundador"
 msgstr ""
 
-#: shared/balance/items.json:cosmetics[52].name shared/balance/store.json:products[0].name
+#: shared/balance/items.json:cosmetics[55].name shared/balance/store.json:products[4].name
 msgid "Passe do Caçador"
 msgstr ""
 
-#: shared/balance/items.json:cosmetics[53].name shared/balance/store.json:products[1].name
+#: shared/balance/items.json:cosmetics[56].name shared/balance/store.json:products[5].name
 msgid "Aba de Mochila 1"
 msgstr ""
 
-#: shared/balance/items.json:cosmetics[54].name shared/balance/store.json:products[2].name
+#: shared/balance/items.json:cosmetics[57].name shared/balance/store.json:products[6].name
 msgid "Aba de Mochila 2"
 msgstr ""
 
-#: shared/balance/items.json:cosmetics[55].name shared/balance/store.json:products[3].name
+#: shared/balance/items.json:cosmetics[58].name shared/balance/store.json:products[7].name
 msgid "Aba de Mochila 3"
 msgstr ""
 
-#: shared/balance/items.json:cosmetics[56].name shared/balance/store.json:products[4].name
+#: shared/balance/items.json:cosmetics[59].name shared/balance/store.json:products[8].name
 msgid "Aba de Mochila 4"
-msgstr ""
-
-#: shared/balance/items.json:cosmetics[57].name shared/balance/store.json:products[5].name
-msgid "Aba de Mochila 5"
-msgstr ""
-
-#: shared/balance/items.json:cosmetics[58].name shared/balance/store.json:products[6].name
-msgid "Aba de Mochila 6"
 msgstr ""
 
 #: shared/balance/items.json:cosmetics[5].name
 msgid "Vestido de Princesa"
+msgstr ""
+
+#: shared/balance/items.json:cosmetics[60].name shared/balance/store.json:products[9].name
+msgid "Aba de Mochila 5"
+msgstr ""
+
+#: shared/balance/items.json:cosmetics[61].name shared/balance/store.json:products[10].name
+msgid "Aba de Mochila 6"
 msgstr ""
 
 #: shared/balance/items.json:cosmetics[6].name
@@ -6375,7 +6427,7 @@ msgid "Calça de Algodão"
 msgstr ""
 
 #: shared/balance/items.json:coupons[0].desc
-msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, skins, camisas, calças, chapéus, óculos, asas, anéis, amuletos, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas, 20 ovos de cada tipo e o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador) e o Passe do Caçador. Cupom reutilizável."
+msgid "Todas as armas (todas as qualidades), super armas, itens auxiliares, skins, camisas, calças, chapéus, óculos, asas, anéis, amuletos, cabelos, 200 pedras de cada nível, 200 de cada moeda especial, mapas de todas as instâncias do nível 1 ao 16, 99.999 moedas, 20 ovos de cada tipo, as skins épicas da loja (Tempestade Viva, Coroa de Gelo e Coração de Magma), o Founder Pack completo (Paladino do Sol, Solaris +12, Asas da Aurora e Selo de Fundador) e o Passe do Caçador. Cupom reutilizável."
 msgstr ""
 
 #: shared/balance/items.json:coupons[1].desc
@@ -7139,19 +7191,51 @@ msgid "Mestre"
 msgstr ""
 
 #: shared/balance/store.json:products[0].desc
-msgid "A Caçada dos Mascotes passa a acumular até 8 horas parado (em vez de 2). Conveniência: os mascotes não ficam mais fortes por isso."
+msgid "Skin épica para os dois gêneros: armadura azul-aço com arcos de raio nos ombros e um raio no POW. Só aparência: não muda atributos."
 msgstr ""
 
-#: shared/balance/store.json:products[1].desc shared/balance/store.json:products[2].desc shared/balance/store.json:products[3].desc shared/balance/store.json:products[4].desc
-msgid "Mais 40 espaços na Mochila. Conveniência: não muda atributos."
+#: shared/balance/store.json:products[0].name
+msgid "Tempestade Viva — Skin Épica"
 msgstr ""
 
-#: shared/balance/store.json:products[7].desc
+#: shared/balance/store.json:products[11].desc
 msgid "Edição limitada, só durante o período Founder: skin Paladino do Sol, arma Solaris, Asas da Aurora, selo, título e moldura de Fundador, e os efeitos do pacote. Só aparência: não muda atributos."
 msgstr ""
 
-#: shared/balance/store.json:products[7].name
+#: shared/balance/store.json:products[11].name
 msgid "Founder Pack — Paladino do Sol"
+msgstr ""
+
+#: shared/balance/store.json:products[1].desc
+msgid "Skin épica para os dois gêneros: cristal e geada com flocos que giram e um anel de estilhaços no POW. Só aparência: não muda atributos."
+msgstr ""
+
+#: shared/balance/store.json:products[1].name
+msgid "Coroa de Gelo — Skin Épica"
+msgstr ""
+
+#: shared/balance/store.json:products[2].desc
+msgid "Skin épica para os dois gêneros: rocha escura com rachaduras de brasa, brasas que sobem e uma erupção no POW. Só aparência: não muda atributos."
+msgstr ""
+
+#: shared/balance/store.json:products[2].name
+msgid "Coração de Magma — Skin Épica"
+msgstr ""
+
+#: shared/balance/store.json:products[3].desc
+msgid "Tempestade Viva, Coroa de Gelo e Coração de Magma com 18% de desconto. Só aparência: não muda atributos."
+msgstr ""
+
+#: shared/balance/store.json:products[3].name
+msgid "Pacote da Temporada 1 — 3 Skins Épicas"
+msgstr ""
+
+#: shared/balance/store.json:products[4].desc
+msgid "A Caçada dos Mascotes passa a acumular até 8 horas parado (em vez de 2). Conveniência: os mascotes não ficam mais fortes por isso."
+msgstr ""
+
+#: shared/balance/store.json:products[5].desc shared/balance/store.json:products[6].desc shared/balance/store.json:products[7].desc shared/balance/store.json:products[8].desc
+msgid "Mais 40 espaços na Mochila. Conveniência: não muda atributos."
 msgstr ""
 
 #: shared/balance/tutorial.json:steps[0].name
@@ -7160,10 +7244,6 @@ msgstr ""
 
 #: shared/balance/tutorial.json:steps[0].text
 msgid "Em poucos minutos você aprende o essencial da artilharia. Seu alvo é o Boneco de Treino, na ilha da frente: ele não revida."
-msgstr ""
-
-#: shared/balance/tutorial.json:steps[1].name
-msgid "ANDAR"
 msgstr ""
 
 #: shared/balance/tutorial.json:steps[1].text
