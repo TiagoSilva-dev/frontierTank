@@ -32,3 +32,15 @@ Cada personagem em pé saiu bom **na primeira geração** (uma variação por ve
 - O clipe `pow` com "body shuddering with glowing energy" deu clarões amarelo-brancos no Magma e na Tempestade (bom, lê como carga de poder); no Gelo mudou pouco na primeira vez; refeito (apagado com `delete_animation` e gerado de novo, 5 gerações) com "releasing a huge power blast while lying prone: the chest arches up, head thrown back, both arms thrown wide, body glowing bright white-blue with a burst of ice light", que deu clarão branco e redemoinho de gelo.
 - Os personagens saem dentro de uma tela de 136 px com margem; o `anchors.json` mede cabeça, olhos e costas. `epica_*` não tem tintura de cabelo.
 - Camada própria: nada de PixelLab. `SkinFx` desenha em código.
+
+## 0.29 — Capitã Fantasma (Épica Deluxe)
+**Só a versão feminina feita até aqui** (`assets/characters/epica_fantasma_f/`, ainda sem item, sem camada `ghost` e sem a versão masculina).
+
+| Passo | Id | Custo |
+|---|---|---|
+| Em pé A (descartada): capitã pirata humana, cabelo verde-água, rosto normal | `e5a15f13-212f-4f8a-af7e-b543f28a5714` | 1 |
+| Em pé B (escolhida): rosto de brilho verde-água fantasmagórico, chapéu de capitão, casaco azul-marinho com bordas douradas | `8fe509e3-481e-4e2a-9601-d6cd82d30cdf` | 1 |
+| Deitado `ProneB` (de mãos vazias, saiu bom na primeira) | `24083818-6c63-49f9-b1c6-f93bb31242d0` | ~30 |
+| 7 clipes (idle 3, crawl 4, shoot 3, hit 2, victory 3, defeat 3, pow 2) | mesmo id | 20 |
+
+Saldo: 953 antes, cerca de 900 depois. Lições: a A (rosto humano) não se distingue de uma pirata qualquer; o rosto de "chama" com olhos vira um brilho liso, que lê como espectro e fica bem a 80 px. O `pow` saiu com um disco branco grande e nuvens brancas nos primeiros quadros: serve como carga de poder, mas confira no jogo. A direção leste do rosto perde os olhos: a camada `SkinFx` (chama fria e névoa) é que dá o rosto de fantasma.
