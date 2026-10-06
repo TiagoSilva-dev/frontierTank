@@ -42,6 +42,11 @@ function Make-Env {
     $text = $text -replace "(?m)^INTERNAL_KEY=.*$", "INTERNAL_KEY=$(Secret)"
     $text = $text -replace "(?m)^TEST_COUPONS=.*$", "TEST_COUPONS=1"
     $text = $text -replace "(?m)^BOT_FILL_SECONDS=.*$", "BOT_FILL_SECONDS=8"
+    # Staff panel (docs/ADMIN.md): first owner "admin" with a random temporary password.
+    $text = $text -replace "(?m)^ADMIN_ENABLED=.*$", "ADMIN_ENABLED=1"
+    $text = $text -replace "(?m)^ADMIN_BOOTSTRAP_USER=.*$", "ADMIN_BOOTSTRAP_USER=admin"
+    $text = $text -replace "(?m)^ADMIN_BOOTSTRAP_PASSWORD=.*$", "ADMIN_BOOTSTRAP_PASSWORD=$(Secret)"
+    Write-Host "Painel da equipe: http://localhost:8000/admin/ (usuario admin, senha temporaria em server\.env: ADMIN_BOOTSTRAP_PASSWORD)"
     # UTF-8 without BOM: Docker Compose reads the file as is.
     [System.IO.File]::WriteAllText($envFile, $text, $utf8)
 }

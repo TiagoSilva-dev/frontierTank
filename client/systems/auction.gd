@@ -263,6 +263,10 @@ static func mail_title(mail: Dictionary) -> String:
 		"returned":
 			var name_text: String = item_name(str(mail.get("item_kind", "item")), mail.get("item", {}))
 			return (Lang.t("Anúncio vencido: %s") if str(detail.get("reason", "")) == "expired" else Lang.t("Anúncio cancelado: %s")) % name_text
+		"gift":
+			# From the admin panel: the note is the team's own text (Portuguese, up to 80 letters).
+			var note: String = str(detail.get("note", "")).strip_edges().substr(0, 80)
+			return Lang.t("Presente da equipe: %s") % note if not note.is_empty() else Lang.t("Presente da equipe")
 	return Lang.t("Correio")
 
 # What a mail brings, in one line.

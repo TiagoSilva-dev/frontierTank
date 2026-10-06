@@ -1,0 +1,99 @@
+{
+ "assets": [
+  {
+   "id": "brasa",
+   "name": "Brasa",
+   "kind": "currency"
+  },
+  {
+   "id": "coroa",
+   "name": "Coroa",
+   "kind": "currency"
+  },
+  {
+   "id": "estrela",
+   "name": "Estrela",
+   "kind": "currency"
+  },
+  {
+   "id": "tormenta",
+   "name": "Tormenta",
+   "kind": "currency"
+  },
+  {
+   "id": "solar",
+   "name": "Solar",
+   "kind": "currency"
+  },
+  {
+   "id": "eclipse",
+   "name": "Eclipse",
+   "kind": "currency"
+  },
+  {
+   "id": "espelho",
+   "name": "Espelho Celeste",
+   "kind": "currency"
+  },
+  {
+   "id": "pedra_fortalecimento",
+   "name": "Pedra de Fortalecimento nível 1",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_ii",
+   "name": "Pedra de Fortalecimento nível 2",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_iii",
+   "name": "Pedra de Fortalecimento nível 3",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_iv",
+   "name": "Pedra de Fortalecimento nível 4",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_5",
+   "name": "Pedra de Fortalecimento nível 5",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_6",
+   "name": "Pedra de Fortalecimento nível 6",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_7",
+   "name": "Pedra de Fortalecimento nível 7",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_8",
+   "name": "Pedra de Fortalecimento nível 8",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_9",
+   "name": "Pedra de Fortalecimento nível 9",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_10",
+   "name": "Pedra de Fortalecimento nível 10",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_11",
+   "name": "Pedra de Fortalecimento nível 11",
+   "kind": "stone"
+  },
+  {
+   "id": "strength_stone_12",
+   "name": "Pedra de Fortalecimento nível 12",
+   "kind": "stone"
+  }
+ ]
+}

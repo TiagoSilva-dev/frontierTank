@@ -190,7 +190,7 @@ msgstr ""
 msgid "bora sala 4x4!!"
 msgstr ""
 
-#: client/scripts/main.gd:409 client/systems/lobby.gd:12 server/game/game_server.gd:793
+#: client/scripts/main.gd:409 client/systems/lobby.gd:12 server/game/game_server.gd:820
 msgid "Guerra de equipes, diversão sem limite"
 msgstr ""
 
@@ -462,39 +462,47 @@ msgstr ""
 msgid "Anúncio vencido: %s"
 msgstr ""
 
-#: client/systems/auction.gd:266
+#: client/systems/auction.gd:269
+msgid "Presente da equipe"
+msgstr ""
+
+#: client/systems/auction.gd:269
+msgid "Presente da equipe: %s"
+msgstr ""
+
+#: client/systems/auction.gd:270
 msgid "Correio"
 msgstr ""
 
-#: client/systems/auction.gd:278 client/systems/challenge.gd:130 client/systems/missions.gd:377 client/systems/tutorial.gd:45
+#: client/systems/auction.gd:282 client/systems/challenge.gd:130 client/systems/missions.gd:377 client/systems/tutorial.gd:45
 msgid "%d moedas"
 msgstr ""
 
-#: client/systems/auction.gd:283
+#: client/systems/auction.gd:287
 msgid "comissão %s"
 msgstr ""
 
-#: client/systems/auction.gd:288 server/game/game_server.gd:1516
+#: client/systems/auction.gd:292 server/game/game_server.gd:1546
 msgid "Este anúncio não está mais à venda."
 msgstr ""
 
-#: client/systems/auction.gd:289
+#: client/systems/auction.gd:293
 msgid "O preço deste anúncio mudou. Atualize a busca."
 msgstr ""
 
-#: client/systems/auction.gd:290
+#: client/systems/auction.gd:294
 msgid "Você não pode comprar o seu próprio anúncio."
 msgstr ""
 
-#: client/systems/auction.gd:291
+#: client/systems/auction.gd:295
 msgid "Este anúncio não é seu."
 msgstr ""
 
-#: client/systems/auction.gd:292
+#: client/systems/auction.gd:296
 msgid "Você chegou ao limite de anúncios ao mesmo tempo."
 msgstr ""
 
-#: client/systems/auction.gd:293
+#: client/systems/auction.gd:297
 msgid "Esta carta já foi recebida."
 msgstr ""
 
@@ -654,7 +662,7 @@ msgstr ""
 msgid "Escolha duas moedas ou pedras diferentes."
 msgstr ""
 
-#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1856
+#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1886
 msgid "Use quantidades inteiras entre 1 e 1.000.000."
 msgstr ""
 
@@ -818,7 +826,7 @@ msgstr ""
 msgid "Evento: dobro de mérito no Salão de Jogos neste fim de semana!"
 msgstr ""
 
-#: client/systems/lobby.gd:83
+#: client/systems/lobby.gd:86
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr ""
 
@@ -1102,7 +1110,7 @@ msgstr ""
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr ""
 
-#: client/systems/profile.gd:1247 client/systems/tutorial.gd:68 server/game/game_server.gd:500
+#: client/systems/profile.gd:1247 client/systems/tutorial.gd:68 server/game/game_server.gd:508
 msgid "Operação desconhecida."
 msgstr ""
 
@@ -1310,7 +1318,7 @@ msgstr ""
 msgid "Excluindo…"
 msgstr ""
 
-#: client/ui/account_screen.gd:162 server/game/game_server.gd:1665
+#: client/ui/account_screen.gd:162 server/game/game_server.gd:1695
 msgid "Digite a sua senha."
 msgstr ""
 
@@ -1566,7 +1574,7 @@ msgstr ""
 msgid "Este anúncio é seu."
 msgstr ""
 
-#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1518
+#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1548
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr ""
 
@@ -3850,7 +3858,7 @@ msgstr ""
 msgid "RESGATAR TÍTULO"
 msgstr ""
 
-#: client/ui/ranked_screen.gd:148 server/game/game_server.gd:1238
+#: client/ui/ranked_screen.gd:148 server/game/game_server.gd:1267
 msgid "A liga ranqueada começa no nível %d."
 msgstr ""
 
@@ -4322,7 +4330,7 @@ msgstr ""
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr ""
 
-#: client/ui/room_screen.gd:360 server/game/game_server.gd:962
+#: client/ui/room_screen.gd:360 server/game/game_server.gd:991
 msgid "Não há vagas livres na sua equipe."
 msgstr ""
 
@@ -4414,7 +4422,7 @@ msgstr ""
 msgid "ABRIR PAGAMENTO"
 msgstr ""
 
-#: client/ui/shop_screen.gd:223 server/game/game_server.gd:1714 server/game/game_server.gd:1756
+#: client/ui/shop_screen.gd:223 server/game/game_server.gd:1744 server/game/game_server.gd:1786
 msgid "Você já tem parte deste pacote: compre as skins que faltam, uma a uma."
 msgstr ""
 
@@ -4790,220 +4798,220 @@ msgstr ""
 msgid "ENTER: continuar"
 msgstr ""
 
-#: server/game/game_server.gd:1083
+#: server/game/game_server.gd:1003
+msgid "Todos os jogadores precisam estar preparados."
+msgstr ""
+
+#: server/game/game_server.gd:1112
 msgid "Gravação não encontrada."
 msgstr ""
 
-#: server/game/game_server.gd:1093
+#: server/game/game_server.gd:1122
 msgid "O desafio daquele dia já terminou."
 msgstr ""
 
-#: server/game/game_server.gd:1100 server/game/game_server.gd:1105
+#: server/game/game_server.gd:1129 server/game/game_server.gd:1134
 msgid "A gravação não é válida."
 msgstr ""
 
-#: server/game/game_server.gd:1122
+#: server/game/game_server.gd:1151
 msgid "O ranking está indisponível agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1136
+#: server/game/game_server.gd:1165
 msgid "O servidor está ocupado conferindo outras gravações. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1151
+#: server/game/game_server.gd:1180
 msgid "A gravação não termina o desafio."
 msgstr ""
 
-#: server/game/game_server.gd:1206
+#: server/game/game_server.gd:1235
 msgid "Saia da fila ranqueada antes de assistir."
 msgstr ""
 
-#: server/game/game_server.gd:1208
+#: server/game/game_server.gd:1237
 msgid "Esta partida não está mais disponível."
 msgstr ""
 
-#: server/game/game_server.gd:1210
+#: server/game/game_server.gd:1239
 msgid "Você já está assistindo."
 msgstr ""
 
-#: server/game/game_server.gd:1219
+#: server/game/game_server.gd:1248
 msgid "A partida está cheia de espectadores."
 msgstr ""
 
-#: server/game/game_server.gd:1232
+#: server/game/game_server.gd:1261
 msgid "Saia da transmissão antes de procurar uma partida ranqueada."
 msgstr ""
 
-#: server/game/game_server.gd:1234
+#: server/game/game_server.gd:1263
 msgid "Saia da sala antes de procurar uma partida ranqueada."
 msgstr ""
 
-#: server/game/game_server.gd:1369
+#: server/game/game_server.gd:1399
 msgid "Carta indisponível."
 msgstr ""
 
-#: server/game/game_server.gd:1470 server/game/game_server.gd:1864
+#: server/game/game_server.gd:1500 server/game/game_server.gd:1894
 msgid "Aguarde um instante para buscar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1659
+#: server/game/game_server.gd:1689
 msgid "Saia da batalha antes de excluir a conta."
 msgstr ""
 
-#: server/game/game_server.gd:1670
+#: server/game/game_server.gd:1700
 msgid "Muitas tentativas. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:1678
+#: server/game/game_server.gd:1708
 msgid "Não foi possível excluir a conta agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:1678
+#: server/game/game_server.gd:1708
 msgid "Senha incorreta."
 msgstr ""
 
-#: server/game/game_server.gd:1702 server/game/game_server.gd:1744
+#: server/game/game_server.gd:1732 server/game/game_server.gd:1774
 msgid "Produto desconhecido."
 msgstr ""
 
-#: server/game/game_server.gd:1705 server/game/game_server.gd:1747
+#: server/game/game_server.gd:1735 server/game/game_server.gd:1777
 msgid "Este pacote não está mais à venda."
 msgstr ""
 
-#: server/game/game_server.gd:1711 server/game/game_server.gd:1753
+#: server/game/game_server.gd:1741 server/game/game_server.gd:1783
 msgid "Você já tem estes itens."
 msgstr ""
 
-#: server/game/game_server.gd:1780
+#: server/game/game_server.gd:1810
 msgid "O pagamento não está disponível agora. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1782
+#: server/game/game_server.gd:1812
 msgid "Muitos pedidos abertos. Conclua ou aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:1784
+#: server/game/game_server.gd:1814
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1786
+#: server/game/game_server.gd:1816
 msgid "A Steam não respondeu. Tente de novo em instantes."
 msgstr ""
 
-#: server/game/game_server.gd:1788
+#: server/game/game_server.gd:1818
 msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
 msgstr ""
 
-#: server/game/game_server.gd:1790
+#: server/game/game_server.gd:1820
 msgid "Este pedido já foi encerrado."
 msgstr ""
 
-#: server/game/game_server.gd:1792
+#: server/game/game_server.gd:1822
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: server/game/game_server.gd:1793
+#: server/game/game_server.gd:1823
 msgid "Não foi possível concluir a compra agora."
 msgstr ""
 
-#: server/game/game_server.gd:1869
+#: server/game/game_server.gd:1899
 msgid "Não foi possível consultar o câmbio. Tente novamente."
 msgstr ""
 
-#: server/game/game_server.gd:478 server/game/game_server.gd:518
+#: server/game/game_server.gd:486 server/game/game_server.gd:526
 msgid "Este nome já está em uso. Escolha outro."
 msgstr ""
 
-#: server/game/game_server.gd:505 server/game/game_server.gd:784 server/game/game_server.gd:811 server/game/game_server.gd:1204
+#: server/game/game_server.gd:513 server/game/game_server.gd:811 server/game/game_server.gd:838 server/game/game_server.gd:1233
 msgid "Você está numa batalha."
 msgstr ""
 
-#: server/game/game_server.gd:508 server/game/game_server.gd:979 server/game/game_server.gd:1095 server/game/game_server.gd:1422
+#: server/game/game_server.gd:516 server/game/game_server.gd:1008 server/game/game_server.gd:1124 server/game/game_server.gd:1452
 msgid "Aguarde a operação anterior terminar."
 msgstr ""
 
-#: server/game/game_server.gd:515
+#: server/game/game_server.gd:523
 msgid "Servidor indisponível. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:547 server/game/game_server.gd:577 server/game/game_server.gd:660
+#: server/game/game_server.gd:555 server/game/game_server.gd:585 server/game/game_server.gd:668
 msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
 msgstr ""
 
-#: server/game/game_server.gd:551 server/game/game_server.gd:581
+#: server/game/game_server.gd:559 server/game/game_server.gd:589
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr ""
 
-#: server/game/game_server.gd:585
+#: server/game/game_server.gd:593
 msgid "%s não está online."
 msgstr ""
 
-#: server/game/game_server.gd:617 server/game/game_server.gd:1097 server/game/game_server.gd:1236 server/game/game_server.gd:1420
+#: server/game/game_server.gd:625 server/game/game_server.gd:1126 server/game/game_server.gd:1265 server/game/game_server.gd:1450
 msgid "Crie o seu personagem primeiro."
 msgstr ""
 
-#: server/game/game_server.gd:620
+#: server/game/game_server.gd:628
 msgid "Escolha o motivo da denúncia."
 msgstr ""
 
-#: server/game/game_server.gd:628
+#: server/game/game_server.gd:636
 msgid "Esta mensagem é antiga demais para ser denunciada."
 msgstr ""
 
-#: server/game/game_server.gd:632
+#: server/game/game_server.gd:640
 msgid "Você não pode denunciar a sua própria mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:635
+#: server/game/game_server.gd:643
 msgid "Você já denunciou esta mensagem."
 msgstr ""
 
-#: server/game/game_server.gd:640
+#: server/game/game_server.gd:648
 msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
 msgstr ""
 
-#: server/game/game_server.gd:668
+#: server/game/game_server.gd:676
 msgid "Não foi possível enviar a denúncia agora. Tente de novo."
 msgstr ""
 
-#: server/game/game_server.gd:813
-msgid "Sala não encontrada neste canal."
-msgstr ""
-
-#: server/game/game_server.gd:815 server/game/game_server.gd:819
+#: server/game/game_server.gd:840 server/game/game_server.gd:844 server/game/game_server.gd:848
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr ""
 
-#: server/game/game_server.gd:817 server/game/game_server.gd:821
+#: server/game/game_server.gd:842
+msgid "Sala não encontrada neste canal."
+msgstr ""
+
+#: server/game/game_server.gd:846 server/game/game_server.gd:850
 msgid "A sala está cheia."
 msgstr ""
 
-#: server/game/game_server.gd:836
+#: server/game/game_server.gd:865
 msgid "%s entrou na sala."
 msgstr ""
 
-#: server/game/game_server.gd:871
+#: server/game/game_server.gd:900
 msgid "%s saiu da sala."
 msgstr ""
 
-#: server/game/game_server.gd:890
+#: server/game/game_server.gd:919
 msgid "Somente o dono da sala pode fazer isso."
 msgstr ""
 
-#: server/game/game_server.gd:893
+#: server/game/game_server.gd:922
 msgid "A sala está em batalha."
 msgstr ""
 
-#: server/game/game_server.gd:931
+#: server/game/game_server.gd:960
 msgid "Você não está numa sala."
 msgstr ""
 
-#: server/game/game_server.gd:945
-msgid "Jogador não encontrado."
-msgstr ""
-
 #: server/game/game_server.gd:974
-msgid "Todos os jogadores precisam estar preparados."
+msgid "Jogador não encontrado."
 msgstr ""
 
 #: server/game/match_host.gd:270

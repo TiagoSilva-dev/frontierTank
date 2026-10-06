@@ -44,7 +44,11 @@ type API struct {
 	store   *Store
 	cfg     Config
 	limiter *RateLimiter
-	log     *slog.Logger
+	// Staff logins per address (the panel has its own, stricter, limit).
+	adminLimiter *RateLimiter
+	// Short-lived copies of the panel's heaviest pages.
+	overviewCache, economyCache ttlCache
+	log                         *slog.Logger
 	// A real hash to compare against when the user does not exist, so both cases take
 	// the same time (no account enumeration by timing).
 	dummyHash string
@@ -57,7 +61,7 @@ func newAPI(store *Store, cfg Config, logger *slog.Logger) (*API, error) {
 	}
 	steam := cfg.Steam
 	stripe := cfg.Stripe
-	return &API{steam: &steam, stripe: &stripe, store: store, cfg: cfg, limiter: NewRateLimiter(cfg.AuthPerMinute, time.Minute), log: logger, dummyHash: dummy}, nil
+	return &API{steam: &steam, stripe: &stripe, store: store, cfg: cfg, limiter: NewRateLimiter(cfg.AuthPerMinute, time.Minute), adminLimiter: NewRateLimiter(10, time.Minute), log: logger, dummyHash: dummy}, nil
 }
 
 func (a *API) publicRoutes() http.Handler {
@@ -73,7 +77,18 @@ func (a *API) publicRoutes() http.Handler {
 	a.privacyRoutes(mux)
 	a.steamRoutes(mux)
 	a.stripeRoutes(mux)
-	return a.cors(limitBody(mux, 64<<10))
+	public := a.cors(limitBody(mux, 64<<10))
+	if !a.cfg.Admin.Enabled {
+		return public
+	}
+	// The staff panel has no CORS (same origin only) and its own body limit and headers.
+	root := http.NewServeMux()
+	root.Handle("/admin/", a.adminHandler())
+	root.HandleFunc("GET /admin", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/admin/", http.StatusMovedPermanently)
+	})
+	root.Handle("/", public)
+	return root
 }
 
 func (a *API) internalRoutes() http.Handler {

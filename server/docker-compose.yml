@@ -58,6 +58,17 @@ services:
       STEAM_IDENTITY: ${STEAM_IDENTITY:-frontiertank}
       STEAM_MICROTXN_SANDBOX: ${STEAM_MICROTXN_SANDBOX:-1}
       ORDER_RETENTION_DAYS: ${ORDER_RETENTION_DAYS:-1826}
+      # Staff panel at /admin/ (docs/ADMIN.md): off unless ADMIN_ENABLED=1. The bootstrap pair
+      # creates the first owner when there is no staff account yet.
+      ADMIN_ENABLED: ${ADMIN_ENABLED:-0}
+      ADMIN_BOOTSTRAP_USER: ${ADMIN_BOOTSTRAP_USER:-}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+      ADMIN_REQUIRE_2FA: ${ADMIN_REQUIRE_2FA:-1}
+      ADMIN_ALLOW_IPS: ${ADMIN_ALLOW_IPS:-}
+      ADMIN_SECURE_COOKIE: ${ADMIN_SECURE_COOKIE:-}
+      ADMIN_SESSION_HOURS: ${ADMIN_SESSION_HOURS:-12}
+      ADMIN_IDLE_MINUTES: ${ADMIN_IDLE_MINUTES:-120}
+      ADMIN_AUDIT_DAYS: ${ADMIN_AUDIT_DAYS:-1826}
     ports:
       # Only the public API is published; 8081 (internal) stays inside the network.
       - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"

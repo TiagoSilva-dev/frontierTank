@@ -39,6 +39,7 @@ func main() {
 		logger.Error("api", "err", err)
 		os.Exit(1)
 	}
+	api.bootstrapAdmin(ctx)
 	servers := []*http.Server{
 		{Addr: cfg.PublicAddr, Handler: api.publicRoutes(), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second},
 		{Addr: cfg.InternalAddr, Handler: api.internalRoutes(), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second},
@@ -69,11 +70,20 @@ func main() {
 				if err := store.PurgeAudit(ctx, cfg.Retention); err != nil {
 					logger.Warn("purge audit", "err", err)
 				}
+				if err := store.PurgeAdmin(ctx, cfg.Admin.AuditDays); err != nil {
+					logger.Warn("purge admin", "err", err)
+				}
 			case <-expire.C:
 				if count, err := store.ExpireListings(ctx); err != nil {
 					logger.Warn("expire listings", "err", err)
 				} else if count > 0 {
 					logger.Info("listings expired", "count", count)
+				}
+				// Bans with a time limit end by themselves.
+				if count, err := store.ExpireBans(ctx); err != nil {
+					logger.Warn("expire bans", "err", err)
+				} else if count > 0 {
+					logger.Info("bans expired", "count", count)
 				}
 			}
 		}

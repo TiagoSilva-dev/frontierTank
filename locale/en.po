@@ -190,7 +190,7 @@ msgstr "Join an online server to exchange currencies and stones with other playe
 msgid "bora sala 4x4!!"
 msgstr "4v4 room, let's go!!"
 
-#: client/scripts/main.gd:409 client/systems/lobby.gd:12 server/game/game_server.gd:793
+#: client/scripts/main.gd:409 client/systems/lobby.gd:12 server/game/game_server.gd:820
 msgid "Guerra de equipes, diversão sem limite"
 msgstr "Team war, endless fun"
 
@@ -462,39 +462,47 @@ msgstr "Listing cancelled: %s"
 msgid "Anúncio vencido: %s"
 msgstr "Listing expired: %s"
 
-#: client/systems/auction.gd:266
+#: client/systems/auction.gd:269
+msgid "Presente da equipe"
+msgstr "Gift from the team"
+
+#: client/systems/auction.gd:269
+msgid "Presente da equipe: %s"
+msgstr "Gift from the team: %s"
+
+#: client/systems/auction.gd:270
 msgid "Correio"
 msgstr "Mail"
 
-#: client/systems/auction.gd:278 client/systems/challenge.gd:130 client/systems/missions.gd:377 client/systems/tutorial.gd:45
+#: client/systems/auction.gd:282 client/systems/challenge.gd:130 client/systems/missions.gd:377 client/systems/tutorial.gd:45
 msgid "%d moedas"
 msgstr "%d gold"
 
-#: client/systems/auction.gd:283
+#: client/systems/auction.gd:287
 msgid "comissão %s"
 msgstr "commission %s"
 
-#: client/systems/auction.gd:288 server/game/game_server.gd:1516
+#: client/systems/auction.gd:292 server/game/game_server.gd:1546
 msgid "Este anúncio não está mais à venda."
 msgstr "This listing is no longer for sale."
 
-#: client/systems/auction.gd:289
+#: client/systems/auction.gd:293
 msgid "O preço deste anúncio mudou. Atualize a busca."
 msgstr "The price of this listing changed. Search again."
 
-#: client/systems/auction.gd:290
+#: client/systems/auction.gd:294
 msgid "Você não pode comprar o seu próprio anúncio."
 msgstr "You cannot buy your own listing."
 
-#: client/systems/auction.gd:291
+#: client/systems/auction.gd:295
 msgid "Este anúncio não é seu."
 msgstr "This listing is not yours."
 
-#: client/systems/auction.gd:292
+#: client/systems/auction.gd:296
 msgid "Você chegou ao limite de anúncios ao mesmo tempo."
 msgstr "You have reached the limit of listings at the same time."
 
-#: client/systems/auction.gd:293
+#: client/systems/auction.gd:297
 msgid "Esta carta já foi recebida."
 msgstr "This letter was already received."
 
@@ -654,7 +662,7 @@ msgstr "T%d"
 msgid "Escolha duas moedas ou pedras diferentes."
 msgstr "Choose two different currencies or stones."
 
-#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1856
+#: client/systems/currency_exchange.gd:27 server/game/game_server.gd:1886
 msgid "Use quantidades inteiras entre 1 e 1.000.000."
 msgstr "Use whole amounts between 1 and 1,000,000."
 
@@ -818,7 +826,7 @@ msgstr "[%s] reached level %d! What a beast!"
 msgid "Evento: dobro de mérito no Salão de Jogos neste fim de semana!"
 msgstr "Event: double merit in the Game Hall this weekend!"
 
-#: client/systems/lobby.gd:83
+#: client/systems/lobby.gd:86
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr "Offline mode: rooms, players and messages on this channel are simulated by AI."
 
@@ -1102,7 +1110,7 @@ msgstr "The character was already created."
 msgid "Nome inválido: use de 2 a 14 letras ou números."
 msgstr "Invalid name: use 2 to 14 letters or digits."
 
-#: client/systems/profile.gd:1247 client/systems/tutorial.gd:68 server/game/game_server.gd:500
+#: client/systems/profile.gd:1247 client/systems/tutorial.gd:68 server/game/game_server.gd:508
 msgid "Operação desconhecida."
 msgstr "Unknown operation."
 
@@ -1310,7 +1318,7 @@ msgstr "Type DELETE to confirm."
 msgid "Excluindo…"
 msgstr "Deleting…"
 
-#: client/ui/account_screen.gd:162 server/game/game_server.gd:1665
+#: client/ui/account_screen.gd:162 server/game/game_server.gd:1695
 msgid "Digite a sua senha."
 msgstr "Type your password."
 
@@ -1566,7 +1574,7 @@ msgstr "Price"
 msgid "Este anúncio é seu."
 msgstr "This listing is yours."
 
-#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1518
+#: client/ui/auction_screen.gd:334 server/game/game_server.gd:1548
 msgid "Você não tem Solares e Estrelas suficientes."
 msgstr "You do not have enough Solars and Stars."
 
@@ -3850,7 +3858,7 @@ msgstr "Season %d: you finished at %s."
 msgid "RESGATAR TÍTULO"
 msgstr "CLAIM TITLE"
 
-#: client/ui/ranked_screen.gd:148 server/game/game_server.gd:1238
+#: client/ui/ranked_screen.gd:148 server/game/game_server.gd:1267
 msgid "A liga ranqueada começa no nível %d."
 msgstr "The ranked ladder starts at level %d."
 
@@ -4322,7 +4330,7 @@ msgstr "INVITE"
 msgid "Somente o dono da sala pode convidar jogadores."
 msgstr "Only the room host can invite players."
 
-#: client/ui/room_screen.gd:360 server/game/game_server.gd:962
+#: client/ui/room_screen.gd:360 server/game/game_server.gd:991
 msgid "Não há vagas livres na sua equipe."
 msgstr "There are no free slots in your team."
 
@@ -4414,7 +4422,7 @@ msgstr "OWNED"
 msgid "ABRIR PAGAMENTO"
 msgstr "OPEN PAYMENT"
 
-#: client/ui/shop_screen.gd:223 server/game/game_server.gd:1714 server/game/game_server.gd:1756
+#: client/ui/shop_screen.gd:223 server/game/game_server.gd:1744 server/game/game_server.gd:1786
 msgid "Você já tem parte deste pacote: compre as skins que faltam, uma a uma."
 msgstr "You already own part of this bundle: buy the missing skins one by one."
 
@@ -4790,221 +4798,221 @@ msgstr "Missed! The white dashed line shows the path of your last shot. Adjust t
 msgid "ENTER: continuar"
 msgstr "ENTER: continue"
 
-#: server/game/game_server.gd:1083
+#: server/game/game_server.gd:1003
+msgid "Todos os jogadores precisam estar preparados."
+msgstr "Every player must be ready."
+
+#: server/game/game_server.gd:1112
 msgid "Gravação não encontrada."
 msgstr "Recording not found."
 
-#: server/game/game_server.gd:1093
+#: server/game/game_server.gd:1122
 msgid "O desafio daquele dia já terminou."
 msgstr "That day's challenge is over."
 
-#: server/game/game_server.gd:1100 server/game/game_server.gd:1105
+#: server/game/game_server.gd:1129 server/game/game_server.gd:1134
 msgid "A gravação não é válida."
 msgstr "The recording is not valid."
 
-#: server/game/game_server.gd:1122
+#: server/game/game_server.gd:1151
 msgid "O ranking está indisponível agora. Tente de novo."
 msgstr "The ranking is unavailable right now. Try again."
 
-#: server/game/game_server.gd:1136
+#: server/game/game_server.gd:1165
 msgid "O servidor está ocupado conferindo outras gravações. Tente de novo."
 msgstr "The server is busy checking other recordings. Try again."
 
-#: server/game/game_server.gd:1151
+#: server/game/game_server.gd:1180
 msgid "A gravação não termina o desafio."
 msgstr "The recording does not finish the challenge."
 
-#: server/game/game_server.gd:1206
+#: server/game/game_server.gd:1235
 msgid "Saia da fila ranqueada antes de assistir."
 msgstr "Leave the ranked queue before watching."
 
-#: server/game/game_server.gd:1208
+#: server/game/game_server.gd:1237
 msgid "Esta partida não está mais disponível."
 msgstr "This match is no longer available."
 
-#: server/game/game_server.gd:1210
+#: server/game/game_server.gd:1239
 msgid "Você já está assistindo."
 msgstr "You are already watching."
 
-#: server/game/game_server.gd:1219
+#: server/game/game_server.gd:1248
 msgid "A partida está cheia de espectadores."
 msgstr "The match has too many spectators."
 
-#: server/game/game_server.gd:1232
+#: server/game/game_server.gd:1261
 msgid "Saia da transmissão antes de procurar uma partida ranqueada."
 msgstr "Leave the broadcast before looking for a ranked match."
 
-#: server/game/game_server.gd:1234
+#: server/game/game_server.gd:1263
 msgid "Saia da sala antes de procurar uma partida ranqueada."
 msgstr "Leave the room before looking for a ranked match."
 
-#: server/game/game_server.gd:1369
+#: server/game/game_server.gd:1399
 msgid "Carta indisponível."
 msgstr "Card unavailable."
 
-#: server/game/game_server.gd:1470 server/game/game_server.gd:1864
+#: server/game/game_server.gd:1500 server/game/game_server.gd:1894
 msgid "Aguarde um instante para buscar de novo."
 msgstr "Wait a moment before searching again."
 
-#: server/game/game_server.gd:1659
+#: server/game/game_server.gd:1689
 msgid "Saia da batalha antes de excluir a conta."
 msgstr "Leave the battle before deleting your account."
 
-#: server/game/game_server.gd:1670
+#: server/game/game_server.gd:1700
 msgid "Muitas tentativas. Aguarde alguns minutos."
 msgstr "Too many attempts. Wait a few minutes."
 
-#: server/game/game_server.gd:1678
+#: server/game/game_server.gd:1708
 msgid "Não foi possível excluir a conta agora. Tente de novo."
 msgstr "The account could not be deleted now. Try again."
 
-#: server/game/game_server.gd:1678
+#: server/game/game_server.gd:1708
 msgid "Senha incorreta."
 msgstr "Wrong password."
 
-#: server/game/game_server.gd:1702 server/game/game_server.gd:1744
+#: server/game/game_server.gd:1732 server/game/game_server.gd:1774
 msgid "Produto desconhecido."
 msgstr "Unknown product."
 
-#: server/game/game_server.gd:1705 server/game/game_server.gd:1747
+#: server/game/game_server.gd:1735 server/game/game_server.gd:1777
 msgid "Este pacote não está mais à venda."
 msgstr "This pack is no longer on sale."
 
-#: server/game/game_server.gd:1711 server/game/game_server.gd:1753
+#: server/game/game_server.gd:1741 server/game/game_server.gd:1783
 msgid "Você já tem estes itens."
 msgstr "You already have these items."
 
-#: server/game/game_server.gd:1780
+#: server/game/game_server.gd:1810
 msgid "O pagamento não está disponível agora. Tente de novo em instantes."
 msgstr "Payment is not available right now. Try again in a moment."
 
-#: server/game/game_server.gd:1782
+#: server/game/game_server.gd:1812
 msgid "Muitos pedidos abertos. Conclua ou aguarde alguns minutos."
 msgstr "Too many open orders. Finish them or wait a few minutes."
 
-#: server/game/game_server.gd:1784
+#: server/game/game_server.gd:1814
 msgid "Compras só na versão Steam, com a conta ligada à Steam."
 msgstr "Purchases only in the Steam version, with the account linked to Steam."
 
-#: server/game/game_server.gd:1786
+#: server/game/game_server.gd:1816
 msgid "A Steam não respondeu. Tente de novo em instantes."
 msgstr "Steam did not answer. Try again in a moment."
 
-#: server/game/game_server.gd:1788
+#: server/game/game_server.gd:1818
 msgid "A loja ainda não tem preço na moeda da sua carteira Steam."
 msgstr "The shop has no price in your Steam Wallet currency yet."
 
-#: server/game/game_server.gd:1790
+#: server/game/game_server.gd:1820
 msgid "Este pedido já foi encerrado."
 msgstr "This order is already closed."
 
-#: server/game/game_server.gd:1792
+#: server/game/game_server.gd:1822
 msgid "Pedido não encontrado."
 msgstr "Order not found."
 
-#: server/game/game_server.gd:1793
+#: server/game/game_server.gd:1823
 msgid "Não foi possível concluir a compra agora."
 msgstr "The purchase could not be completed now."
 
-#: server/game/game_server.gd:1869
+#: server/game/game_server.gd:1899
 msgid "Não foi possível consultar o câmbio. Tente novamente."
 msgstr "Could not load the exchange. Please try again."
 
-#: server/game/game_server.gd:478 server/game/game_server.gd:518
+#: server/game/game_server.gd:486 server/game/game_server.gd:526
 msgid "Este nome já está em uso. Escolha outro."
 msgstr "This name is taken. Choose another."
 
-#: server/game/game_server.gd:505 server/game/game_server.gd:784 server/game/game_server.gd:811 server/game/game_server.gd:1204
+#: server/game/game_server.gd:513 server/game/game_server.gd:811 server/game/game_server.gd:838 server/game/game_server.gd:1233
 msgid "Você está numa batalha."
 msgstr "You are in a battle."
 
-#: server/game/game_server.gd:508 server/game/game_server.gd:979 server/game/game_server.gd:1095 server/game/game_server.gd:1422
+#: server/game/game_server.gd:516 server/game/game_server.gd:1008 server/game/game_server.gd:1124 server/game/game_server.gd:1452
 msgid "Aguarde a operação anterior terminar."
 msgstr "Wait for the previous operation to finish."
 
-#: server/game/game_server.gd:515
+#: server/game/game_server.gd:523
 msgid "Servidor indisponível. Tente de novo."
 msgstr "Server unavailable. Try again."
 
-#: server/game/game_server.gd:547 server/game/game_server.gd:577 server/game/game_server.gd:660
+#: server/game/game_server.gd:555 server/game/game_server.gd:585 server/game/game_server.gd:668
 msgid "Você está silenciado no chat por denúncias de outros jogadores (%d min). A equipe vai analisar."
 msgstr "You are muted in the chat because of reports from other players (%d min). The team will review them."
 
-#: server/game/game_server.gd:551 server/game/game_server.gd:581
+#: server/game/game_server.gd:559 server/game/game_server.gd:589
 msgid "Calma! Aguarde um pouco para falar de novo."
 msgstr "Easy! Wait a little before talking again."
 
-#: server/game/game_server.gd:585
+#: server/game/game_server.gd:593
 msgid "%s não está online."
 msgstr "%s is not online."
 
-#: server/game/game_server.gd:617 server/game/game_server.gd:1097 server/game/game_server.gd:1236 server/game/game_server.gd:1420
+#: server/game/game_server.gd:625 server/game/game_server.gd:1126 server/game/game_server.gd:1265 server/game/game_server.gd:1450
 msgid "Crie o seu personagem primeiro."
 msgstr "Create your character first."
 
-#: server/game/game_server.gd:620
+#: server/game/game_server.gd:628
 msgid "Escolha o motivo da denúncia."
 msgstr "Choose the reason for the report."
 
-#: server/game/game_server.gd:628
+#: server/game/game_server.gd:636
 msgid "Esta mensagem é antiga demais para ser denunciada."
 msgstr "This message is too old to be reported."
 
-#: server/game/game_server.gd:632
+#: server/game/game_server.gd:640
 msgid "Você não pode denunciar a sua própria mensagem."
 msgstr "You cannot report your own message."
 
-#: server/game/game_server.gd:635
+#: server/game/game_server.gd:643
 msgid "Você já denunciou esta mensagem."
 msgstr "You already reported this message."
 
-#: server/game/game_server.gd:640
+#: server/game/game_server.gd:648
 msgid "Você já fez muitas denúncias. Aguarde alguns minutos."
 msgstr "You have made too many reports. Wait a few minutes."
 
-#: server/game/game_server.gd:668
+#: server/game/game_server.gd:676
 msgid "Não foi possível enviar a denúncia agora. Tente de novo."
 msgstr "The report could not be sent now. Try again."
 
-#: server/game/game_server.gd:813
-msgid "Sala não encontrada neste canal."
-msgstr "Room not found on this channel."
-
-#: server/game/game_server.gd:815 server/game/game_server.gd:819
+#: server/game/game_server.gd:840 server/game/game_server.gd:844 server/game/game_server.gd:848
 msgid "A sala está em batalha. Escolha outra sala ou aguarde."
 msgstr "The room is in battle. Pick another room or wait."
 
-#: server/game/game_server.gd:817 server/game/game_server.gd:821
+#: server/game/game_server.gd:842
+msgid "Sala não encontrada neste canal."
+msgstr "Room not found on this channel."
+
+#: server/game/game_server.gd:846 server/game/game_server.gd:850
 msgid "A sala está cheia."
 msgstr "The room is full."
 
-#: server/game/game_server.gd:836
+#: server/game/game_server.gd:865
 msgid "%s entrou na sala."
 msgstr "%s joined the room."
 
-#: server/game/game_server.gd:871
+#: server/game/game_server.gd:900
 msgid "%s saiu da sala."
 msgstr "%s left the room."
 
-#: server/game/game_server.gd:890
+#: server/game/game_server.gd:919
 msgid "Somente o dono da sala pode fazer isso."
 msgstr "Only the room owner can do that."
 
-#: server/game/game_server.gd:893
+#: server/game/game_server.gd:922
 msgid "A sala está em batalha."
 msgstr "The room is in battle."
 
-#: server/game/game_server.gd:931
+#: server/game/game_server.gd:960
 msgid "Você não está numa sala."
 msgstr "You are not in a room."
 
-#: server/game/game_server.gd:945
+#: server/game/game_server.gd:974
 msgid "Jogador não encontrado."
 msgstr "Player not found."
-
-#: server/game/game_server.gd:974
-msgid "Todos os jogadores precisam estar preparados."
-msgstr "Every player must be ready."
 
 #: server/game/match_host.gd:270
 msgid "Parabéns! [%s] ganhou [%s] através de Instância."

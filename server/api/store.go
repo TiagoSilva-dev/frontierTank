@@ -171,24 +171,28 @@ func (s *Store) TouchLogin(ctx context.Context, id int64) error {
 // (chat) and the character name (op.create) leave the audit log; the rest of it stays
 // without the account (anonymous economy records, kept until the retention period).
 func (s *Store) DeleteAccount(ctx context.Context, id int64) error {
-	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, `DELETE FROM auction_listings WHERE seller_id = $1 AND status = 'active'`, id); err != nil {
-			return err
-		}
-		if _, err := tx.Exec(ctx, `DELETE FROM audit_log WHERE account_id = $1 AND kind IN ('chat', 'op.create')`, id); err != nil {
-			return err
-		}
-		// Reports this player made lose the name; reports about them stay (moderation
-		// evidence) until reviewed and the retention period ends.
-		if _, err := tx.Exec(ctx, `UPDATE chat_reports SET reporter_name = '' WHERE reporter_id = $1`, id); err != nil {
-			return err
-		}
-		if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
-			return err
-		}
-		_, err := tx.Exec(ctx, `DELETE FROM accounts WHERE id = $1`, id)
+	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error { return deleteAccountTx(ctx, tx, id) })
+}
+
+// deleteAccountTx is DeleteAccount inside the caller's transaction (the panel records the
+// deletion in the same one).
+func deleteAccountTx(ctx context.Context, tx pgx.Tx, id int64) error {
+	if _, err := tx.Exec(ctx, `DELETE FROM auction_listings WHERE seller_id = $1 AND status = 'active'`, id); err != nil {
 		return err
-	})
+	}
+	if _, err := tx.Exec(ctx, `DELETE FROM audit_log WHERE account_id = $1 AND kind IN ('chat', 'op.create')`, id); err != nil {
+		return err
+	}
+	// Reports this player made lose the name; reports about them stay (moderation
+	// evidence) until reviewed and the retention period ends.
+	if _, err := tx.Exec(ctx, `UPDATE chat_reports SET reporter_name = '' WHERE reporter_id = $1`, id); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE auction_listings SET seller_name = '' WHERE seller_id = $1`, id); err != nil {
+		return err
+	}
+	_, err := tx.Exec(ctx, `DELETE FROM accounts WHERE id = $1`, id)
+	return err
 }
 
 func (s *Store) CreateSession(ctx context.Context, accountID int64, tokenHash []byte, expires time.Time) error {

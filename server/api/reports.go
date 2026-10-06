@@ -165,21 +165,25 @@ func (s *Store) Reports(ctx context.Context, status string, limit int) ([]ChatRe
 // ReviewReport closes a report; "banned" also suspends the reported account and ends
 // its sessions (the game server refuses it from the next login).
 func (s *Store) ReviewReport(ctx context.Context, id int64, status, reviewer, note string) error {
-	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
-		var reported *int64
-		err := tx.QueryRow(ctx, `UPDATE chat_reports SET status = $2, reviewer = $3, review_note = $4, reviewed_at = now() WHERE id = $1 RETURNING reported_id`, id, status, reviewer, note).Scan(&reported)
-		if errors.Is(err, pgx.ErrNoRows) {
-			return ErrNotFound
-		}
-		if err != nil || status != "banned" || reported == nil {
-			return err
-		}
-		if _, err := tx.Exec(ctx, `UPDATE accounts SET banned = true WHERE id = $1`, *reported); err != nil {
-			return err
-		}
-		_, err = tx.Exec(ctx, `DELETE FROM sessions WHERE account_id = $1`, *reported)
+	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error { return reviewReportTx(ctx, tx, id, status, reviewer, note) })
+}
+
+// reviewReportTx is ReviewReport inside the caller's transaction (the panel records the
+// review in the same one). A ban keeps who decided and why.
+func reviewReportTx(ctx context.Context, tx pgx.Tx, id int64, status, reviewer, note string) error {
+	var reported *int64
+	err := tx.QueryRow(ctx, `UPDATE chat_reports SET status = $2, reviewer = $3, review_note = $4, reviewed_at = now() WHERE id = $1 RETURNING reported_id`, id, status, reviewer, note).Scan(&reported)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return ErrNotFound
+	}
+	if err != nil || status != "banned" || reported == nil {
 		return err
-	})
+	}
+	if _, err := tx.Exec(ctx, `UPDATE accounts SET banned = true, ban_reason = $2, ban_until = NULL, banned_at = now(), banned_by = $3 WHERE id = $1`, *reported, "denúncia no chat #"+strconv.FormatInt(id, 10), reviewer); err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, `DELETE FROM sessions WHERE account_id = $1`, *reported)
+	return err
 }
 
 // PurgeReports removes reviewed reports after the retention period (Privacy Policy).

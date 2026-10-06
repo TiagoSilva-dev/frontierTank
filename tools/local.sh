@@ -31,13 +31,19 @@ secret() {
 
 make_env() {
 	[ -f "$ENV_FILE" ] && return
-	echo "Creating server/.env (random password and key, test coupons on)"
+	local admin_password
+	admin_password="$(secret)"
+	echo "Creating server/.env (random password and key, test coupons on, staff panel on)"
 	sed -e "s/^DB_PASSWORD=.*/DB_PASSWORD=$(secret)/" \
 		-e "s/^INTERNAL_KEY=.*/INTERNAL_KEY=$(secret)/" \
 		-e "s/^TEST_COUPONS=.*/TEST_COUPONS=1/" \
 		-e "s/^BOT_FILL_SECONDS=.*/BOT_FILL_SECONDS=8/" \
+		-e "s/^ADMIN_ENABLED=.*/ADMIN_ENABLED=1/" \
+		-e "s/^ADMIN_BOOTSTRAP_USER=.*/ADMIN_BOOTSTRAP_USER=admin/" \
+		-e "s/^ADMIN_BOOTSTRAP_PASSWORD=.*/ADMIN_BOOTSTRAP_PASSWORD=$admin_password/" \
 		"$ROOT/server/.env.example" > "$ENV_FILE"
 	chmod 600 "$ENV_FILE"
+	echo "Staff panel: http://localhost:$(setting WEB_PORT 8000)/admin/ (user admin, temporary password in server/.env: ADMIN_BOOTSTRAP_PASSWORD)"
 }
 
 wait_ready() {
