@@ -20,6 +20,8 @@ const SAVE_SECONDS: float = 2.0
 const HEARTBEAT_SECONDS: float = 10.0
 const AUDIT_SECONDS: float = 5.0
 const LOBBY_SECONDS: float = 0.5
+# Simulated players made at start: the pool of the Salão and of the rivals that fill a battle.
+const ROSTER_SIZE: int = 60
 const MAX_MESSAGE: int = 131072
 const CHAT_KEEP: int = 50
 # Chat reports (launch checklist): the lines kept to find a reported message and its
@@ -41,6 +43,13 @@ var server_id: String = "s1"
 var capacity: int = 500
 var test_coupons: bool = false
 var bot_fill_seconds: float = 20.0
+# People the Salão should show, real ones included: simulated players (docs/BOTS.md) fill what
+# the real ones leave empty and give way as more arrive. 0 shows none (rivals still fill battles).
+var population: int = 36
+# Battles of simulated players kept going while the Salão is young (BotArena): PvP ones that
+# can be watched and PvE parties. They fade out with the population; 0 turns them off.
+var bot_battles: int = 6
+var rotation_wait: float = 30.0
 # Docker stop: run-game.sh creates this file on SIGTERM (Godot ignores the signal).
 var stop_file: String = ""
 var tcp: TCPServer = TCPServer.new()
@@ -69,8 +78,9 @@ var mute_reporters: int = 3
 var speaker: Dictionary = {}
 var audit_queue: Array = []
 var lobby_dirty: bool = true
-var timers: Dictionary = {"lobby": 0.0, "search": 0.0, "save": 0.0, "heartbeat": 0.0, "audit": 0.0, "stop": 1.0}
+var timers: Dictionary = {"lobby": 0.0, "search": 0.0, "save": 0.0, "heartbeat": 0.0, "audit": 0.0, "stop": 1.0, "sim": 1.0}
 var bots: LobbyDirectory
+var arena: BotArena
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var chat_filter: RegEx
 var listening: bool = false
@@ -94,6 +104,8 @@ func configure(args: Dictionary) -> void:
 	capacity = int(setting(args, "capacity", "FT_CAPACITY", "500"))
 	test_coupons = setting(args, "test-coupons", "FT_TEST_COUPONS", "0") == "1"
 	bot_fill_seconds = float(setting(args, "bot-fill", "FT_BOT_FILL", "20"))
+	population = maxi(0, int(setting(args, "population", "FT_POPULATION", "36")))
+	bot_battles = clampi(int(setting(args, "bot-battles", "FT_BOT_BATTLES", "6")), 0, BotArena.MAX_BATTLES)
 	mute_reporters = maxi(1, int(setting(args, "report-mute", "FT_REPORT_MUTE", "3")))
 	stop_file = setting(args, "stop-file", "FT_STOP_FILE", "")
 	api = ApiClient.new()
@@ -113,7 +125,12 @@ func _ready() -> void:
 	balance = JSON.parse_string(FileAccess.get_file_as_string("res://shared/balance/combat.json"))
 	bots = LobbyDirectory.new()
 	bots.rng.randomize()
+	bots.population = maxi(ROSTER_SIZE, population)
+	bots.server_levels = true
+	bots.real_battles = true
 	bots.populate()
+	arena = BotArena.new(self)
+	arena.max_battles = bot_battles
 	var words: PackedStringArray = PackedStringArray()
 	for word in BLOCKED_WORDS:
 		words.append(word)
@@ -155,6 +172,9 @@ func _process(delta: float) -> void:
 		if lobby_dirty:
 			lobby_dirty = false
 			broadcast_lobby()
+	if timers.sim <= 0.0:
+		timers.sim = 1.0
+		simulate_population(1.0)
 	if timers.search <= 0.0:
 		timers.search = 1.0
 		matchmaking()
@@ -586,6 +606,11 @@ func whisper(session: PlayerSession, message: Dictionary) -> void:
 # The public face of a player who is online (the profile window of the channel list).
 func player_profile(session: PlayerSession, message: Dictionary) -> void:
 	var target: PlayerSession = accounts.get(int(message.get("account", 0)))
+	if target == null and int(message.get("account", 0)) == 0:
+		var sim: Dictionary = find_sim(str(message.get("name", "")))
+		if not sim.is_empty():
+			reply(session, message, {"info": sim_profile(sim)})
+			return
 	if target == null or target.lingering or not target.profile.created:
 		reply(session, message, {"error": "Jogador não encontrado."})
 		return
@@ -680,11 +705,92 @@ func lobby_snapshot() -> Dictionary:
 	for room: ServerRoom in rooms.values():
 		list.append(room.summary())
 	var people: Array = []
+	var names: Dictionary = {}
 	for session: PlayerSession in accounts.values():
 		if not session.lingering and session.profile.created:
 			people.append(session.public_info())
+			names[session.profile.player_name.to_lower()] = true
+	# The simulated ones fill up to `population` and never repeat a real player's name.
+	var room_share: int = ceili(float(bots.rooms.size()) * float(maxi(0, population - people.size())) / float(maxi(1, population)))
+	for room: Dictionary in bots.rooms.slice(0, room_share):
+		list.append(sim_room_summary(room))
+	# Battles of simulated players that are really going on (the PvP ones can be watched).
+	for room: ServerRoom in arena.rooms:
+		var battle: Dictionary = room.summary()
+		battle.sim = true
+		list.append(battle)
+	for bot: Dictionary in simulated_people(maxi(0, population - people.size()), names):
+		people.append(sim_person(bot))
 	people.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
 	return {"t": "lobby", "rooms": list, "players": people.slice(0, 200), "online": accounts.size()}
+
+# ---------- simulated players (docs/BOTS.md) ----------
+
+# `count` of the roster, in an order that does not follow the level (so the list is a mix, not
+# the strongest first) and holds still while the count changes (a bot that leaves is the last
+# one that came).
+func simulated_people(count: int, taken: Dictionary) -> Array[Dictionary]:
+	var pool: Array[Dictionary] = []
+	for bot: Dictionary in bots.bots:
+		if not taken.has(str(bot.name).to_lower()):
+			pool.append(bot)
+	pool.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.name).hash() < str(b.name).hash())
+	var chosen: Array[Dictionary] = []
+	for i in range(mini(count, pool.size())):
+		chosen.append(pool[i])
+	return chosen
+
+# What the list shows of one: no account, and `sim` for the clients that must not offer a
+# private message or a friend request.
+func sim_person(bot: Dictionary) -> Dictionary:
+	return {"account": 0, "name": str(bot.name), "level": int(bot.level), "gender": str(bot.gender), "founder": false, "rating": {}, "title": "", "sim": true}
+
+func sim_room_summary(room: Dictionary) -> Dictionary:
+	var people: Array = []
+	for member: Dictionary in room.members:
+		people.append({"name": str(member.name), "level": int(member.level), "human": false})
+	return {"id": int(room.id), "title": str(room.title), "mode": "pvp", "capacity": int(room.capacity), "members": people, "playing": bool(room.playing), "map": "", "sim": true}
+
+# The profile window of a simulated player: what a real one shows, plus `ai`.
+func sim_profile(bot: Dictionary) -> Dictionary:
+	var known: Dictionary = bots.profile_of(bot)
+	return {"name": str(bot.name), "level": int(bot.level), "gender": str(bot.gender), "victories": int(known.victories), "matches": int(known.matches), "merits": int(known.merits), "ranking": int(known.ranking), "look": bot.look, "arma": bot.arma, "attrs": bot.attrs, "founder": false, "rating": {}, "title": "", "ai": true}
+
+func find_sim(name: String) -> Dictionary:
+	for bot: Dictionary in bots.bots:
+		if str(bot.name).to_lower() == name.to_lower():
+			return bot
+	return {}
+
+# Rooms start and finish battles, players come and go: the Salão is never still.
+func simulate_population(step: float) -> void:
+	if population <= 0:
+		return
+	if bots.tick_rooms(step):
+		lobby_dirty = true
+	# A simulated room never takes a number a real room (or a battle) has.
+	for room: Dictionary in bots.rooms:
+		while rooms.has(int(room.id)) or arena.has_room(int(room.id)):
+			room.id = rng.randi_range(100, 999)
+			lobby_dirty = true
+	rotation_wait -= step
+	if rotation_wait <= 0.0:
+		rotation_wait = rng.randf_range(20.0, 60.0)
+		bots.rotate_bot()
+		lobby_dirty = true
+	arena.step(step, real_people())
+
+# Players really here, the ones the list shows (the simulated ones give way to them).
+func real_people() -> int:
+	var total: int = 0
+	for session: PlayerSession in accounts.values():
+		if not session.lingering and session.profile.created:
+			total += 1
+	return total
+
+# A room number nobody uses: real rooms, simulated rooms and the arena's battles.
+func room_id_taken(id: int) -> bool:
+	return rooms.has(id) or arena.has_room(id) or not bots.find_room(id).is_empty()
 
 func broadcast_lobby() -> void:
 	var snapshot: Dictionary = lobby_snapshot()
@@ -696,7 +802,7 @@ func broadcast_lobby() -> void:
 
 func new_room_id() -> int:
 	var id: int = rng.randi_range(100, 999)
-	while rooms.has(id):
+	while room_id_taken(id):
 		id = rng.randi_range(100, 999)
 	return id
 
@@ -724,19 +830,29 @@ func room_create(session: PlayerSession, message: Dictionary) -> void:
 	lobby_dirty = true
 
 func room_join(session: PlayerSession, message: Dictionary) -> void:
-	var room: ServerRoom = rooms.get(int(message.get("id", -1)))
+	var id: int = int(message.get("id", -1))
+	var room: ServerRoom = rooms.get(id)
 	var error: String = ""
+	var sim: Dictionary = bots.find_room(id) if room == null else {}
 	if session.host != null:
 		error = Lang.t("Você está numa batalha.")
-	elif room == null:
-		error = Lang.t("Sala não encontrada neste canal.")
-	elif room.state != "waiting":
+	elif room == null and sim.is_empty() and arena.has_room(id):
 		error = Lang.t("A sala está em batalha. Escolha outra sala ou aguarde.")
-	elif room.is_full():
+	elif room == null and sim.is_empty():
+		error = Lang.t("Sala não encontrada neste canal.")
+	elif room == null and bool(sim.playing):
+		error = Lang.t("A sala está em batalha. Escolha outra sala ou aguarde.")
+	elif room == null and sim.members.size() >= int(sim.capacity):
+		error = Lang.t("A sala está cheia.")
+	elif room != null and room.state != "waiting":
+		error = Lang.t("A sala está em batalha. Escolha outra sala ou aguarde.")
+	elif room != null and room.is_full():
 		error = Lang.t("A sala está cheia.")
 	if error != "":
 		reply(session, message, {"error": error})
 		return
+	if room == null:
+		room = adopt_sim_room(sim)
 	unqueue(session)
 	stop_watching(session)
 	if session.room != null and session.room != room:
@@ -747,6 +863,25 @@ func room_join(session: PlayerSession, message: Dictionary) -> void:
 	reply(session, message, {"room": room.details(balance)})
 	broadcast_room(room)
 	system_message(room, Lang.t("%s entrou na sala."), [session.profile.player_name])
+
+# A real player walks into a simulated room: it becomes a room of the server, with the same
+# players, and the Salão gets a new simulated one in its place.
+func adopt_sim_room(sim: Dictionary) -> ServerRoom:
+	var room: ServerRoom = ServerRoom.new()
+	room.id = int(sim.id)
+	room.title = str(sim.title)
+	room.capacity = int(sim.capacity)
+	room.turn_seconds = int(balance.turn_seconds)
+	for member: Dictionary in sim.members:
+		room.members.append({"bot": member.duplicate(true)})
+	bots.rooms.erase(sim)
+	rooms[room.id] = room
+	var fresh: Dictionary = bots.make_room()
+	while rooms.has(int(fresh.id)) or arena.has_room(int(fresh.id)):
+		fresh.id = rng.randi_range(100, 999)
+	bots.rooms.append(fresh)
+	lobby_dirty = true
+	return room
 
 func leave_room(session: PlayerSession, reason: String = "") -> void:
 	var room: ServerRoom = session.room
@@ -1249,6 +1384,7 @@ func match_over(host: MatchHost) -> void:
 			session.watching = null
 	host.watchers.clear()
 	hosts.erase(host.match_id)
+	arena.ended(host.match_id)
 	get_tree().create_timer(CARD_SECONDS).timeout.connect(auto_pick_match.bind(host.match_id))
 	host.queue_free()
 	lobby_dirty = true

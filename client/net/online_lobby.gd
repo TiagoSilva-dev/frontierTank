@@ -26,7 +26,8 @@ func whisper(target: Dictionary, text: String, _my_name: String) -> void:
 
 # The profile window of a player online: the server tells what the others may see.
 func profile_of(person: Dictionary) -> Dictionary:
-	var reply: Dictionary = await net.request("player_profile", {"account": int(person.get("account", 0))})
+	# A simulated player has no account: the server finds it by name.
+	var reply: Dictionary = await net.request("player_profile", {"account": int(person.get("account", 0)), "name": str(person.get("name", ""))})
 	if reply.get("info") is Dictionary:
 		return reply.info
 	return {"error": str(reply.get("error", "offline"))}

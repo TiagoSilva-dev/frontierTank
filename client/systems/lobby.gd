@@ -2,12 +2,13 @@ class_name LobbyDirectory
 extends Node
 
 # Offline stand-in for the game server: bot players, rooms and channel chat.
-# Everything here is local and labeled as AI; a network adapter will replace it.
+# Everything here is local and labeled as AI; a network adapter will replace it. The game
+# server also keeps one (never added to the tree): its simulated players fill the Salão of a
+# young server and the rival side of a battle (server/game/game_server.gd, docs/BOTS.md).
 
 signal chat_added(message: Dictionary)
 signal rooms_changed
 
-const NAMES: Array[String] = ["Scorpio", "BRZ", "TonicoXD", "Sifrao", "RealTiny", "PinkPanda", "Barkus", "Enzinho", "Lontrinha", "Mariah", "xBruna", "NeyRJ", "M4ch4do", "MagicMika", "Whinny", "Raposinha", "Kaiser", "DarkLuz", "Pipoca", "Tiroteio", "Zezinho", "Nuvem", "Canhonito", "Faisca", "Brisa", "Trovoada", "Juju", "Mestre", "Pingo", "Vulcan"]
 const ROOM_TITLES: Array[String] = ["Guerra de equipes, diversão sem limite", "Desafie e divirta-se!", "A mais valente aventura", "Só tiro de 30 graus", "x1 valendo honra", "Treino de vento forte", "Chega mais, sala amigável"]  # i18n
 const CHAT_LINES: Array[String] = [
 	"V> pedra de fortalecimento lvl 5, 30 moedas cada",  # i18n
@@ -39,6 +40,13 @@ const SPEAKER_LINES: Array[String] = [
 ]
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+# How many simulated players `populate` makes, and whether their levels follow a server's
+# (many beginners) instead of the player's (a little above them).
+var population: int = 30
+var server_levels: bool = false
+# The game server's battles are real (BotArena): its rooms here only wait, they never "play"
+# on their own the way the offline channel's do.
+var real_battles: bool = false
 var bots: Array[Dictionary] = []
 var rooms: Array[Dictionary] = []
 var history: Array[Dictionary] = []
@@ -68,23 +76,28 @@ func _ready() -> void:
 
 func populate() -> void:
 	bots.clear()
-	for nick in NAMES:
-		bots.append(make_bot(nick, clampi(player_level + rng.randi_range(-2, 12), 1, 40)))
-	bots.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
 	rooms.clear()
+	for i in range(population):
+		bots.append(make_bot(BotRoster.level_for(rng) if server_levels else clampi(player_level + rng.randi_range(-2, 12), 1, 40)))
+	bots.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
 	for i in range(14):
 		rooms.append(make_room())
 	history.clear()
 	post("Sistema", tr("Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."), "system")
 	speaker = tr(SPEAKER_LINES[0]) % random_bot().name
 
-func make_bot(nick: String, level: int) -> Dictionary:
-	var bot: Dictionary = {"name": nick, "level": level, "gender": "f" if rng.randf() < 0.4 else "m", "human": false, "agility": 120 + level * 8 + rng.randi_range(-20, 20)}
+# A simulated player: look, gear, a skill that follows the level and a believable nickname,
+# not yet used here (`nick` forces one).
+func make_bot(level: int, nick: String = "") -> Dictionary:
+	var gender: String = "f" if rng.randf() < 0.4 else "m"
 	var skin: String = ""
 	var skins: Array[String] = UiKit.available_skins()
 	if not skins.is_empty() and rng.randf() < 0.55:
 		skin = skins[rng.randi() % skins.size()]
-		bot.gender = UiKit.SKIN_GENDER.get(skin, bot.gender)
+		gender = UiKit.SKIN_GENDER.get(skin, gender)
+	if nick == "":
+		nick = BotRoster.make_name(rng, gender, names_in_use())
+	var bot: Dictionary = {"name": nick, "level": level, "gender": gender, "human": false, "agility": 120 + level * 8 + rng.randi_range(-20, 20), "skill": BotRoster.skill_for(rng, level)}
 	# Weapon, quality, strengthen level (aura) and accessories, like other DDTank players.
 	var loadout: Dictionary = Armory.random_loadout(rng, level, bot.gender, skin)
 	if skin == "":
@@ -96,6 +109,25 @@ func make_bot(nick: String, level: int) -> Dictionary:
 	if rng.randf() < 0.3:
 		bot.aux = ["dom_de_anjo", "escudo_bugou", "dom_de_anjo_v", "escudo_barao"][rng.randi() % 4]
 	return bot
+
+# The lower-cased names of everyone in the list and in the rooms.
+func names_in_use() -> Dictionary:
+	var used: Dictionary = {}
+	for bot: Dictionary in bots:
+		used[str(bot.name).to_lower()] = true
+	for room: Dictionary in rooms:
+		for member: Dictionary in room.members:
+			used[str(member.name).to_lower()] = true
+	return used
+
+# A player leaves the channel and another arrives (the list of a live server is never still).
+func rotate_bot() -> void:
+	if bots.is_empty():
+		return
+	var index: int = rng.randi() % bots.size()
+	var level: int = BotRoster.level_for(rng) if server_levels else clampi(int(bots[index].level) + rng.randi_range(-2, 2), 1, 40)
+	bots[index] = make_bot(level)
+	bots.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) > int(b.level))
 
 func random_outfit(gender: String) -> String:
 	var pool: Array[String] = []
@@ -116,8 +148,7 @@ func bot_near(level: int, exclude: Array = []) -> Dictionary:
 		var bot: Dictionary = random_bot()
 		if absi(int(bot.level) - level) <= 4 + attempt / 5 and not exclude.has(bot.name):
 			return bot.duplicate()
-	var fallback: Dictionary = make_bot(NAMES[rng.randi() % NAMES.size()] + str(rng.randi_range(1, 99)), level)
-	return fallback
+	return make_bot(level)
 
 func make_room() -> Dictionary:
 	var host: Dictionary = random_bot()
@@ -129,7 +160,8 @@ func make_room() -> Dictionary:
 	var id: int = rng.randi_range(100, 999)
 	while find_room(id).size() > 0:
 		id = rng.randi_range(100, 999)
-	return {"id": id, "title": tr(ROOM_TITLES[rng.randi() % ROOM_TITLES.size()]), "mode": "pvp", "capacity": capacity, "members": members, "playing": rng.randf() < 0.3, "map": "", "turn_seconds": 10}
+	var title: String = tr(ROOM_TITLES[rng.randi() % ROOM_TITLES.size()])
+	return {"id": id, "title": title, "mode": "pvp", "capacity": capacity, "members": members, "playing": not real_battles and rng.randf() < 0.3, "map": "", "turn_seconds": 10}
 
 func find_room(id: int) -> Dictionary:
 	for room in rooms:
@@ -180,6 +212,10 @@ func ignore(account: int) -> void:
 	chat_added.emit({})
 
 func _process(delta: float) -> void:
+	tick_chat(delta)
+	tick_rooms(delta)
+
+func tick_chat(delta: float) -> void:
 	chat_timer -= delta
 	if chat_timer <= 0:
 		chat_timer = rng.randf_range(5.0, 11.0)
@@ -196,14 +232,25 @@ func _process(delta: float) -> void:
 				speaker = shout % random_bot().name
 			else:
 				speaker = shout
+
+# Returns whether a room changed (the server sends the list again).
+func tick_rooms(delta: float) -> bool:
 	room_timer -= delta
-	if room_timer <= 0:
-		room_timer = rng.randf_range(8.0, 14.0)
-		# Rooms start and finish battles, and new ones open, like a live channel.
-		var index: int = rng.randi() % rooms.size()
-		if rooms[index].playing and rng.randf() < 0.5:
-			rooms.remove_at(index)
-			rooms.append(make_room())
-		else:
-			rooms[index].playing = not rooms[index].playing
-		rooms_changed.emit()
+	if room_timer > 0 or rooms.is_empty():
+		return false
+	room_timer = rng.randf_range(8.0, 14.0)
+	# Rooms start and finish battles, and new ones open, like a live channel.
+	var index: int = rng.randi() % rooms.size()
+	if real_battles:
+		# A room closes and another opens; the battles are the arena's.
+		if rng.randf() >= 0.5:
+			return false
+		rooms.remove_at(index)
+		rooms.append(make_room())
+	elif rooms[index].playing and rng.randf() < 0.5:
+		rooms.remove_at(index)
+		rooms.append(make_room())
+	else:
+		rooms[index].playing = not rooms[index].playing
+	rooms_changed.emit()
+	return true

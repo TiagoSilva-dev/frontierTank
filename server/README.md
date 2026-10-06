@@ -39,6 +39,8 @@ Variáveis do `.env`:
 | `GAME_NAME` | Nome que aparece na tela de entrada. |
 | `TEST_COUPONS` | `1` libera os cupons de teste (TESTARTUDO, MOEDAS, MAPAS...). Só para testes fechados. |
 | `BOT_FILL_SECONDS` | Quanto tempo uma sala procura outra sala antes de completar com rivais de IA. |
+| `POPULATION` | Quantas pessoas o Salão mostra, jogadores reais incluídos (padrão 36): o que falta é completado com jogadores simulados pela IA, que somem à medida que chegam jogadores de verdade (a partir de `POPULATION` jogadores, nenhum). `0` desliga. Detalhes em `docs/BOTS.md`. |
+| `BOT_BATTLES` | Quantas partidas de jogadores simulados ficam rolando no Salão (padrão 6: 4 PvP que dá para assistir e 2 PvE), cada vez menos conforme chegam jogadores de verdade (nenhuma a partir de `POPULATION` jogadores). `0` desliga só as partidas; `POPULATION=0` desliga os bots por inteiro. Detalhes em `docs/BOTS.md`. |
 | `ALLOW_ORIGIN` | Origem liberada no CORS para a versão web. |
 | `LEGAL_VERSION` | Versão dos Termos de Uso e da Política de Privacidade (`legal/*.md`, igual a `Legal.VERSION` no jogo). Mudar faz todos aceitarem de novo antes de jogar online. |
 | `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `STORE_RETURN_URL` | Stripe: compras em reais (cartão e Pix) na versão web e no celular, sem Steam. Sem a chave, a loja só vende pela Steam. Detalhes em `docs/PAGAMENTOS.md`. |
@@ -51,7 +53,7 @@ Variáveis do `.env`:
 
 1. Abra o jogo (Jogar.cmd). Na tela de entrada aparece **S1 · Ilha Celeste** (vindo da API; o nome vem de `GAME_NAME` no `.env`) e o **Modo offline**.
 2. Escolha o servidor, digite uma conta e uma senha e clique em **CRIAR CONTA** (depois basta **ENTRAR**). "Lembrar" guarda a sessão em `user://online.cfg`.
-3. Na cidade, crie o personagem (o nome é único no servidor). O Salão mostra as salas e os jogadores de verdade.
+3. Na cidade, crie o personagem (o nome é único no servidor). O Salão mostra as salas e os jogadores de verdade e, enquanto o servidor é novo, jogadores simulados pela IA (`POPULATION`; no perfil deles aparece que são da IA).
 4. **Sala → Início** procura outra sala do mesmo tamanho e nível parecido; sem ninguém, depois de `BOT_FILL_SECONDS` entram rivais de IA. Na **Instância**, os outros jogadores entram na sala, clicam em **Preparar** e o dono clica em **Início**.
 
 Para o jogo usar outra API: `--api=https://api.seudominio` na linha de comando, ou a chave `api` em `user://online.cfg`.
@@ -64,7 +66,7 @@ O servidor de jogo roda sozinho, com contas em memória (nada é salvo e qualque
 godot --headless --path . -- --server --api=memory --test-coupons=1
 ```
 
-Parâmetros (ou as variáveis de ambiente `FT_*` equivalentes): `--port` (7350), `--bind`, `--public-url`, `--name`, `--id`, `--capacity`, `--test-coupons`, `--bot-fill`, `--api` (URL da porta interna ou `memory`), `--api-key`. No modo `memory` não há API para listar servidores; é o modo usado por `tests/net_e2e_tests.gd`.
+Parâmetros (ou as variáveis de ambiente `FT_*` equivalentes): `--port` (7350), `--bind`, `--public-url`, `--name`, `--id`, `--capacity`, `--test-coupons`, `--bot-fill`, `--population`, `--api` (URL da porta interna ou `memory`), `--api-key`. No modo `memory` não há API para listar servidores; é o modo usado por `tests/net_e2e_tests.gd`.
 
 ## Numa VM (próximo passo)
 

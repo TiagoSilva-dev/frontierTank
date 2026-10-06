@@ -40,8 +40,11 @@ func owner_session() -> PlayerSession:
 func is_full() -> bool:
 	return members.size() >= capacity
 
+# A room with no player to own it (a simulated one a player walks into) goes to the newcomer.
 func add(session: PlayerSession) -> void:
 	members.append({"session": session, "ready": false})
+	if owner_session() == null:
+		owner = members.size() - 1
 
 # Removes a player; the next player becomes the owner. Returns true when no player is
 # left (the room closes; bots never keep a room open).

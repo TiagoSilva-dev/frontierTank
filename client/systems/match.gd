@@ -1257,11 +1257,33 @@ func human_step(delta: float) -> void:
 		state = State.RESOLVING_DAMAGE
 		resolve_time = 0.5
 
+# How a simulated player of a given skill plays: every number in combat.json → bots.skill is
+# [novice, expert] and the fighter's skill (0..1) blends the two. Fighters without a skill (-1)
+# keep the old flat numbers, so the daily challenge and the training replay as before.
+func bot_skill(fighter: TankFighter, key: String) -> float:
+	var rules: Array = balance.bots.skill[key]
+	return lerpf(float(rules[0]), float(rules[1]), fighter.skill)
+
+# The same for the numbers that are a [min, max] range at each end.
+func bot_skill_range(fighter: TankFighter, key: String) -> Vector2:
+	var rules: Array = balance.bots.skill[key]
+	return Vector2(lerpf(float(rules[0][0]), float(rules[1][0]), fighter.skill), lerpf(float(rules[0][1]), float(rules[1][1]), fighter.skill))
+
 func plan_ai(fighter: TankFighter) -> void:
 	ai_time = 0
 	ai_planned = true
-	ai_think = float(balance.pve.think_seconds) if fighter.is_monster else rng.randf_range(float(balance.bots.think_min), float(balance.bots.think_max))
+	var skilled: bool = fighter.skill >= 0.0 and not fighter.is_monster and not fighter.human
+	if fighter.is_monster:
+		ai_think = float(balance.pve.think_seconds)
+	elif skilled:
+		var think: Vector2 = bot_skill_range(fighter, "think")
+		ai_think = rng.randf_range(think.x, think.y)
+	else:
+		ai_think = rng.randf_range(float(balance.bots.think_min), float(balance.bots.think_max))
 	var target: TankFighter = EnemyAI.pick_target(fighter, fighters, rng if fighter.is_monster else null)
+	if skilled and target != null and rng.randf() < bot_skill(fighter, "blunder"):
+		# A novice sometimes aims at any enemy instead of the best prey.
+		target = EnemyAI.pick_random_target(fighter, fighters, rng)
 	if target == null:
 		ai_plan = Vector3(45, 50, INF)
 		return
@@ -1277,11 +1299,25 @@ func plan_ai(fighter: TankFighter) -> void:
 		ai_plan = Vector3(fighter.angle, 0, 0)
 		return
 	var wind_scale: float = float(fighter.weapon.get("projectile", {}).get("wind_scale", 1.0))
-	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter), balance)
+	# A novice misreads the wind a little; the shot it finds is aimed for the wind it believes in.
+	var believed_wind: float = wind * float(balance.wind_accel) * wind_scale * wind_factor(fighter)
+	if skilled:
+		var misread: float = bot_skill(fighter, "wind_misread")
+		believed_wind *= 1.0 + rng.randf_range(-misread, misread)
+	var solution: Vector3 = EnemyAI.choose_shot(fighter, target, terrain, believed_wind, balance)
 	var spread: float = float(balance.pve.power_error) if fighter.is_boss else float(balance.pve.get("minion_power_error", 6.0))
+	var angle_error: float = 0.0
 	if not fighter.is_monster:
-		spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
-	ai_plan = Vector3(solution.x, clampf(solution.y + rng.randf_range(-spread, spread), 5, 100), solution.z)
+		if skilled:
+			var errors: Vector2 = bot_skill_range(fighter, "power_error")
+			spread = rng.randf_range(errors.x, errors.y)
+			angle_error = bot_skill(fighter, "angle_error")
+		else:
+			spread = 2.5 if fighter.human else rng.randf_range(float(balance.bots.power_error_min), float(balance.bots.power_error_max))
+	var angle: float = solution.x
+	if angle_error > 0.0:
+		angle = clampf(angle + rng.randf_range(-angle_error, angle_error), fighter.angle_range.x, fighter.angle_range.y)
+	ai_plan = Vector3(angle, clampf(solution.y + rng.randf_range(-spread, spread), 5, 100), solution.z)
 	if not fighter.is_monster and fighter.aux_uses > 0 and fighter.hp < fighter.max_hp * 0.45:
 		apply_aux(fighter)
 	if not fighter.is_monster and (fighter.statuses.size() >= 2 or fighter.has_status("selado") or int(fighter.statuses.get("veneno", {}).get("stacks", 0)) >= 2):
@@ -1289,7 +1325,8 @@ func plan_ai(fighter: TankFighter) -> void:
 		var slot: int = fighter.tools.find("cleanse")
 		if slot >= 0:
 			apply_tool(fighter, slot)
-	if not fighter.is_monster and not fighter.human and rng.randf() < float(balance.bots.item_chance):
+	var item_chance: float = bot_skill(fighter, "item_chance") if skilled else float(balance.bots.item_chance)
+	if not fighter.is_monster and not fighter.human and rng.randf() < item_chance:
 		var combos: Array = [["plus2", "dmg50", "dmg20"], ["triple", "dmg50", "dmg20"], ["plus1", "dmg50", "dmg20"], ["dmg50", "dmg50", "dmg40"], ["plus1", "dmg30"], ["dmg50", "dmg20"], ["powmax", "dmg50"]]
 		for id: String in combos[rng.randi() % combos.size()]:
 			apply_item(fighter, id)

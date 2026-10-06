@@ -85,6 +85,8 @@ services:
       FT_CAPACITY: ${GAME_CAPACITY:-500}
       FT_TEST_COUPONS: ${TEST_COUPONS:-0}
       FT_BOT_FILL: ${BOT_FILL_SECONDS:-20}
+      FT_POPULATION: ${POPULATION:-36}
+      FT_BOT_BATTLES: ${BOT_BATTLES:-6}
       # Different players reporting someone in 10 minutes that mute them for 10 minutes.
       FT_REPORT_MUTE: ${REPORT_MUTE:-3}
       FT_STOP_FILE: /tmp/frontier-stop

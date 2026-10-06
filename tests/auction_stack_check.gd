@@ -72,7 +72,7 @@ func run() -> void:
 		elif arg.begins_with("--key="):
 			key = arg.substr(6)
 	server = GameServer.new()
-	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": internal, "api-key": key, "test-coupons": "1", "id": "leilao-check", "name": "Leilão check"})
+	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": internal, "api-key": key, "test-coupons": "1", "bot-battles": "0", "id": "leilao-check", "name": "Leilão check"})
 	root.add_child(server)
 	await process_frame
 	var tag: int = int(Time.get_unix_time_from_system()) % 1000000

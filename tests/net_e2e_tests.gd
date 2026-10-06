@@ -74,7 +74,7 @@ func run_tests() -> void:
 	Engine.physics_ticks_per_second = 480
 	Engine.max_physics_steps_per_frame = 64
 	server = GameServer.new()
-	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": "memory", "bot-fill": "2", "test-coupons": "1", "id": "t1", "name": "Teste", "report-mute": "1"})
+	server.configure({"port": str(PORT), "bind": "127.0.0.1", "api": "memory", "bot-fill": "2", "bot-battles": "0", "test-coupons": "1", "id": "t1", "name": "Teste", "report-mute": "1"})
 	root.add_child(server)
 	await process_frame
 	check(server.listening, "the game server listens")

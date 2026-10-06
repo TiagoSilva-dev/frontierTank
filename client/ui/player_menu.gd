@@ -37,7 +37,8 @@ func _ready() -> void:
 	var mine: bool = str(person.get("name", "")) == app.profile.player_name
 	var entries: Array[Dictionary] = []
 	entries.append({"id": "profile", "text": tr("Ver perfil"), "kind": "button_blue"})
-	if not mine:
+	# A simulated player of an online channel (sim) has no account to message or befriend.
+	if not mine and not bool(person.get("sim", false)):
 		entries.append({"id": "whisper", "text": tr("Mensagem privada"), "kind": "button_green"})
 		entries.append({"id": "friend", "text": tr("Remover amigo") if app.friends.has(str(person.name)) else tr("Adicionar amigo"), "kind": "button"})
 		if app.online and not line.is_empty() and line.has("id") and int(line.get("account", 0)) != app.my_account():

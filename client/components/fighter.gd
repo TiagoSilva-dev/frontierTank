@@ -12,6 +12,9 @@ var level: int = 1
 var plate: bool = true
 var gender: String = "m"
 var human: bool = false
+# How well the AI aims this fighter's shots, 0 (novice) to 1 (expert); -1 plays the old way
+# (training dummies, the daily challenge, monsters). Comes from the entry of a simulated player.
+var skill: float = -1.0
 # "Confiar": the AI plays this fighter. `left`: the player quit (online), the AI plays
 # on until the end.
 var auto_play: bool = false
@@ -121,6 +124,7 @@ func setup(id: int, entry: Dictionary, weapon_data: Dictionary, balance: Diction
 	level = int(entry.get("level", 1))
 	gender = str(entry.get("gender", "m"))
 	human = bool(entry.get("human", false))
+	skill = float(entry.get("skill", -1.0))
 	rank_title = rank_for(level)
 	if str(entry.get("title", "")) != "":
 		# A season title (cosmetic) takes the place of the military rank.

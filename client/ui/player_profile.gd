@@ -104,7 +104,9 @@ func build() -> void:
 		UiKit.label(content, tr(str(keys[i][1])), Rect2(at, Vector2(92, 26)), 16, UiKit.TEXT)
 		UiKit.label(content, "+%d" % int(attrs.get(keys[i][0], 0)), Rect2(at + Vector2(92, 0), Vector2(70, 26)), 17, UiKit.GOLD)
 	# actions
-	if not mine:
+	if bool(info.get("ai", false)):
+		UiKit.label(content, tr("Personagem controlado pela IA do jogo."), Rect2(30, 412, 400, 40), 16, UiKit.TEXT_MUTED).name = "AiNote"
+	elif not mine:
 		var whisper: Button = UiKit.button(content, tr("MENSAGEM"), Rect2(30, 412, 160, 40), func() -> void:
 			PlayerMenu.start_whisper(app, info)
 			queue_free(), "button_green", 16)

@@ -195,6 +195,22 @@ func run_tests() -> void:
 	check(friends_window != null and friends_window.get_node("List").tab == "friends" and friends_window.get_node("List").rows.get_child_count() == 1, "the chat's friends button opens the friends window")
 	friends_window.queue_free()
 	await process_frame
+	# --- A simulated player of an online channel (docs/BOTS.md): the profile only, and it says it is the game's AI
+	PlayerMenu.open(app.ui, app, {"name": "Fenix_SP", "level": 9, "gender": "m", "sim": true, "account": 0}, Vector2(400, 300))
+	await process_frame
+	menu = app.ui.get_node_or_null("PlayerMenu")
+	check(menu != null and menu.find_child("Menu_profile", true, false) != null and menu.find_child("Menu_whisper", true, false) == null and menu.find_child("Menu_friend", true, false) == null, "a simulated player of an online channel offers only the profile")
+	menu.queue_free()
+	await process_frame
+	var ai_info: Dictionary = app.lobby.bots[2].duplicate(true)
+	ai_info["ai"] = true
+	PlayerProfileDialog.open(app.ui, app, ai_info)
+	await process_frame
+	await process_frame
+	dialog = app.ui.get_node_or_null("PlayerProfile")
+	check(dialog != null and dialog.find_child("AiNote", true, false) != null and dialog.find_child("Whisper", true, false) == null and dialog.find_child("Friend", true, false) == null, "its profile says it is the game's AI and offers no message or friend")
+	dialog.queue_free()
+	await process_frame
 	# --- Dark panel for the chat (legibility): its frame is a nearly opaque dark one
 	check(UiKit.FRAMES.dark.alpha >= 0.85 and UiKit.FRAMES.log.alpha >= 0.8, "the chat and the battle log sit on dark plates")
 	app.queue_free()

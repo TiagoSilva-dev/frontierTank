@@ -47,7 +47,7 @@ func run() -> void:
 	AuthClient.config_path = "user://test_exchange_online.cfg"
 	PlayerProfile.path_override = "user://test_exchange_profile.json"
 	server = GameServer.new()
-	server.configure({"port": "7398", "bind": "127.0.0.1", "api": "http://127.0.0.1:17881", "api-key": "exchange-local-key", "test-coupons": "1", "id": "exchange-test"})
+	server.configure({"port": "7398", "bind": "127.0.0.1", "api": "http://127.0.0.1:17881", "api-key": "exchange-local-key", "test-coupons": "1", "bot-battles": "0", "id": "exchange-test"})
 	root.add_child(server)
 	await process_frame
 	var suffix: String = str(int(Time.get_unix_time_from_system()) % 1000000)
