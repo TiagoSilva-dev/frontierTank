@@ -11,6 +11,11 @@ extends Node2D
 
 signal impacted(projectile: TankProjectile, point: Vector2)
 signal missed(projectile: TankProjectile)
+# The piercing missile digs through the ground: LocalMatch carves the tunnel.
+signal tunneled(projectile: TankProjectile, point: Vector2)
+
+# Ground between two tunnel craters (world units) while the piercing missile digs.
+const TUNNEL_STEP: float = 12.0
 
 const TRAILS: Dictionary = {
 	"fire": ["fff26a", "ffb02e", "ff5a1f", "b8250f"],
@@ -27,6 +32,7 @@ const TRAILS: Dictionary = {
 	"jade": ["e0fff0", "7affc0", "2ab87a"],
 	"plain": ["fff0c2", "edbb5b"],
 	"sun": ["ffffff", "fff0a8", "ffd25a", "f0a62c"],
+	"laser": ["ffffff", "ffb8f4", "ff4ad8"],
 }
 
 var velocity: Vector2
@@ -65,6 +71,19 @@ var sparks: CPUParticles2D
 # Animated art (the Estrela do Amanhecer turns; the Lança Celestial shimmers).
 var frames: Array[Texture2D] = []
 var frame_fps: float = 14.0
+# Special ammo (crystals): "perfurante", "relogio" or "laser", with its colour. `pierce_left` is
+# how much ground the missile can still go through; `max_age` ends a shot that flies on (the
+# laser has a range); `origin` is where the beam started.
+var ammo: String = ""
+var ammo_color: Color = Color.WHITE
+var pierce_left: float = 0.0
+var tunnel_run: float = 0.0
+var max_age: float = 14.0
+var origin: Vector2 = Vector2.ZERO
+# The laser leaves the muzzle flat, which can be a pixel inside the ground: the first `clear_run`
+# world units of its flight ignore the terrain.
+var clear_run: float = 0.0
+var ran: float = 0.0
 
 func _ready() -> void:
 	# Additive streak under the sprite and the weapon's own trail.
@@ -119,7 +138,18 @@ func advance(delta: float) -> void:
 	var steps: int = maxi(1, ceili(travel.length() / 2.0))
 	for i in range(steps):
 		position += travel / steps
-		var hit: bool = terrain.solid(position)
+		ran += travel.length() / steps
+		var hit: bool = terrain.solid(position) and ran > clear_run
+		if hit and pierce_left > 0.0 and not terrain.is_hard(position):
+			# Piercing missile: it keeps going through the ground, digging as it goes.
+			var run: float = travel.length() / steps
+			pierce_left -= run
+			tunnel_run += run
+			if tunnel_run >= TUNNEL_STEP:
+				tunnel_run = 0.0
+				# The hole opens just behind the nose, so the ground ahead keeps costing piercing.
+				tunneled.emit(self, position - velocity.normalized() * 8.0)
+			hit = false
 		for fighter in fighters:
 			if fighter.hp > 0 and (fighter.player_id != owner_id or age > ignores_fighters_until) and not fly:
 				hit = hit or position.distance_to(fighter.center()) < fighter.hit_radius
@@ -131,7 +161,7 @@ func advance(delta: float) -> void:
 	if trail.size() > 36:
 		trail.remove_at(0)
 	var world: Vector2 = terrain.world_size
-	if position.x < -200 or position.x > world.x + 200 or position.y > world.y + 60 or age > 14.0:
+	if position.x < -200 or position.x > world.x + 200 or position.y > world.y + 60 or age > max_age:
 		live = false
 		missed.emit(self)
 	queue_redraw()
@@ -174,6 +204,14 @@ func draw_glow() -> void:
 		inner.append(Color(1, 1, 1, 0.4))
 		glow.draw_polyline_colors(points, outer, sprite_size * (0.95 if powered else 0.6))
 		glow.draw_polyline_colors(points, inner, maxf(2.0, sprite_size * 0.2))
+	if ammo == "laser":
+		draw_laser_beam()
+	elif ammo != "":
+		# Special ammo (crystals): a pulsing halo in the ammo's colour.
+		var beat: float = 0.5 + 0.5 * sin(age * 22.0)
+		var reach: float = maxf(10.0, sprite_size * 0.7)
+		AmmoArt.draw_glow(glow, Vector2.ZERO, reach * (1.9 + 0.4 * beat), Color(ammo_color.r, ammo_color.g, ammo_color.b, 0.55))
+		AmmoArt.draw_glow(glow, Vector2.ZERO, reach * 0.9, Color(1, 1, 1, 0.3))
 	if powered:
 		# POW halo in the weapon's colours: an outer ring that breathes and a hot core.
 		var pulse: float = 0.5 + 0.5 * sin(age * 18.0)
@@ -183,6 +221,26 @@ func draw_glow() -> void:
 		glow.draw_circle(Vector2.ZERO, halo * (0.95 + 0.2 * pulse), Color(outer.r, outer.g, outer.b, 0.3))
 		glow.draw_circle(Vector2.ZERO, halo * 0.62, Color(core.r, core.g, core.b, 0.34))
 		glow.draw_arc(Vector2.ZERO, halo * (1.1 + 0.25 * pulse), 0, TAU, 32, Color(1, 1, 1, 0.35 * (1.0 - pulse)), 2.0)
+
+# The laser bolt: a beam of layered light, thick and white at the head and thinning to the tail,
+# with the animated star flare on the head.
+const LASER_LAYERS: Array = [[44.0, 0.12], [28.0, 0.26], [16.0, 0.5], [9.0, 0.85], [4.0, 1.0]]
+
+func draw_laser_beam() -> void:
+	var count: int = trail.size()
+	for i in range(1, count):
+		var fade: float = float(i) / count
+		var p: Vector2 = trail[i] - position
+		var q: Vector2 = trail[i - 1] - position
+		for index in range(LASER_LAYERS.size()):
+			var layer: Array = LASER_LAYERS[index]
+			var color: Color = ammo_color.darkened(0.3).lerp(Color.WHITE, float(index) / (LASER_LAYERS.size() - 1))
+			glow.draw_line(q, p, Color(color.r, color.g, color.b, float(layer[1]) * fade), maxf(2.0, snappedf(float(layer[0]) * (0.25 + 0.75 * fade), 2.0)))
+	AmmoArt.draw_glow(glow, Vector2.ZERO, 70.0, Color(ammo_color.r, ammo_color.g, ammo_color.b, 0.85))
+	AmmoArt.draw_glow(glow, Vector2.ZERO, 30.0, Color(1, 1, 1, 0.7))
+	var flare: Texture2D = AmmoArt.frame("flare", age, 26.0)
+	if flare != null:
+		glow.draw_texture_rect(flare, Rect2(Vector2(-60, -60), Vector2(120, 120)), false)
 
 func draw_trail() -> void:
 	var colors: Array = TRAILS[trail_kind]
@@ -218,6 +276,9 @@ func draw_trail() -> void:
 						draw_arc(p, r * 0.6, 0, TAU, 10, Color(color.r, color.g, color.b, fade), 1.0)
 					else:
 						draw_circle(p, r, Color(color.r, color.g, color.b, fade * 0.45))
+			"laser":
+				# The beam itself is light, drawn on the additive layer (draw_laser_beam).
+				pass
 			"wind":
 				draw_line(q, p, Color(color.r, color.g, color.b, fade * 0.7), 1.0 + fade * 2.0)
 				if i % 5 == 0:

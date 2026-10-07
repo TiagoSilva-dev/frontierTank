@@ -25,6 +25,8 @@ const FORCE_BAR: Rect2 = Rect2(352, 640, 430, 78)
 const ROW_ORIGIN: Vector2 = Vector2(352, 556)
 const ROW_SLOT: Vector2 = Vector2(72, 72)
 const ROW_STEP: float = 76.0
+# The special ammo (0.33) has a row of its own on the left, with the crystal gems above it.
+const AMMO_ORIGIN: Vector2 = Vector2(240, 478)
 const DRAWER_SLOT: Vector2 = Vector2(76, 76)
 const DRAWER_GAP: float = 6.0
 const DRAWER_PAD: float = 12.0
@@ -223,6 +225,11 @@ func arrange_hud() -> void:
 	for i in range(count):
 		row[i].position = ROW_ORIGIN + Vector2(i * ROW_STEP, 0)
 		row[i].size = ROW_SLOT
+	for i in range(hud.ammo_buttons.size()):
+		hud.ammo_buttons[i].position = AMMO_ORIGIN + Vector2(i * ROW_STEP, 0)
+		hud.ammo_buttons[i].size = ROW_SLOT
+	if hud.crystal_layer != null:
+		hud.crystal_layer.position = AMMO_ORIGIN + Vector2(0, -36)
 	# Where the drawer opens from: the end of the row.
 	drawer_toggle = make_pad(Rect2(ROW_ORIGIN + Vector2(count * ROW_STEP, 0), ROW_SLOT), KEY_NONE, "", "toggle", false)
 	drawer_toggle.caption = tr("HAB.")

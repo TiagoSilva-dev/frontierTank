@@ -76,6 +76,8 @@ var frozen: int:
 		else:
 			statuses.erase("congelado")
 var fly_cooldown: int = 0
+# Energy crystals gathered in this battle (spent on the special ammo); see LocalMatch.crystals.
+var crystals: int = 0
 var last_power: float = -1.0
 # Turns in a row that ended by the clock (a ranked match is forfeited after three).
 var timeouts: int = 0

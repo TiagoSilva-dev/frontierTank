@@ -16,6 +16,8 @@ Lista do que vamos fazer depois da 0.7. Cada item traz o objetivo, o que existe 
 | 9 | **Equipamentos de instância**: camisa, calça, chapéu, óculos, anel e amuleto em 4 raridades (Comum a Lendário), só de drop, com a chance subindo com o nível do mapa; abas da loja em duas linhas e paginação centralizada | Sim (drops e compras no servidor) | 0.31 — **feito**; falta playtest do ritmo de drop (`docs/GEAR.md`, arte em `docs/PIXELLAB_GEAR.md`) |
 | 10 | **Asas à venda**: as oito asas saem do drop e da loja de ouro, perdem os atributos e passam a ser vendidas por dinheiro (R$ 14,90 a 59,90, aba Asas); o espaço vira de aparência, como skin e cabelo | Sim (perfil, loja, drops e leilão) | 0.32 — **feito**; falta o teste de compra real e reimplantar o servidor (`docs/GEAR.md`, "Asas") |
 
+| 11 | **Cristais de energia e munição especial** (ideia do Ballistic Hero): cristais flutuam no mapa PvP e o tiro que os atravessa os leva; pagam Míssil Perfurante, Bomba-Relógio e Laser de Precisão (teclas R, T, G) | Sim (regra no servidor; muda o hash de `combat.json`) | 0.33 — **feito**, com arte PixelLab animada (`docs/PIXELLAB_0_33.md`); falta o playtest e bots que usem a munição |
+
 ## Decisões tomadas (25/09/2026)
 - **Vamos ganhar dinheiro com o jogo.** Lançamento na Steam; a versão web serve para testes fechados; não haverá launcher próprio (item 4).
 - **Sem qualidade nova de arma.** O topo continua sendo a linha Verdadeira: Verdadeira e as 3 Super Verdadeiras que já são exclusivas de drop. As "armas lendárias" do loot são essas.

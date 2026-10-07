@@ -22,6 +22,12 @@
   "splash_scale": 1.65,
   "delay": {"base": 1000, "agility": 1.0, "pass_scale": 0.55, "move_per_px": 0.5, "tool": 60, "frozen": 900},
   "fly": {"energy": 100, "cooldown": 2, "delay": 220},
+  "crystals": {"modes": ["pvp"], "count": 3, "radius": 26, "x_range": [0.2, 0.8], "height": [110, 300], "min_gap": 320, "respawn_rounds": 5, "max_charge": 6, "pow_gain": 10, "color": "5ae8ff"},
+  "ammo": [
+    {"id": "perfurante", "key": "R", "name": "Míssil Perfurante", "icon": "ammo_pierce", "crystals": 1, "energy": 70, "delay": 100, "damage_scale": 0.9, "radius_scale": 0.85, "pierce": 150, "color": "ffb04a", "desc": "Atravessa o terreno abrindo um túnel e explode no próximo impacto. Não pode ser combinado com disparos múltiplos, POW ou avião."},
+    {"id": "relogio", "key": "T", "name": "Bomba-Relógio", "icon": "ammo_clock", "crystals": 2, "energy": 90, "delay": 150, "damage_scale": 1.6, "radius_scale": 1.4, "fuse": 2, "color": "ff5a5a", "desc": "Gruda onde cai e explode dois turnos depois, com dano e alcance maiores. Não pode ser combinada com disparos múltiplos, POW ou avião."},
+    {"id": "laser", "key": "G", "name": "Laser de Precisão", "icon": "ammo_laser", "crystals": 3, "energy": 110, "delay": 200, "damage_scale": 1.5, "radius_scale": 0.7, "speed": 2600, "range": [300, 1100], "color": "ff4ad8", "desc": "Raio reto, sem gravidade nem vento; a força define o alcance. Não pode ser combinado com disparos múltiplos, POW ou avião."}
+  ],
   "items": [
     {"id": "plus2", "key": "1", "name": "+2 Ataques", "icon": "res://assets/ui/skills/item_1.png", "energy": 120, "delay": 200, "extra_shots": 2, "damage_scale": 0.6, "desc": "Dispara mais 2 vezes com -40% de dano."},
     {"id": "triple", "key": "2", "name": "Três Bolas", "icon": "res://assets/ui/skills/item_2.png", "energy": 120, "delay": 190, "balls": 3, "damage_scale": 0.5, "desc": "Três projéteis simultâneos com -50% de dano. Não combina com POW."},

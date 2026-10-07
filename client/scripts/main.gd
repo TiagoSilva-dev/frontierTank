@@ -525,7 +525,7 @@ func start_battle() -> void:
 		rivals.append(rival)
 	run = null
 	var battle: BattleScreen = BattleScreen.new()
-	battle.config = {"mode": room.mode, "map": room.map, "turn_seconds": room.turn_seconds, "teams": [team, rivals]}
+	battle.config = {"mode": room.mode, "map": room.map, "turn_seconds": room.turn_seconds, "crystals": true, "teams": [team, rivals]}
 	if args.has("seed"):
 		battle.config.seed = int(args.seed)
 	switch_to(battle, "battle")

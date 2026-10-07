@@ -8,13 +8,17 @@ extends Control
 const SKILL_SOUNDS: Dictionary = {
 	"multi": "skill_multi", "power": "skill_power", "powmax": "skill_powmax", "heal": "tool_heal", "energy": "tool_energy",
 	"shield": "tool_shield", "plane": "fire_plane", "angel": "aux_angel", "pow": "pow_activate", "monster": "mob_cast",
-	"cleanse": "status_cleanse",
+	"cleanse": "status_cleanse", "ammo": "ammo_arm",
 }
 const EFFECT_SOUNDS: Dictionary = {
 	"lightning": "special_lightning", "beam": "special_beam", "bull": "special_bull", "heal": "special_heal",
 	"hearts": "special_hearts", "tornado": "special_tornado", "summon": "pow_activate", "warp": "special_tornado",
 	"wave": "battle_start",
 }
+# Crystals and special ammo (0.33): drawn by AmmoFx.
+const AMMO_EFFECTS: Array[String] = ["crystal", "laser", "tunnel", "bomb_plant", "bomb_blast"]
+const AMMO_SOUNDS: Dictionary = {"crystal": "crystal_take", "laser": "laser_shot", "tunnel": "tunnel_dig", "bomb_plant": "bomb_plant", "bomb_blast": "bomb_blast"}
+const AMMO_KEYS: Array[Key] = [KEY_R, KEY_T, KEY_G]
 # Monster abilities (0.14): drawn by MonsterFx. Drops and the breath pick their sound by fx.
 const MONSTER_EFFECTS: Array[String] = ["ability_cast", "mark", "drop", "leap", "strike", "slam", "breath", "guard", "roar", "heal_allies", "burn",
 	"hex", "status", "poison", "cleanse", "elite_blast"]
@@ -52,6 +56,10 @@ var results: ResultScreen
 var summary: Dictionary = {}
 var loot_queue: Array[Dictionary] = []
 var trails: ShotTrails
+var crystal_field: CrystalField
+var crystal_motes: CrystalMotes
+# Where the time bomb that goes off now is: its explosion draws its own fire (AmmoFx), so the common one keeps to the debris.
+var bomb_blast_at: Vector2 = Vector2(-99999, -99999)
 var pow_auras: Dictionary = {}
 var founder_pow: FounderPow
 var last_emote: int = -10000
@@ -123,6 +131,10 @@ func _ready() -> void:
 	weather.add_child(ambience)
 	game = LocalMatch.new()
 	world.add_child(game)
+	# Energy crystals and time bombs float over the fighters, under the effects.
+	crystal_field = CrystalField.new()
+	crystal_field.game = game
+	world.add_child(crystal_field)
 	effects = Node2D.new()
 	world.add_child(effects)
 	camera = Camera2D.new()
@@ -146,6 +158,10 @@ func _ready() -> void:
 	hud.screen = self
 	hud.game = game
 	add_child(hud)
+	# The crystals' light flies into the meter of the HUD.
+	crystal_motes = CrystalMotes.new()
+	add_child(crystal_motes)
+	crystal_motes.landed.connect(hud.kick_crystals)
 	game.announce.connect(hud.log_line)
 	game.start(config)
 	if not online and game.pve and app.run != null:
@@ -205,7 +221,8 @@ func focus_point() -> Vector2:
 		return manual_focus
 	if game.state == LocalMatch.State.PROJECTILE_FLYING and not game.projectiles.is_empty():
 		var projectile: TankProjectile = game.projectiles[0]
-		return projectile.position + projectile.velocity * 0.15
+		# The laser is 3x faster than any shell: the camera leads it less so it does not lunge ahead.
+		return projectile.position + projectile.velocity * (0.03 if projectile.ammo == "laser" else 0.15)
 	if game.state == LocalMatch.State.MONSTER_ACTING and game.ability_focus != Vector2.ZERO:
 		return game.ability_focus + Vector2(0, -40)
 	if game.state == LocalMatch.State.RESOLVING_DAMAGE and game.last_impact != Vector2.ZERO and not game.passed:
@@ -349,6 +366,8 @@ func on_shot(projectile: TankProjectile) -> void:
 	else:
 		app.audio.play(sound, 0.0, randf_range(0.96, 1.04), 90)
 	clear_pow_aura(shooter)
+	if projectile.ammo != "":
+		dress_ammo_shot(projectile)
 
 func on_skill(fighter: TankFighter, info: Dictionary) -> void:
 	# Items used together (bots pick a whole combo at once) are consumed one after another.
@@ -404,7 +423,10 @@ func show_blast(point: Vector2, radius: float) -> void:
 	blast.radius = radius
 	blast.debris = game.terrain.last_debris.duplicate()
 	blast.position = point
-	if str(game.active().weapon.get("id", "")) == FounderPack.WEAPON:
+	if point.distance_to(bomb_blast_at) < 1.0:
+		# The time bomb draws its own fireball (AmmoFx): only the ground that flies away is left to do here.
+		blast.sun = true
+	elif str(game.active().weapon.get("id", "")) == FounderPack.WEAPON:
 		# Founder explosion: the sun sigil, pillar of light and ring, all inside the real radius.
 		blast.sun = true
 		var sun_blast: SunBlast = SunBlast.new()
@@ -496,6 +518,9 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	if kind in MONSTER_EFFECTS:
 		show_monster_effect(kind, point, data)
 		return
+	if kind in AMMO_EFFECTS:
+		show_ammo_effect(kind, point, data)
+		return
 	# Weapon POW visuals; each draws itself on a throwaway node and fades out.
 	var node: WeaponEffect = WeaponEffect.new()
 	node.kind = kind
@@ -510,6 +535,62 @@ func show_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 			shake = 0.5
 		"bull":
 			shake = 0.7
+
+# The special ammo leaves the muzzle: its own art for the shot, and the flash at the barrel.
+func dress_ammo_shot(projectile: TankProjectile) -> void:
+	var angle: float = projectile.velocity.angle()
+	match projectile.ammo:
+		"perfurante":
+			projectile.set_frames(AmmoArt.frames("drill"), 16.0)
+			projectile.align = true
+			projectile.align_offset = 0.0
+			projectile.sprite_size = 46.0
+			projectile.trail_kind = "fire"
+			spawn_ammo_fx("drill_fire", projectile.position, {"angle": angle})
+		"relogio":
+			projectile.set_frames(AmmoArt.frames("bomb"), 10.0)
+			projectile.align = false
+			projectile.spin = deg_to_rad(300.0)
+			projectile.sprite_size = 36.0
+			projectile.trail_kind = "smoke"
+		"laser":
+			spawn_ammo_fx("laser_fire", projectile.position, {"angle": angle, "color": projectile.ammo_color})
+			shake = maxf(shake, 0.15)
+
+func spawn_ammo_fx(kind: String, point: Vector2, data: Dictionary) -> AmmoFx:
+	var node: AmmoFx = AmmoFx.new()
+	node.kind = kind
+	node.data = data
+	node.position = point
+	effects.add_child(node)
+	return node
+
+# Where a world point is on the screen (the HUD lives outside the camera's world).
+func screen_point(point: Vector2) -> Vector2:
+	return viewport.get_canvas_transform() * point
+
+func show_ammo_effect(kind: String, point: Vector2, data: Dictionary) -> void:
+	spawn_ammo_fx(kind, point, data)
+	app.audio.play(str(AMMO_SOUNDS.get(kind, "")), -1.0, randf_range(0.97, 1.03), 60)
+	match kind:
+		"crystal":
+			shake = maxf(shake, 0.12)
+			if int(data.get("fighter", -1)) == game.local_id and is_instance_valid(hud.crystal_layer):
+				# The light of the gem flies into the newest gem of the player's meter.
+				var gem: int = clampi(game.local().crystals - 1, 0, int(game.balance.crystals.max_charge) - 1)
+				crystal_motes.launch(screen_point(point), hud.crystal_layer.global_position - global_position + hud.crystal_gem_at(gem), Color(str(data.get("color", "5ae8ff"))))
+		"laser":
+			shake = maxf(shake, 0.3)
+			ShockwaveFx.spawn(self, viewport, point, 0.16, 0.4, 0.008, 0.0)
+		"tunnel":
+			shake = maxf(shake, 0.1)
+		"bomb_plant":
+			shake = maxf(shake, 0.2)
+		"bomb_blast":
+			bomb_blast_at = point
+			shake = maxf(shake, 0.85)
+			kick = 0.5
+			ShockwaveFx.spawn(self, viewport, point, 0.85, 0.9, 0.024, 0.5)
 
 func show_monster_effect(kind: String, point: Vector2, data: Dictionary) -> void:
 	var node: MonsterFx = MonsterFx.new()
@@ -737,6 +818,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		game.toggle_fly()
 	elif key == KEY_V:
 		game.use_aux()
+	elif key in AMMO_KEYS:
+		game.use_ammo(str(game.balance.ammo[AMMO_KEYS.find(key)].id))
 	elif key == KEY_P:
 		game.pass_turn()
 	elif key == KEY_Q:

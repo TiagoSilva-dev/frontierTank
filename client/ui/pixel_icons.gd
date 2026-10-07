@@ -195,6 +195,35 @@ static func get_icon(name: String) -> Texture2D:
 			c.poly(PackedVector2Array([Vector2(11, 3), Vector2(16, 1), Vector2(15, 7)]), Color("ff7a4a"))
 			c.circle(5, 14, 2.5, Color("8a4a1c"))
 			c.px(12, 5, Color("fff4a0"))
+		"ammo_pierce":
+			# A missile going through a wall.
+			c.rect(2, 3, 5, 12, Color("8a5a3a"))
+			c.rect(11, 3, 5, 12, Color("8a5a3a"))
+			c.rect(2, 8, 5, 1, Color("5a3a22"))
+			c.rect(11, 8, 5, 1, Color("5a3a22"))
+			c.rect(3, 8, 8, 3, Color("ffb04a"))
+			c.poly(PackedVector2Array([Vector2(11, 7), Vector2(16, 9.5), Vector2(11, 12)]), Color("fff0c2"))
+			c.poly(PackedVector2Array([Vector2(3, 8), Vector2(1, 6), Vector2(5, 8)]), Color("e0402f"))
+			c.poly(PackedVector2Array([Vector2(3, 11), Vector2(1, 13), Vector2(5, 11)]), Color("e0402f"))
+		"ammo_clock":
+			# A bomb with a lit fuse and a clock face.
+			c.circle(9, 11, 6.2, Color("3a3a4c"))
+			c.circle(9, 11, 4.4, Color("e8e8f0"))
+			c.line(9, 11, 9, 8, Color("2a1608"))
+			c.line(9, 11, 11, 11, Color("e0402f"))
+			c.line(9, 5, 11, 3, Color("c8a060"))
+			c.rect(11, 1, 2, 2, Color("ffd04a"))
+			c.px(13, 2, Color("ff8a3a"))
+		"ammo_laser":
+			# A straight bolt from an emitter, hot core and glow.
+			c.rect(1, 6, 4, 6, Color("5a5a72"))
+			c.rect(5, 7, 11, 4, Color("ff4ad8"))
+			c.rect(5, 8, 11, 2, Color("fff0fc"))
+			c.circle(16, 9, 1.6, Color("fff0fc"))
+		"crystal":
+			c.poly(PackedVector2Array([Vector2(9, 1), Vector2(15, 9), Vector2(9, 17), Vector2(3, 9)]), Color("5ae8ff"))
+			c.poly(PackedVector2Array([Vector2(9, 1), Vector2(3, 9), Vector2(9, 17)]), Color("2a8fd0"))
+			c.poly(PackedVector2Array([Vector2(9, 3), Vector2(12, 7), Vector2(9, 9)]), Color("ffffff"))
 		_:
 			c.circle(9, 9, 6, Color("ff00ff"))
 	c.outline(OUTLINE)

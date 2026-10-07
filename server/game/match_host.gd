@@ -12,7 +12,7 @@ const SEND_EVERY: int = 2
 const SUM_EVERY: int = 60
 # "FASE CONCLUÍDA" (1.6 s) plus the transition screen (8 s) on the players' side.
 const PHASE_PAUSE: float = 10.0
-const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pet", "pass", "flip", "auto", "emote"]
+const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "ammo", "pet", "pass", "flip", "auto", "emote"]
 # Pending intents per player; more than this in one tick is flooding.
 const MAX_PENDING: int = 12
 

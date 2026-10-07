@@ -1065,7 +1065,7 @@ func start_pvp(room: ServerRoom, rival: ServerRoom) -> void:
 			names.append(bot.name)
 			rivals.append(bot)
 	var map: String = room.map if room.map != "" or rival == null else rival.map
-	var config: Dictionary = {"mode": "pvp", "map": map, "turn_seconds": room.turn_seconds, "teams": [team, rivals]}
+	var config: Dictionary = {"mode": "pvp", "map": map, "turn_seconds": room.turn_seconds, "crystals": true, "teams": [team, rivals]}
 	var joined: Array[ServerRoom] = [room]
 	if rival != null:
 		joined.append(rival)
@@ -1320,7 +1320,7 @@ func start_ranked(a: PlayerSession, b: PlayerSession) -> void:
 	first.account = a.account_id
 	var second: Dictionary = b.profile.entry(balance)
 	second.account = b.account_id
-	var config: Dictionary = {"mode": "pvp", "ranked": true, "map": "", "turn_seconds": int(Ranked.data().turn_seconds), "teams": [[first], [second]]}
+	var config: Dictionary = {"mode": "pvp", "ranked": true, "map": "", "turn_seconds": int(Ranked.data().turn_seconds), "crystals": true, "teams": [[first], [second]]}
 	var host: MatchHost = MatchHost.new()
 	host.match_id = next_match
 	next_match += 1

@@ -6,59 +6,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: client/components/fighter.gd:304
+#: client/components/fighter.gd:306
 msgid "Chefe"
 msgstr ""
 
-#: client/components/fighter.gd:304
+#: client/components/fighter.gd:306
 msgid "Guardião"
 msgstr ""
 
-#: client/components/fighter.gd:304
+#: client/components/fighter.gd:306
 msgid "Inimigo"
 msgstr ""
 
-#: client/components/fighter.gd:304
+#: client/components/fighter.gd:306
 msgid "Lacaio"
 msgstr ""
 
-#: client/components/fighter.gd:304
+#: client/components/fighter.gd:306
 msgid "Objetivo"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Capitão"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Coronel"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "General"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Major"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Marechal"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Recruta"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Sargento"
 msgstr ""
 
-#: client/components/fighter.gd:368
+#: client/components/fighter.gd:370
 msgid "Soldado"
 msgstr ""
 
-#: client/components/fighter.gd:368 shared/balance/achievements.json:achievements[3].name
+#: client/components/fighter.gd:370 shared/balance/achievements.json:achievements[3].name
 msgid "Veterano"
 msgstr ""
 
@@ -706,7 +706,7 @@ msgstr ""
 msgid "%d Moedas"
 msgstr ""
 
-#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:203 client/ui/result_screen.gd:112 client/ui/room_screen.gd:202
+#: client/systems/instance_run.gd:55 client/ui/battle_hud.gd:218 client/ui/result_screen.gd:112 client/ui/room_screen.gd:202
 msgid "Entrada livre"
 msgstr ""
 
@@ -830,136 +830,140 @@ msgstr ""
 msgid "Modo offline: salas, jogadores e mensagens deste canal são simulados por IA."
 msgstr ""
 
-#: client/systems/match.gd:1026
+#: client/systems/match.gd:1219
 msgid "CRÍTICO -%d"
 msgstr ""
 
-#: client/systems/match.gd:1047
+#: client/systems/match.gd:1240
 msgid "%s derrotou %s!"
 msgstr ""
 
-#: client/systems/match.gd:1096
+#: client/systems/match.gd:1291
 msgid "%s voou para fora do mapa!"
 msgstr ""
 
-#: client/systems/match.gd:1251
+#: client/systems/match.gd:1453
 msgid "Tempo esgotado"
 msgstr ""
 
-#: client/systems/match.gd:1298
+#: client/systems/match.gd:1500
 msgid "%s prepara %s"
 msgstr ""
 
-#: client/systems/match.gd:1363
+#: client/systems/match.gd:1565
 msgid "Uma nova onda de inimigos chegou!"
 msgstr ""
 
-#: client/systems/match.gd:1385
+#: client/systems/match.gd:1587
 msgid "%s prepara %s!"
 msgstr ""
 
-#: client/systems/match.gd:1385
+#: client/systems/match.gd:1587
 msgid "Fúria"
 msgstr ""
 
-#: client/systems/match.gd:1388
+#: client/systems/match.gd:1590
 msgid "%s está calculando seu ataque…"
 msgstr ""
 
-#: client/systems/match.gd:1399
+#: client/systems/match.gd:1601
 msgid "%s invoca %s!"
 msgstr ""
 
-#: client/systems/match.gd:1422
+#: client/systems/match.gd:1624
 msgid "%s voa para outra posição!"
 msgstr ""
 
-#: client/systems/match.gd:1477 client/systems/match.gd:1481
+#: client/systems/match.gd:1679 client/systems/match.gd:1683
 msgid "%s usa %s!"
 msgstr ""
 
-#: client/systems/match.gd:1723
+#: client/systems/match.gd:1925
 msgid "IMUNE!"
 msgstr ""
 
-#: client/systems/match.gd:1751
+#: client/systems/match.gd:1953
 msgid "%s: %s!"
 msgstr ""
 
-#: client/systems/match.gd:1767
+#: client/systems/match.gd:1969
 msgid "%s não resistiu ao veneno!"
 msgstr ""
 
-#: client/systems/match.gd:1767
+#: client/systems/match.gd:1969
 msgid "%s não resistiu às chamas!"
 msgstr ""
 
-#: client/systems/match.gd:1794
+#: client/systems/match.gd:1996
 msgid "PURIFICADO!"
 msgstr ""
 
-#: client/systems/match.gd:1814
+#: client/systems/match.gd:2016
 msgid "%s explodiu!"
 msgstr ""
 
-#: client/systems/match.gd:201
+#: client/systems/match.gd:219
 msgid "Fase %d: %s"
 msgstr ""
 
-#: client/systems/match.gd:203
+#: client/systems/match.gd:221
 msgid "Processo de busca sucedido! A sua equipe começará o combate!"
 msgstr ""
 
-#: client/systems/match.gd:205
+#: client/systems/match.gd:223
 msgid "Processo de busca sucedido! A equipe adversária começa."
 msgstr ""
 
-#: client/systems/match.gd:360
+#: client/systems/match.gd:380
 msgid "%s está congelado e perde a vez!"
 msgstr ""
 
-#: client/systems/match.gd:369 client/systems/match.gd:805
+#: client/systems/match.gd:389 client/systems/match.gd:838
 msgid "Sua vez! Segure ESPAÇO para definir a força"
 msgstr ""
 
-#: client/systems/match.gd:371
+#: client/systems/match.gd:391
 msgid "Vez de %s"
 msgstr ""
 
-#: client/systems/match.gd:427
+#: client/systems/match.gd:447
 msgid "Solte ESPAÇO para disparar"
 msgstr ""
 
-#: client/systems/match.gd:504
+#: client/systems/match.gd:533
 msgid "%s usou POW: %s!"
 msgstr ""
 
-#: client/systems/match.gd:540
+#: client/systems/match.gd:571
 msgid "Projétil em voo"
 msgstr ""
 
-#: client/systems/match.gd:613
+#: client/systems/match.gd:646
 msgid "GRÁTIS!"
 msgstr ""
 
-#: client/systems/match.gd:671 client/systems/match.gd:700
+#: client/systems/match.gd:704 client/systems/match.gd:733
 msgid "%s usou %s"
 msgstr ""
 
-#: client/systems/match.gd:732
+#: client/systems/match.gd:765
 msgid "Avião de Papel"
 msgstr ""
 
-#: client/systems/match.gd:766
+#: client/systems/match.gd:799
 msgid "Fim dos turnos!"
 msgstr ""
 
-#: client/systems/match.gd:774
+#: client/systems/match.gd:807
 msgid "%s abandonou a partida!"
 msgstr ""
 
-#: client/systems/match.gd:785
+#: client/systems/match.gd:818
 msgid "%s passou a vez"
+msgstr ""
+
+#: client/systems/match.gd:986
+msgid "+1 CRISTAL"
 msgstr ""
 
 #: client/systems/missions.gd:344
@@ -1706,215 +1710,223 @@ msgstr ""
 msgid "Preços em Solares e Estrelas  •  comissão de %d%% na venda"
 msgstr ""
 
-#: client/ui/battle_hud.gd:120
+#: client/ui/battle_hud.gd:122
 msgid "Vento e tempo do turno."
 msgstr ""
 
-#: client/ui/battle_hud.gd:121
+#: client/ui/battle_hud.gd:123
 msgid "PASS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:122
+#: client/ui/battle_hud.gd:124
 msgid "Passar a vez (P). Gera menos atraso."
 msgstr ""
 
-#: client/ui/battle_hud.gd:127
+#: client/ui/battle_hud.gd:129
 msgid "Clique para mover a câmera. Cada marca = 1/10 de tela."
 msgstr ""
 
-#: client/ui/battle_hud.gd:128
+#: client/ui/battle_hud.gd:130
 msgid "Pausa / opções (Esc)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:129
+#: client/ui/battle_hud.gd:131
 msgid "Sair da batalha"
 msgstr ""
 
-#: client/ui/battle_hud.gd:138
+#: client/ui/battle_hud.gd:140
 msgid "%s  (tecla %s)\n%s\nEnergia: %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:144
+#: client/ui/battle_hud.gd:146
 msgid "Avião de papel (F): voe até onde o disparo cair. %d de energia."
 msgstr ""
 
-#: client/ui/battle_hud.gd:148
+#: client/ui/battle_hud.gd:150
 msgid "%s (V)\n%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:148
+#: client/ui/battle_hud.gd:150
 msgid "Sem item auxiliar. Equipe um na Mochila (Bálsamo ou escudo)."
 msgstr ""
 
-#: client/ui/battle_hud.gd:150 client/ui/battle_hud.gd:403
+#: client/ui/battle_hud.gd:152 client/ui/battle_hud.gd:419
 msgid "Confiar"
 msgstr ""
 
-#: client/ui/battle_hud.gd:151
+#: client/ui/battle_hud.gd:153
 msgid "Confiar: a IA joga os seus turnos."
 msgstr ""
 
-#: client/ui/battle_hud.gd:165
+#: client/ui/battle_hud.gd:167
 msgid "Sem ferramenta. Compre na sala."
 msgstr ""
 
-#: client/ui/battle_hud.gd:177
+#: client/ui/battle_hud.gd:180
+msgid "Cristais de energia: o seu tiro leva o cristal que atravessar. Pagam a munição especial (R, T, G)."
+msgstr ""
+
+#: client/ui/battle_hud.gd:187
+msgid "%s  (tecla %s)\n%s\nCristais: %d   Energia: %d"
+msgstr ""
+
+#: client/ui/battle_hud.gd:192
 msgid "Energia: gasta com habilidades, avião e ao andar.\nVida: chegou a zero, está fora da batalha."
 msgstr ""
 
-#: client/ui/battle_hud.gd:181
+#: client/ui/battle_hud.gd:196
 msgid "POW (B): %s. Enche causando e recebendo dano."
 msgstr ""
 
-#: client/ui/battle_hud.gd:203 client/ui/result_screen.gd:112 client/ui/room_screen.gd:206
+#: client/ui/battle_hud.gd:218 client/ui/result_screen.gd:112 client/ui/room_screen.gd:206
 msgid "Nível %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:204
+#: client/ui/battle_hud.gd:219
 msgid "Fase %d/%d  •  %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:209
+#: client/ui/battle_hud.gd:224
 msgid "Sem avião de papel neste mapa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:237
+#: client/ui/battle_hud.gd:252
 msgid "Cristais: %d/%d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:239
+#: client/ui/battle_hud.gd:254
 msgid "Sobreviva: %d/%d turnos"
 msgstr ""
 
-#: client/ui/battle_hud.gd:242
+#: client/ui/battle_hud.gd:257
 msgid "  (+%d onda)"
 msgstr ""
 
-#: client/ui/battle_hud.gd:242
+#: client/ui/battle_hud.gd:257
 msgid "Inimigos: %d%s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:304
+#: client/ui/battle_hud.gd:319
 msgid "Ninguém venceu desta vez."
 msgstr ""
 
-#: client/ui/battle_hud.gd:306
+#: client/ui/battle_hud.gd:321
 msgid "Instância concluída!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:306
+#: client/ui/battle_hud.gd:321
 msgid "Sua equipe venceu a batalha!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:308
+#: client/ui/battle_hud.gd:323
 msgid "Você derrubou o Boneco de Treino!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:310
+#: client/ui/battle_hud.gd:325
 msgid "Desafio concluído!"
 msgstr ""
 
-#: client/ui/battle_hud.gd:312
+#: client/ui/battle_hud.gd:327
 msgid "Sua equipe foi derrotada."
 msgstr ""
 
-#: client/ui/battle_hud.gd:326
+#: client/ui/battle_hud.gd:341
 msgid "DESAFIO PAUSADO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:326
+#: client/ui/battle_hud.gd:341
 msgid "Sair do desafio não conta pontos: o resultado só vale quando a partida termina."
 msgstr ""
 
-#: client/ui/battle_hud.gd:328
+#: client/ui/battle_hud.gd:343
 msgid "Sair do treino volta para a cidade. Você pode repetir o treino em AJUDA."
 msgstr ""
 
-#: client/ui/battle_hud.gd:328
+#: client/ui/battle_hud.gd:343
 msgid "TREINO PAUSADO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:330
+#: client/ui/battle_hud.gd:345
 msgid "OPÇÕES"
 msgstr ""
 
-#: client/ui/battle_hud.gd:330
+#: client/ui/battle_hud.gd:345
 msgid "Partida online: a batalha continua. Desistir entrega o seu personagem à IA e você fica sem recompensa."
 msgstr ""
 
-#: client/ui/battle_hud.gd:332
+#: client/ui/battle_hud.gd:347
 msgid "BATALHA PAUSADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:332
+#: client/ui/battle_hud.gd:347
 msgid "Partida local contra IA. Desistir conta como derrota."
 msgstr ""
 
-#: client/ui/battle_hud.gd:340
+#: client/ui/battle_hud.gd:355
 msgid "DESLIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:340
+#: client/ui/battle_hud.gd:355
 msgid "LIGADA"
 msgstr ""
 
-#: client/ui/battle_hud.gd:340
+#: client/ui/battle_hud.gd:355
 msgid "Música: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:341
+#: client/ui/battle_hud.gd:356
 msgid "DESLIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:341
+#: client/ui/battle_hud.gd:356
 msgid "Efeitos: %s"
 msgstr ""
 
-#: client/ui/battle_hud.gd:341
+#: client/ui/battle_hud.gd:356
 msgid "LIGADOS"
 msgstr ""
 
-#: client/ui/battle_hud.gd:349 client/ui/replay_bar.gd:49 client/ui/tutorial_coach.gd:228
+#: client/ui/battle_hud.gd:364 client/ui/replay_bar.gd:49 client/ui/tutorial_coach.gd:228
 msgid "CONTINUAR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:350
+#: client/ui/battle_hud.gd:365
 msgid "DESISTIR"
 msgstr ""
 
-#: client/ui/battle_hud.gd:350
+#: client/ui/battle_hud.gd:365
 msgid "SAIR DO DESAFIO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:350
+#: client/ui/battle_hud.gd:365
 msgid "SAIR DO TREINO"
 msgstr ""
 
-#: client/ui/battle_hud.gd:403
+#: client/ui/battle_hud.gd:419
 msgid "Confiar ✓"
 msgstr ""
 
-#: client/ui/battle_hud.gd:552
+#: client/ui/battle_hud.gd:600
 msgid "EU"
 msgstr ""
 
-#: client/ui/battle_hud.gd:688
+#: client/ui/battle_hud.gd:736
 msgid "Rodada %d"
 msgstr ""
 
-#: client/ui/battle_hud.gd:864
+#: client/ui/battle_hud.gd:912
 msgid "Força"
 msgstr ""
 
-#: client/ui/battle_hud.gd:922
+#: client/ui/battle_hud.gd:970
 msgid "Pressione Espaço com força total e realize um ataque"
 msgstr ""
 
-#: client/ui/battle_hud.gd:922
+#: client/ui/battle_hud.gd:970
 msgid "Segure FOGO para carregar a força"
 msgstr ""
 
-#: client/ui/battle_hud.gd:923
+#: client/ui/battle_hud.gd:971
 msgid "Aguarde a sua vez…"
 msgstr ""
 
@@ -1930,47 +1942,47 @@ msgstr ""
 msgid "VITÓRIA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:306
+#: client/ui/battle_screen.gd:315
 msgid "VOCÊ FOI DERROTADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:306
+#: client/ui/battle_screen.gd:315
 msgid "Você virou um fantasma e assiste ao resto da batalha."
 msgstr ""
 
-#: client/ui/battle_screen.gd:308
+#: client/ui/battle_screen.gd:317
 msgid "%s caiu!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:539
+#: client/ui/battle_screen.gd:564
 msgid "CRÍTICO"
 msgstr ""
 
-#: client/ui/battle_screen.gd:564 shared/balance/combat.json:statuses[2].label
+#: client/ui/battle_screen.gd:589 shared/balance/combat.json:statuses[2].label
 msgid "CONGELADO!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:564
+#: client/ui/battle_screen.gd:589
 msgid "Você perde este turno."
 msgstr ""
 
-#: client/ui/battle_screen.gd:571
+#: client/ui/battle_screen.gd:596
 msgid "SUA VEZ!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:603 client/ui/battle_screen.gd:836
+#: client/ui/battle_screen.gd:628 client/ui/battle_screen.gd:863
 msgid "FASE CONCLUÍDA!"
 msgstr ""
 
-#: client/ui/battle_screen.gd:890
+#: client/ui/battle_screen.gd:917
 msgid "Sincronizando a batalha…"
 msgstr ""
 
-#: client/ui/battle_screen.gd:904 client/ui/result_screen.gd:123
+#: client/ui/battle_screen.gd:931 client/ui/result_screen.gd:123
 msgid "GOLPE FINAL"
 msgstr ""
 
-#: client/ui/battle_screen.gd:904 client/ui/result_screen.gd:123
+#: client/ui/battle_screen.gd:931 client/ui/result_screen.gd:123
 msgid "GRUPO"
 msgstr ""
 
@@ -5124,6 +5136,30 @@ msgstr ""
 
 #: shared/balance/challenge.json:kinds[2].name
 msgid "Alvo Distante"
+msgstr ""
+
+#: shared/balance/combat.json:ammo[0].desc
+msgid "Atravessa o terreno abrindo um túnel e explode no próximo impacto. Não pode ser combinado com disparos múltiplos, POW ou avião."
+msgstr ""
+
+#: shared/balance/combat.json:ammo[0].name
+msgid "Míssil Perfurante"
+msgstr ""
+
+#: shared/balance/combat.json:ammo[1].desc
+msgid "Gruda onde cai e explode dois turnos depois, com dano e alcance maiores. Não pode ser combinada com disparos múltiplos, POW ou avião."
+msgstr ""
+
+#: shared/balance/combat.json:ammo[1].name
+msgid "Bomba-Relógio"
+msgstr ""
+
+#: shared/balance/combat.json:ammo[2].desc
+msgid "Raio reto, sem gravidade nem vento; a força define o alcance. Não pode ser combinado com disparos múltiplos, POW ou avião."
+msgstr ""
+
+#: shared/balance/combat.json:ammo[2].name
+msgid "Laser de Precisão"
 msgstr ""
 
 #: shared/balance/combat.json:elites.affixes[0].desc

@@ -32,7 +32,11 @@ var item_buttons: Array[SkillSlot] = []
 var tool_buttons: Array[SkillSlot] = []
 var fly_button: SkillSlot
 var aux_button: SkillSlot
-# The active pet's skill (0.22), key G.
+# Special ammo (0.33), keys R T G, paid with the energy crystals the shots collect.
+var ammo_buttons: Array[SkillSlot] = []
+var crystal_layer: Control
+# Seconds left of the pulse of the newest gem (a mote of light just landed in it).
+var crystal_kick: float = 0.0
 var pow_button: PowOrb
 var trust_button: Button
 var gear_button: Button
@@ -171,6 +175,19 @@ func build() -> void:
 		slot.accent = Color("9aff7a")
 		slot.tooltip_text = tip
 		tool_buttons.append(slot)
+	# --- energy crystals and the special ammo they pay for (R T G), above the tools
+	if game.crystals_on:
+		crystal_layer = layer(Rect2(838, 576, 154, 30), draw_crystals)
+		crystal_layer.mouse_filter = Control.MOUSE_FILTER_PASS
+		crystal_layer.tooltip_text = tr("Cristais de energia: o seu tiro leva o cristal que atravessar. Pagam a munição especial (R, T, G).")
+		for i in range(game.balance.ammo.size()):
+			var ammo: Dictionary = game.balance.ammo[i]
+			var slot: SkillSlot = SkillSlot.create(self, Rect2(838 + i * 52, 608, 50, 46), PixelIcons.get_icon(str(ammo.icon)), str(ammo.key), func() -> void: game.use_ammo(str(ammo.id)))
+			slot.accent = Color(str(ammo.color))
+			slot.tag = str(int(ammo.crystals))
+			slot.tag_color = Color(str(game.balance.crystals.color))
+			slot.tooltip_text = tr("%s  (tecla %s)\n%s\nCristais: %d   Energia: %d") % [tr(str(ammo.name)), ammo.key, tr(str(ammo.desc)), int(ammo.crystals), int(ammo.energy)]
+			ammo_buttons.append(slot)
 	# --- energy and life gauges, POW orb (B)
 	gauges = layer(Rect2(994, 628, 184, 76), draw_gauges)
 	gauges.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -351,11 +368,20 @@ func set_paused(value: bool) -> void:
 
 # ---------- state ----------
 
+# The held gems breathe, so the meter redraws while there is one.
+func me_has_crystals() -> bool:
+	return game.crystals_on and game.local().crystals > 0
+
 func _process(delta: float) -> void:
 	if game == null or game.fighters.is_empty() or not is_instance_valid(clock):
 		return
 	time += delta
 	turn_age += delta
+	if crystal_kick > 0.0:
+		crystal_kick = maxf(0.0, crystal_kick - delta)
+		crystal_layer.queue_redraw()
+	elif crystal_layer != null and me_has_crystals():
+		crystal_layer.queue_redraw()
 	beat += delta
 	flash_age += delta
 	var me: TankFighter = game.local()
@@ -367,7 +393,7 @@ func _process(delta: float) -> void:
 		turn_age = 0.0
 		last_second = -1
 	if acting and not was_mine:
-		var slots: Array = item_buttons + tool_buttons + [fly_button, aux_button]
+		var slots: Array = item_buttons + tool_buttons + ammo_buttons + [fly_button, aux_button]
 		for i in range(slots.size()):
 			slots[i].play_shine(i * 0.03)
 	was_mine = acting
@@ -381,14 +407,15 @@ func _process(delta: float) -> void:
 	ghost_life = float(me.hp) if ghost_life < me.hp else move_toward(ghost_life, float(me.hp), delta * maxf(120.0, (ghost_life - me.hp) * 1.8))
 	var full_pow: bool = me.pow_gauge >= float(game.balance.pow_max)
 	var sealed: bool = me.has_status("selado")
-	pow_button.disabled = not acting or not full_pow or game.turn_pow or sealed
+	pow_button.disabled = not acting or not full_pow or game.turn_pow or sealed or game.turn_ammo != ""
 	pow_button.set_state(me.pow_gauge / float(game.balance.pow_max), full_pow, game.turn_pow and mine)
 	for i in range(item_buttons.size()):
 		var item: Dictionary = game.balance.items[i]
 		var slot: SkillSlot = item_buttons[i]
-		slot.disabled = not acting or game.energy < game.energy_cost(me, float(item.energy)) or game.turn_fly or sealed
+		slot.disabled = not acting or game.energy < game.energy_cost(me, float(item.energy)) or game.turn_fly or sealed or (game.turn_ammo != "" and (item.has("extra_shots") or item.has("balls")))
 		slot.used = game.turn_items.count(str(item.id)) if mine else 0
-	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty() or game.threats.get("no_plane", false) or me.has_status("enraizado")
+	fly_button.disabled = not acting or me.fly_cooldown > 0 or not game.turn_items.is_empty() or game.threats.get("no_plane", false) or me.has_status("enraizado") or game.turn_ammo != ""
+	refresh_ammo(me, acting, mine, sealed)
 	fly_button.used = 1 if game.turn_fly and mine else 0
 	fly_button.count_text = str(me.fly_cooldown) if me.fly_cooldown > 0 else ""
 	if is_instance_valid(goal_label):
@@ -412,6 +439,53 @@ func _process(delta: float) -> void:
 	if flash_age < 1.6:
 		banner.queue_redraw()
 
+func refresh_ammo(me: TankFighter, acting: bool, mine: bool, sealed: bool) -> void:
+	if ammo_buttons.is_empty():
+		return
+	var multi: bool = game.turn_items.any(func(id: String) -> bool: return game.item_def(id).has("extra_shots") or game.item_def(id).has("balls"))
+	for i in range(ammo_buttons.size()):
+		var ammo: Dictionary = game.balance.ammo[i]
+		var armed: bool = game.turn_ammo == str(ammo.id)
+		var short: bool = me.crystals < int(ammo.crystals) or game.energy + game.ammo_paid < game.energy_cost(me, float(ammo.energy))
+		ammo_buttons[i].disabled = not acting or sealed or multi or game.turn_pow or game.turn_fly or (short and not armed)
+		ammo_buttons[i].used = 1 if armed and mine else 0
+	crystal_layer.queue_redraw()
+
+const GEM_STEP: float = 25.0
+const GEM_KICK: float = 0.4
+
+# The middle of gem `index` in the meter (the layer's own coordinates).
+func crystal_gem_at(index: int) -> Vector2:
+	return Vector2(14.0 + index * GEM_STEP, 15.0)
+
+# A mote of light landed: the newest gem swells and flashes.
+func kick_crystals() -> void:
+	crystal_kick = GEM_KICK
+	crystal_layer.queue_redraw()
+
+func draw_crystals() -> void:
+	# The crystals the player holds as gems (a lit gem per crystal), like a charge meter.
+	var me: TankFighter = game.local()
+	var total: int = int(game.balance.crystals.max_charge)
+	var color: Color = Color(str(game.balance.crystals.color))
+	var gem: Texture2D = PixelIcons.get_icon("crystal_gem")
+	crystal_layer.draw_rect(Rect2(0, 0, crystal_layer.size.x, crystal_layer.size.y), Color(0.03, 0.05, 0.1, 0.7))
+	crystal_layer.draw_rect(Rect2(0, 0, crystal_layer.size.x, 1), Color(color.r, color.g, color.b, 0.5))
+	var kick: float = clampf(crystal_kick / GEM_KICK, 0.0, 1.0)
+	for i in range(total):
+		var at: Vector2 = crystal_gem_at(i)
+		var lit: bool = i < me.crystals
+		var newest: bool = i == me.crystals - 1
+		var swell: float = 1.0 + (0.34 * kick if newest else 0.0)
+		var size: Vector2 = Vector2(24, 24) * swell
+		if lit:
+			var breathe: float = 0.5 + 0.5 * sin(time * 3.0 + i * 0.9)
+			AmmoArt.draw_glow(crystal_layer, at, 17.0 + 3.0 * breathe + 8.0 * (kick if newest else 0.0), Color(color.r, color.g, color.b, 0.4 + 0.12 * breathe))
+		# An empty slot is the same gem, dark and see-through.
+		crystal_layer.draw_texture_rect(gem, Rect2(at - size / 2.0, size), false, Color.WHITE if lit else Color(0.2, 0.3, 0.46, 0.55))
+		if lit and newest and kick > 0.0:
+			crystal_layer.draw_texture_rect(gem, Rect2(at - size / 2.0, size), false, Color(1, 1, 1, 0.6 * kick))
+
 func refresh_used(mine: bool) -> void:
 	# Chips of what the player armed this turn, above the force gauge.
 	var wanted: Array[String] = []
@@ -422,6 +496,8 @@ func refresh_used(mine: bool) -> void:
 			wanted.append("res://assets/ui/icons/plane.png")
 		if game.turn_pow:
 			wanted.append("pow")
+		if game.turn_ammo != "":
+			wanted.append(str(game.ammo_def(game.turn_ammo).icon))
 	if used_row.get_child_count() == wanted.size():
 		return
 	for child in used_row.get_children():

@@ -983,6 +983,54 @@ def founder_emote():
 
 
 
+# ---------------------------------------------------------------- crystals and special ammo (0.33)
+
+@sound("crystal_take", -16, 0.3)
+def crystal_take():
+    """An energy crystal taken: a glassy rising chime over a sparkle."""
+    r = rng(140)
+    return stack((chime(["E6", "A6", "E7"], 0.045, 0.7, 0.55), 0, 1.0), (sparkle(0.35, 45, 4000, 10000, r), 0.02, 0.5))
+
+
+@sound("ammo_arm", -16, 0.2)
+def ammo_arm():
+    """Special ammo loaded: a metal clack and a short charging whine."""
+    r = rng(141)
+    n = samples(0.4)
+    whine = sine(glide(400, 1400, n), n) * env_ar(n, 0.7, 0.2) * 0.4
+    return stack((metal(900, 0.12, (1.0, 2.41, 3.87), 0.1, r), 0, 0.8), (whine, 0.05, 0.6), (thump(0.1, 220, 90, r), 0, 0.5))
+
+
+@sound("laser_shot", -14, 0.2)
+def laser_shot():
+    """The laser: a bright zap that falls away."""
+    r = rng(142)
+    n = samples(0.5)
+    beam = saw(glide(2400, 500, n, 3.0), n) * env_ar(n, 0.02, 0.5)
+    return stack((lp(beam, 6000), 0, 0.7), (zap(0.3, 800, 4000, 0.006, r), 0, 0.6), (whoosh(0.35, 3000, 800, 0.8, 0.1, r), 0, 0.4))
+
+
+@sound("tunnel_dig", -17, 0.1)
+def tunnel_dig():
+    """The piercing missile digging: grit and a dull thud."""
+    r = rng(143)
+    return stack((crackle(0.4, 90, 300, 3500, 0.12, r), 0, 0.9), (thump(0.15, 110, 50, r), 0, 0.7))
+
+
+@sound("bomb_plant", -16, 0.2)
+def bomb_plant():
+    """The time bomb sticks: a thud and two tick-tock beeps."""
+    r = rng(144)
+    return stack((thump(0.12, 180, 70, r), 0, 0.8), (metal(1800, 0.25, (1.0, 2.0, 3.0), 0.12, r), 0.04, 0.5), (metal(1800, 0.15, (1.0, 2.0), 0.1, r), 0.2, 0.4))
+
+
+@sound("bomb_blast", -14, 0.35)
+def bomb_blast():
+    """The time bomb goes off: a low boom under an alarm ring."""
+    r = rng(145)
+    return stack((boom(0.9, 140, 40, 0.4, r), 0, 1.0), (metal(2200, 0.5, (1.0, 2.0, 3.0), 0.25, r), 0, 0.3), (whoosh(0.4, 2500, 300, 0.8, 0.1, r), 0, 0.4))
+
+
 if __name__ == "__main__":
     wanted = sys.argv[1:] or list(SOUNDS)
     for key in wanted:

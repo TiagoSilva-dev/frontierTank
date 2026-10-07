@@ -88,6 +88,14 @@ var auto_play: bool = false
 var turn_items: Array[String] = []
 var turn_fly: bool = false
 var turn_pow: bool = false
+# Energy crystals and special ammo (0.33): floating crystals on the map ({pos, at}: `at` is the
+# round they show up, so a taken one comes back later), the ammo armed for this turn (and the
+# energy it cost, to refund) and the time bombs waiting on the ground.
+var crystals_on: bool = false
+var crystals: Array[Dictionary] = []
+var turn_ammo: String = ""
+var ammo_paid: float = 0.0
+var bombs: Array[Dictionary] = []
 var pow_uses: Dictionary = {}
 var tools_used: int = 0
 var moved_distance: float = 0.0
@@ -138,6 +146,10 @@ func start(config: Dictionary) -> void:
 	defeated_mobs.clear()
 	last_hit_by.clear()
 	pow_uses.clear()
+	crystals.clear()
+	bombs.clear()
+	turn_ammo = ""
+	ammo_paid = 0.0
 	for fighter in fighters:
 		fighter.queue_free()
 	fighters.clear()
@@ -190,6 +202,12 @@ func start(config: Dictionary) -> void:
 		# Agility decides who opens the battle; a small jitter breaks ties.
 		fighter.delay = rng.randf_range(0.0, 30.0) - fighter.agility * 0.1
 	round_number = 0
+	# Crystals (0.33) only where the battle asks for them, so older replays and the other modes
+	# draw nothing from the rng.
+	crystals_on = bool(config.get("crystals", false)) and mode in balance.crystals.modes
+	if crystals_on:
+		for i in range(int(balance.crystals.count)):
+			crystals.append({"pos": crystal_spot(), "at": 0})
 	winner_team = -2
 	boss_enraged = false
 	auto_play = false
@@ -338,6 +356,8 @@ func begin_turn() -> void:
 	turn_items.clear()
 	turn_fly = false
 	turn_pow = false
+	turn_ammo = ""
+	ammo_paid = 0.0
 	tools_used = 0
 	moved_distance = 0
 	passed = false
@@ -469,6 +489,15 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		if fighter.is_boss and players >= int(balance.party_scaling.get("boss_area_from", 3)):
 			balls = 3
 			spread = 6.0
+	var ammo_id: String = ""
+	if turn_ammo != "" and not fighter.is_monster:
+		# Special ammo (0.33): the crystals are spent as the shot leaves.
+		var ammo: Dictionary = ammo_def(turn_ammo)
+		if not ammo.is_empty() and fighter.crystals >= int(ammo.crystals):
+			fighter.crystals -= int(ammo.crystals)
+			scale *= float(ammo.damage_scale)
+			radius_scale *= float(ammo.radius_scale)
+			ammo_id = turn_ammo
 	for id in turn_items:
 		var item: Dictionary = item_def(id)
 		bonus += float(item.get("damage_bonus", 0.0))
@@ -503,7 +532,7 @@ func compose_plan(fighter: TankFighter) -> Dictionary:
 		hitstop = maxf(hitstop, Armory.visual("founder_cutin" if str(weapon.get("id", "")) == FounderPack.WEAPON else "pow_cutin"))
 		announce.emit(tr("%s usou POW: %s!") % [fighter.display_name, tr(str(pow_rules.name))], Color("ffd04a"))
 		special.emit(fighter.center(), str(pow_rules.get("effect", "")))
-	return {"damage": roundi(float(weapon.damage) * scale * (1.0 + bonus)), "base_damage": roundi(float(weapon.damage) * (1.0 + bonus) * (scale / float(pow_plan.get("damage_scale", 1.0)))), "radius": float(weapon.radius) * radius_scale, "base_radius": float(weapon.radius), "balls": balls, "spread": spread, "extra": extra, "fly": false, "freeze": freeze, "pow": pow_plan}
+	return {"damage": roundi(float(weapon.damage) * scale * (1.0 + bonus)), "base_damage": roundi(float(weapon.damage) * (1.0 + bonus) * (scale / float(pow_plan.get("damage_scale", 1.0)))), "radius": float(weapon.radius) * radius_scale, "base_radius": float(weapon.radius), "balls": balls, "spread": spread, "extra": extra, "fly": false, "freeze": freeze, "pow": pow_plan, "ammo": ammo_id}
 
 func fire_volley() -> void:
 	var fighter: TankFighter = active()
@@ -533,6 +562,8 @@ func fire_volley() -> void:
 				projectile.sprite_size = float(style.get("pow_size", projectile.sprite_size))
 		projectile.base_damage = int(shot_plan.get("base_damage", shot_plan.damage))
 		projectile.base_radius = float(shot_plan.get("base_radius", shot_plan.radius))
+		if str(shot_plan.get("ammo", "")) != "":
+			arm_ammo_shot(projectile, str(shot_plan.ammo))
 	fighter.stats.shots += 1
 	fighter.animate_attack()
 	volley_wait = 0
@@ -597,6 +628,8 @@ func apply_item(fighter: TankFighter, id: String) -> bool:
 			if other.has("extra_shots") or other.has("balls"):
 				return false
 	if id == "triple" and turn_pow:
+		return false
+	if multi and turn_ammo != "":
 		return false
 	# Sealed (0.16): no skills 1–9 this turn. Exhausted: they cost more energy.
 	if fighter.has_status("selado"):
@@ -726,7 +759,7 @@ func apply_fly(fighter: TankFighter) -> bool:
 	if turn_fly:
 		turn_fly = false
 		energy += cost
-	elif fighter.fly_cooldown == 0 and turn_items.is_empty() and not turn_pow and energy >= cost:
+	elif fighter.fly_cooldown == 0 and turn_items.is_empty() and not turn_pow and turn_ammo == "" and energy >= cost:
 		turn_fly = true
 		energy -= cost
 		skill_used.emit(fighter, {"id": "plane", "name": tr("Avião de Papel"), "icon": "plane", "kind": "plane"})
@@ -743,7 +776,7 @@ func activate_pow() -> bool:
 	return apply_pow(active())
 
 func apply_pow(fighter: TankFighter) -> bool:
-	if turn_pow or turn_fly or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items or fighter.has_status("selado"):
+	if turn_pow or turn_fly or turn_ammo != "" or fighter.pow_gauge < float(balance.pow_max) or "triple" in turn_items or fighter.has_status("selado"):
 		return false
 	arm_pow(fighter)
 	changed.emit()
@@ -866,6 +899,8 @@ func apply_input(id: int, action: String, data: Dictionary) -> void:
 			apply_fly(fighter)
 		"aux":
 			apply_aux(fighter)
+		"ammo":
+			apply_ammo(fighter, str(data.get("id", "")))
 		"pet":
 			# Retired in 0.30 (pets are looks only): old replays still carry it, and it does nothing.
 			pass
@@ -882,11 +917,164 @@ func checksum() -> int:
 
 func checksum_text() -> String:
 	var parts: PackedStringArray = PackedStringArray([str(state), str(active_id), str(round_number), "%.2f" % wind, str(rng.state), str(fighters.size()), str(projectiles.size())])
+	if crystals_on:
+		for entry: Dictionary in crystals:
+			parts.append("c%d.%d.%d" % [entry.pos.x, entry.pos.y, entry.at])
+		for bomb: Dictionary in bombs:
+			parts.append("b%d.%d.%d" % [bomb.pos.x, bomb.pos.y, bomb.left])
 	for fighter in fighters:
 		parts.append("%d|%.1f|%.1f|%.1f|%.1f|%.1f|%d" % [fighter.hp, fighter.position.x, fighter.position.y, fighter.delay, fighter.pow_gauge, fighter.angle, fighter.facing])
+		if crystals_on:
+			parts.append("k%d" % fighter.crystals)
 		for pair: Array in StatusRules.listed(fighter):
 			parts.append("%s%d.%d" % [pair[0], int(pair[1].turns), int(pair[1].get("stacks", 1))])
 	return "/".join(parts)
+
+# ---------- crystals and special ammo (0.33) ----------
+# Idea from Ballistic Hero: energy crystals float over the battlefield and whoever's shot flies
+# through one takes it (the shot goes on). Crystals pay for the special ammo: the piercing
+# missile (digs through the ground), the time bomb (sticks and goes off two turns later) and
+# the laser (a straight bolt, no gravity or wind). Everything draws from the match's rng and
+# moves on the fixed step, so every online copy agrees; the drawing lives in CrystalField.
+
+func ammo_def(id: String) -> Dictionary:
+	for ammo: Dictionary in balance.ammo:
+		if ammo.id == id:
+			return ammo
+	return {}
+
+# A place for a crystal: inside the middle of the map, over the ground, away from the others.
+func crystal_spot() -> Vector2:
+	var rules: Dictionary = balance.crystals
+	var best: Vector2 = Vector2(terrain.world_size.x * 0.5, terrain.world_size.y * 0.4)
+	for attempt in range(8):
+		var x: float = snappedf(terrain.world_size.x * rng.randf_range(float(rules.x_range[0]), float(rules.x_range[1])), 2.0)
+		var top: float = minf(terrain.surface_y(x), terrain.world_size.y * 0.8)
+		var y: float = snappedf(maxf(80.0, top - rng.randf_range(float(rules.height[0]), float(rules.height[1]))), 2.0)
+		best = Vector2(x, y)
+		var apart: bool = true
+		for other: Dictionary in crystals:
+			if (other.pos as Vector2).distance_to(best) < float(rules.min_gap):
+				apart = false
+		if apart:
+			return best
+	return best
+
+# Crystals that can be taken now (a taken one is back after `respawn_rounds` turns).
+func visible_crystals() -> Array[Dictionary]:
+	var shown: Array[Dictionary] = []
+	for entry: Dictionary in crystals:
+		if int(entry.at) <= round_number:
+			shown.append(entry)
+	return shown
+
+func collect_crystals(projectile: TankProjectile, from: Vector2) -> void:
+	var reach: float = float(balance.crystals.radius)
+	for entry: Dictionary in visible_crystals():
+		var nearest: Vector2 = Geometry2D.get_closest_point_to_segment(entry.pos, from, projectile.position)
+		if nearest.distance_to(entry.pos) <= reach:
+			take_crystal(fighters[projectile.owner_id], entry)
+
+func take_crystal(fighter: TankFighter, entry: Dictionary) -> void:
+	var rules: Dictionary = balance.crystals
+	fighter.crystals = mini(int(rules.max_charge), fighter.crystals + 1)
+	fighter.pow_gauge = minf(float(balance.pow_max), fighter.pow_gauge + float(rules.pow_gain))
+	crystals.erase(entry)
+	# The next one is drawn now, so every copy takes the same numbers from the rng.
+	crystals.append({"pos": crystal_spot(), "at": round_number + int(rules.respawn_rounds)})
+	effect.emit("crystal", entry.pos, {"fighter": fighter.player_id, "color": str(rules.color)})
+	damage_text.emit(entry.pos, tr("+1 CRISTAL"), Color(str(rules.color)))
+	changed.emit()
+
+func use_ammo(id: String) -> bool:
+	if not can_act():
+		return false
+	if send_intent("ammo", {"id": id}):
+		return true
+	return apply_ammo(active(), id)
+
+# Arms (or, pressed again, puts away) a special ammo for this turn's shot. It does not mix with
+# multiple shots, POW or the plane; the crystals leave when the shot does, the energy now.
+func apply_ammo(fighter: TankFighter, id: String) -> bool:
+	var def: Dictionary = ammo_def(id)
+	if not crystals_on or def.is_empty() or fighter.is_monster or turn_fly or turn_pow or fighter.has_status("selado"):
+		return false
+	for used in turn_items:
+		var item: Dictionary = item_def(used)
+		if item.has("extra_shots") or item.has("balls"):
+			return false
+	if turn_ammo == id:
+		energy += ammo_paid
+		turn_ammo = ""
+		ammo_paid = 0.0
+		changed.emit()
+		return true
+	if fighter.crystals < int(def.crystals):
+		return false
+	var cost: float = energy_cost(fighter, float(def.energy))
+	if energy + ammo_paid < cost:
+		return false
+	energy += ammo_paid - cost
+	ammo_paid = cost
+	turn_ammo = id
+	skill_used.emit(fighter, {"id": id, "name": tr(str(def.name)), "icon": str(def.icon), "kind": "ammo", "color": str(def.color)})
+	changed.emit()
+	return true
+
+# The shot that leaves with special ammo: what it does differently in flight and on impact.
+func arm_ammo_shot(projectile: TankProjectile, id: String) -> void:
+	var def: Dictionary = ammo_def(id)
+	projectile.ammo = id
+	projectile.ammo_color = Color(str(def.color))
+	projectile.origin = projectile.position
+	match id:
+		"perfurante":
+			projectile.pierce_left = float(def.pierce)
+			projectile.tunneled.connect(dig_tunnel)
+		"laser":
+			# A bolt: fast, straight (no gravity, no wind) and as long as the force says.
+			var speed: float = float(def.speed)
+			var reach: float = lerpf(float(def.range[0]), float(def.range[1]), clampf(shot_power / 100.0, 0.0, 1.0))
+			projectile.velocity = projectile.velocity.normalized() * speed
+			projectile.gravity = 0.0
+			projectile.wind = 0.0
+			projectile.max_age = reach / speed
+			projectile.clear_run = 24.0
+			projectile.trail_kind = "laser"
+			projectile.sprite_size = 0.0
+
+func dig_tunnel(_projectile: TankProjectile, point: Vector2) -> void:
+	terrain.crater(point, 10.0)
+	effect.emit("tunnel", point, {"debris": terrain.last_debris})
+
+func plant_bomb(shooter: TankFighter, point: Vector2, projectile: TankProjectile) -> void:
+	var def: Dictionary = ammo_def("relogio")
+	# It sticks to the ground: a bomb that hit a fighter in the air drops to the floor under them,
+	# and one that finds no floor close by is lost in the void.
+	var ground: float = terrain.surface_y(point.x, maxf(0.0, point.y - 30.0))
+	if ground - point.y > 160.0:
+		return
+	var spot: Vector2 = Vector2(point.x, ground - 2.0)
+	bombs.append({"pos": spot, "owner": shooter.player_id, "damage": projectile.damage, "radius": projectile.radius, "left": int(def.fuse), "fresh": true})
+	effect.emit("bomb_plant", spot, {"color": str(def.color), "left": int(def.fuse)})
+	changed.emit()
+
+# At the end of every turn the bombs count down (the turn that planted one does not count); the
+# ones that reach zero go off now. True when something exploded.
+func tick_bombs() -> bool:
+	var went_off: bool = false
+	for bomb: Dictionary in bombs.duplicate():
+		if bool(bomb.fresh):
+			bomb.fresh = false
+			continue
+		bomb.left = int(bomb.left) - 1
+		if int(bomb.left) > 0:
+			continue
+		bombs.erase(bomb)
+		went_off = true
+		effect.emit("bomb_blast", bomb.pos, {"radius": bomb.radius})
+		explode(fighters[int(bomb.owner)], bomb.pos, int(bomb.damage), float(bomb.radius), false, {})
+	return went_off
 
 # ---------- resolution ----------
 
@@ -900,6 +1088,12 @@ func resolve_impact(projectile: TankProjectile, point: Vector2) -> void:
 		shooter.settled = false
 		projectile.queue_free()
 		return
+	if projectile.ammo == "relogio":
+		plant_bomb(shooter, point, projectile)
+		projectile.queue_free()
+		return
+	if projectile.ammo == "laser":
+		effect.emit("laser", point, {"from": projectile.origin, "color": projectile.ammo_color})
 	var rules: Dictionary = projectile.special
 	var kind: String = str(rules.get("kind", ""))
 	if not rules.is_empty() and projectile.stage == "main" and rules.has("name"):
@@ -1089,6 +1283,8 @@ func heal_fighter(fighter: TankFighter, amount: int) -> void:
 
 func resolve_miss(projectile: TankProjectile) -> void:
 	projectiles.erase(projectile)
+	if projectile.ammo == "laser":
+		effect.emit("laser", projectile.position, {"from": projectile.origin, "color": projectile.ammo_color})
 	if projectile.fly:
 		var shooter: TankFighter = fighters[projectile.owner_id]
 		shooter.hp = 0
@@ -1174,7 +1370,10 @@ func step(delta: float) -> void:
 	match state:
 		State.PROJECTILE_FLYING:
 			for projectile in projectiles.duplicate():
+				var before: Vector2 = projectile.position
 				projectile.advance(delta)
+				if crystals_on:
+					collect_crystals(projectile, before)
 			if projectiles.is_empty():
 				volley_wait += delta
 				if shots_left > 0 and volley_wait > 0.45 and fighter.hp > 0:
@@ -1189,6 +1388,10 @@ func step(delta: float) -> void:
 			resolve_time += delta
 			if resolve_time > 1.0 and fighters.all(func(f: TankFighter) -> bool: return f.settled or f.hp <= 0):
 				if evaluate_winner():
+					return
+				if tick_bombs():
+					# A bomb went off: let the ground and the fighters settle before the next turn.
+					resolve_time = 0.0
 					return
 				finish_turn()
 		State.PLAYER_CHARGING:

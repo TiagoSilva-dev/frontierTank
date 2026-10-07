@@ -117,6 +117,12 @@ func solid(point: Vector2) -> bool:
 	var y: int = floori(point.y / PIXEL)
 	return x >= 0 and x < width and y >= 0 and y < height and mask.get_pixel(x, y).a > 0.5
 
+func is_hard(point: Vector2) -> bool:
+	# Bedrock: no crater (and no piercing shell) goes through it.
+	var x: int = floori(point.x / PIXEL)
+	var y: int = floori(point.y / PIXEL)
+	return x >= 0 and x < width and y >= 0 and y < height and hard[y * width + x] != 0
+
 func surface_y(x: float, start: float = 0.0) -> float:
 	for y in range(maxi(0, floori(start / PIXEL)), height):
 		if solid(Vector2(x, y * PIXEL)):

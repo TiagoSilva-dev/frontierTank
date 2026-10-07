@@ -18,7 +18,7 @@ const DIR: String = "user://replays"
 const KEEP: int = 12
 const MAX_INPUTS: int = 3000
 # What a player may send (MatchHost.ACTIONS); the server adds "leave" itself.
-const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "pet", "pass", "flip", "auto", "emote"]
+const ACTIONS: Array[String] = ["move", "aim", "charge", "release", "item", "tool", "pow", "fly", "aux", "ammo", "pet", "pass", "flip", "auto", "emote"]
 const KEYS: Array[String] = ["d", "angle", "power", "slot", "on", "id"]
 static var dir_override: String = ""
 

@@ -85,7 +85,7 @@ func start_pvp(level: int) -> bool:
 	for team: Array in teams:
 		joined.append(make_room("pvp", team, str(LobbyDirectory.ROOM_TITLES[rng.randi() % LobbyDirectory.ROOM_TITLES.size()]), team.size()))
 	# The map is drawn by the battle's seed, as for a room that did not choose one.
-	var config: Dictionary = {"mode": "pvp", "map": "", "turn_seconds": int(server.balance.turn_seconds), "teams": teams}
+	var config: Dictionary = {"mode": "pvp", "map": "", "turn_seconds": int(server.balance.turn_seconds), "crystals": true, "teams": teams}
 	return begin(joined, config, null)
 
 func start_pve(level: int) -> bool:
